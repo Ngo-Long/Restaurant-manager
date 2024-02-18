@@ -32,8 +32,8 @@ public class TaiKhoan extends javax.swing.JFrame {
     public TaiKhoan(Map<String, String> userInfo) {
         initComponents();
         this.userInfo = userInfo;
-        CommonUtils.displayUserInfoBar(userInfo, labelAccount, labelPosition); // Hiển thị thông tin người đăng nhập
-        CommonUtils.initClock(labelHouse); // Khởi tạo đồng hồ
+        CommonUtils.initClock(labelHouse);
+        CommonUtils.displayUserInfoBar(userInfo, labelAccount, labelPosition);
         CommonUtils.setImage("D:\\FPT Polytechnic\\KiThuatPhanMem\\KTLT\\KTLT\\src\\icon\\logo.jpg", labelLogo);
 
         employeeList = new ArrayList<>();
@@ -48,9 +48,9 @@ public class TaiKhoan extends javax.swing.JFrame {
     }
 
     private void openFullScreenWindow(JFrame window) {
-        window.setExtendedState(JFrame.MAXIMIZED_BOTH); // Mở toàn màn hình cho cửa sổ
-        window.setVisible(true); // Hiển thị cửa sổ
-        this.dispose();  // Đóng cửa sổ hiện tại // this là JFrame hiện tại
+        window.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+        window.setVisible(true); 
+        this.dispose();  
     }
 
     private void addTableMouseListener() {
@@ -59,7 +59,8 @@ public class TaiKhoan extends javax.swing.JFrame {
             public void mouseClicked(MouseEvent e) {
                 int selectedRow = tblDanhSachNV.getSelectedRow();
                 if (selectedRow != -1) {
-                    currentIndex = selectedRow; // Cập nhật currentIndex khi chọn dòng mới trong bảng
+                    // Cập nhật currentIndex khi chọn dòng mới trong bảng
+                    currentIndex = selectedRow;
                     displayEmployeeDetails(selectedRow);
                 }
             }

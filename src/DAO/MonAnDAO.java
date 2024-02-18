@@ -38,7 +38,7 @@ public class MonAnDAO {
                         MonAnEntity menuItem = new MonAnEntity(
                                 resultSet.getString("idMonAn"),
                                 resultSet.getString("ten"),
-                                resultSet.getDouble("gia"),
+                                resultSet.getInt("gia"),
                                 resultSet.getString("moTa"),
                                 resultSet.getString("hinhAnh"),
                                 resultSet.getString("phanLoai"),
@@ -58,14 +58,50 @@ public class MonAnDAO {
         return menuList;
     }
 
-    // Thêm một món ăn mới vào CSDL
-    public static void insertMenuItem(String idMonAn, String tenMonAn, double giaMonAn) {
+    // Hàm kiểm tra ID tồn tại
+    public static boolean isIdExists(String idMonAn) {
         try (Connection connection = getConnection()) {
-            String sql = "INSERT INTO MonAn (idMonAn, ten, gia, ngayThem, ngayCapNhat) VALUES (?, ?, ?, GETDATE(), GETDATE())";
+            String sql = "SELECT COUNT(*) FROM MonAn WHERE idMonAn = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, idMonAn);
+
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        int count = resultSet.getInt(1);
+                        return count > 0;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Thêm một món ăn mới vào CSDL
+    public static void insertMenuItem(String idMonAn, String tenMonAn, int giaMonAn, String moTaMonAn, String hinhAnhMonAn, String phanLoaiMonAn, String trangThaiMonAn) {
+        try (Connection connection = getConnection()) {
+            // Kiểm tra ID tồn tại
+            if (isIdExists(idMonAn)) {
+                System.out.println("Lỗi: ID đã tồn tại!");
+                return;
+            }
+
+            // Kiểm tra các ô khác có bỏ trống không
+            if (idMonAn.isEmpty() || tenMonAn.isEmpty() || giaMonAn <= 0) {
+                System.out.println("Lỗi: Vui lòng nhập đầy đủ thông tin!");
+                return;
+            }
+
+            String sql = "INSERT INTO MonAn (idMonAn, ten, gia, moTa, hinhAnh, phanLoai, trangThai, ngayThem, ngayCapNhat) VALUES (?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())";
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 preparedStatement.setString(1, idMonAn);
                 preparedStatement.setString(2, tenMonAn);
-                preparedStatement.setDouble(3, giaMonAn);
+                preparedStatement.setInt(3, giaMonAn);
+                preparedStatement.setString(4, moTaMonAn);
+                preparedStatement.setString(5, hinhAnhMonAn);
+                preparedStatement.setString(6, phanLoaiMonAn);
+                preparedStatement.setString(7, trangThaiMonAn);
 
                 int rowsAffected = preparedStatement.executeUpdate();
 
@@ -101,12 +137,12 @@ public class MonAnDAO {
     }
 
     // Sửa thông tin của một món ăn trong CSDL
-    public static void updateMenuItem(String idMonAn, String tenMonAnMoi, double giaMonAnMoi, String moTa, String hinhAnh, String phanLoai, String trangThai) {
+    public static void updateMenuItem(String idMonAn, String tenMonAnMoi, int giaMonAnMoi, String moTa, String hinhAnh, String phanLoai, String trangThai) {
         try (Connection connection = getConnection()) {
             String sql = "UPDATE MonAn SET ten = ?, gia = ?, moTa = ?, hinhAnh = ?, phanLoai = ?, trangThai = ?, ngayCapNhat = GETDATE() WHERE idMonAn = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 preparedStatement.setString(1, tenMonAnMoi);
-                preparedStatement.setDouble(2, giaMonAnMoi);
+                preparedStatement.setInt(2, giaMonAnMoi);
                 preparedStatement.setString(3, moTa);
                 preparedStatement.setString(4, hinhAnh);
                 preparedStatement.setString(5, phanLoai);

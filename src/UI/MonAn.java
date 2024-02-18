@@ -1,31 +1,46 @@
 package UI;
 
-import DAO.BanAnDAO;
+import javax.swing.JOptionPane;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import DAO.MonAnDAO;
+import static DAO.MonAnDAO.getConnection;
 import Entity.MonAnEntity;
-import Entity.BanAnEntity;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.DefaultComboBoxModel;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.border.MatteBorder;
+import javax.swing.table.DefaultTableModel;
 
 public class MonAn extends javax.swing.JFrame {
 
+    private String imagePath;
     private List<MonAnEntity> foodList;
+    private List<String> addedFoodList = new ArrayList<>();
     Map<String, String> userInfo = CommonUtils.getUserInfo();
 
     public MonAn(Map<String, String> userInfo) {
@@ -39,9 +54,10 @@ public class MonAn extends javax.swing.JFrame {
     }
 
     private void displayMenuItems() {
+        // Reset food list
         panelMenu.removeAll();
 
-        // Get dinner table list
+        // Get food list
         foodList = MonAnDAO.getMenuItems();
 
         // Use GridLayout and set the spacing between cells
@@ -51,57 +67,187 @@ public class MonAn extends javax.swing.JFrame {
         panelMenu.setLayout(gridLayout);
 
         for (MonAnEntity foodItem : foodList) {
-            JButton btnFood = createFoodButton(foodItem);
+            JPanel btnFood = createFoodPanel(foodItem);
             panelMenu.add(btnFood);
         }
     }
 
-    private JButton createFoodButton(MonAnEntity foodItem) {
-        // Create an ImageIcon with the dining-room.png file
-        java.net.URL imageURL = getClass().getResource("/icon/dining-room.png");
+    private JPanel createFoodPanel(MonAnEntity foodItem) {
+        // Get URL image
+        String imagePath = foodItem.getHinhAnh();
+        ImageIcon originalIcon = new ImageIcon(imagePath);
+        Image originalImage = originalIcon.getImage();
 
-        // Create an ImageIcon with the URL
-        ImageIcon icon = new ImageIcon(imageURL);
+        // Tính tỷ lệ thu nhỏ để hình ảnh vừa với JPanel có kích thước 150x150
+        int maxWidth = 150;
+        int maxHeight = 200; // Đã thay đổi kích thước để ảnh chiếm hết không gian
+        int originalWidth = originalIcon.getIconWidth();
+        int originalHeight = originalIcon.getIconHeight();
+        double scale = Math.min((double) maxWidth / originalWidth, (double) maxHeight / originalHeight);
+        int scaledWidth = (int) (originalWidth * scale);
+        int scaledHeight = (int) (originalHeight * scale);
 
-        // Create a button for a dinner table with the icon
-        JButton tableButton = new JButton(foodItem.getTen(), icon);
-        tableButton.setPreferredSize(new java.awt.Dimension(150, 150));
-        tableButton.setHorizontalTextPosition(SwingConstants.CENTER);
-        tableButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        // Tạo một ImageIcon đã được thu nhỏ
+        Image scaledImage = originalImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
 
-        // Add ActionListener to handle button click
-        tableButton.addActionListener((ActionEvent e) -> {
-            // Call a method to display detailed information
-            displayDetailedInfo(foodItem);
+        // Tạo một JPanel chính để chứa hình ảnh và background trắng
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setPreferredSize(new Dimension(200, 150));
+        mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        Border border = BorderFactory.createLineBorder(Color.GRAY);
+        mainPanel.setBorder(border);
+
+        // Tạo một JLabel để chứa hình ảnh thu nhỏ của món ăn
+        JLabel imageLabel = new JLabel(scaledIcon);
+        imageLabel.setHorizontalAlignment(JLabel.CENTER); // Căn chỉnh nằm giữa 
+        mainPanel.add(imageLabel, BorderLayout.CENTER); // Thêm JLabel của hình ảnh vào JPanel chính
+
+        // Tạo một JPanel con để chứa tên, giá và button
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        infoPanel.setBackground(Color.WHITE);
+
+        // Tạo một JLabel để chứa tên của món ăn và đặt kiểu chữ
+        JLabel textLabel = new JLabel(foodItem.getTen());
+        textLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        Font boldFont = new Font(textLabel.getFont().getName(), Font.BOLD, 14);
+        textLabel.setFont(boldFont);
+        infoPanel.add(textLabel); // Thêm JLabel của tên món ăn vào JPanel con
+
+        // Tạo một JLabel để chứa giá tiền của món ăn và đặt kiểu chữ
+        JLabel priceLabel = new JLabel(foodItem.getGia() + " VND");
+        priceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        priceLabel.setFont(new Font(priceLabel.getFont().getName(), Font.PLAIN, 14));
+        infoPanel.add(priceLabel);
+
+        // Create button "Đặt món"
+        JButton orderButton = new JButton("Đặt món");
+        orderButton.setAlignmentX(Component.CENTER_ALIGNMENT); // orderButton nằm giữa JPanel con
+        orderButton.setPreferredSize(new Dimension(120, 40)); // Kích thước nút và kiểu chữ
+        orderButton.setFont(new Font(orderButton.getFont().getName(), Font.BOLD, 15)); // kiểu chữ 
+        orderButton.setForeground(Color.WHITE); // Màu chữ
+        orderButton.setBackground(new Color(51, 153, 255)); // Màu nền
+        orderButton.setFocusPainted(false); // Loại bỏ đường viền khi nút được chọn
+        orderButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                handleOrder(foodItem);
+                displayDetailedInfo(foodItem);
+            }
         });
 
-        return tableButton;
+        infoPanel.add(orderButton); // Thêm orderButton vào JPanel con
+        infoPanel.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
+
+        // Tạo đường viền top để biểu thị ranh giới và làm nhấn màu nhẹ nhàng của panel ở dưới
+        MatteBorder topBorder = BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 200));
+        infoPanel.setBorder(BorderFactory.createCompoundBorder(topBorder, infoPanel.getBorder()));
+
+        // Add infoPanel vào mainPanel
+        mainPanel.add(infoPanel, BorderLayout.SOUTH);
+
+        // Call method displayDetailedInfo when user clicked
+        mainPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                displayDetailedInfo(foodItem);
+            }
+        });
+
+        return mainPanel;
+    }
+
+    // handle when click button "Đặt món" 
+    private void handleOrder(MonAnEntity foodItem) {
+        String foodId = foodItem.getIdMonAn();
+        String foodName = foodItem.getTen();
+        int quantity;
+
+        try {
+            quantity = Integer.parseInt(textQuantity.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Bị lỗi. Vui lòng nhập số đúng!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            DefaultTableModel saveOrder = (DefaultTableModel) tableOrder.getModel();
+
+            // Check if the food is already added
+            int existingRowIndex = findFoodRowIndex(foodName);
+            if (existingRowIndex != -1) {   // Tên món ăn đã tồn tại trong bảng
+                if (quantity == 0) { // Số lượng là 0, xóa khỏi bảng
+                    saveOrder.removeRow(existingRowIndex);
+                    JOptionPane.showMessageDialog(this, "Đã xóa món ăn.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                } else { // Số lượng khác 0, cập nhật số lượng từ textQuantity
+                    saveOrder.setValueAt(quantity, existingRowIndex, 1);
+                    JOptionPane.showMessageDialog(this, "Đã cập nhật số lượng.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } else {  // Tên món ăn chưa tồn tại trong bảng
+                if (quantity != 0) {
+                    Object[] rowData = {foodName, quantity};
+                    saveOrder.insertRow(0, rowData); // Thêm vào đầu bảng nếu số lượng khác 0
+                }
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Bị lỗi. Vui lòng nhập số đúng!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private int findFoodRowIndex(String foodName) {
+        DefaultTableModel saveOrder = (DefaultTableModel) tableOrder.getModel();
+        int rowCount = saveOrder.getRowCount();
+
+        for (int i = 0; i < rowCount; i++) {
+            Object value = saveOrder.getValueAt(i, 0);
+            if (value != null && foodName.equals(value.toString())) {
+                return i;  // Trả về chỉ số dòng nếu mã món ăn đã tồn tại trong bảng
+            }
+        }
+
+        return -1;  // Trả về -1 nếu mã món ăn chưa tồn tại trong bảng
     }
 
     private void displayDetailedInfo(MonAnEntity foodItem) {
         // Set detailed information in your text fields, combobox, etc.
+        labelFoodName.setText(foodItem.getTen());
+        textQuantity.setText("1");
+
         textMaterialID.setText(foodItem.getIdMonAn());
         textMaterialName.setText(foodItem.getTen());
         textCategory.setText(foodItem.getPhanLoai());
-//        textMoney.setDouble(foodItem.getGia());
+        textMoney.setText(String.valueOf(foodItem.getGia()));
         textDesc.setText(foodItem.getMoTa());
+
+        // Avatar 
+        btnFood.setBorder(null);
+        btnFood.setPreferredSize(new Dimension(87, 87));
+
+        String avatarPath = foodItem.getHinhAnh();
+        ImageIcon icon = new ImageIcon(avatarPath);
+        Image image = icon.getImage().getScaledInstance(87, 87, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(image);
+        btnFood.setIcon(scaledIcon);
 
         // Format date if needed
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy  -  HH:mm:ss");
         textAdditionalDay.setText(dateFormat.format(foodItem.getNgayThem()));
         textUpdateDay.setText(dateFormat.format(foodItem.getNgayCapNhat()));
     }
-//
-//    private void resetFields() {
-//        textMaBan.setText("");
-//        textTenBan.setText("");
-//        textSoChoNgoi.setText("");
-//        textPhuThu.setText("");
-//        textNgayThem.setText("");
-//        textNgayCapNhat.setText("");
-//        textMoTa.setText("");
-//        CbTrangThai.setSelectedIndex(0);
-//    }
+
+    private void resetFields() {
+        textMaterialID.setText("");
+        textMaterialName.setText("");
+        textCategory.setText("");
+        textMoney.setText("");
+        textDesc.setText("");
+        textAdditionalDay.setText("");
+        textUpdateDay.setText("");
+        comboBoxStatus.setSelectedIndex(0);
+        imagePath = "";
+    }
 
     private void openFullScreenWindow(JFrame window) {
         window.setVisible(true);
@@ -143,15 +289,15 @@ public class MonAn extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        btnNameFood = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
         btnMinus = new javax.swing.JButton();
-        jTextField2 = new javax.swing.JTextField();
+        textQuantity = new javax.swing.JTextField();
         btnPlus = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        btlMonDangGoi = new javax.swing.JTable();
+        tableOrder = new javax.swing.JTable();
         btnSubmit = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
+        labelFoodName = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         textMaterialID = new javax.swing.JTextField();
@@ -166,7 +312,7 @@ public class MonAn extends javax.swing.JFrame {
         btnHuy1 = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
-        btnAvatar = new javax.swing.JButton();
+        btnFood = new javax.swing.JButton();
         jLabel13 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         textUpdateDay = new javax.swing.JTextField();
@@ -208,11 +354,16 @@ public class MonAn extends javax.swing.JFrame {
         btnSearch.setForeground(new java.awt.Color(255, 255, 255));
         btnSearch.setText("Tìm kiếm");
         btnSearch.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
 
         btnPhanLoai.setBackground(new java.awt.Color(0, 51, 102));
         btnPhanLoai.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnPhanLoai.setForeground(new java.awt.Color(255, 255, 255));
-        btnPhanLoai.setText("Phân loại");
+        btnPhanLoai.setText("Danh mục");
         btnPhanLoai.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnPhanLoai.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -220,7 +371,7 @@ public class MonAn extends javax.swing.JFrame {
             }
         });
 
-        CbPhanLoai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        CbPhanLoai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả" }));
 
         jPanel1.setBackground(new java.awt.Color(0, 51, 102));
         jPanel1.setForeground(new java.awt.Color(51, 51, 255));
@@ -497,26 +648,38 @@ public class MonAn extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("Tên món:");
 
-        btnNameFood.setText("Mì cay bò cấp 3");
-        btnNameFood.setBorder(null);
-
         jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel8.setText("Số lượng:");
 
         btnMinus.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
         btnMinus.setText("-");
+        btnMinus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMinusActionPerformed(evt);
+            }
+        });
 
-        jTextField2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField2.setText("1");
-        jTextField2.setAutoscrolls(false);
-        jTextField2.setBorder(null);
-        jTextField2.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        textQuantity.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        textQuantity.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        textQuantity.setText("1");
+        textQuantity.setAutoscrolls(false);
+        textQuantity.setBorder(null);
+        textQuantity.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        textQuantity.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textQuantityActionPerformed(evt);
+            }
+        });
 
         btnPlus.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
         btnPlus.setText("+");
+        btnPlus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPlusActionPerformed(evt);
+            }
+        });
 
-        btlMonDangGoi.setModel(new javax.swing.table.DefaultTableModel(
+        tableOrder.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -527,7 +690,7 @@ public class MonAn extends javax.swing.JFrame {
                 "Tên món ăn", "Số lượng"
             }
         ));
-        jScrollPane1.setViewportView(btlMonDangGoi);
+        jScrollPane1.setViewportView(tableOrder);
 
         btnSubmit.setBackground(new java.awt.Color(0, 51, 102));
         btnSubmit.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -546,6 +709,9 @@ public class MonAn extends javax.swing.JFrame {
             }
         });
 
+        labelFoodName.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        labelFoodName.setText("  ");
+
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
@@ -562,12 +728,12 @@ public class MonAn extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel9Layout.createSequentialGroup()
-                                .addComponent(btnMinus, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(14, 14, 14)
-                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnPlus, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(btnNameFood, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(btnPlus, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(textQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnMinus, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(labelFoodName, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
                         .addComponent(btnSubmit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
@@ -585,10 +751,10 @@ public class MonAn extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(btnNameFood, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(labelFoodName))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
                     .addComponent(btnMinus, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnPlus, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -598,7 +764,7 @@ public class MonAn extends javax.swing.JFrame {
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(113, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane3.addTab("Order món ăn", jPanel9);
@@ -690,10 +856,10 @@ public class MonAn extends javax.swing.JFrame {
             }
         });
 
-        btnAvatar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnAvatar.addActionListener(new java.awt.event.ActionListener() {
+        btnFood.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnFood.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAvatarActionPerformed(evt);
+                btnFoodActionPerformed(evt);
             }
         });
 
@@ -756,14 +922,6 @@ public class MonAn extends javax.swing.JFrame {
                             .addGap(6, 6, 6)
                             .addComponent(textUpdateDay))
                         .addGroup(jPanel10Layout.createSequentialGroup()
-                            .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(15, 15, 15)
-                            .addComponent(btnRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(15, 15, 15)
-                            .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnHuy1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel10Layout.createSequentialGroup()
                             .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel2)
@@ -781,13 +939,21 @@ public class MonAn extends javax.swing.JFrame {
                                                 .addComponent(textMaterialID, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
                                                 .addComponent(textMaterialName))
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(btnAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(btnFood, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addComponent(textMoney)
                                         .addComponent(comboBoxStatus, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(textCategory)
                                         .addComponent(textDesc, javax.swing.GroupLayout.Alignment.TRAILING)
                                         .addComponent(btnChoseIngredients, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGap(0, 0, Short.MAX_VALUE))))))
+                                    .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGroup(jPanel10Layout.createSequentialGroup()
+                            .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(15, 15, 15)
+                            .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(15, 15, 15)
+                            .addComponent(btnRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(15, 15, 15)
+                            .addComponent(btnHuy1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(31, Short.MAX_VALUE))
         );
         jPanel10Layout.setVerticalGroup(
@@ -803,7 +969,7 @@ public class MonAn extends javax.swing.JFrame {
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(textMaterialName, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(btnAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnFood, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -832,7 +998,7 @@ public class MonAn extends javax.swing.JFrame {
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(textUpdateDay, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 133, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnHuy1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -847,11 +1013,11 @@ public class MonAn extends javax.swing.JFrame {
         panelMenu.setLayout(panelMenuLayout);
         panelMenuLayout.setHorizontalGroup(
             panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 638, Short.MAX_VALUE)
         );
         panelMenuLayout.setVerticalGroup(
             panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 483, Short.MAX_VALUE)
+            .addGap(0, 486, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -863,22 +1029,20 @@ public class MonAn extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel37, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(20, 20, 20)
-                                .addComponent(panelMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jLabel4)
+                                .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(20, 20, 20)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel4)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(btnSearch)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(btnPhanLoai)
-                                        .addGap(8, 8, 8)
-                                        .addComponent(CbPhanLoai, 0, 168, Short.MAX_VALUE)))))
+                                .addComponent(btnSearch)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnPhanLoai)
+                                .addGap(8, 8, 8)
+                                .addComponent(CbPhanLoai, 0, 168, Short.MAX_VALUE))
+                            .addComponent(panelMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(20, 20, 20)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(2, 2, 2)
@@ -887,26 +1051,29 @@ public class MonAn extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel37, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(jLabel4)
-                        .addGap(18, 18, 18)
+                        .addComponent(jPanel37, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnPhanLoai, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(CbPhanLoai, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addComponent(panelMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addComponent(jTabbedPane3)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(20, 20, 20)
+                                .addComponent(jLabel4)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnPhanLoai, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(CbPhanLoai, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(18, 18, 18)
+                                .addComponent(panelMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jTabbedPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 682, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         pack();
@@ -972,19 +1139,131 @@ public class MonAn extends javax.swing.JFrame {
     }//GEN-LAST:event_btnWarehouseActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        //        addEmployee();
+        String materialID = textMaterialID.getText();
+        String materialName = textMaterialName.getText();
+        String materialCategory = textCategory.getText();
+        String materialMoneyStr = textMoney.getText();
+        String materialStatus = comboBoxStatus.getSelectedItem().toString();
+        String materialDesc = textDesc.getText();
+
+        // Kiểm tra ô nhập liệu và hiển thị lỗi nếu cần
+        if (materialID.isEmpty() || materialName.isEmpty() || materialCategory.isEmpty() || materialMoneyStr.isEmpty() || materialStatus.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Chuyển đổi giá tiền từ String sang int
+        int materialMoney = 0;
+        try {
+            materialMoney = Integer.parseInt(materialMoneyStr);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Giá tiền không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try (Connection connection = getConnection()) {
+            if (isIdExists(materialID)) {
+                JOptionPane.showMessageDialog(this, "ID đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String sql = "INSERT INTO MonAn (idMonAn, ten, gia, moTa, hinhAnh, phanLoai, trangThai, ngayThem, ngayCapNhat) VALUES (?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, materialID);
+                preparedStatement.setString(2, materialName);
+                preparedStatement.setInt(3, materialMoney);
+                preparedStatement.setString(4, materialDesc);
+                preparedStatement.setString(5, imagePath);
+                preparedStatement.setString(6, materialCategory);
+                preparedStatement.setString(7, materialStatus);
+
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    JOptionPane.showMessageDialog(this, "Thêm món ăn thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Thêm món ăn thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Hiển thị danh sách món ăn sau khi thêm
+        displayMenuItems();
     }//GEN-LAST:event_btnAddActionPerformed
 
+    public static boolean isIdExists(String idMonAn) {
+        try (Connection connection = getConnection()) {
+            String sql = "SELECT COUNT(*) FROM MonAn WHERE idMonAn = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, idMonAn);
+
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        int count = resultSet.getInt(1);
+                        return count > 0;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
-        //        updateEmployeeStatusSoft();
     }//GEN-LAST:event_btnRemoveActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        //        updateEmployee();
+        String materialID = textMaterialID.getText();
+        String materialName = textMaterialName.getText();
+        String materialCategory = textCategory.getText();
+        String materialMoneyStr = textMoney.getText();
+        String materialStatus = comboBoxStatus.getSelectedItem().toString();
+        String materialDesc = textDesc.getText();
+
+        int materialMoney = 0;
+        try {
+            materialMoney = Integer.parseInt(materialMoneyStr);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Giá tiền không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try (Connection connection = getConnection()) {
+            if (!isIdExists(materialID)) {
+                JOptionPane.showMessageDialog(this, "ID không tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String sql = "UPDATE MonAn SET ten = ?, gia = ?, moTa = ?, hinhAnh = ?, phanLoai = ?, trangThai = ?, ngayCapNhat = GETDATE() WHERE idMonAn = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, materialName);
+                preparedStatement.setInt(2, materialMoney);
+                preparedStatement.setString(3, materialDesc);
+                preparedStatement.setString(4, imagePath);
+                preparedStatement.setString(5, materialCategory);
+                preparedStatement.setString(6, materialStatus);
+                preparedStatement.setString(7, materialID);
+
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    JOptionPane.showMessageDialog(this, "Cập nhật món ăn thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Cập nhật món ăn thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        displayMenuItems();
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnHuy1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuy1ActionPerformed
-        //        resetFields();
+        resetFields();
     }//GEN-LAST:event_btnHuy1ActionPerformed
 
     private void textMaterialIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textMaterialIDActionPerformed
@@ -1003,18 +1282,26 @@ public class MonAn extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnResetActionPerformed
 
-    private void btnAvatarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvatarActionPerformed
-//        JFileChooser fileChooser = new JFileChooser();
-//        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-//
-//        int result = fileChooser.showOpenDialog(this);
-//
-//        if (result == JFileChooser.APPROVE_OPTION) {
-//            File selectedFile = fileChooser.getSelectedFile();// Chọn
-//            imagePath = selectedFile.getAbsolutePath(); // Lưu đường dẫn ảnh đã chọn
-//            resetImagePath();
-//        }
-    }//GEN-LAST:event_btnAvatarActionPerformed
+    private void btnFoodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFoodActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+
+        int result = fileChooser.showOpenDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();// Chọn
+            imagePath = selectedFile.getAbsolutePath(); // Lưu đường dẫn ảnh đã chọn
+            resetImagePath();
+        }
+    }//GEN-LAST:event_btnFoodActionPerformed
+
+    private void resetImagePath() {
+        ImageIcon icon = new ImageIcon(imagePath);
+        Image image = icon.getImage().getScaledInstance(88, 88, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(image);
+        btnFood.setIcon(scaledIcon);
+    }
+
 
     private void textUpdateDayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textUpdateDayActionPerformed
         // TODO add your handling code here:
@@ -1043,8 +1330,81 @@ public class MonAn extends javax.swing.JFrame {
     }//GEN-LAST:event_btnChoseIngredientsActionPerformed
 
     private void textSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSearchActionPerformed
-        // TODO add your handling code here:
+        String keyword = textSearch.getText().trim();
+        String selectedPhanLoai = (String) CbPhanLoai.getSelectedItem();
+        searchAndClassifyMenu(keyword, selectedPhanLoai, panelMenu);
     }//GEN-LAST:event_textSearchActionPerformed
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        String keyword = textSearch.getText().trim();
+        String selectedPhanLoai = (String) CbPhanLoai.getSelectedItem();
+        searchAndClassifyMenu(keyword, selectedPhanLoai, panelMenu);
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void btnMinusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMinusActionPerformed
+        int quantity = Integer.parseInt(textQuantity.getText());
+
+        if (quantity > 0) {
+            quantity--;
+            textQuantity.setText(Integer.toString(quantity));
+        }
+    }//GEN-LAST:event_btnMinusActionPerformed
+
+    private void btnPlusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlusActionPerformed
+        int quantity = Integer.parseInt(textQuantity.getText());
+
+        quantity++;
+        textQuantity.setText(Integer.toString(quantity));
+    }//GEN-LAST:event_btnPlusActionPerformed
+
+    private void textQuantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textQuantityActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_textQuantityActionPerformed
+
+    public static void searchAndClassifyMenu(String keyword, String phanLoai, JPanel panel) {
+        try (Connection connection = getConnection()) {
+            String sql = "SELECT * FROM MonAn WHERE (? IS NULL OR phanLoai = ?)"
+                    + "AND (ten LIKE ? OR idMonAn LIKE ?)";
+
+            if ("Tất cả".equals(phanLoai)) {
+                phanLoai = null;
+            }
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, phanLoai);
+                preparedStatement.setString(2, phanLoai != null ? "%" + phanLoai + "%" : "%");
+                preparedStatement.setString(3, "%" + keyword + "%");
+                preparedStatement.setString(4, "%" + keyword + "%");
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                panel.removeAll();
+                while (resultSet.next()) {
+                    String item = "ID: " + resultSet.getString("idMonAn")
+                            + " | Tên: " + resultSet.getString("ten")
+                            + " | Giá: " + resultSet.getBigDecimal("gia")
+                            + " | Mô tả: " + resultSet.getString("moTa")
+                            + " | Hình ảnh: " + resultSet.getString("hinhAnh")
+                            + " | Phân loại: " + resultSet.getString("phanLoai")
+                            + " | Trạng thái: " + resultSet.getString("trangThai");
+
+                    JLabel label = new JLabel(item);
+                    panel.add(label);
+                }
+
+                if (panel.getComponentCount() > 0) {
+                    JOptionPane.showMessageDialog(null, "Tìm kiếm và phân loại thành công!", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Không tìm thấy kết quả nào!", "Thông Báo", JOptionPane.WARNING_MESSAGE);
+                }
+
+                panel.revalidate();
+                panel.repaint();
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi khi tìm kiếm và phân loại nguyên liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
 
     public static void main(String args[]) {
         try {
@@ -1071,18 +1431,16 @@ public class MonAn extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> CbPhanLoai;
-    private javax.swing.JTable btlMonDangGoi;
     private javax.swing.JButton btnAccount;
     private javax.swing.JButton btnAdd;
-    private javax.swing.JButton btnAvatar;
     private javax.swing.JButton btnCallTable;
     private javax.swing.JButton btnChoseIngredients;
     private javax.swing.JButton btnClient;
     private javax.swing.JButton btnConfirm;
     private javax.swing.JButton btnDinnerTable;
+    private javax.swing.JButton btnFood;
     private javax.swing.JButton btnHuy1;
     private javax.swing.JButton btnMinus;
-    private javax.swing.JButton btnNameFood;
     private javax.swing.JButton btnOrder;
     private javax.swing.JButton btnOverview;
     private javax.swing.JButton btnPay;
@@ -1120,18 +1478,20 @@ public class MonAn extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane3;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JLabel labelAccount;
+    private javax.swing.JLabel labelFoodName;
     private javax.swing.JLabel labelHouse;
     private javax.swing.JLabel labelLogo;
     private javax.swing.JLabel labelPosition;
     private javax.swing.JPanel panelMenu;
+    private javax.swing.JTable tableOrder;
     private javax.swing.JTextField textAdditionalDay;
     private javax.swing.JTextField textCategory;
     private javax.swing.JTextField textDesc;
     private javax.swing.JTextField textMaterialID;
     private javax.swing.JTextField textMaterialName;
     private javax.swing.JTextField textMoney;
+    private javax.swing.JTextField textQuantity;
     private javax.swing.JTextField textSearch;
     private javax.swing.JTextField textUpdateDay;
     // End of variables declaration//GEN-END:variables

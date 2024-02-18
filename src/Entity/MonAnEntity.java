@@ -6,7 +6,7 @@ public class MonAnEntity {
 
     private String idMonAn;
     private String ten;
-    private double gia;
+    private int gia;
     private String moTa;
     private String hinhAnh;
     private String phanLoai;
@@ -14,7 +14,7 @@ public class MonAnEntity {
     private Date ngayThem;
     private Date ngayCapNhat;
 
-    public MonAnEntity(String idMonAn, String ten, double gia, String moTa, String hinhAnh, String phanLoai, String trangThai, Date ngayThem, Date ngayCapNhat) {
+    public MonAnEntity(String idMonAn, String ten, int gia, String moTa, String hinhAnh, String phanLoai, String trangThai, Date ngayThem, Date ngayCapNhat) {
         this.idMonAn = idMonAn;
         this.ten = ten;
         this.gia = gia;
@@ -42,11 +42,11 @@ public class MonAnEntity {
         this.ten = ten;
     }
 
-    public double getGia() {
+    public int getGia() {
         return gia;
     }
 
-    public void setGia(double gia) {
+    public void setGia(int gia) {
         this.gia = gia;
     }
 
