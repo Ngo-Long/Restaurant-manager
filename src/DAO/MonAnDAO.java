@@ -204,6 +204,28 @@ public class MonAnDAO {
         }
     }
 
+    // Lấy tên món ăn từ idMonAn
+    public static String getNameFoodFromId(String idMonAn) {
+        String tenMonAn = null;
+
+        try (Connection connection = getConnection()) {
+            String sql = "SELECT ten FROM MonAn WHERE idMonAn = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setString(1, idMonAn);
+
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        tenMonAn = resultSet.getString("ten");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return tenMonAn;
+    }
+
     public static void main(String[] args) {
 
 //
@@ -219,6 +241,6 @@ public class MonAnDAO {
 //        // Xem chi tiết một món ăn và các nguyên liệu sử dụng
 //        viewMenuItemDetails("MA001");
         // Kết nối CSDL và lấy danh sách món ăn
-//        getMenuItems();
+        getMenuItems();
     }
 }

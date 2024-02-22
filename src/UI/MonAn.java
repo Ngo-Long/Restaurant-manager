@@ -51,6 +51,20 @@ public class MonAn extends javax.swing.JFrame {
         CommonUtils.setImage("D:\\FPT Polytechnic\\KiThuatPhanMem\\KTLT\\KTLT\\src\\icon\\logo.jpg", labelLogo);
 
         displayMenuItems();
+        printUserInfo();
+    }
+
+    private void printUserInfo() {
+        System.out.println("UserInfo:" + userInfo);
+        
+        for (Map.Entry<String, String> entry : userInfo.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+
+            // Kiểm tra nếu key là "idBanAn" thì hiển thị giá trị trong labelNameDiningTable
+            if ("tenBanAn".equals(entry.getKey())) {
+                labelNameDiningTable.setText(entry.getValue());
+            }
+        }
     }
 
     private void displayMenuItems() {
@@ -80,7 +94,7 @@ public class MonAn extends javax.swing.JFrame {
 
         // Tính tỷ lệ thu nhỏ để hình ảnh vừa với JPanel có kích thước 150x150
         int maxWidth = 150;
-        int maxHeight = 200; // Đã thay đổi kích thước để ảnh chiếm hết không gian
+        int maxHeight = 150; // Đã thay đổi kích thước để ảnh chiếm hết không gian
         int originalWidth = originalIcon.getIconWidth();
         int originalHeight = originalIcon.getIconHeight();
         double scale = Math.min((double) maxWidth / originalWidth, (double) maxHeight / originalHeight);
@@ -94,7 +108,7 @@ public class MonAn extends javax.swing.JFrame {
         // Tạo một JPanel chính để chứa hình ảnh và background trắng
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
-        mainPanel.setPreferredSize(new Dimension(200, 150));
+        mainPanel.setPreferredSize(new Dimension(150, 150));
         mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         Border border = BorderFactory.createLineBorder(Color.GRAY);
         mainPanel.setBorder(border);
@@ -162,7 +176,14 @@ public class MonAn extends javax.swing.JFrame {
     // handle when click button "Đặt món" 
     private void handleOrder(MonAnEntity foodItem) {
         String foodId = foodItem.getIdMonAn();
-        String foodName = foodItem.getTen();
+        String foodName;
+
+        if ("0".equals(textDescLevel.getText()) && !textDescLevel.getText().isEmpty()) {
+            foodName = foodItem.getTen();
+        } else {
+            foodName = foodItem.getTen() + " (Cấp " + textDescLevel.getText() + ")";
+        }
+
         int quantity;
 
         try {
@@ -214,6 +235,7 @@ public class MonAn extends javax.swing.JFrame {
         // Set detailed information in your text fields, combobox, etc.
         labelFoodName.setText(foodItem.getTen());
         textQuantity.setText("1");
+        textDescLevel.setText("0");
 
         textMaterialID.setText(foodItem.getIdMonAn());
         textMaterialName.setText(foodItem.getTen());
@@ -287,7 +309,6 @@ public class MonAn extends javax.swing.JFrame {
         jTabbedPane3 = new javax.swing.JTabbedPane();
         jPanel9 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         btnMinus = new javax.swing.JButton();
@@ -298,6 +319,11 @@ public class MonAn extends javax.swing.JFrame {
         btnSubmit = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
         labelFoodName = new javax.swing.JLabel();
+        labelNameDiningTable = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        btnPlus1 = new javax.swing.JButton();
+        textDescLevel = new javax.swing.JTextField();
+        btnMinus1 = new javax.swing.JButton();
         jPanel10 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         textMaterialID = new javax.swing.JTextField();
@@ -640,10 +666,7 @@ public class MonAn extends javax.swing.JFrame {
         jTabbedPane3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel3.setText("Tên: Bàn 1");
-
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel5.setText("Phục vụ: Ngô Kim Long");
+        jLabel3.setText("Tên:");
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("Tên món:");
@@ -679,6 +702,7 @@ public class MonAn extends javax.swing.JFrame {
             }
         });
 
+        tableOrder.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
         tableOrder.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
@@ -690,6 +714,9 @@ public class MonAn extends javax.swing.JFrame {
                 "Tên món ăn", "Số lượng"
             }
         ));
+        tableOrder.setAlignmentX(1.0F);
+        tableOrder.setAlignmentY(1.0F);
+        tableOrder.setRowHeight(30);
         jScrollPane1.setViewportView(tableOrder);
 
         btnSubmit.setBackground(new java.awt.Color(0, 51, 102));
@@ -697,10 +724,14 @@ public class MonAn extends javax.swing.JFrame {
         btnSubmit.setForeground(new java.awt.Color(255, 255, 255));
         btnSubmit.setText("Xác nhận");
         btnSubmit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSubmit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSubmitActionPerformed(evt);
+            }
+        });
 
-        btnReset.setBackground(new java.awt.Color(0, 51, 102));
         btnReset.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnReset.setForeground(new java.awt.Color(255, 255, 255));
+        btnReset.setForeground(new java.awt.Color(51, 51, 51));
         btnReset.setText("Hủy");
         btnReset.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnReset.addActionListener(new java.awt.event.ActionListener() {
@@ -710,7 +741,43 @@ public class MonAn extends javax.swing.JFrame {
         });
 
         labelFoodName.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        labelFoodName.setForeground(new java.awt.Color(51, 51, 51));
         labelFoodName.setText("  ");
+
+        labelNameDiningTable.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        labelNameDiningTable.setForeground(new java.awt.Color(51, 51, 51));
+        labelNameDiningTable.setText(" ");
+
+        jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel14.setText("Cấp độ:");
+
+        btnPlus1.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        btnPlus1.setText("+");
+        btnPlus1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPlus1ActionPerformed(evt);
+            }
+        });
+
+        textDescLevel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        textDescLevel.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        textDescLevel.setText("1");
+        textDescLevel.setAutoscrolls(false);
+        textDescLevel.setBorder(null);
+        textDescLevel.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        textDescLevel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textDescLevelActionPerformed(evt);
+            }
+        });
+
+        btnMinus1.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        btnMinus1.setText("-");
+        btnMinus1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMinus1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -718,53 +785,71 @@ public class MonAn extends javax.swing.JFrame {
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel3)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel8))
+                        .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel9Layout.createSequentialGroup()
-                                .addComponent(btnPlus, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(textQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnMinus, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(labelFoodName, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                        .addComponent(btnSubmit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(labelFoodName, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel9Layout.createSequentialGroup()
+                            .addComponent(jLabel3)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(labelNameDiningTable, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGap(178, 178, 178))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                            .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnPlus1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(0, 0, 0)
+                            .addComponent(textDescLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(0, 0, 0)
+                            .addComponent(btnMinus1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                            .addComponent(jLabel8)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnPlus, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(0, 0, 0)
+                            .addComponent(textQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(0, 0, 0)
+                            .addComponent(btnMinus, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                            .addGap(21, 21, 21)
+                            .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(btnReset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel5)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(labelNameDiningTable))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(labelFoodName))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(textQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
                     .addComponent(btnMinus, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnPlus, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(textDescLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel14)
+                    .addComponent(btnMinus1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPlus1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(96, Short.MAX_VALUE))
         );
 
         jTabbedPane3.addTab("Order món ăn", jPanel9);
@@ -1099,7 +1184,7 @@ public class MonAn extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPayActionPerformed
 
     private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
-        Bep nvBep = new Bep(userInfo);
+        XacNhanMon nvBep = new XacNhanMon(userInfo);
         openFullScreenWindow(nvBep);
     }//GEN-LAST:event_btnConfirmActionPerformed
 
@@ -1361,6 +1446,31 @@ public class MonAn extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_textQuantityActionPerformed
 
+    private void btnPlus1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlus1ActionPerformed
+        int quantity = Integer.parseInt(textDescLevel.getText());
+
+        quantity++;
+        textDescLevel.setText(Integer.toString(quantity));
+    }//GEN-LAST:event_btnPlus1ActionPerformed
+
+    private void textDescLevelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textDescLevelActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_textDescLevelActionPerformed
+
+    private void btnMinus1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMinus1ActionPerformed
+        int quantity = Integer.parseInt(textDescLevel.getText());
+
+        if (quantity > 0) {
+            quantity--;
+            textDescLevel.setText(Integer.toString(quantity));
+        }
+    }//GEN-LAST:event_btnMinus1ActionPerformed
+
+    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_btnSubmitActionPerformed
+
     public static void searchAndClassifyMenu(String keyword, String phanLoai, JPanel panel) {
         try (Connection connection = getConnection()) {
             String sql = "SELECT * FROM MonAn WHERE (? IS NULL OR phanLoai = ?)"
@@ -1441,11 +1551,13 @@ public class MonAn extends javax.swing.JFrame {
     private javax.swing.JButton btnFood;
     private javax.swing.JButton btnHuy1;
     private javax.swing.JButton btnMinus;
+    private javax.swing.JButton btnMinus1;
     private javax.swing.JButton btnOrder;
     private javax.swing.JButton btnOverview;
     private javax.swing.JButton btnPay;
     private javax.swing.JButton btnPhanLoai;
     private javax.swing.JButton btnPlus;
+    private javax.swing.JButton btnPlus1;
     private javax.swing.JButton btnRemove;
     private javax.swing.JButton btnReport;
     private javax.swing.JButton btnReset;
@@ -1460,13 +1572,13 @@ public class MonAn extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -1482,12 +1594,14 @@ public class MonAn extends javax.swing.JFrame {
     private javax.swing.JLabel labelFoodName;
     private javax.swing.JLabel labelHouse;
     private javax.swing.JLabel labelLogo;
+    private javax.swing.JLabel labelNameDiningTable;
     private javax.swing.JLabel labelPosition;
     private javax.swing.JPanel panelMenu;
     private javax.swing.JTable tableOrder;
     private javax.swing.JTextField textAdditionalDay;
     private javax.swing.JTextField textCategory;
     private javax.swing.JTextField textDesc;
+    private javax.swing.JTextField textDescLevel;
     private javax.swing.JTextField textMaterialID;
     private javax.swing.JTextField textMaterialName;
     private javax.swing.JTextField textMoney;

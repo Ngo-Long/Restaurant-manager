@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JFrame;
 
-public class Bep extends javax.swing.JFrame {
+public class XacNhanMon extends javax.swing.JFrame {
 
     Map<String, String> userInfo = CommonUtils.getUserInfo();
 
-    public Bep(Map<String, String> userInfo) {
+    public XacNhanMon(Map<String, String> userInfo) {
         initComponents();
 
         CommonUtils.initClock(labelHouse); // Khởi tạo đồng hồ
@@ -444,7 +444,7 @@ public class Bep extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPayActionPerformed
 
     private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
-        Bep nvBep = new Bep(userInfo);
+        XacNhanMon nvBep = new XacNhanMon(userInfo);
         openFullScreenWindow(nvBep);
     }//GEN-LAST:event_btnConfirmActionPerformed
 
@@ -497,7 +497,7 @@ public class Bep extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Bep.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(XacNhanMon.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
         java.awt.EventQueue.invokeLater(() -> {
@@ -505,8 +505,8 @@ public class Bep extends javax.swing.JFrame {
             userInfo.put("hoTen", "YourName");
             userInfo.put("chucVu", "YourPosition");
 
-            Bep nvBep = new Bep(userInfo);
-            nvBep.setExtendedState(JFrame.MAXIMIZED_BOTH); // Mở toàn màn hình
+            XacNhanMon nvBep = new XacNhanMon(userInfo);
+            nvBep.setExtendedState(JFrame.MAXIMIZED_BOTH); 
             nvBep.setVisible(true);
         });
     }

@@ -647,7 +647,7 @@ public class HoaDon extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPayActionPerformed
 
     private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
-        Bep nvBep = new Bep(userInfo);
+        XacNhanMon nvBep = new XacNhanMon(userInfo);
         openFullScreenWindow(nvBep);
     }//GEN-LAST:event_btnConfirmActionPerformed
 

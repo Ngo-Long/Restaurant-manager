@@ -150,7 +150,7 @@ public class DangNhap extends javax.swing.JFrame {
                 case "Thu Ngân" ->
                     openWindow(new HoaDon(userInfo));
                 case "Đầu Bếp" ->
-                    openWindow(new Bep(userInfo));
+                    openWindow(new XacNhanMon(userInfo));
                 case "Kho" ->
                     openWindow(new KhoHang(userInfo));
                 default -> {

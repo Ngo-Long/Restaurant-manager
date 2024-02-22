@@ -28,8 +28,8 @@ public class BanAnDAO {
         return conn;
     }
 
-    public static List<BanAnEntity> getDinnerTableList() {
-        List<BanAnEntity> listDinnerTable = new ArrayList<>();
+    public static List<BanAnEntity> getDiningTableList() {
+        List<BanAnEntity> listDiningTable = new ArrayList<>();
 
         try (Connection connection = getConnection()) {
             String sql = "SELECT * FROM BanAn";
@@ -37,7 +37,7 @@ public class BanAnDAO {
                 ResultSet resultSet = preparedStatement.executeQuery();
 
                 while (resultSet.next()) {
-                    BanAnEntity dinnerTable = new BanAnEntity(
+                    BanAnEntity diningTable = new BanAnEntity(
                             resultSet.getString("idBanAn"),
                             resultSet.getString("tenBanAn"),
                             resultSet.getInt("soChoNgoi"),
@@ -48,14 +48,14 @@ public class BanAnDAO {
                             resultSet.getString("moTa")
                     );
 
-                    listDinnerTable.add(dinnerTable);
+                    listDiningTable.add(diningTable);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return listDinnerTable;
+        return listDiningTable;
     }
 
     public static void insertBanAn(String idBanAn, String tenBanAn, int soChoNgoi, double phuThu, String trangThai, String moTa) throws SQLException {

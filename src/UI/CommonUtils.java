@@ -39,6 +39,13 @@ public class CommonUtils {
         }
     }
 
+    public static void displayUserName(Map<String, String> userInfo, JLabel name) {
+        if (userInfo != null && userInfo.containsKey("hoTen") && userInfo.containsKey("chucVu")) {
+            String hoTen = userInfo.get("hoTen");
+            name.setText(hoTen);
+        }
+    }
+
     public static void initClock(JLabel labelHouse) {
         Timer timer = new Timer(1000, e -> updateClock(labelHouse));
         timer.start();

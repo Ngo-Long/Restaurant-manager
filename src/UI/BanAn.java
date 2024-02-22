@@ -1,7 +1,10 @@
 package UI;
 
 import DAO.BanAnDAO;
+import static DAO.MonAnDAO.getNameFoodFromId;
+import DAO.OrderDAO;
 import Entity.BanAnEntity;
+import Entity.OrderEntity;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.GridLayout;
@@ -18,27 +21,30 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.SwingConstants;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 public class BanAn extends javax.swing.JFrame {
 
-    private List<BanAnEntity> dinnerTableList;
+    private List<BanAnEntity> diningTableList;
     Map<String, String> userInfo = CommonUtils.getUserInfo();
 
     public BanAn(Map<String, String> userInfo) {
         initComponents();
         CommonUtils.initClock(labelHouse);
         CommonUtils.displayUserInfoBar(userInfo, labelAccount, labelPosition);
+        CommonUtils.displayUserName(userInfo, labelNameStaff);
         CommonUtils.setImage("D:\\FPT Polytechnic\\KiThuatPhanMem\\KTLT\\KTLT\\src\\icon\\logo.jpg", labelLogo);
 
-        displayEmployeeDetails();
+        displayDiningTableList();
     }
 
-    private void displayEmployeeDetails() {
-        // Remove all the components currently on panelDinnerTableList
-        panelDinnerTableList.removeAll();
+    private void displayDiningTableList() {
+        // Remove all the components currently on panelDiningTableList
+        panelDiningTableList.removeAll();
 
-        // Get dinner table list
-        dinnerTableList = BanAnDAO.getDinnerTableList();
+        // Get dining table list
+        diningTableList = BanAnDAO.getDiningTableList();
 
         // Use GridLayout and set the spacing between cells
         GridLayout gridLayout = new GridLayout(0, 5);
@@ -46,20 +52,20 @@ public class BanAn extends javax.swing.JFrame {
         gridLayout.setVgap(6);
 
         // Create a panel to hold the buttons
-        panelDinnerTableList.setLayout(gridLayout);
+        panelDiningTableList.setLayout(gridLayout);
 
         // Create a DefaultComboBoxModel to hold table names
         DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
         comboBoxModel.addElement("Chọn bàn");
 
-        for (BanAnEntity diningTable : dinnerTableList) {
+        for (BanAnEntity diningTable : diningTableList) {
             JButton tableButton = createTableButton(diningTable);
 
             // Set colors based on status
             setTableButtonColors(tableButton, diningTable.getTrangThai());
 
             // Add button to the panel
-            panelDinnerTableList.add(tableButton);
+            panelDiningTableList.add(tableButton);
 
             // Add table name to the ComboBoxModel
             comboBoxModel.addElement(diningTable.getTenBanAn());
@@ -76,7 +82,7 @@ public class BanAn extends javax.swing.JFrame {
         // Create an ImageIcon with the URL
         ImageIcon icon = new ImageIcon(imageURL);
 
-        // Create a button for a dinner table with the icon
+        // Create a button for a dining table with the icon
         JButton tableButton = new JButton(diningTable.getTenBanAn(), icon);
         tableButton.setPreferredSize(new java.awt.Dimension(120, 120));
         tableButton.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -85,7 +91,7 @@ public class BanAn extends javax.swing.JFrame {
         // Add ActionListener to handle button click
         tableButton.addActionListener((ActionEvent e) -> {
             // Call a method to display detailed information
-            displayDetailedInfo(diningTable);
+            displayDetailedDiningTable(diningTable);
         });
 
         return tableButton;
@@ -94,18 +100,39 @@ public class BanAn extends javax.swing.JFrame {
     private void setTableButtonColors(JButton tableButton, String status) {
         if ("Đã đặt".equals(status)) {
             tableButton.setBackground(new Color(255, 153, 51)); // Màu nền FF9933
-            tableButton.setForeground(new Color(51, 51, 51)); // Màu chữ 333333
         } else if ("Đang phục vụ".equals(status)) {
             tableButton.setBackground(new Color(255, 102, 102)); // Màu nền FF6666
-            tableButton.setForeground(new Color(51, 51, 51)); // Màu chữ 333333
+        } else if ("Còn trống".equals(status)) {
+            tableButton.setBackground(new Color(255, 255, 255)); // Màu nền FFF
         }
     }
 
-    private void displayDetailedInfo(BanAnEntity diningTable) {
+    private void displayDetailedDiningTable(BanAnEntity diningTable) {
+        OrderDAO orderDAO = new OrderDAO();
+        List<OrderEntity> orderList = OrderDAO.getOrderList();
+
+        // Lấy DefaultTableModel từ bảng tblDsGoiMon
+        DefaultTableModel model = (DefaultTableModel) tblDsGoiMon.getModel();
+
+        // Reset bảng bằng cách đặt số hàng bằng 0
+        model.setRowCount(0);
+
+        // Duyệt qua danh sách đơn hàng
+        for (OrderEntity order : orderList) {
+            // Kiểm tra xem đơn hàng có chứa bàn ăn không
+            if (order.getIdBanAn().equals(diningTable.getIdBanAn())) {
+                // Add to table tblDsGoiMon
+                String tenMonAn = getNameFoodFromId(order.getIdMonAn());
+                String soLuong = String.valueOf(order.getSoLuongMonAn());
+
+                model.insertRow(0, new Object[]{tenMonAn, soLuong});
+            }
+        }
+
         // Set detailed information in your text fields, combobox, etc.
         textMaBan.setText(diningTable.getIdBanAn());
         textTenBan.setText(diningTable.getTenBanAn());
-        labelTenBan.setText("Tên: " + diningTable.getTenBanAn());
+        labelTenBan.setText(diningTable.getTenBanAn());
         textSoChoNgoi.setText(String.valueOf(diningTable.getSoChoNgoi()));
         textPhuThu.setText(String.valueOf(diningTable.getPhuThu()));
         CbTrangThai.setSelectedItem(diningTable.getTrangThai());
@@ -115,6 +142,10 @@ public class BanAn extends javax.swing.JFrame {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy  -  HH:mm:ss");
         textNgayThem.setText(dateFormat.format(diningTable.getNgayThem()));
         textNgayCapNhat.setText(dateFormat.format(diningTable.getNgayCapNhat()));
+
+        // Add idBanAn and tenBanAn to userInfo
+        userInfo.put("idBanAn", diningTable.getIdBanAn());
+        userInfo.put("tenBanAn", diningTable.getTenBanAn());
     }
 
     private void openFullScreenWindow(JFrame window) {
@@ -173,7 +204,8 @@ public class BanAn extends javax.swing.JFrame {
         btnThanhToan = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         textTongTien = new javax.swing.JTextField();
-        labelName = new javax.swing.JLabel();
+        labelNameStaff = new javax.swing.JLabel();
+        labelTenBan1 = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         textMaBan = new javax.swing.JTextField();
@@ -195,7 +227,7 @@ public class BanAn extends javax.swing.JFrame {
         btnHuy = new javax.swing.JButton();
         jLabel21 = new javax.swing.JLabel();
         textNgayCapNhat = new javax.swing.JTextField();
-        panelDinnerTableList = new javax.swing.JPanel();
+        panelDiningTableList = new javax.swing.JPanel();
         jButton17 = new javax.swing.JButton();
         jButton18 = new javax.swing.JButton();
         jButton19 = new javax.swing.JButton();
@@ -491,14 +523,18 @@ public class BanAn extends javax.swing.JFrame {
         labelPosition2.setText("Phục vụ:");
 
         labelTenBan.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        labelTenBan.setText("Tên: Bàn 1");
+        labelTenBan.setText(" ");
 
+        cbDinnerTables.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cbDinnerTables.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bàn 1", "Bàn 2", "Bàn 3" }));
 
+        btnGopBan.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnGopBan.setText("Gộp bàn");
 
+        btnChuyenBan.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnChuyenBan.setText("Chuyển bàn");
 
+        tblDsGoiMon.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tblDsGoiMon.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
@@ -510,10 +546,13 @@ public class BanAn extends javax.swing.JFrame {
                 "Tên món ăn", "Số lượng"
             }
         ));
+        tblDsGoiMon.setAlignmentX(2.0F);
+        tblDsGoiMon.setAlignmentY(2.0F);
+        tblDsGoiMon.setRowHeight(30);
         jScrollPane1.setViewportView(tblDsGoiMon);
 
         btnGoiMon.setBackground(new java.awt.Color(0, 51, 102));
-        btnGoiMon.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnGoiMon.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnGoiMon.setForeground(new java.awt.Color(255, 255, 255));
         btnGoiMon.setText("Gọi món");
         btnGoiMon.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -524,7 +563,7 @@ public class BanAn extends javax.swing.JFrame {
         });
 
         btnThanhToan.setBackground(new java.awt.Color(0, 51, 102));
-        btnThanhToan.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnThanhToan.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnThanhToan.setForeground(new java.awt.Color(255, 255, 255));
         btnThanhToan.setText("Thanh toán");
         btnThanhToan.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -537,8 +576,11 @@ public class BanAn extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("Tổng tiền: ");
 
-        labelName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        labelName.setText("Ngô Kim Long");
+        labelNameStaff.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelNameStaff.setText("Ngô Kim Long");
+
+        labelTenBan1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelTenBan1.setText("Tên:");
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -561,14 +603,17 @@ public class BanAn extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnGopBan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel9Layout.createSequentialGroup()
-                                .addComponent(labelPosition2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(labelName))
-                            .addComponent(labelTenBan, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel9Layout.createSequentialGroup()
                                 .addComponent(btnGoiMon, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(btnThanhToan, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(btnThanhToan, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel9Layout.createSequentialGroup()
+                                .addComponent(labelPosition2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelNameStaff))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel9Layout.createSequentialGroup()
+                                .addComponent(labelTenBan1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelTenBan, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(30, 30, 30))
         );
@@ -578,9 +623,11 @@ public class BanAn extends javax.swing.JFrame {
                 .addGap(20, 20, 20)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelPosition2)
-                    .addComponent(labelName))
+                    .addComponent(labelNameStaff))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(labelTenBan)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelTenBan)
+                    .addComponent(labelTenBan1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnGopBan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -664,6 +711,11 @@ public class BanAn extends javax.swing.JFrame {
         jLabel20.setText("Ngày thêm:");
 
         CbTrangThai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Còn trống", "Đang phục vụ", "Đã đặt" }));
+        CbTrangThai.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CbTrangThaiActionPerformed(evt);
+            }
+        });
 
         btnThem.setBackground(new java.awt.Color(0, 51, 102));
         btnThem.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -807,16 +859,16 @@ public class BanAn extends javax.swing.JFrame {
 
         jTabbedPane3.addTab("Cập nhật chi tiết bàn ăn", jPanel10);
 
-        panelDinnerTableList.setBackground(new java.awt.Color(255, 255, 255));
+        panelDiningTableList.setBackground(new java.awt.Color(255, 255, 255));
 
-        javax.swing.GroupLayout panelDinnerTableListLayout = new javax.swing.GroupLayout(panelDinnerTableList);
-        panelDinnerTableList.setLayout(panelDinnerTableListLayout);
-        panelDinnerTableListLayout.setHorizontalGroup(
-            panelDinnerTableListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout panelDiningTableListLayout = new javax.swing.GroupLayout(panelDiningTableList);
+        panelDiningTableList.setLayout(panelDiningTableListLayout);
+        panelDiningTableListLayout.setHorizontalGroup(
+            panelDiningTableListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 639, Short.MAX_VALUE)
         );
-        panelDinnerTableListLayout.setVerticalGroup(
-            panelDinnerTableListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        panelDiningTableListLayout.setVerticalGroup(
+            panelDiningTableListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 550, Short.MAX_VALUE)
         );
 
@@ -841,7 +893,7 @@ public class BanAn extends javax.swing.JFrame {
             .addGroup(panelBodyLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelDinnerTableList, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelDiningTableList, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(panelBodyLayout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 185, Short.MAX_VALUE)
@@ -870,7 +922,7 @@ public class BanAn extends javax.swing.JFrame {
                             .addComponent(jButton17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
-                        .addComponent(panelDinnerTableList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(panelDiningTableList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
         );
 
@@ -915,7 +967,7 @@ public class BanAn extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPayActionPerformed
 
     private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
-        Bep nvBep = new Bep(userInfo);
+        XacNhanMon nvBep = new XacNhanMon(userInfo);
         openFullScreenWindow(nvBep);
     }//GEN-LAST:event_btnConfirmActionPerformed
 
@@ -973,7 +1025,7 @@ public class BanAn extends javax.swing.JFrame {
         String moTa = textMoTa.getText();
 
         BanAnDAO.updateBanAn(maBan, tenBan, soChoNgoi, phuThu, trangThai, moTa);
-        displayEmployeeDetails();
+        displayDiningTableList();
     }//GEN-LAST:event_btnSuaActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
@@ -981,7 +1033,7 @@ public class BanAn extends javax.swing.JFrame {
             String maBan = textMaBan.getText();
             BanAnDAO.deleteBanAnById(maBan);
 
-            displayEmployeeDetails();
+            displayDiningTableList();
         } catch (SQLException ex) {
             Logger.getLogger(BanAn.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -997,7 +1049,7 @@ public class BanAn extends javax.swing.JFrame {
             String moTa = textMoTa.getText();
 
             BanAnDAO.insertBanAn(maBan, tenBan, soChoNgoi, phuThu, trangThai, moTa);
-            displayEmployeeDetails();
+            displayDiningTableList();
         } catch (SQLException ex) {
             Logger.getLogger(BanAn.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1028,18 +1080,31 @@ public class BanAn extends javax.swing.JFrame {
     }//GEN-LAST:event_textNgayThemActionPerformed
 
     private void btnGoiMonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoiMonActionPerformed
-        MonAn monAn = new MonAn(userInfo);
-        openFullScreenWindow(monAn);
+        if (userInfo.containsKey("idBanAn")) {
+            MonAn monAn = new MonAn(userInfo);
+            openFullScreenWindow(monAn);
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn bàn trước khi gọi món.");
+        }
     }//GEN-LAST:event_btnGoiMonActionPerformed
 
     private void btnThanhToanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThanhToanActionPerformed
-        HoaDon hoaDon = new HoaDon(userInfo);
-        openFullScreenWindow(hoaDon);
+
+        if (userInfo.containsKey("idBanAn")) {
+            HoaDon hoaDon = new HoaDon(userInfo);
+            openFullScreenWindow(hoaDon);
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn bàn trước khi thanh toán.");
+        }
     }//GEN-LAST:event_btnThanhToanActionPerformed
 
     private void textNgayCapNhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textNgayCapNhatActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_textNgayCapNhatActionPerformed
+
+    private void CbTrangThaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CbTrangThaiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CbTrangThaiActionPerformed
 
     public static void main(String args[]) {
 
@@ -1114,12 +1179,13 @@ public class BanAn extends javax.swing.JFrame {
     private javax.swing.JLabel labelAccount;
     private javax.swing.JLabel labelHouse;
     private javax.swing.JLabel labelLogo;
-    private javax.swing.JLabel labelName;
+    private javax.swing.JLabel labelNameStaff;
     private javax.swing.JLabel labelPosition;
     private javax.swing.JLabel labelPosition2;
     private javax.swing.JLabel labelTenBan;
+    private javax.swing.JLabel labelTenBan1;
     private javax.swing.JPanel panelBody;
-    private javax.swing.JPanel panelDinnerTableList;
+    private javax.swing.JPanel panelDiningTableList;
     private javax.swing.JTable tblDsGoiMon;
     private javax.swing.JTextField textMaBan;
     private javax.swing.JTextField textMoTa;

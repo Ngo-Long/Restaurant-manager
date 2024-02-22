@@ -64,11 +64,6 @@ public class NhanVienDAO {
                 preparedStatement.setString(3, hoTen);
                 preparedStatement.setString(4, gioiTinh);
                 preparedStatement.setString(5, sdt);
-
-//                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//                Date parsedDate = dateFormat.parse(ngaySinh);
-//                preparedStatement.setDate(6, new java.sql.Date(parsedDate.getTime()));
-                
                 preparedStatement.setString(6, ngaySinh);
                 preparedStatement.setString(7, cmnd);
                 preparedStatement.setString(8, email);
