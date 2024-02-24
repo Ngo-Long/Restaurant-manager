@@ -1,21 +1,7 @@
 package DAO;
 
-import static DAO.BanAnDAO.getConnection;
-import static DAO.BanAnDAO.isBanAnIdExists;
-import Entity.BanAnEntity;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.JOptionPane;
 import Entity.BillEntity;
-import java.beans.Statement;
 import java.math.BigDecimal;
-import java.security.Timestamp;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;

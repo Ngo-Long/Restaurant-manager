@@ -3,6 +3,7 @@ package UI;
 import DAO.NguyenLieuDAO;
 import static DAO.NguyenLieuDAO.searchAndClassifyIngredient;
 import Entity.NguyenLieuEntity;
+import Helper.DialogHelper;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class KhoHang extends javax.swing.JFrame {
@@ -33,8 +35,55 @@ public class KhoHang extends javax.swing.JFrame {
         addTableMouseListener();
     }
 
+    NguyenLieuEntity getModel() {
+        String id = textIngredientID.getText();
+        String name = textIngredientName.getText();
+        String unitPriceText = textUnitPrice.getText();
+        String initialQuantityText = textInitialQuantity.getText();
+        String minimumQuantityText = textMinimumQuantity.getText();
+
+        try {
+            // Kiểm tra giá trị trước khi chuyển đổi
+            if (id.isEmpty() || name.isEmpty() || unitPriceText.isEmpty() || initialQuantityText.isEmpty() || minimumQuantityText.isEmpty()) {
+                throw new NumberFormatException("Vui lòng nhập đầy đủ thông tin.");
+            }
+
+            int unitPrice = Integer.parseInt(unitPriceText);
+            int initialQuantity = Integer.parseInt(initialQuantityText);
+            int minimumQuantity = Integer.parseInt(minimumQuantityText);
+
+            // Kiểm tra giá trị số không âm
+            if (initialQuantity < 0 || minimumQuantity < 0 || unitPrice < 0) {
+                throw new NumberFormatException("Số lượng nhập và số lượng tối thiểu phải là số không âm!");
+            }
+
+            // Kiểm tra trạng thái
+            String status;
+            if (initialQuantity == 0) {
+                status = "Hết hàng";
+            } else if (initialQuantity < minimumQuantity) {
+                status = "Thiếu hàng";
+            } else {
+                status = "Còn hàng";
+            }
+
+            NguyenLieuEntity model = new NguyenLieuEntity();
+            model.setIdNguyenLieu(id);
+            model.setTenNguyenLieu(name);
+            model.setDonGia(unitPrice);
+            model.setSoLuongBanDau(initialQuantity);
+            model.setSoLuongToiThieu(minimumQuantity);
+            model.setTrangThai(status);
+
+            return model;
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+    }
+
     private void loadDataIntoTable() {
-        ingrediantList = NguyenLieuDAO.getIngredientList();
+        ingrediantList = new NguyenLieuDAO().getAll();
 
         DefaultTableModel model = (DefaultTableModel) tableIngrediant.getModel();
         model.setRowCount(0);
@@ -977,64 +1026,54 @@ public class KhoHang extends javax.swing.JFrame {
     }//GEN-LAST:event_textIngredientIDActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        NguyenLieuEntity model = getModel();
+
+        if (!new NguyenLieuDAO().isIdDuplicated(model.getIdNguyenLieu())) {
+            DialogHelper.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
+            return;
+        }
+
         try {
-            String idNguyenLieu = textIngredientID.getText();
-            String tenNguyenLieu = textIngredientName.getText();
-            int soLuongBanDau = Integer.parseInt(textInitialQuantity.getText());
-            int soLuongToiThieu = Integer.parseInt(textMinimumQuantity.getText());
-            double donGia = Double.parseDouble(textUnitPrice.getText());
-
-            // Kiểm tra trạng thái
-            String trangThai;
-            if (soLuongBanDau == 0) {
-                trangThai = "Hết hàng";
-            } else if (soLuongBanDau < soLuongToiThieu) {
-                trangThai = "Thiếu hàng";
-            } else {
-                trangThai = "Còn hàng";
-            }
-
-            NguyenLieuDAO.updateIngredient(idNguyenLieu, tenNguyenLieu, soLuongBanDau, soLuongToiThieu, donGia, trangThai);
+            new NguyenLieuDAO().update(model);
             loadDataIntoTable();
-
-        } catch (SQLException ex) {
-            Logger.getLogger(KhoHang.class.getName()).log(Level.SEVERE, null, ex);
+            DialogHelper.alert(this, "Cập nhật thành công!");
+        } catch (Exception e) {
+            DialogHelper.alert(this, "Cập nhật thất bại!");
         }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+        String id = textIngredientID.getText();
+        if (!new NguyenLieuDAO().isIdDuplicated(id)) {
+            DialogHelper.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
+            return;
+        }
+
         try {
-            String idNguyenLieu = textIngredientID.getText();
-            NguyenLieuDAO.deleteIngredient(idNguyenLieu);
+            new NguyenLieuDAO().delete(id);
             loadDataIntoTable();
-        } catch (SQLException ex) {
-            Logger.getLogger(KhoHang.class.getName()).log(Level.SEVERE, null, ex);
+            DialogHelper.alert(this, "Xóa thành công!");
+        } catch (Exception e) {
+            DialogHelper.alert(this, "Xóa thất bại!");
         }
     }//GEN-LAST:event_btnRemoveActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        NguyenLieuEntity model = getModel();
+
+        // Kiểm tra xem mã ID có bị trùng không
+        if (new NguyenLieuDAO().isIdDuplicated(model.getIdNguyenLieu())) {
+            DialogHelper.alert(this, "Mã ID đã tồn tại. Vui lòng chọn mã ID khác!");
+            return;
+        }
+
         try {
-            String idNguyenLieu = textIngredientID.getText();
-            String tenNguyenLieu = textIngredientName.getText();
-            int soLuongBanDau = Integer.parseInt(textInitialQuantity.getText());
-            int soLuongToiThieu = Integer.parseInt(textMinimumQuantity.getText());
-            double donGia = Double.parseDouble(textUnitPrice.getText());
-
-            // Kiểm tra trạng thái
-            String trangThai;
-            if (soLuongBanDau == 0) {
-                trangThai = "Hết hàng";
-            } else if (soLuongBanDau < soLuongToiThieu) {
-                trangThai = "Thiếu hàng";
-            } else {
-                trangThai = "Còn hàng";
-            }
-
-            NguyenLieuDAO.insertIngredient(idNguyenLieu, tenNguyenLieu, soLuongBanDau, soLuongToiThieu, donGia, trangThai);
+            new NguyenLieuDAO().insert(model);
             loadDataIntoTable();
-
-        } catch (SQLException ex) {
-            Logger.getLogger(KhoHang.class.getName()).log(Level.SEVERE, null, ex);
+            DialogHelper.alert(this, "Thêm mới thành công!");
+        } catch (Exception e) {
+            DialogHelper.alert(this, "Thêm mới thất bại!");
+            e.printStackTrace();
         }
     }//GEN-LAST:event_btnAddActionPerformed
 

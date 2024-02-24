@@ -1,37 +1,41 @@
 package UI;
 
-import javax.swing.JOptionPane;
+import DAO.MonAnDAO;
+import Entity.MonAnEntity;
+import Helper.DialogHelper;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import DAO.MonAnDAO;
-import static DAO.MonAnDAO.getConnection;
-import Entity.MonAnEntity;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
+
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.event.MouseAdapter;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.awt.event.MouseAdapter;
+
 import java.util.Map;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
+import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.JFileChooser;
+import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
@@ -54,9 +58,43 @@ public class MonAn extends javax.swing.JFrame {
         printUserInfo();
     }
 
+    MonAnEntity getModel() {
+        String id = textDishID.getText();
+        String name = textDishName.getText();
+        String category = textCategory.getText();
+        String moneyText = textMoney.getText();
+        String status = comboBoxStatus.getSelectedItem().toString();
+        String desc = textDesc.getText();
+
+        try {
+            if (id.isEmpty() || name.isEmpty() || category.isEmpty() || moneyText.isEmpty()) {
+                throw new NumberFormatException("Vui lòng nhập đầy đủ thông tin.");
+            }
+
+            int money = Integer.parseInt(moneyText);
+            if (money < 0) {
+                throw new NumberFormatException("Đơn giá là số không âm!");
+            }
+
+            MonAnEntity model = new MonAnEntity();
+            model.setIdMonAn(id);
+            model.setTen(name);
+            model.setGia(money);
+            model.setMoTa(desc);
+            model.setHinhAnh(imagePath);
+            model.setPhanLoai(category);
+            model.setTrangThai(status);
+
+            return model;
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+    }
+
     private void printUserInfo() {
         System.out.println("UserInfo:" + userInfo);
-        
+
         for (Map.Entry<String, String> entry : userInfo.entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
 
@@ -72,7 +110,7 @@ public class MonAn extends javax.swing.JFrame {
         panelMenu.removeAll();
 
         // Get food list
-        foodList = MonAnDAO.getMenuItems();
+        foodList = new MonAnDAO().getAll();
 
         // Use GridLayout and set the spacing between cells
         GridLayout gridLayout = new GridLayout(0, 4);
@@ -237,8 +275,8 @@ public class MonAn extends javax.swing.JFrame {
         textQuantity.setText("1");
         textDescLevel.setText("0");
 
-        textMaterialID.setText(foodItem.getIdMonAn());
-        textMaterialName.setText(foodItem.getTen());
+        textDishID.setText(foodItem.getIdMonAn());
+        textDishName.setText(foodItem.getTen());
         textCategory.setText(foodItem.getPhanLoai());
         textMoney.setText(String.valueOf(foodItem.getGia()));
         textDesc.setText(foodItem.getMoTa());
@@ -260,8 +298,8 @@ public class MonAn extends javax.swing.JFrame {
     }
 
     private void resetFields() {
-        textMaterialID.setText("");
-        textMaterialName.setText("");
+        textDishID.setText("");
+        textDishName.setText("");
         textCategory.setText("");
         textMoney.setText("");
         textDesc.setText("");
@@ -326,9 +364,9 @@ public class MonAn extends javax.swing.JFrame {
         btnMinus1 = new javax.swing.JButton();
         jPanel10 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        textMaterialID = new javax.swing.JTextField();
+        textDishID = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        textMaterialName = new javax.swing.JTextField();
+        textDishName = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         textAdditionalDay = new javax.swing.JTextField();
@@ -797,28 +835,31 @@ public class MonAn extends javax.swing.JFrame {
                             .addComponent(labelNameDiningTable, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGap(178, 178, 178))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                            .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnPlus1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(0, 0, 0)
-                            .addComponent(textDescLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(0, 0, 0)
-                            .addComponent(btnMinus1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                            .addComponent(jLabel8)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnPlus, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(0, 0, 0)
-                            .addComponent(textQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(0, 0, 0)
-                            .addComponent(btnMinus, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
                             .addGap(21, 21, 21)
                             .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(btnReset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(30, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel9Layout.createSequentialGroup()
+                            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(jPanel9Layout.createSequentialGroup()
+                                    .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btnPlus1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel9Layout.createSequentialGroup()
+                                    .addComponent(jLabel8)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btnPlus, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(textDescLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
+                                .addComponent(textQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(btnMinus, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnMinus1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(119, 119, 119))))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -834,8 +875,8 @@ public class MonAn extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(textQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8)
                     .addComponent(btnMinus, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnPlus, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -849,7 +890,7 @@ public class MonAn extends javax.swing.JFrame {
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(96, Short.MAX_VALUE))
+                .addGap(92, 92, 92))
         );
 
         jTabbedPane3.addTab("Order món ăn", jPanel9);
@@ -860,18 +901,18 @@ public class MonAn extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setText("Mã món ăn:");
 
-        textMaterialID.addActionListener(new java.awt.event.ActionListener() {
+        textDishID.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textMaterialIDActionPerformed(evt);
+                textDishIDActionPerformed(evt);
             }
         });
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Tên món ăn:");
 
-        textMaterialName.addActionListener(new java.awt.event.ActionListener() {
+        textDishName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textMaterialNameActionPerformed(evt);
+                textDishNameActionPerformed(evt);
             }
         });
 
@@ -1021,8 +1062,8 @@ public class MonAn extends javax.swing.JFrame {
                                     .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                         .addGroup(jPanel10Layout.createSequentialGroup()
                                             .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                .addComponent(textMaterialID, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
-                                                .addComponent(textMaterialName))
+                                                .addComponent(textDishID, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
+                                                .addComponent(textDishName))
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                             .addComponent(btnFood, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addComponent(textMoney)
@@ -1049,11 +1090,11 @@ public class MonAn extends javax.swing.JFrame {
                     .addGroup(jPanel10Layout.createSequentialGroup()
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(textMaterialID, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(textDishID, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(13, 13, 13)
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(textMaterialName, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(textDishName, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(btnFood, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1224,140 +1265,69 @@ public class MonAn extends javax.swing.JFrame {
     }//GEN-LAST:event_btnWarehouseActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        String materialID = textMaterialID.getText();
-        String materialName = textMaterialName.getText();
-        String materialCategory = textCategory.getText();
-        String materialMoneyStr = textMoney.getText();
-        String materialStatus = comboBoxStatus.getSelectedItem().toString();
-        String materialDesc = textDesc.getText();
+        MonAnEntity model = getModel();
 
-        // Kiểm tra ô nhập liệu và hiển thị lỗi nếu cần
-        if (materialID.isEmpty() || materialName.isEmpty() || materialCategory.isEmpty() || materialMoneyStr.isEmpty() || materialStatus.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        // Kiểm tra xem mã ID có bị trùng không
+        if (new MonAnDAO().isIdDuplicated(model.getIdMonAn())) {
+            DialogHelper.alert(this, "Mã ID đã tồn tại. Vui lòng chọn mã ID khác!");
             return;
         }
 
-        // Chuyển đổi giá tiền từ String sang int
-        int materialMoney = 0;
         try {
-            materialMoney = Integer.parseInt(materialMoneyStr);
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Giá tiền không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        try (Connection connection = getConnection()) {
-            if (isIdExists(materialID)) {
-                JOptionPane.showMessageDialog(this, "ID đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            String sql = "INSERT INTO MonAn (idMonAn, ten, gia, moTa, hinhAnh, phanLoai, trangThai, ngayThem, ngayCapNhat) VALUES (?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                preparedStatement.setString(1, materialID);
-                preparedStatement.setString(2, materialName);
-                preparedStatement.setInt(3, materialMoney);
-                preparedStatement.setString(4, materialDesc);
-                preparedStatement.setString(5, imagePath);
-                preparedStatement.setString(6, materialCategory);
-                preparedStatement.setString(7, materialStatus);
-
-                int rowsAffected = preparedStatement.executeUpdate();
-
-                if (rowsAffected > 0) {
-                    JOptionPane.showMessageDialog(this, "Thêm món ăn thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Thêm món ăn thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        } catch (SQLException e) {
+            new MonAnDAO().insert(model);
+            displayMenuItems();
+            DialogHelper.alert(this, "Thêm mới thành công!");
+        } catch (Exception e) {
+            DialogHelper.alert(this, "Thêm mới thất bại!");
             e.printStackTrace();
         }
-
-        // Hiển thị danh sách món ăn sau khi thêm
-        displayMenuItems();
     }//GEN-LAST:event_btnAddActionPerformed
 
-    public static boolean isIdExists(String idMonAn) {
-        try (Connection connection = getConnection()) {
-            String sql = "SELECT COUNT(*) FROM MonAn WHERE idMonAn = ?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                preparedStatement.setString(1, idMonAn);
-
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    if (resultSet.next()) {
-                        int count = resultSet.getInt(1);
-                        return count > 0;
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+        String id = textDishID.getText();
+        if (!new MonAnDAO().isIdDuplicated(id)) {
+            DialogHelper.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
+            return;
+        }
+        
+        try {
+            new MonAnDAO().delete(id);
+            displayMenuItems();
+            DialogHelper.alert(this, "Xóa thành công!");
+        } catch (Exception e) {
+            DialogHelper.alert(this, "Xóa thất bại!");
+        }
     }//GEN-LAST:event_btnRemoveActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        String materialID = textMaterialID.getText();
-        String materialName = textMaterialName.getText();
-        String materialCategory = textCategory.getText();
-        String materialMoneyStr = textMoney.getText();
-        String materialStatus = comboBoxStatus.getSelectedItem().toString();
-        String materialDesc = textDesc.getText();
+        MonAnEntity model = getModel();
 
-        int materialMoney = 0;
-        try {
-            materialMoney = Integer.parseInt(materialMoneyStr);
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Giá tiền không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        if (!new MonAnDAO().isIdDuplicated(model.getIdMonAn())) {
+            DialogHelper.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
             return;
         }
 
-        try (Connection connection = getConnection()) {
-            if (!isIdExists(materialID)) {
-                JOptionPane.showMessageDialog(this, "ID không tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+        try {
+            new MonAnDAO().update(model);
+            displayMenuItems();
 
-            String sql = "UPDATE MonAn SET ten = ?, gia = ?, moTa = ?, hinhAnh = ?, phanLoai = ?, trangThai = ?, ngayCapNhat = GETDATE() WHERE idMonAn = ?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                preparedStatement.setString(1, materialName);
-                preparedStatement.setInt(2, materialMoney);
-                preparedStatement.setString(3, materialDesc);
-                preparedStatement.setString(4, imagePath);
-                preparedStatement.setString(5, materialCategory);
-                preparedStatement.setString(6, materialStatus);
-                preparedStatement.setString(7, materialID);
-
-                int rowsAffected = preparedStatement.executeUpdate();
-
-                if (rowsAffected > 0) {
-                    JOptionPane.showMessageDialog(this, "Cập nhật món ăn thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Cập nhật món ăn thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            DialogHelper.alert(this, "Cập nhật thành công!");
+        } catch (Exception e) {
+            DialogHelper.alert(this, "Cập nhật thất bại!");
         }
-
-        displayMenuItems();
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnHuy1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuy1ActionPerformed
         resetFields();
     }//GEN-LAST:event_btnHuy1ActionPerformed
 
-    private void textMaterialIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textMaterialIDActionPerformed
+    private void textDishIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textDishIDActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_textMaterialIDActionPerformed
+    }//GEN-LAST:event_textDishIDActionPerformed
 
-    private void textMaterialNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textMaterialNameActionPerformed
+    private void textDishNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textDishNameActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_textMaterialNameActionPerformed
+    }//GEN-LAST:event_textDishNameActionPerformed
 
     private void textAdditionalDayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textAdditionalDayActionPerformed
         // TODO add your handling code here:
@@ -1468,52 +1438,52 @@ public class MonAn extends javax.swing.JFrame {
 
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_btnSubmitActionPerformed
 
     public static void searchAndClassifyMenu(String keyword, String phanLoai, JPanel panel) {
-        try (Connection connection = getConnection()) {
-            String sql = "SELECT * FROM MonAn WHERE (? IS NULL OR phanLoai = ?)"
-                    + "AND (ten LIKE ? OR idMonAn LIKE ?)";
-
-            if ("Tất cả".equals(phanLoai)) {
-                phanLoai = null;
-            }
-
-            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                preparedStatement.setString(1, phanLoai);
-                preparedStatement.setString(2, phanLoai != null ? "%" + phanLoai + "%" : "%");
-                preparedStatement.setString(3, "%" + keyword + "%");
-                preparedStatement.setString(4, "%" + keyword + "%");
-                ResultSet resultSet = preparedStatement.executeQuery();
-
-                panel.removeAll();
-                while (resultSet.next()) {
-                    String item = "ID: " + resultSet.getString("idMonAn")
-                            + " | Tên: " + resultSet.getString("ten")
-                            + " | Giá: " + resultSet.getBigDecimal("gia")
-                            + " | Mô tả: " + resultSet.getString("moTa")
-                            + " | Hình ảnh: " + resultSet.getString("hinhAnh")
-                            + " | Phân loại: " + resultSet.getString("phanLoai")
-                            + " | Trạng thái: " + resultSet.getString("trangThai");
-
-                    JLabel label = new JLabel(item);
-                    panel.add(label);
-                }
-
-                if (panel.getComponentCount() > 0) {
-                    JOptionPane.showMessageDialog(null, "Tìm kiếm và phân loại thành công!", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Không tìm thấy kết quả nào!", "Thông Báo", JOptionPane.WARNING_MESSAGE);
-                }
-
-                panel.revalidate();
-                panel.repaint();
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi khi tìm kiếm và phân loại nguyên liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        }
+//        try (Connection connection = getConnection()) {
+//            String sql = "SELECT * FROM MonAn WHERE (? IS NULL OR phanLoai = ?)"
+//                    + "AND (ten LIKE ? OR idMonAn LIKE ?)";
+//
+//            if ("Tất cả".equals(phanLoai)) {
+//                phanLoai = null;
+//            }
+//
+//            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+//                preparedStatement.setString(1, phanLoai);
+//                preparedStatement.setString(2, phanLoai != null ? "%" + phanLoai + "%" : "%");
+//                preparedStatement.setString(3, "%" + keyword + "%");
+//                preparedStatement.setString(4, "%" + keyword + "%");
+//                ResultSet resultSet = preparedStatement.executeQuery();
+//
+//                panel.removeAll();
+//                while (resultSet.next()) {
+//                    String item = "ID: " + resultSet.getString("idMonAn")
+//                            + " | Tên: " + resultSet.getString("ten")
+//                            + " | Giá: " + resultSet.getBigDecimal("gia")
+//                            + " | Mô tả: " + resultSet.getString("moTa")
+//                            + " | Hình ảnh: " + resultSet.getString("hinhAnh")
+//                            + " | Phân loại: " + resultSet.getString("phanLoai")
+//                            + " | Trạng thái: " + resultSet.getString("trangThai");
+//
+//                    JLabel label = new JLabel(item);
+//                    panel.add(label);
+//                }
+//
+//                if (panel.getComponentCount() > 0) {
+//                    JOptionPane.showMessageDialog(null, "Tìm kiếm và phân loại thành công!", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
+//                } else {
+//                    JOptionPane.showMessageDialog(null, "Không tìm thấy kết quả nào!", "Thông Báo", JOptionPane.WARNING_MESSAGE);
+//                }
+//
+//                panel.revalidate();
+//                panel.repaint();
+//            }
+//        } catch (SQLException e) {
+//            JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi khi tìm kiếm và phân loại nguyên liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+//            e.printStackTrace();
+//        }
     }
 
     public static void main(String args[]) {
@@ -1602,8 +1572,8 @@ public class MonAn extends javax.swing.JFrame {
     private javax.swing.JTextField textCategory;
     private javax.swing.JTextField textDesc;
     private javax.swing.JTextField textDescLevel;
-    private javax.swing.JTextField textMaterialID;
-    private javax.swing.JTextField textMaterialName;
+    private javax.swing.JTextField textDishID;
+    private javax.swing.JTextField textDishName;
     private javax.swing.JTextField textMoney;
     private javax.swing.JTextField textQuantity;
     private javax.swing.JTextField textSearch;

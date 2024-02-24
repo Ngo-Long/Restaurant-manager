@@ -2,7 +2,6 @@ package DAO;
 
 import Entity.NguyenLieuEntity;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,191 +12,146 @@ import javax.swing.table.DefaultTableModel;
 
 public class NguyenLieuDAO {
 
-    private static final String DATABASE_URL = "jdbc:sqlserver://localhost:1433;user=sa;password=songlong;databaseName=RestaurantManager;encrypt=false";
-    private static final String DATABASE_USERNAME = "sa";
-    private static final String DATABASE_PASSWORD = "songlong";
+    public List<NguyenLieuEntity> getAll() {
+        String sql = "SELECT * FROM NguyenLieu";
+        return getAll(sql);
+    }
 
-    public static Connection getConnection() throws SQLException {
-        Connection conn = null;
-        try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+    public NguyenLieuEntity getById(String id) {
+        String sql = "SELECT * FROM NguyenLieu WHERE idNguyenLieu=?";
+        List<NguyenLieuEntity> list = getAll(sql, id);
+        return list.isEmpty() ? null : list.get(0);
+    }
 
-            conn = DriverManager.getConnection(DATABASE_URL, DATABASE_USERNAME, DATABASE_PASSWORD);
-        } catch (ClassNotFoundException ex) {
+    public void insert(NguyenLieuEntity model) {
+        String sql = "INSERT INTO NguyenLieu (idNguyenLieu, tenNguyenLieu, soLuongBanDau, soLuongToiThieu, donGia, ngaySanXuat, ngayHetHan, trangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        JDBC.executeUpdate(sql,
+                model.getIdNguyenLieu(),
+                model.getTenNguyenLieu(),
+                model.getSoLuongBanDau(),
+                model.getSoLuongToiThieu(),
+                model.getDonGia(),
+                model.getNgaySanXuat(),
+                model.getNgayHetHan(),
+                model.getTrangThai()
+        );
+    }
+
+    public void update(NguyenLieuEntity model) {
+        String sql = "UPDATE NguyenLieu SET tenNguyenLieu=?, soLuongBanDau=?, soLuongToiThieu=?, donGia=?, ngaySanXuat=?, ngayHetHan=?, trangThai=? WHERE idNguyenLieu=?";
+        JDBC.executeUpdate(sql,
+                model.getIdNguyenLieu(),
+                model.getTenNguyenLieu(),
+                model.getSoLuongBanDau(),
+                model.getSoLuongToiThieu(),
+                model.getDonGia(),
+                model.getNgaySanXuat(),
+                model.getNgayHetHan(),
+                model.getTrangThai()
+        );
+    }
+
+    public void delete(String id) {
+        String sql = "DELETE FROM NguyenLieu WHERE idNguyenLieu=?";
+        JDBC.executeUpdate(sql, id);
+    }
+
+    public boolean isIdDuplicated(String id) {
+        String sql = "SELECT COUNT(*) FROM NguyenLieu WHERE idNguyenLieu=?";
+
+        try (ResultSet rs = JDBC.executeQuery(sql, id)) {
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                return count > 0;
+            }
+        } catch (SQLException ex) {
             ex.printStackTrace();
-        }
-
-        return conn;
-    }
-
-    public static List<NguyenLieuEntity> getIngredientList() {
-        List<NguyenLieuEntity> listNguyenLieu = new ArrayList<>();
-
-        try (Connection connection = getConnection()) {
-            String sql = "SELECT * FROM NguyenLieu";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                ResultSet resultSet = preparedStatement.executeQuery();
-
-                while (resultSet.next()) {
-                    NguyenLieuEntity nguyenLieu = new NguyenLieuEntity();
-                    nguyenLieu.setIdNguyenLieu(resultSet.getString("idNguyenLieu"));
-                    nguyenLieu.setTenNguyenLieu(resultSet.getString("tenNguyenLieu"));
-                    nguyenLieu.setSoLuongBanDau(resultSet.getInt("soLuongBanDau"));
-                    nguyenLieu.setSoLuongToiThieu(resultSet.getInt("soLuongToiThieu"));
-                    nguyenLieu.setDonGia(resultSet.getInt("donGia"));
-                    nguyenLieu.setNgaySanXuat(resultSet.getDate("ngaySanXuat"));
-                    nguyenLieu.setNgayHetHan(resultSet.getDate("ngayHetHan"));
-                    nguyenLieu.setTrangThai(resultSet.getString("trangThai"));
-                    listNguyenLieu.add(nguyenLieu);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return listNguyenLieu;
-    }
-
-    private static boolean isIdIngredientExists(String idNguyenLieu) {
-        String query = "SELECT COUNT(*) FROM NguyenLieu WHERE idNguyenLieu = ?";
-
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, idNguyenLieu);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    int count = resultSet.getInt(1);
-                    return count > 0;
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
 
         return false;
     }
 
-    public static void insertIngredient(String idNguyenLieu, String tenNguyenLieu, int soLuongBanDau, int soLuongToiThieu, double donGia, String trangThai) throws SQLException {
-        // Check if the ID already exists
-        if (isIdIngredientExists(idNguyenLieu)) {
-            JOptionPane.showMessageDialog(null, "Mã nguyên liệu đã tồn tại. Vui lòng chọn mã khác.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+    private List<NguyenLieuEntity> getAll(String sql, Object... args) {
+        List<NguyenLieuEntity> list = new ArrayList<>();
 
-        // Validate inputs
-        if (idNguyenLieu == null || idNguyenLieu.isEmpty()
-                || tenNguyenLieu == null || tenNguyenLieu.isEmpty()
-                || soLuongBanDau < 0 || soLuongToiThieu < 0 || donGia < 0) {
-            JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin và giá trị không âm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        String sql = "INSERT INTO NguyenLieu (idNguyenLieu, tenNguyenLieu, soLuongBanDau, soLuongToiThieu, donGia, trangThai) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
-
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, idNguyenLieu);
-            preparedStatement.setString(2, tenNguyenLieu);
-            preparedStatement.setInt(3, soLuongBanDau);
-            preparedStatement.setInt(4, soLuongToiThieu);
-            preparedStatement.setDouble(5, donGia);
-            preparedStatement.setString(6, trangThai);
-
-            int rowsAffected = preparedStatement.executeUpdate();
-
-            if (rowsAffected > 0) {
-                JOptionPane.showMessageDialog(null, "Thêm nguyên liệu thành công.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null, "Thêm nguyên liệu không thành công.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        try (ResultSet rs = JDBC.executeQuery(sql, args)) {
+            while (rs.next()) {
+                NguyenLieuEntity model = readFromResultSet(rs);
+                list.add(model);
             }
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
         }
+
+        return list;
     }
 
-    public static void updateIngredient(String idNguyenLieu, String tenNguyenLieu, int soLuongBanDau, int soLuongToiThieu, double donGia, String trangThai) throws SQLException {
-        // Check if the ID already exists
-        if (!isIdIngredientExists(idNguyenLieu)) {
-            JOptionPane.showMessageDialog(null, "Mã nguyên liệu không tồn tại. Vui lòng nhập lại mã.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Validate inputs
-        if (idNguyenLieu == null || idNguyenLieu.isEmpty()
-                || tenNguyenLieu == null || tenNguyenLieu.isEmpty()
-                || soLuongBanDau < 0 || soLuongToiThieu < 0 || donGia < 0) {
-            JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin và giá trị không âm.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        String sql = "UPDATE NguyenLieu SET tenNguyenLieu = ?, soLuongBanDau = ?, soLuongToiThieu = ?, donGia = ?, trangThai = ? WHERE idNguyenLieu = ?";
-
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, tenNguyenLieu);
-            preparedStatement.setInt(2, soLuongBanDau);
-            preparedStatement.setInt(3, soLuongToiThieu);
-            preparedStatement.setDouble(4, donGia);
-            preparedStatement.setString(5, trangThai);
-            preparedStatement.setString(6, idNguyenLieu);
-
-            int rowsAffected = preparedStatement.executeUpdate();
-
-            if (rowsAffected > 0) {
-                JOptionPane.showMessageDialog(null, "Cập nhật nguyên liệu thành công.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null, "Cập nhật nguyên liệu không thành công.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-        }
+    private NguyenLieuEntity readFromResultSet(ResultSet rs) throws SQLException {
+        NguyenLieuEntity model = new NguyenLieuEntity();
+        model.setIdNguyenLieu(rs.getString("idNguyenLieu"));
+        model.setTenNguyenLieu(rs.getString("tenNguyenLieu"));
+        model.setSoLuongBanDau(rs.getInt("soLuongBanDau"));
+        model.setSoLuongToiThieu(rs.getInt("soLuongToiThieu"));
+        model.setDonGia(rs.getInt("donGia"));
+        model.setNgaySanXuat(rs.getDate("ngaySanXuat"));
+        model.setNgayHetHan(rs.getDate("ngayHetHan"));
+        model.setTrangThai(rs.getString("trangThai"));
+        return model;
     }
 
-    public static void deleteIngredient(String idNguyenLieu) throws SQLException {
-        // Check if the ID already exists
-        if (!isIdIngredientExists(idNguyenLieu)) {
-            JOptionPane.showMessageDialog(null, "Mã nguyên liệu không tồn tại. Vui lòng nhập lại mã.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        String sql = "DELETE FROM NguyenLieu WHERE idNguyenLieu = ?";
-
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, idNguyenLieu);
-
-            int rowsAffected = preparedStatement.executeUpdate();
-
-            if (rowsAffected > 0) {
-                JOptionPane.showMessageDialog(null, "Xóa nguyên liệu thành công.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null, "Xóa nguyên liệu không thành công.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
+//    public static void searchAndClassifyIngredient(String keyword, String trangThai, DefaultTableModel model) {
+//        String sql = "SELECT * FROM NguyenLieu WHERE (? IS NULL OR trangThai LIKE ?)"
+//                + "AND (tenNguyenLieu LIKE ? OR idNguyenLieu LIKE ?)";
+//        keyword = "%" + keyword + "%"; // Adding wildcards to search for partial matches
+//
+//        try (ResultSet rs = JDBC.executeQuery(sql, keyword, trangThai)) {
+//            model.setRowCount(0); // Clear existing rows in the table model
+//
+//            while (rs.next()) {
+//                NguyenLieuEntity ingredient = readFromResultSet(rs);
+//
+//                model.addRow(new Object[]{
+//                    ingredient.getIdNguyenLieu(),
+//                    ingredient.getTenNguyenLieu(),
+//                    ingredient.getSoLuongBanDau(),
+//                    ingredient.getSoLuongToiThieu(),
+//                    ingredient.getDonGia(),
+//                    ingredient.getNgaySanXuat(),
+//                    ingredient.getNgayHetHan(),
+//                    ingredient.getTrangThai()
+//                });
+//            }
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//    }
     public static void searchAndClassifyIngredient(String keyword, String trangThai, DefaultTableModel model) {
-        try (Connection connection = getConnection()) {
-            String sql = "SELECT * FROM NguyenLieu WHERE (? IS NULL OR trangThai LIKE ?)"
-                    + "AND (tenNguyenLieu LIKE ? OR idNguyenLieu LIKE ?)";
+        try (Connection connection = JDBC.getConnection()) {
+            String sql = "SELECT * FROM NguyenLieu WHERE (? IS NULL OR trangThai LIKE ?) AND (tenNguyenLieu LIKE ? OR idNguyenLieu LIKE ?)";
 
-            if ("Trạng thái".equals(trangThai)) {
-                trangThai = null;
-            }
+            trangThai = ("Trạng thái".equals(trangThai)) ? null : trangThai;
+            keyword = "%" + keyword + "%";
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 preparedStatement.setString(1, trangThai);
-                preparedStatement.setString(2, trangThai != null ? "%" + trangThai + "%" : "%");
-                preparedStatement.setString(3, "%" + keyword + "%");
-                preparedStatement.setString(4, "%" + keyword + "%");
+                preparedStatement.setString(2, (trangThai != null) ? "%" + trangThai + "%" : "%");
+                preparedStatement.setString(3, keyword);
+                preparedStatement.setString(4, keyword);
 
-                ResultSet resultSet = preparedStatement.executeQuery();
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    model.setRowCount(0);
 
-                model.setRowCount(0);
-
-                while (resultSet.next()) {
-                    Object[] row = {
-                        resultSet.getString("idNguyenLieu"),
-                        resultSet.getString("tenNguyenLieu"),
-                        resultSet.getString("soLuongBanDau"),
-                        resultSet.getString("soLuongToiThieu"),
-                        resultSet.getInt("donGia"),
-                        resultSet.getString("trangThai")
-                    };
-                    model.addRow(row);
+                    while (resultSet.next()) {
+                        Object[] row = {
+                            resultSet.getString("idNguyenLieu"),
+                            resultSet.getString("tenNguyenLieu"),
+                            resultSet.getString("soLuongBanDau"),
+                            resultSet.getString("soLuongToiThieu"),
+                            resultSet.getInt("donGia"),
+                            resultSet.getString("trangThai")
+                        };
+                        model.addRow(row);
+                    }
                 }
 
                 if (model.getRowCount() > 0) {

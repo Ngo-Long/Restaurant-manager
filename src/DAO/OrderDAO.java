@@ -1,7 +1,5 @@
 package DAO;
 
-import static DAO.BanAnDAO.getConnection;
-import static DAO.BanAnDAO.isBanAnIdExists;
 import static DAO.NhanVienDAO.getConnection;
 import Entity.NhanVienEntity;
 import Entity.OrderEntity;

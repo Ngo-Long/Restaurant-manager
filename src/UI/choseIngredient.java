@@ -27,7 +27,7 @@ public class choseIngredient extends javax.swing.JFrame {
     }
 
     private void loadDataIntoTable() {
-        ingredientList = NguyenLieuDAO.getIngredientList();
+        ingredientList = new NguyenLieuDAO().getAll();
 
         DefaultTableModel model = (DefaultTableModel) tableIngredientList.getModel();
         model.setRowCount(0);

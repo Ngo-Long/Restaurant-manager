@@ -13,18 +13,6 @@ public class BanAnEntity {
     private Timestamp ngayCapNhat;
     private String moTa;
 
-    public BanAnEntity(String idBanAn, String tenBanAn, int soChoNgoi, double phuThu, String trangThai,
-            Timestamp ngayThem, Timestamp ngayCapNhat, String moTa) {
-        this.idBanAn = idBanAn;
-        this.tenBanAn = tenBanAn;
-        this.soChoNgoi = soChoNgoi;
-        this.phuThu = phuThu;
-        this.trangThai = trangThai;
-        this.ngayThem = ngayThem;
-        this.ngayCapNhat = ngayCapNhat;
-        this.moTa = moTa;
-    }
-
     public String getIdBanAn() {
         return idBanAn;
     }

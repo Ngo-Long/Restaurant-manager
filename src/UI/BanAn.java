@@ -5,17 +5,15 @@ import static DAO.MonAnDAO.getNameFoodFromId;
 import DAO.OrderDAO;
 import Entity.BanAnEntity;
 import Entity.OrderEntity;
+import Helper.DialogHelper;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -39,12 +37,60 @@ public class BanAn extends javax.swing.JFrame {
         displayDiningTableList();
     }
 
+    BanAnEntity getModel() {
+        String maBan = textMaBan.getText();
+        String tenBan = textTenBan.getText();
+        String soChoNgoiText = textSoChoNgoi.getText();
+        String phuThuText = textPhuThu.getText();
+        String trangThai = CbTrangThai.getSelectedItem().toString();
+        String moTa = textMoTa.getText();
+
+        try {
+            // Kiểm tra giá trị trước khi chuyển đổi
+            if (maBan.isEmpty() || tenBan.isEmpty() || soChoNgoiText.isEmpty() || phuThuText.isEmpty()) {
+                throw new NumberFormatException("Vui lòng nhập đầy đủ thông tin.");
+            }
+
+            int soChoNgoi = Integer.parseInt(soChoNgoiText);
+            double phuThu = Double.parseDouble(phuThuText);
+
+            // Kiểm tra giá trị số không âm
+            if (soChoNgoi < 0 || phuThu < 0) {
+                throw new NumberFormatException("Số chỗ ngồi và Phụ thu phải là số không âm!");
+            }
+
+            BanAnEntity model = new BanAnEntity();
+            model.setIdBanAn(maBan);
+            model.setTenBanAn(tenBan);
+            model.setSoChoNgoi(soChoNgoi);
+            model.setPhuThu(phuThu);
+            model.setTrangThai(trangThai);
+            model.setMoTa(moTa);
+
+            return model;
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+    }
+
+    private void resetFields() {
+        textMaBan.setText("");
+        textTenBan.setText("");
+        textSoChoNgoi.setText("");
+        textPhuThu.setText("");
+        textNgayThem.setText("");
+        textNgayCapNhat.setText("");
+        textMoTa.setText("");
+        CbTrangThai.setSelectedIndex(0);
+    }
+
     private void displayDiningTableList() {
         // Remove all the components currently on panelDiningTableList
         panelDiningTableList.removeAll();
 
         // Get dining table list
-        diningTableList = BanAnDAO.getDiningTableList();
+        diningTableList = new BanAnDAO().getAll();
 
         // Use GridLayout and set the spacing between cells
         GridLayout gridLayout = new GridLayout(0, 5);
@@ -154,17 +200,6 @@ public class BanAn extends javax.swing.JFrame {
         this.dispose();
     }
 
-    private void resetFields() {
-        textMaBan.setText("");
-        textTenBan.setText("");
-        textSoChoNgoi.setText("");
-        textPhuThu.setText("");
-        textNgayThem.setText("");
-        textNgayCapNhat.setText("");
-        textMoTa.setText("");
-        CbTrangThai.setSelectedIndex(0);
-    }
-
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -221,10 +256,10 @@ public class BanAn extends javax.swing.JFrame {
         jLabel19 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         CbTrangThai = new javax.swing.JComboBox<>();
-        btnThem = new javax.swing.JButton();
-        btnXoa = new javax.swing.JButton();
-        btnSua = new javax.swing.JButton();
-        btnHuy = new javax.swing.JButton();
+        btnAdd = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
+        btnUpdate = new javax.swing.JButton();
+        btnReset = new javax.swing.JButton();
         jLabel21 = new javax.swing.JLabel();
         textNgayCapNhat = new javax.swing.JTextField();
         panelDiningTableList = new javax.swing.JPanel();
@@ -450,7 +485,6 @@ public class BanAn extends javax.swing.JFrame {
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.white, java.awt.Color.white, new java.awt.Color(204, 204, 204), java.awt.Color.white));
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel4.setText("Mì cay Sisan");
@@ -717,47 +751,47 @@ public class BanAn extends javax.swing.JFrame {
             }
         });
 
-        btnThem.setBackground(new java.awt.Color(0, 51, 102));
-        btnThem.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnThem.setForeground(new java.awt.Color(255, 255, 255));
-        btnThem.setText("Thêm");
-        btnThem.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnThem.addActionListener(new java.awt.event.ActionListener() {
+        btnAdd.setBackground(new java.awt.Color(0, 51, 102));
+        btnAdd.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnAdd.setForeground(new java.awt.Color(255, 255, 255));
+        btnAdd.setText("Thêm");
+        btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnThemActionPerformed(evt);
+                btnAddActionPerformed(evt);
             }
         });
 
-        btnXoa.setBackground(new java.awt.Color(0, 51, 102));
-        btnXoa.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnXoa.setForeground(new java.awt.Color(255, 255, 255));
-        btnXoa.setText("Xóa");
-        btnXoa.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnXoa.addActionListener(new java.awt.event.ActionListener() {
+        btnDelete.setBackground(new java.awt.Color(0, 51, 102));
+        btnDelete.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnDelete.setForeground(new java.awt.Color(255, 255, 255));
+        btnDelete.setText("Xóa");
+        btnDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnXoaActionPerformed(evt);
+                btnDeleteActionPerformed(evt);
             }
         });
 
-        btnSua.setBackground(new java.awt.Color(0, 51, 102));
-        btnSua.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnSua.setForeground(new java.awt.Color(255, 255, 255));
-        btnSua.setText("Sửa");
-        btnSua.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnSua.addActionListener(new java.awt.event.ActionListener() {
+        btnUpdate.setBackground(new java.awt.Color(0, 51, 102));
+        btnUpdate.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnUpdate.setForeground(new java.awt.Color(255, 255, 255));
+        btnUpdate.setText("Sửa");
+        btnUpdate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSuaActionPerformed(evt);
+                btnUpdateActionPerformed(evt);
             }
         });
 
-        btnHuy.setBackground(new java.awt.Color(0, 51, 102));
-        btnHuy.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnHuy.setForeground(new java.awt.Color(255, 255, 255));
-        btnHuy.setText("Hủy");
-        btnHuy.setCursor(new java.awt.Cursor(java.awt.Cursor.MOVE_CURSOR));
-        btnHuy.addActionListener(new java.awt.event.ActionListener() {
+        btnReset.setBackground(new java.awt.Color(0, 51, 102));
+        btnReset.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnReset.setForeground(new java.awt.Color(255, 255, 255));
+        btnReset.setText("Hủy");
+        btnReset.setCursor(new java.awt.Cursor(java.awt.Cursor.MOVE_CURSOR));
+        btnReset.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnHuyActionPerformed(evt);
+                btnResetActionPerformed(evt);
             }
         });
 
@@ -782,13 +816,13 @@ public class BanAn extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(textNgayCapNhat))
                     .addGroup(jPanel10Layout.createSequentialGroup()
-                        .addComponent(btnThem, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
-                        .addComponent(btnXoa, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(15, 15, 15)
-                        .addComponent(btnSua, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(15, 15, 15)
-                        .addComponent(btnHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel10Layout.createSequentialGroup()
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel12)
@@ -850,10 +884,10 @@ public class BanAn extends javax.swing.JFrame {
                     .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnThem, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnXoa, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSua, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnHuy, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(231, Short.MAX_VALUE))
         );
 
@@ -1016,48 +1050,61 @@ public class BanAn extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_textMaBanActionPerformed
 
-    private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
-        String maBan = textMaBan.getText();
-        String tenBan = textTenBan.getText();
-        int soChoNgoi = Integer.parseInt(textSoChoNgoi.getText());
-        double phuThu = Double.parseDouble(textPhuThu.getText());
-        String trangThai = CbTrangThai.getSelectedItem().toString();
-        String moTa = textMoTa.getText();
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        BanAnEntity model = getModel();
 
-        BanAnDAO.updateBanAn(maBan, tenBan, soChoNgoi, phuThu, trangThai, moTa);
-        displayDiningTableList();
-    }//GEN-LAST:event_btnSuaActionPerformed
-
-    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
-        try {
-            String maBan = textMaBan.getText();
-            BanAnDAO.deleteBanAnById(maBan);
-
-            displayDiningTableList();
-        } catch (SQLException ex) {
-            Logger.getLogger(BanAn.class.getName()).log(Level.SEVERE, null, ex);
+        if (!new BanAnDAO().isIdDuplicated(model.getIdBanAn())) {
+            DialogHelper.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
+            return;
         }
-    }//GEN-LAST:event_btnXoaActionPerformed
 
-    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
         try {
-            String maBan = textMaBan.getText();
-            String tenBan = textTenBan.getText();
-            int soChoNgoi = Integer.parseInt(textSoChoNgoi.getText());
-            double phuThu = Double.parseDouble(textPhuThu.getText());
-            String trangThai = CbTrangThai.getSelectedItem().toString();
-            String moTa = textMoTa.getText();
-
-            BanAnDAO.insertBanAn(maBan, tenBan, soChoNgoi, phuThu, trangThai, moTa);
+            new BanAnDAO().update(model);
             displayDiningTableList();
-        } catch (SQLException ex) {
-            Logger.getLogger(BanAn.class.getName()).log(Level.SEVERE, null, ex);
+            DialogHelper.alert(this, "Cập nhật thành công!");
+        } catch (Exception e) {
+            DialogHelper.alert(this, "Cập nhật thất bại!");
         }
-    }//GEN-LAST:event_btnThemActionPerformed
+    }//GEN-LAST:event_btnUpdateActionPerformed
 
-    private void btnHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuyActionPerformed
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        String id = textMaBan.getText();
+        if (!new BanAnDAO().isIdDuplicated(id)) {
+            DialogHelper.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
+            return;
+        }
+        
+        try {
+            new BanAnDAO().delete(id);
+            displayDiningTableList();
+            DialogHelper.alert(this, "Xóa thành công!");
+        } catch (Exception e) {
+            DialogHelper.alert(this, "Xóa thất bại!");
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        BanAnEntity model = getModel();
+
+        // Kiểm tra xem mã ID có bị trùng không
+        if (new BanAnDAO().isIdDuplicated(model.getIdBanAn())) {
+            DialogHelper.alert(this, "Mã ID đã tồn tại. Vui lòng chọn mã ID khác!");
+            return;
+        }
+
+        try {
+            new BanAnDAO().insert(model);
+            displayDiningTableList();
+            DialogHelper.alert(this, "Thêm mới thành công!");
+        } catch (Exception e) {
+            DialogHelper.alert(this, "Thêm mới thất bại!");
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
         resetFields();
-    }//GEN-LAST:event_btnHuyActionPerformed
+    }//GEN-LAST:event_btnResetActionPerformed
 
     private void textPhuThuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textPhuThuActionPerformed
         // TODO add your handling code here:
@@ -1089,7 +1136,6 @@ public class BanAn extends javax.swing.JFrame {
     }//GEN-LAST:event_btnGoiMonActionPerformed
 
     private void btnThanhToanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThanhToanActionPerformed
-
         if (userInfo.containsKey("idBanAn")) {
             HoaDon hoaDon = new HoaDon(userInfo);
             openFullScreenWindow(hoaDon);
@@ -1127,7 +1173,7 @@ public class BanAn extends javax.swing.JFrame {
             userInfo.put("chucVu", "YourPosition");
 
             BanAn khoHang = new BanAn(userInfo);
-            khoHang.setExtendedState(JFrame.MAXIMIZED_BOTH); // Mở toàn màn hình
+            khoHang.setExtendedState(JFrame.MAXIMIZED_BOTH);
             khoHang.setVisible(true);
         });
     }
@@ -1135,24 +1181,24 @@ public class BanAn extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> CbTrangThai;
     private javax.swing.JButton btnAccount;
+    private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnCallTable;
     private javax.swing.JButton btnChuyenBan;
     private javax.swing.JButton btnClient;
     private javax.swing.JButton btnConfirm;
+    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnDinnerTable;
     private javax.swing.JButton btnGoiMon;
     private javax.swing.JButton btnGopBan;
-    private javax.swing.JButton btnHuy;
     private javax.swing.JButton btnOrder;
     private javax.swing.JButton btnOverview;
     private javax.swing.JButton btnPay;
     private javax.swing.JButton btnReport;
+    private javax.swing.JButton btnReset;
     private javax.swing.JButton btnStaff;
-    private javax.swing.JButton btnSua;
     private javax.swing.JButton btnThanhToan;
-    private javax.swing.JButton btnThem;
+    private javax.swing.JButton btnUpdate;
     private javax.swing.JButton btnWarehouse;
-    private javax.swing.JButton btnXoa;
     private javax.swing.JComboBox<String> cbDinnerTables;
     private javax.swing.JButton jButton17;
     private javax.swing.JButton jButton18;

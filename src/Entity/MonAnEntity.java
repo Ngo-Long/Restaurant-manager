@@ -14,18 +14,6 @@ public class MonAnEntity {
     private Date ngayThem;
     private Date ngayCapNhat;
 
-    public MonAnEntity(String idMonAn, String ten, int gia, String moTa, String hinhAnh, String phanLoai, String trangThai, Date ngayThem, Date ngayCapNhat) {
-        this.idMonAn = idMonAn;
-        this.ten = ten;
-        this.gia = gia;
-        this.moTa = moTa;
-        this.hinhAnh = hinhAnh;
-        this.phanLoai = phanLoai;
-        this.trangThai = trangThai;
-        this.ngayThem = ngayThem;
-        this.ngayCapNhat = ngayCapNhat;
-    }
-
     public String getIdMonAn() {
         return idMonAn;
     }
@@ -97,4 +85,5 @@ public class MonAnEntity {
     public void setNgayCapNhat(Date ngayCapNhat) {
         this.ngayCapNhat = ngayCapNhat;
     }
+
 }

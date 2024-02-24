@@ -907,13 +907,13 @@
                                   <Component id="textNgayCapNhat" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" attributes="0">
-                                  <Component id="btnThem" min="-2" pref="76" max="-2" attributes="0"/>
+                                  <Component id="btnAdd" min="-2" pref="76" max="-2" attributes="0"/>
                                   <EmptySpace pref="16" max="32767" attributes="0"/>
-                                  <Component id="btnXoa" min="-2" pref="76" max="-2" attributes="0"/>
+                                  <Component id="btnDelete" min="-2" pref="76" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
-                                  <Component id="btnSua" min="-2" pref="76" max="-2" attributes="0"/>
+                                  <Component id="btnUpdate" min="-2" pref="76" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
-                                  <Component id="btnHuy" min="-2" pref="76" max="-2" attributes="0"/>
+                                  <Component id="btnReset" min="-2" pref="76" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
@@ -992,10 +992,10 @@
                           </Group>
                           <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="btnThem" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
-                              <Component id="btnXoa" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
-                              <Component id="btnSua" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
-                              <Component id="btnHuy" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+                              <Component id="btnAdd" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+                              <Component id="btnDelete" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+                              <Component id="btnUpdate" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+                              <Component id="btnReset" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace pref="231" max="32767" attributes="0"/>
                       </Group>
@@ -1106,7 +1106,7 @@
                     <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                   </AuxValues>
                 </Component>
-                <Component class="javax.swing.JButton" name="btnThem">
+                <Component class="javax.swing.JButton" name="btnAdd">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="33" red="0" type="rgb"/>
@@ -1123,10 +1123,10 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnThemActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="btnXoa">
+                <Component class="javax.swing.JButton" name="btnDelete">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="33" red="0" type="rgb"/>
@@ -1143,10 +1143,10 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnXoaActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDeleteActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="btnSua">
+                <Component class="javax.swing.JButton" name="btnUpdate">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="33" red="0" type="rgb"/>
@@ -1163,10 +1163,10 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSuaActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUpdateActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="btnHuy">
+                <Component class="javax.swing.JButton" name="btnReset">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="33" red="0" type="rgb"/>
@@ -1183,7 +1183,7 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnHuyActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnResetActionPerformed"/>
                   </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel21">
