@@ -1,7 +1,7 @@
 package DAO;
 
-import static DAO.NhanVienDAO.getConnection;
-import Entity.NhanVienEntity;
+import static DAO.EmployeeDAO.getConnection;
+import Entity.EmployeeEntity;
 import Entity.OrderEntity;
 import java.sql.Connection;
 import java.sql.DriverManager;

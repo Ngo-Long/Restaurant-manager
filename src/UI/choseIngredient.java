@@ -1,8 +1,8 @@
 package UI;
 
-import DAO.NguyenLieuDAO;
-import static DAO.NguyenLieuDAO.searchAndClassifyIngredient;
-import Entity.NguyenLieuEntity;
+import DAO.IngrediantDAO;
+import static DAO.IngrediantDAO.searchAndClassifyIngredient;
+import Entity.IngrediantEntity;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -12,13 +12,13 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-public class choseIngredient extends javax.swing.JFrame {
+public class ChoseIngredient extends javax.swing.JFrame {
 
     private int currentIndex = 0;
-    private List<NguyenLieuEntity> ingredientList;
+    private List<IngrediantEntity> ingredientList;
     private List<String> addedIngredients = new ArrayList<>();
 
-    public choseIngredient(Map<String, String> userInfo) {
+    public ChoseIngredient(Map<String, String> userInfo) {
         initComponents();
 
         loadDataIntoTable();
@@ -27,13 +27,13 @@ public class choseIngredient extends javax.swing.JFrame {
     }
 
     private void loadDataIntoTable() {
-        ingredientList = new NguyenLieuDAO().getAll();
+        ingredientList = new IngrediantDAO().getAll();
 
         DefaultTableModel model = (DefaultTableModel) tableIngredientList.getModel();
         model.setRowCount(0);
 
         // Load data into the table
-        for (NguyenLieuEntity ingredientItem : ingredientList) {
+        for (IngrediantEntity ingredientItem : ingredientList) {
             Object[] rowData = {
                 ingredientItem.getIdNguyenLieu(),
                 ingredientItem.getTenNguyenLieu(),
@@ -85,7 +85,7 @@ public class choseIngredient extends javax.swing.JFrame {
 
     private void displayIngredientDetails(int selectedRow) {
         if (selectedRow >= 0 && selectedRow < ingredientList.size()) {
-            NguyenLieuEntity selectedIngredient = ingredientList.get(selectedRow);
+            IngrediantEntity selectedIngredient = ingredientList.get(selectedRow);
 
             textIngredientID.setText(selectedIngredient.getIdNguyenLieu());
             textIngredientName.setText(selectedIngredient.getTenNguyenLieu());
@@ -99,8 +99,6 @@ public class choseIngredient extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         textSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tableSaveIngredientList = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         text1 = new javax.swing.JLabel();
@@ -111,11 +109,14 @@ public class choseIngredient extends javax.swing.JFrame {
         btnPlus = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tableIngredientList = new javax.swing.JTable();
         btnSubmit = new javax.swing.JButton();
         textIngredientID = new javax.swing.JLabel();
         textIngredientName = new javax.swing.JLabel();
+        jTabbedPane3 = new javax.swing.JTabbedPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tableIngredientList = new javax.swing.JTable();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tableSaveIngredientList = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Chọn nguyên liệu");
@@ -139,24 +140,6 @@ public class choseIngredient extends javax.swing.JFrame {
                 btnSearchActionPerformed(evt);
             }
         });
-
-        tableSaveIngredientList.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        tableSaveIngredientList.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
-            },
-            new String [] {
-                "Mã", "Tên", "Số lượng"
-            }
-        ));
-        jScrollPane1.setViewportView(tableSaveIngredientList);
-        if (tableSaveIngredientList.getColumnModel().getColumnCount() > 0) {
-            tableSaveIngredientList.getColumnModel().getColumn(0).setPreferredWidth(15);
-            tableSaveIngredientList.getColumnModel().getColumn(2).setPreferredWidth(15);
-        }
 
         jPanel1.setBackground(new java.awt.Color(0, 51, 102));
         jPanel1.setForeground(new java.awt.Color(0, 51, 102));
@@ -229,6 +212,23 @@ public class choseIngredient extends javax.swing.JFrame {
             }
         });
 
+        btnSubmit.setBackground(new java.awt.Color(0, 51, 102));
+        btnSubmit.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        btnSubmit.setForeground(new java.awt.Color(255, 255, 255));
+        btnSubmit.setText("Xác nhận");
+        btnSubmit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSubmit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSubmitActionPerformed(evt);
+            }
+        });
+
+        textIngredientID.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        textIngredientID.setText(" ");
+
+        textIngredientName.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        textIngredientName.setText(" ");
+
         tableIngredientList.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tableIngredientList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -248,22 +248,27 @@ public class choseIngredient extends javax.swing.JFrame {
             tableIngredientList.getColumnModel().getColumn(2).setPreferredWidth(20);
         }
 
-        btnSubmit.setBackground(new java.awt.Color(0, 51, 102));
-        btnSubmit.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
-        btnSubmit.setForeground(new java.awt.Color(255, 255, 255));
-        btnSubmit.setText("Xác nhận");
-        btnSubmit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnSubmit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSubmitActionPerformed(evt);
+        jTabbedPane3.addTab("Danh sách", jScrollPane2);
+
+        tableSaveIngredientList.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        tableSaveIngredientList.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Mã", "Tên", "Số lượng"
             }
-        });
+        ));
+        jScrollPane1.setViewportView(tableSaveIngredientList);
+        if (tableSaveIngredientList.getColumnModel().getColumnCount() > 0) {
+            tableSaveIngredientList.getColumnModel().getColumn(0).setPreferredWidth(15);
+            tableSaveIngredientList.getColumnModel().getColumn(2).setPreferredWidth(15);
+        }
 
-        textIngredientID.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        textIngredientID.setText(" ");
-
-        textIngredientName.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        textIngredientName.setText(" ");
+        jTabbedPane3.addTab("Đã chọn", jScrollPane1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -277,7 +282,7 @@ public class choseIngredient extends javax.swing.JFrame {
                         .addComponent(btnSearch)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jTabbedPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -287,7 +292,6 @@ public class choseIngredient extends javax.swing.JFrame {
                         .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnRemove, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(text2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -319,7 +323,7 @@ public class choseIngredient extends javax.swing.JFrame {
                             .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTabbedPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel5)
@@ -341,9 +345,7 @@ public class choseIngredient extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnSave, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
                             .addComponent(btnRemove, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(280, 280, 280)
                         .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(27, 27, 27))))
             .addGroup(layout.createSequentialGroup()
@@ -496,7 +498,7 @@ public class choseIngredient extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(choseIngredient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ChoseIngredient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
         java.awt.EventQueue.invokeLater(() -> {
@@ -504,7 +506,7 @@ public class choseIngredient extends javax.swing.JFrame {
             userInfo.put("hoTen", "YourName");
             userInfo.put("chucVu", "YourPosition");
 
-            choseIngredient monAn = new choseIngredient(userInfo);
+            ChoseIngredient monAn = new ChoseIngredient(userInfo);
             monAn.setLocationRelativeTo(null);
             monAn.setVisible(true);
         });
@@ -523,6 +525,7 @@ public class choseIngredient extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTabbedPane jTabbedPane3;
     private javax.swing.JTable tableIngredientList;
     private javax.swing.JTable tableSaveIngredientList;
     private javax.swing.JLabel text1;
