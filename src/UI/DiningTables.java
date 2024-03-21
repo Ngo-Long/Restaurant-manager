@@ -260,10 +260,11 @@ public class DiningTables extends javax.swing.JFrame {
         btnReset = new javax.swing.JButton();
         jLabel21 = new javax.swing.JLabel();
         textNgayCapNhat = new javax.swing.JTextField();
-        panelDiningTableList = new javax.swing.JPanel();
         jButton17 = new javax.swing.JButton();
         jButton18 = new javax.swing.JButton();
         jButton19 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        panelDiningTableList = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Quản lí nhân viên");
@@ -669,7 +670,7 @@ public class DiningTables extends javax.swing.JFrame {
                 .addGap(249, 249, 249))
         );
 
-        jTabbedPane3.addTab("Danh sách gọi món của bàn", jPanel9);
+        jTabbedPane3.addTab("Gọi món", jPanel9);
 
         jPanel10.setBackground(new java.awt.Color(255, 255, 255));
         jPanel10.setForeground(new java.awt.Color(242, 242, 242));
@@ -876,23 +877,10 @@ public class DiningTables extends javax.swing.JFrame {
                     .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(231, Short.MAX_VALUE))
+                .addContainerGap(227, Short.MAX_VALUE))
         );
 
-        jTabbedPane3.addTab("Cập nhật chi tiết bàn ăn", jPanel10);
-
-        panelDiningTableList.setBackground(new java.awt.Color(255, 255, 255));
-
-        javax.swing.GroupLayout panelDiningTableListLayout = new javax.swing.GroupLayout(panelDiningTableList);
-        panelDiningTableList.setLayout(panelDiningTableListLayout);
-        panelDiningTableListLayout.setHorizontalGroup(
-            panelDiningTableListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 639, Short.MAX_VALUE)
-        );
-        panelDiningTableListLayout.setVerticalGroup(
-            panelDiningTableListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 550, Short.MAX_VALUE)
-        );
+        jTabbedPane3.addTab("Cập nhật", jPanel10);
 
         jButton17.setBackground(new java.awt.Color(255, 153, 51));
         jButton17.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -908,6 +896,21 @@ public class DiningTables extends javax.swing.JFrame {
         jButton19.setForeground(new java.awt.Color(51, 51, 51));
         jButton19.setText("Đang phục vụ");
 
+        panelDiningTableList.setBackground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout panelDiningTableListLayout = new javax.swing.GroupLayout(panelDiningTableList);
+        panelDiningTableList.setLayout(panelDiningTableListLayout);
+        panelDiningTableListLayout.setHorizontalGroup(
+            panelDiningTableListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 639, Short.MAX_VALUE)
+        );
+        panelDiningTableListLayout.setVerticalGroup(
+            panelDiningTableListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 551, Short.MAX_VALUE)
+        );
+
+        jScrollPane2.setViewportView(panelDiningTableList);
+
         javax.swing.GroupLayout panelBodyLayout = new javax.swing.GroupLayout(panelBody);
         panelBody.setLayout(panelBodyLayout);
         panelBodyLayout.setHorizontalGroup(
@@ -915,15 +918,15 @@ public class DiningTables extends javax.swing.JFrame {
             .addGroup(panelBodyLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelDiningTableList, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(panelBodyLayout.createSequentialGroup()
                         .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 185, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton18)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton19)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton17)))
+                        .addComponent(jButton17))
+                    .addComponent(jScrollPane2))
                 .addGap(20, 20, 20)
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -944,8 +947,8 @@ public class DiningTables extends javax.swing.JFrame {
                             .addComponent(jButton17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
-                        .addComponent(panelDiningTableList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addComponent(jScrollPane2)
+                        .addGap(76, 76, 76))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -1208,6 +1211,7 @@ public class DiningTables extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane3;
     private javax.swing.JLabel labelAccount;
     private javax.swing.JLabel labelHouse;

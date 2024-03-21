@@ -536,16 +536,16 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="20" pref="20" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="panelDiningTableList" alignment="1" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="185" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Component id="jButton18" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButton19" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButton17" min="-2" max="-2" attributes="0"/>
                       </Group>
+                      <Component id="jScrollPane2" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="20" pref="20" max="-2" attributes="0"/>
                   <Component id="jPanel8" min="-2" max="-2" attributes="0"/>
@@ -570,8 +570,8 @@
                               <Component id="jButton18" alignment="0" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="panelDiningTableList" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" max="32767" attributes="0"/>
+                          <EmptySpace min="-2" pref="76" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -627,8 +627,8 @@
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                  <JTabbedPaneConstraints tabName="Danh s&#xe1;ch g&#x1ecd;i m&#xf3;n c&#x1ee7;a b&#xe0;n">
-                    <Property name="tabTitle" type="java.lang.String" value="Danh s&#xe1;ch g&#x1ecd;i m&#xf3;n c&#x1ee7;a b&#xe0;n"/>
+                  <JTabbedPaneConstraints tabName="G&#x1ecd;i m&#xf3;n">
+                    <Property name="tabTitle" type="java.lang.String" value="G&#x1ecd;i m&#xf3;n"/>
                   </JTabbedPaneConstraints>
                 </Constraint>
               </Constraints>
@@ -869,8 +869,8 @@
               </Properties>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                  <JTabbedPaneConstraints tabName="C&#x1ead;p nh&#x1ead;t chi ti&#x1ebf;t b&#xe0;n &#x103;n">
-                    <Property name="tabTitle" type="java.lang.String" value="C&#x1ead;p nh&#x1ead;t chi ti&#x1ebf;t b&#xe0;n &#x103;n"/>
+                  <JTabbedPaneConstraints tabName="C&#x1ead;p nh&#x1ead;t">
+                    <Property name="tabTitle" type="java.lang.String" value="C&#x1ead;p nh&#x1ead;t"/>
                   </JTabbedPaneConstraints>
                 </Constraint>
               </Constraints>
@@ -977,7 +977,7 @@
                               <Component id="btnUpdate" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
                               <Component id="btnReset" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="231" max="32767" attributes="0"/>
+                          <EmptySpace pref="227" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1183,26 +1183,6 @@
             </Container>
           </SubComponents>
         </Container>
-        <Container class="javax.swing.JPanel" name="panelDiningTableList">
-          <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="ff" green="ff" red="ff" type="rgb"/>
-            </Property>
-          </Properties>
-
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="639" max="32767" attributes="0"/>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="550" max="32767" attributes="0"/>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-        </Container>
         <Component class="javax.swing.JButton" name="jButton17">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
@@ -1242,6 +1222,32 @@
             <Property name="text" type="java.lang.String" value="&#x110;ang ph&#x1ee5;c v&#x1ee5;"/>
           </Properties>
         </Component>
+        <Container class="javax.swing.JScrollPane" name="jScrollPane2">
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+          <SubComponents>
+            <Container class="javax.swing.JPanel" name="panelDiningTableList">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                </Property>
+              </Properties>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <EmptySpace min="0" pref="639" max="32767" attributes="0"/>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <EmptySpace min="0" pref="551" max="32767" attributes="0"/>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+            </Container>
+          </SubComponents>
+        </Container>
       </SubComponents>
     </Container>
   </SubComponents>

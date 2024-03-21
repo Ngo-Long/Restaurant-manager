@@ -55,7 +55,7 @@
                       </Group>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <EmptySpace pref="74" max="32767" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                               <Component id="btnAdd" min="-2" pref="76" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="btnDelete" min="-2" pref="76" max="-2" attributes="0"/>
@@ -113,13 +113,15 @@
                                               </Group>
                                               <Component id="labelChucVu" alignment="0" min="-2" pref="166" max="-2" attributes="0"/>
                                           </Group>
-                                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                              <Component id="textMatKhau" alignment="0" max="32767" attributes="0"/>
-                                              <Component id="textTaiKhoan" alignment="0" max="32767" attributes="0"/>
-                                              <Group type="102" alignment="1" attributes="0">
-                                                  <Component id="textNgayTao" pref="283" max="32767" attributes="0"/>
-                                                  <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
+                                          <Group type="102" alignment="1" attributes="0">
+                                              <Group type="103" groupAlignment="1" attributes="0">
+                                                  <Component id="textNgayTao" alignment="1" min="-2" pref="243" max="-2" attributes="0"/>
+                                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                                      <Component id="textMatKhau" alignment="0" pref="243" max="32767" attributes="0"/>
+                                                      <Component id="textTaiKhoan" alignment="0" max="32767" attributes="0"/>
+                                                  </Group>
                                               </Group>
+                                              <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>
