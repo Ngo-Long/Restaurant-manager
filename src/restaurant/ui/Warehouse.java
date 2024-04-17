@@ -3,32 +3,30 @@ package restaurant.ui;
 import restaurant.dao.IngrediantDAO;
 import static restaurant.dao.IngrediantDAO.searchAndClassifyIngredient;
 import restaurant.entity.IngrediantEntity;
-import restaurant.helper.DialogHelper;
+import restaurant.utils.Dialog;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import javax.swing.JFrame;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import restaurant.utils.Common;
 
 public class Warehouse extends javax.swing.JFrame {
 
     private int currentIndex = 0;
     private List<IngrediantEntity> ingrediantList;
-    Map<String, String> userInfo = CommonUtils.getUserInfo();
+    Map<String, String> userInfo = Common.getUserInfo();
 
     public Warehouse(Map<String, String> userInfo) {
         initComponents();
 
-        CommonUtils.initClock(labelHouse);
-        CommonUtils.displayUserInfoBar(userInfo, labelAccount, labelPosition);
-        CommonUtils.setImage("D:\\FPT Polytechnic\\KiThuatPhanMem\\KTLT\\KTLT\\src\\icon\\logo.jpg", labelLogo);
+        Common.initClock(labelHouse);
+        Common.displayUserInfoBar(userInfo, labelAccount, labelPosition);
+        Common.setImage("D:\\FPT Polytechnic\\KiThuatPhanMem\\KTLT\\KTLT\\src\\icon\\logo.jpg", labelLogo);
 
         loadDataIntoTable();
         updateCountIngrediant();
@@ -1029,32 +1027,32 @@ public class Warehouse extends javax.swing.JFrame {
         IngrediantEntity model = getModel();
 
         if (!new IngrediantDAO().isIdDuplicated(model.getIdNguyenLieu())) {
-            DialogHelper.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
+            Dialog.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
             return;
         }
 
         try {
             new IngrediantDAO().update(model);
             loadDataIntoTable();
-            DialogHelper.alert(this, "Cập nhật thành công!");
+            Dialog.alert(this, "Cập nhật thành công!");
         } catch (Exception e) {
-            DialogHelper.alert(this, "Cập nhật thất bại!");
+            Dialog.alert(this, "Cập nhật thất bại!");
         }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         String id = textIngredientID.getText();
         if (!new IngrediantDAO().isIdDuplicated(id)) {
-            DialogHelper.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
+            Dialog.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
             return;
         }
 
         try {
             new IngrediantDAO().delete(id);
             loadDataIntoTable();
-            DialogHelper.alert(this, "Xóa thành công!");
+            Dialog.alert(this, "Xóa thành công!");
         } catch (Exception e) {
-            DialogHelper.alert(this, "Xóa thất bại!");
+            Dialog.alert(this, "Xóa thất bại!");
         }
     }//GEN-LAST:event_btnRemoveActionPerformed
 
@@ -1063,16 +1061,16 @@ public class Warehouse extends javax.swing.JFrame {
 
         // Kiểm tra xem mã ID có bị trùng không
         if (new IngrediantDAO().isIdDuplicated(model.getIdNguyenLieu())) {
-            DialogHelper.alert(this, "Mã ID đã tồn tại. Vui lòng chọn mã ID khác!");
+            Dialog.alert(this, "Mã ID đã tồn tại. Vui lòng chọn mã ID khác!");
             return;
         }
 
         try {
             new IngrediantDAO().insert(model);
             loadDataIntoTable();
-            DialogHelper.alert(this, "Thêm mới thành công!");
+            Dialog.alert(this, "Thêm mới thành công!");
         } catch (Exception e) {
-            DialogHelper.alert(this, "Thêm mới thất bại!");
+            Dialog.alert(this, "Thêm mới thất bại!");
             e.printStackTrace();
         }
     }//GEN-LAST:event_btnAddActionPerformed

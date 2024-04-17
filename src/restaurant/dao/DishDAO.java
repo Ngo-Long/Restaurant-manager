@@ -14,6 +14,7 @@ public class DishDAO {
     public static final String SELECT_ALL_SQL = "SELECT * FROM MonAn";
     public static final String SELECT_ALL_AREA_SQL = "SELECT * FROM BanAn WHERE khuVuc = ?";
     public static final String SELECT_BY_ID_SQL = "SELECT * FROM MonAn WHERE idMonAn=?";
+    public static final String SELECT_NAME_BY_ID_SQL = "SELECT ten FROM MonAn WHERE idMonAn = ?";
     public static final String CHECK_DUPLICATED_ID_SQL = "SELECT COUNT(*) FROM MonAn WHERE idMonAn=?";
 
     public List<DishEntity> getAll() {
@@ -66,6 +67,14 @@ public class DishDAO {
         return false;
     }
 
+    public static String getNameFoodFromId(String idMonAn) {
+        try (ResultSet resultSet = JDBC.executeQuery(SELECT_NAME_BY_ID_SQL, idMonAn)) {
+            return resultSet.next() ? resultSet.getString("ten") : null;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
     private List<DishEntity> fetchByQuery(String sql, Object... args) {
         List<DishEntity> list = new ArrayList<>();
 
@@ -95,35 +104,26 @@ public class DishDAO {
         return model;
     }
 
-    public static void getIngredientsForFood(String idMonAn) {
-        String sql = "SELECT NL.* FROM NghienLieu NL "
-                + "JOIN MonAn_NghienLieu MNL ON NL.idNghienLieu = MNL.idNghienLieu "
-                + "WHERE MNL.idMonAn = ?";
-
-        try (ResultSet resultSetNguyenLieu = JDBC.executeQuery(sql, idMonAn)) {
-            System.out.println("\nNguyên liệu sử dụng trong món ăn:");
-
-            while (resultSetNguyenLieu.next()) {
-                System.out.println("ID Nguyên liệu: " + resultSetNguyenLieu.getString("idNghienLieu"));
-                System.out.println("Tên nguyên liệu: " + resultSetNguyenLieu.getString("ten"));
-                System.out.println("Đơn giá nguyên liệu: " + resultSetNguyenLieu.getDouble("donGia"));
-                System.out.println("Số lượng: " + resultSetNguyenLieu.getInt("soLuong"));
-                System.out.println("Ngày sản xuất: " + resultSetNguyenLieu.getTimestamp("ngaySanXuat"));
-                System.out.println("Ngày hết hạn: " + resultSetNguyenLieu.getTimestamp("ngayHetHan"));
-                System.out.println("------------------------------");
-            }
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    public static String getNameFoodFromId(String idMonAn) {
-        String sql = "SELECT ten FROM MonAn WHERE idMonAn = ?";
-
-        try (ResultSet resultSet = JDBC.executeQuery(sql, idMonAn)) {
-            return resultSet.next() ? resultSet.getString("ten") : null;
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
+//    public static void getIngredientsForFood(String idMonAn) {
+//        String sql = "SELECT NL.* FROM NghienLieu NL "
+//                + "JOIN MonAn_NghienLieu MNL ON NL.idNghienLieu = MNL.idNghienLieu "
+//                + "WHERE MNL.idMonAn = ?";
+//
+//        try (ResultSet resultSetNguyenLieu = JDBC.executeQuery(sql, idMonAn)) {
+//            System.out.println("\nNguyên liệu sử dụng trong món ăn:");
+//
+//            while (resultSetNguyenLieu.next()) {
+//                System.out.println("ID Nguyên liệu: " + resultSetNguyenLieu.getString("idNghienLieu"));
+//                System.out.println("Tên nguyên liệu: " + resultSetNguyenLieu.getString("ten"));
+//                System.out.println("Đơn giá nguyên liệu: " + resultSetNguyenLieu.getDouble("donGia"));
+//                System.out.println("Số lượng: " + resultSetNguyenLieu.getInt("soLuong"));
+//                System.out.println("Ngày sản xuất: " + resultSetNguyenLieu.getTimestamp("ngaySanXuat"));
+//                System.out.println("Ngày hết hạn: " + resultSetNguyenLieu.getTimestamp("ngayHetHan"));
+//                System.out.println("------------------------------");
+//            }
+//        } catch (SQLException ex) {
+//            throw new RuntimeException(ex);
+//        }
+//    }
+//
 }

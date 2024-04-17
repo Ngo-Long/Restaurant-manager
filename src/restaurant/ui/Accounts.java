@@ -21,20 +21,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
+import restaurant.utils.Common;
 
 public class Accounts extends javax.swing.JFrame {
 
     private String imagePath;
     private int currentIndex = 0;
     private List<EmployeeEntity> employeeList;
-    Map<String, String> userInfo = CommonUtils.getUserInfo();
+    Map<String, String> userInfo = Common.getUserInfo();
 
     public Accounts(Map<String, String> userInfo) {
         initComponents();
         this.userInfo = userInfo;
-        CommonUtils.initClock(labelHouse);
-        CommonUtils.displayUserInfoBar(userInfo, labelAccount, labelPosition);
-        CommonUtils.setImage("D:\\FPT Polytechnic\\KiThuatPhanMem\\KTLT\\KTLT\\src\\icon\\logo.jpg", labelLogo);
+        Common.initClock(labelHouse);
+        Common.displayUserInfoBar(userInfo, labelAccount, labelPosition);
+        Common.setImage("D:\\FPT Polytechnic\\KiThuatPhanMem\\KTLT\\KTLT\\src\\icon\\logo.jpg", labelLogo);
 
         employeeList = new ArrayList<>();
         loadDataIntoTable();

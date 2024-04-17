@@ -1,9 +1,9 @@
 
-package restaurant.helper;
+package restaurant.utils;
 import java.awt.Component;
 import javax.swing.JOptionPane;
 
-public class DialogHelper {
+public class Dialog {
     // Hiển thị thông báo
     public static void alert(Component parent, String message){
         JOptionPane.showMessageDialog(parent, message, "Hệ thống quản lý đào tạo", 

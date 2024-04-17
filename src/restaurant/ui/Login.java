@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import restaurant.utils.Common;
 
 public class Login extends javax.swing.JFrame {
 
@@ -140,7 +141,7 @@ public class Login extends javax.swing.JFrame {
 
         Map<String, String> userInfo = isValidLogin(username, password);
         if (userInfo != null) {
-            CommonUtils.setUserInfo(userInfo);  // Lưu thông tin 
+            Common.setUserInfo(userInfo);  // Lưu thông tin 
 
             switch (userInfo.get("chucVu")) {
                 case "Quản Lý" ->

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class DiningTableDAO {
 
     public static final String INSERT_SQL = "INSERT INTO BanAn (idBanAn, tenBanAn, khuVuc, soChoNgoi, phuThu, trangThai, moTa) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    public static final String UPDATE_SQL = "UPDATE BanAn SET tenBanAn=?, khuVuc=?, soChoNgoi=?, phuThu=?, trangThai=?, ngayCapNhat=GETDATE(), moTa=? WHERE idBanAn=?";
+    public static final String UPDATE_SQL = "UPDATE BanAn SET tenBanAn=?, khuVuc=?, soChoNgoi=?, phuThu=?, trangThai=?, moTa=? WHERE idBanAn=?";
     public static final String DELETE_SQL = "DELETE FROM BanAn WHERE idBanAn =?";
     public static final String SELECT_ALL_SQL = "SELECT * FROM BanAn";
     public static final String SELECT_ALL_AREA_SQL = "SELECT * FROM BanAn WHERE khuVuc = ?";
@@ -31,25 +31,25 @@ public class DiningTableDAO {
 
     public void insert(DiningTableEntity entity) {
         JDBC.executeUpdate(INSERT_SQL,
-                entity.getIdBanAn(),
-                entity.getTenBanAn(),
-                entity.getKhuVuc(),
-                entity.getSoChoNgoi(),
-                entity.getPhuThu(),
-                entity.getTrangThai(),
-                entity.getMoTa()
+                entity.getDiningTableId(),
+                entity.getDiningTableName(),
+                entity.getArea(),
+                entity.getNumberOfSeats(),
+                entity.getSurcharge(),
+                entity.getStatus(),
+                entity.getDesc()
         );
     }
 
     public void update(DiningTableEntity entity) {
         JDBC.executeUpdate(UPDATE_SQL,
-                entity.getTenBanAn(),
-                entity.getKhuVuc(),
-                entity.getSoChoNgoi(),
-                entity.getPhuThu(),
-                entity.getTrangThai(),
-                entity.getMoTa(),
-                entity.getIdBanAn()
+                entity.getDiningTableName(),
+                entity.getArea(),
+                entity.getNumberOfSeats(),
+                entity.getSurcharge(),
+                entity.getStatus(),
+                entity.getDesc(),
+                entity.getDiningTableId()
         );
     }
 
@@ -87,14 +87,13 @@ public class DiningTableDAO {
 
     private DiningTableEntity readFromResultSet(ResultSet rs) throws SQLException {
         DiningTableEntity model = new DiningTableEntity();
-        model.setIdBanAn(rs.getString("idBanAn"));
-        model.setTenBanAn(rs.getString("tenBanAn"));
-        model.setSoChoNgoi(rs.getInt("soChoNgoi"));
-        model.setPhuThu(rs.getDouble("phuThu"));
-        model.setTrangThai(rs.getString("trangThai"));
-        model.setKhuVuc(rs.getString("khuVuc"));
-        model.setNgayCapNhat(rs.getTimestamp("ngayCapNhat"));
-        model.setMoTa(rs.getString("moTa"));
+        model.setDiningTableId(rs.getString("idBanAn"));
+        model.setDiningTableName(rs.getString("tenBanAn"));
+        model.setNumberOfSeats(rs.getInt("soChoNgoi"));
+        model.setSurcharge(rs.getInt("phuThu"));
+        model.setStatus(rs.getString("trangThai"));
+        model.setArea(rs.getString("khuVuc"));
+        model.setDesc(rs.getString("moTa"));
         return model;
     }
 

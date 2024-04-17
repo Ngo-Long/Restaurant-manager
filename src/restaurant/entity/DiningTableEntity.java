@@ -1,79 +1,68 @@
 package restaurant.entity;
 
-import java.sql.Timestamp;
-
 public class DiningTableEntity {
 
     private String idBanAn;
     private String tenBanAn;
     private int soChoNgoi;
-    private double phuThu;
+    private int phuThu;
     private String trangThai;
     private String khuVuc;
-    private Timestamp ngayCapNhat;
     private String moTa;
 
-    public String getIdBanAn() {
+    public String getDiningTableId() {
         return idBanAn;
     }
 
-    public void setIdBanAn(String idBanAn) {
+    public void setDiningTableId(String idBanAn) {
         this.idBanAn = idBanAn;
     }
 
-    public String getTenBanAn() {
+    public String getDiningTableName() {
         return tenBanAn;
     }
 
-    public void setTenBanAn(String tenBanAn) {
+    public void setDiningTableName(String tenBanAn) {
         this.tenBanAn = tenBanAn;
     }
 
-    public int getSoChoNgoi() {
+    public int getNumberOfSeats() {
         return soChoNgoi;
     }
 
-    public void setSoChoNgoi(int soChoNgoi) {
+    public void setNumberOfSeats(int soChoNgoi) {
         this.soChoNgoi = soChoNgoi;
     }
 
-    public double getPhuThu() {
+    public int getSurcharge() {
         return phuThu;
     }
 
-    public void setPhuThu(double phuThu) {
+    public void setSurcharge(int phuThu) {
         this.phuThu = phuThu;
     }
 
-    public String getTrangThai() {
+    public String getStatus() {
         return trangThai;
     }
 
-    public void setTrangThai(String trangThai) {
+    public void setStatus(String trangThai) {
         this.trangThai = trangThai;
     }
 
-    public String getKhuVuc() {
+    public String getArea() {
         return khuVuc;
     }
 
-    public void setKhuVuc(String khuVuc) {
+    public void setArea(String khuVuc) {
         this.khuVuc = khuVuc;
     }
 
-    public Timestamp getNgayCapNhat() {
-        return ngayCapNhat;
-    }
-
-    public void setNgayCapNhat(Timestamp ngayCapNhat) {
-        this.ngayCapNhat = ngayCapNhat;
-    }
-
-    public String getMoTa() {
+    public String getDesc() {
         return moTa;
     }
 
-    public void setMoTa(String moTa) {
+    public void setDesc(String moTa) {
         this.moTa = moTa;
     }
 }

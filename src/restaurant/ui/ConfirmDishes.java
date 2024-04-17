@@ -3,17 +3,18 @@ package restaurant.ui;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JFrame;
+import restaurant.utils.Common;
 
 public class ConfirmDishes extends javax.swing.JFrame {
 
-    Map<String, String> userInfo = CommonUtils.getUserInfo();
+    Map<String, String> userInfo = Common.getUserInfo();
 
     public ConfirmDishes(Map<String, String> userInfo) {
         initComponents();
 
-        CommonUtils.initClock(labelHouse); // Khởi tạo đồng hồ
-        CommonUtils.displayUserInfoBar(userInfo, labelAccount, labelPosition); // Hiển thị thông tin người đăng nhập
-        CommonUtils.setImage("D:\\FPT Polytechnic\\KiThuatPhanMem\\KTLT\\KTLT\\src\\icon\\logo.jpg", labelLogo);
+        Common.initClock(labelHouse); // Khởi tạo đồng hồ
+        Common.displayUserInfoBar(userInfo, labelAccount, labelPosition); // Hiển thị thông tin người đăng nhập
+        Common.setImage("D:\\FPT Polytechnic\\KiThuatPhanMem\\KTLT\\KTLT\\src\\icon\\logo.jpg", labelLogo);
     }
 
     private void openFullScreenWindow(JFrame window) {
@@ -541,7 +542,5 @@ public class ConfirmDishes extends javax.swing.JFrame {
     private javax.swing.JLabel labelPosition;
     // End of variables declaration//GEN-END:variables
 
-    void setUserInfo(Map<String, String> userInfo) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+   
 }

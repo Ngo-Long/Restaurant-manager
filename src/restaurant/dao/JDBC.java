@@ -85,5 +85,4 @@ public class JDBC {
         throw new RuntimeException(e); // Ném lại RuntimeException để chương trình dừng lại.
     }
 
-    
 }
