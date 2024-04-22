@@ -1,37 +1,95 @@
 package restaurant.ui;
 
-import java.util.HashMap;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
 import javax.swing.JFrame;
+import javax.swing.table.DefaultTableModel;
+
 import restaurant.utils.Common;
+import restaurant.dao.ProductsDAO;
+import restaurant.dao.OrderDetailsDAO;
+import restaurant.dao.OrdersDAO;
+import restaurant.entity.ProductsEntity;
+import restaurant.entity.OrderDetailsEntity;
 
 public class ConfirmDishes extends javax.swing.JFrame {
 
+    private List<OrderDetailsEntity> pendingDishes;
     Map<String, String> userInfo = Common.getUserInfo();
 
     public ConfirmDishes(Map<String, String> userInfo) {
         initComponents();
+        displayPendingDishesList();
 
-        Common.initClock(labelHouse); // Khởi tạo đồng hồ
-        Common.displayUserInfoBar(userInfo, labelAccount, labelPosition); // Hiển thị thông tin người đăng nhập
-        Common.setImage("D:\\FPT Polytechnic\\KiThuatPhanMem\\KTLT\\KTLT\\src\\icon\\logo.jpg", labelLogo);
+        Common.initClock(labelHouse);
+        Common.displayUserInfoBar(userInfo, labelAccount, labelPosition);
+        Common.setImage("D:\\Workspaces\\Java\\Restaurant-manager\\src\\restaurant\\img\\logo.png", labelLogo);
+        Common.customizeTable(tablePendingDrinks, new int[]{});
+        Common.customizeTable(tablePendingDishes, new int[]{});
     }
 
     private void openFullScreenWindow(JFrame window) {
-        window.setExtendedState(JFrame.MAXIMIZED_BOTH); // Mở toàn màn hình cho cửa sổ
-        window.setVisible(true); // Hiển thị cửa sổ
-        this.dispose();  // Đóng cửa sổ hiện tại // this là JFrame hiện tại
+        window.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        window.setVisible(true);
+        this.dispose();
+    }
+
+    private void displayPendingDishesList() {
+        pendingDishes = new OrderDetailsDAO().getPendingProducts();
+        DefaultTableModel modelDishes = (DefaultTableModel) tablePendingDishes.getModel();
+        DefaultTableModel modelDrinks = (DefaultTableModel) tablePendingDrinks.getModel();
+
+        // Sắp xếp danh sách pendingDishes dựa trên thời gian bắt đầu từ gần nhất đến xa nhất
+        Collections.sort(pendingDishes, (OrderDetailsEntity product1, OrderDetailsEntity product2)
+                -> product2.getStartTime().compareTo(product1.getStartTime())
+        );
+
+        // Đổ dữ liệu từ danh sách pendingDishes vào model
+        for (OrderDetailsEntity detaildish : pendingDishes) {
+            // Get name table by id table
+            String tableDiningName = new OrdersDAO().getTableNameByOrderId(detaildish.getOrderID());
+
+            // Get id detail dish ordered
+            String productId = detaildish.getProductID();
+            int productQuantity = detaildish.getProductQuantity();
+            String productLevel = !detaildish.getProductDesc().isEmpty() ? " (" + detaildish.getProductDesc() + ")" : "";
+
+            System.out.println(productQuantity);
+            
+            // Get info dish
+            ProductsEntity productEntity = new ProductsDAO().getById(productId);
+            String productName = productEntity.getProductName();
+            String productNameAndLevel = productName + productLevel + "    x" + productQuantity;
+            String productKitchenArea = productEntity.getKitchenArea();
+
+            // Thêm món ăn vào bảng tương ứng
+            if (productKitchenArea.equals("Khu bếp")) {
+                modelDishes.addRow(new Object[]{
+                    productNameAndLevel,
+                    new SimpleDateFormat("HH:mm").format(detaildish.getStartTime()),
+                    tableDiningName
+                });
+            } else if (productKitchenArea.equals("Quầy nước")) {
+                modelDrinks.addRow(new Object[]{
+                    productNameAndLevel,
+                    new SimpleDateFormat("HH:mm").format(detaildish.getStartTime()),
+                    tableDiningName
+                });
+            }
+        }
+
+        // Đặt model cho bảng tablePendingDishes
+        tablePendingDishes.setModel(modelDrinks);
+        tablePendingDishes.setModel(modelDishes);
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton3 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jLabel4 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         btnDinnerTable = new javax.swing.JButton();
         btnOrder = new javax.swing.JButton();
@@ -45,48 +103,27 @@ public class ConfirmDishes extends javax.swing.JFrame {
         btnReport = new javax.swing.JButton();
         btnWarehouse = new javax.swing.JButton();
         labelLogo = new javax.swing.JLabel();
-        jPanel7 = new javax.swing.JPanel();
-        jLabel13 = new javax.swing.JLabel();
-        jButton10 = new javax.swing.JButton();
-        labelAccount = new javax.swing.JLabel();
-        labelPosition = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
         labelHouse = new javax.swing.JLabel();
+        labelPosition = new javax.swing.JLabel();
+        labelAccount = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnLast = new javax.swing.JButton();
+        btnNext = new javax.swing.JButton();
+        btnPre = new javax.swing.JButton();
+        btnFirst = new javax.swing.JButton();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel4 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tablePendingDishes = new javax.swing.JTable();
+        jPanel5 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tablePendingDrinks = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Tên món ăn", "Bàn", "Thời gian", "Trạng thái"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(200);
-        }
-
-        jButton3.setBackground(new java.awt.Color(0, 51, 102));
-        jButton3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setText("Xem lịch sử");
-        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        jButton5.setBackground(new java.awt.Color(0, 51, 102));
-        jButton5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton5.setForeground(new java.awt.Color(255, 255, 255));
-        jButton5.setText("Xem kho hàng");
-        jButton5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 22)); // NOI18N
-        jLabel4.setText("Xác nhận món");
+        setTitle("Quản lí nhân viên");
 
         jPanel1.setBackground(new java.awt.Color(0, 51, 102));
         jPanel1.setForeground(new java.awt.Color(51, 51, 255));
@@ -159,7 +196,7 @@ public class ConfirmDishes extends javax.swing.JFrame {
         btnStaff.setBorder(null);
         btnStaff.setBorderPainted(false);
         btnStaff.setContentAreaFilled(false);
-        btnStaff.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnStaff.setCursor(new java.awt.Cursor(java.awt.Cursor.MOVE_CURSOR));
         btnStaff.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnStaffActionPerformed(evt);
@@ -234,7 +271,7 @@ public class ConfirmDishes extends javax.swing.JFrame {
         btnReport.setBorder(null);
         btnReport.setBorderPainted(false);
         btnReport.setContentAreaFilled(false);
-        btnReport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnReport.setCursor(new java.awt.Cursor(java.awt.Cursor.MOVE_CURSOR));
         btnReport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnReportActionPerformed(evt);
@@ -299,85 +336,177 @@ public class ConfirmDishes extends javax.swing.JFrame {
                 .addComponent(btnClient, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnAccount, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addContainerGap(54, Short.MAX_VALUE))
         );
 
-        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel7.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.white, java.awt.Color.white, new java.awt.Color(204, 204, 204), java.awt.Color.white));
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.white, java.awt.Color.white, new java.awt.Color(204, 204, 204), java.awt.Color.white));
 
-        jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel13.setText("Mì cay Sisan");
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel4.setText("Mì cay Sisan");
 
-        jButton10.setBackground(new java.awt.Color(238, 238, 238));
-        jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/bell.png"))); // NOI18N
-        jButton10.setBorder(null);
-        jButton10.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        labelAccount.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        labelAccount.setText("TÀI KHOẢN: NGÔ KIM LONG");
-
-        labelPosition.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        labelPosition.setText("CHỨC VỤ: QUẢN LÝ");
+        jButton3.setBackground(new java.awt.Color(238, 238, 238));
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/bell.png"))); // NOI18N
+        jButton3.setBorder(null);
 
         labelHouse.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         labelHouse.setText("00:00:00");
 
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
+        labelPosition.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        labelPosition.setText("CHỨC VỤ: QUẢN LÝ");
+
+        labelAccount.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        labelAccount.setText("TÀI KHOẢN: NGÔ KIM LONG");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addComponent(jLabel13)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 497, Short.MAX_VALUE)
                 .addComponent(labelHouse)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(labelAccount)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(labelPosition)
                 .addGap(18, 18, 18)
-                .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30))
         );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addComponent(jButton10, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
                 .addContainerGap())
+            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(labelPosition, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(labelHouse, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(labelAccount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        jButton1.setText("Hủy món (Lý do)");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
+        btnLast.setText(">|");
+        btnLast.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnLast.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnLastActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Xác nhận hoàn thành");
+        btnNext.setText(">>");
+        btnNext.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnNext.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNextActionPerformed(evt);
+            }
+        });
+
+        btnPre.setText("<<");
+        btnPre.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnPre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPreActionPerformed(evt);
+            }
+        });
+
+        btnFirst.setText("|<");
+        btnFirst.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnFirst.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFirstActionPerformed(evt);
+            }
+        });
+
+        jTabbedPane1.setBackground(new java.awt.Color(255, 255, 255));
+        jTabbedPane1.setFont(new java.awt.Font("Cascadia Code PL", 0, 14)); // NOI18N
+
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
+
+        tablePendingDishes.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        tablePendingDishes.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Tên món", "Thời gian", "Tên bàn", "Xác nhận"
+            }
+        ));
+        tablePendingDishes.setRowHeight(50);
+        jScrollPane2.setViewportView(tablePendingDishes);
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1020, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Phòng bếp ", new javax.swing.ImageIcon(getClass().getResource("/icon/chef.png")), jPanel4); // NOI18N
+
+        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+
+        tablePendingDrinks.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        tablePendingDrinks.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Tên món", "Thời gian", "Tên bàn", "Xác nhận"
+            }
+        ));
+        tablePendingDrinks.setRowHeight(50);
+        jScrollPane3.setViewportView(tablePendingDrinks);
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1020, Short.MAX_VALUE)
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Quầy nước ", new javax.swing.ImageIcon(getClass().getResource("/icon/drink.png")), jPanel5); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(713, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
-                .addGap(96, 96, 96))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1020, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(btnFirst, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnPre, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnLast, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(27, 27, 27)
+                .addContainerGap(20, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 536, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addContainerGap(208, Short.MAX_VALUE))
+                    .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPre, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnLast, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnFirst, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(60, 60, 60))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -385,57 +514,30 @@ public class ConfirmDishes extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, 0)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 965, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(423, 423, 423)
-                                .addComponent(jButton5)
-                                .addGap(41, 41, 41)
-                                .addComponent(jButton3))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap())))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20)
-                .addComponent(jLabel4)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(74, 74, 74))
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 12, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnDinnerTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDinnerTableActionPerformed
-        DiningTables chonBan = new DiningTables(userInfo);
-        openFullScreenWindow(chonBan);
-    }//GEN-LAST:event_btnDinnerTableActionPerformed
-
     private void btnOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderActionPerformed
-        Dishes monAn = new Dishes(userInfo);
+        Products monAn = new Products(userInfo);
         openFullScreenWindow(monAn);
     }//GEN-LAST:event_btnOrderActionPerformed
 
@@ -455,8 +557,8 @@ public class ConfirmDishes extends javax.swing.JFrame {
     }//GEN-LAST:event_btnStaffActionPerformed
 
     private void btnClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientActionPerformed
-        //         TongQuan qlnv = new TongQuan();
-        //        openFullScreenWindow(qlnv);
+//         TongQuan qlnv = new TongQuan();
+//        openFullScreenWindow(qlnv);
     }//GEN-LAST:event_btnClientActionPerformed
 
     private void btnAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAccountActionPerformed
@@ -464,29 +566,47 @@ public class ConfirmDishes extends javax.swing.JFrame {
         openFullScreenWindow(taiKhoan);
     }//GEN-LAST:event_btnAccountActionPerformed
 
+    private void btnDinnerTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDinnerTableActionPerformed
+        DiningTables chonBan = new DiningTables(userInfo);
+        openFullScreenWindow(chonBan);
+    }//GEN-LAST:event_btnDinnerTableActionPerformed
+
+
     private void btnOverviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOverviewActionPerformed
         Overview tongQuan = new Overview(userInfo);
         openFullScreenWindow(tongQuan);
     }//GEN-LAST:event_btnOverviewActionPerformed
 
     private void btnCallTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCallTableActionPerformed
-        //        TongQuan overview = new TongQuan();
-        //        openFullScreenWindow(overview);
+//        TongQuan overview = new TongQuan();
+//        openFullScreenWindow(overview);
     }//GEN-LAST:event_btnCallTableActionPerformed
 
     private void btnReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportActionPerformed
-        //        TongQuan overview = new TongQuan();
-        //        openFullScreenWindow(overview);
+//        TongQuan overview = new TongQuan();
+//        openFullScreenWindow(overview);
     }//GEN-LAST:event_btnReportActionPerformed
 
     private void btnWarehouseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWarehouseActionPerformed
-        Warehouse khoHang = new Warehouse(userInfo);
+        ConfirmDishes khoHang = new ConfirmDishes(userInfo);
         openFullScreenWindow(khoHang);
     }//GEN-LAST:event_btnWarehouseActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastActionPerformed
+
+    }//GEN-LAST:event_btnLastActionPerformed
+
+    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
+
+    }//GEN-LAST:event_btnNextActionPerformed
+
+    private void btnPreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreActionPerformed
+
+    }//GEN-LAST:event_btnPreActionPerformed
+
+    private void btnFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstActionPerformed
+
+    }//GEN-LAST:event_btnFirstActionPerformed
 
     public static void main(String args[]) {
 
@@ -503,12 +623,9 @@ public class ConfirmDishes extends javax.swing.JFrame {
 
         java.awt.EventQueue.invokeLater(() -> {
             Map<String, String> userInfo = new HashMap<>();
-            userInfo.put("hoTen", "YourName");
-            userInfo.put("chucVu", "YourPosition");
-
-            ConfirmDishes nvBep = new ConfirmDishes(userInfo);
-            nvBep.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-            nvBep.setVisible(true);
+            ConfirmDishes khoHang = new ConfirmDishes(userInfo);
+            khoHang.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            khoHang.setVisible(true);
         });
     }
 
@@ -518,29 +635,32 @@ public class ConfirmDishes extends javax.swing.JFrame {
     private javax.swing.JButton btnClient;
     private javax.swing.JButton btnConfirm;
     private javax.swing.JButton btnDinnerTable;
+    private javax.swing.JButton btnFirst;
+    private javax.swing.JButton btnLast;
+    private javax.swing.JButton btnNext;
     private javax.swing.JButton btnOrder;
     private javax.swing.JButton btnOverview;
     private javax.swing.JButton btnPay;
+    private javax.swing.JButton btnPre;
     private javax.swing.JButton btnReport;
     private javax.swing.JButton btnStaff;
     private javax.swing.JButton btnWarehouse;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel labelAccount;
     private javax.swing.JLabel labelHouse;
     private javax.swing.JLabel labelLogo;
     private javax.swing.JLabel labelPosition;
+    private javax.swing.JTable tablePendingDishes;
+    private javax.swing.JTable tablePendingDrinks;
     // End of variables declaration//GEN-END:variables
 
-   
 }

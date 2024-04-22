@@ -52,6 +52,8 @@ public class Common {
         // Thiết lập Renderer cho tiêu đề
         DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer();
         headerRenderer.setHorizontalAlignment(SwingConstants.CENTER); // Căn giữa tiêu đề
+        headerRenderer.setBackground(Color.LIGHT_GRAY); // Màu nền cho tiêu đề
+        headerRenderer.setForeground(Color.BLACK); // Màu chữ cho tiêu đề
 
         // Thiết lập cỡ chữ cho tiêu đề bảng
         Font font = new Font("Be Vietnam Pro", Font.PLAIN, 14);

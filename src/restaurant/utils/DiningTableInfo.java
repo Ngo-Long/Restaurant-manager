@@ -1,11 +1,11 @@
 package restaurant.utils;
 
-import restaurant.entity.DiningTableEntity;
+import restaurant.entity.TablesEntity;
 
 public class DiningTableInfo {
 
     // Đối tượng này chứa thông tin bàn 
-    public static DiningTableEntity table = null;
+    public static TablesEntity table = null;
 
     // Xóa thông tin bàn
     public static void clear() {
@@ -13,12 +13,12 @@ public class DiningTableInfo {
     }
 
     // Thiết lập thông tin bàn
-    public static void setTable(DiningTableEntity table) {
+    public static void setTable(TablesEntity table) {
         DiningTableInfo.table = table;
     }
 
     // Truy xuất thông tin bàn
-    public static DiningTableEntity getTable() {
+    public static TablesEntity getTable() {
         return DiningTableInfo.table;
     }
 

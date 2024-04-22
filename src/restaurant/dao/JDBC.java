@@ -14,7 +14,7 @@ public class JDBC {
     public static PreparedStatement ps = null; // Câu lệnh SQL được biên dịch trước
     public static ResultSet rs = null; // Trả về kết quả truy vấn
     private static final String DATABASE_DRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    private static final String DATABASE_URL = "jdbc:sqlserver://localhost:1433;databaseName=QuanLyNhaHang;encrypt=true;trustServerCertificate=true;";
+    private static final String DATABASE_URL = "jdbc:sqlserver://localhost:1433;databaseName=RestaurantManager;encrypt=true;trustServerCertificate=true;";
     private static final String DATABASE_USERNAME = "sa";
     private static final String DATABASE_PASSWORD = "123";
 

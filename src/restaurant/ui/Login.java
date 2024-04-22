@@ -147,7 +147,7 @@ public class Login extends javax.swing.JFrame {
                 case "Quản Lý" ->
                     openWindow(new Overview(userInfo));
                 case "Phục Vụ" ->
-                    openWindow(new Dishes(userInfo));
+                    openWindow(new Products(userInfo));
                 case "Thu Ngân" ->
                     openWindow(new Bills(userInfo));
                 case "Đầu Bếp" ->

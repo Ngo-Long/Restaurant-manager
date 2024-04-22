@@ -964,7 +964,7 @@ public class Warehouse extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderActionPerformed
-        Dishes monAn = new Dishes(userInfo);
+        Products monAn = new Products(userInfo);
         openFullScreenWindow(monAn);
     }//GEN-LAST:event_btnOrderActionPerformed
 

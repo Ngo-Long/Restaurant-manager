@@ -2488,7 +2488,7 @@ public class Employees extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDinnerTableActionPerformed
 
     private void btnOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderActionPerformed
-        Dishes monAn = new Dishes(userInfo);
+        Products monAn = new Products(userInfo);
         openFullScreenWindow(monAn);
     }//GEN-LAST:event_btnOrderActionPerformed
 
