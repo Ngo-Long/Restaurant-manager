@@ -14,7 +14,7 @@ public class OrdersDAO {
     public static final String SELECT_ALL_SQL = "SELECT * FROM Orders";
     public static final String SELECT_ORDER_BY_TABLE_ID = "SELECT * FROM Orders WHERE TableID = ?";
     public static final String SELECT_ORDER_BY_ORDER_ID = "SELECT * FROM Orders WHERE OrderID = ?";
-    public static final String IS_TABLE_PAID = "SELECT COUNT(*) FROM Orders WHERE TableID = ? AND Status = 'Đã thanh toán'";
+    public static final String IS_TABLE_PAID = "SELECT COUNT(*) FROM Orders WHERE TableID = ? AND Status = N'Đã thanh toán'";
 
     public List<OrdersEntity> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);

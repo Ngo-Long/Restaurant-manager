@@ -331,4 +331,82 @@ public class Common {
             return comboBox;
         }
     }
+
+    // Hiện border đậm khi click
+    public static void setTableButtonBorder(JButton button, boolean isSelected) {
+        Color borderColor = isSelected ? new Color(60, 60, 60) : new Color(255, 255, 255);
+        button.setBorder(BorderFactory.createLineBorder(borderColor, 5, true));
+    }
+
+    // Create new button 
+    public static JButton createButton(String text, Color backgroundColor, Dimension size) {
+        JButton button = new JButton(text);
+
+        // Style button
+        button.setPreferredSize(size);
+        button.setFocusPainted(false); // Loại bỏ đường viền khi nút được chọn
+        button.setBackground(backgroundColor);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Style font
+        button.setForeground(Color.WHITE);
+        button.setFont(new Font(button.getFont().getName(), Font.BOLD, 15));
+
+        // Attach event
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                // Điều chỉnh màu sáng tối của màu ban đầu của nút
+                int r = backgroundColor.getRed();
+                int g = backgroundColor.getGreen();
+                int b = backgroundColor.getBlue();
+
+                // Giảm một số giá trị để làm cho màu đậm hơn
+                r = Math.max(0, r - 15);
+                g = Math.max(0, g - 15);
+                b = Math.max(0, b - 15);
+
+                button.setBackground(new Color(r, g, b));
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                // Điều chỉnh màu sáng tối của màu ban đầu của nút
+                int r = backgroundColor.getRed();
+                int g = backgroundColor.getGreen();
+                int b = backgroundColor.getBlue();
+
+                // Giảm một số giá trị để làm cho màu đậm hơn
+                r = Math.max(0, r - 30);
+                g = Math.max(0, g - 30);
+                b = Math.max(0, b - 30);
+
+                button.setBackground(new Color(r, g, b));
+            }
+        });
+
+        return button;
+    }
+
+    // Get image 
+    public static ImageIcon getScaledImageIcon(String imageUrl, int maxWidth, int maxHeight) {
+        // Tạo ImageIcon từ URL hình ảnh
+        ImageIcon icon = new ImageIcon(imageUrl);
+        Image image = icon.getImage();
+
+        // Tính tỷ lệ thu nhỏ để hình ảnh vừa với JPanel có kích thước maxWidth x maxHeight
+        int originalWidth = icon.getIconWidth();
+        int originalHeight = icon.getIconHeight();
+        double scale = Math.min((double) maxWidth / originalWidth, (double) maxHeight / originalHeight);
+        int scaledWidth = (int) (originalWidth * scale);
+        int scaledHeight = (int) (originalHeight * scale);
+
+        // Tạo một ImageIcon đã được thu nhỏ
+        Image scaledImage = image.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaledImage);
+    }
+
+   
 }

@@ -1,34 +1,41 @@
 package restaurant.ui;
 
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Map;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.*;
 import java.util.List;
-import java.util.HashMap;
-import javax.swing.JFrame;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.*;
+import javax.swing.table.*;
+import java.text.SimpleDateFormat;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 
-import restaurant.utils.Common;
 import restaurant.dao.ProductsDAO;
 import restaurant.dao.OrderDetailsDAO;
 import restaurant.dao.OrdersDAO;
 import restaurant.entity.ProductsEntity;
 import restaurant.entity.OrderDetailsEntity;
 
+import restaurant.utils.Common;
+import static restaurant.utils.Common.createButton;
+
 public class ConfirmDishes extends javax.swing.JFrame {
 
-    private List<OrderDetailsEntity> pendingDishes;
+    private List<OrderDetailsEntity> pendingProducts;
     Map<String, String> userInfo = Common.getUserInfo();
 
     public ConfirmDishes(Map<String, String> userInfo) {
         initComponents();
-        displayPendingDishesList();
+        displayPendingProductList();
 
         Common.initClock(labelHouse);
         Common.displayUserInfoBar(userInfo, labelAccount, labelPosition);
         Common.setImage("D:\\Workspaces\\Java\\Restaurant-manager\\src\\restaurant\\img\\logo.png", labelLogo);
-        Common.customizeTable(tablePendingDrinks, new int[]{});
         Common.customizeTable(tablePendingDishes, new int[]{});
+        Common.customizeTable(tablePendingDrinks, new int[]{});
+        setupButtonColumn(tablePendingDishes, 3);
+        setupButtonColumn(tablePendingDrinks, 3);
     }
 
     private void openFullScreenWindow(JFrame window) {
@@ -37,53 +44,227 @@ public class ConfirmDishes extends javax.swing.JFrame {
         this.dispose();
     }
 
-    private void displayPendingDishesList() {
-        pendingDishes = new OrderDetailsDAO().getPendingProducts();
-        DefaultTableModel modelDishes = (DefaultTableModel) tablePendingDishes.getModel();
+    private void displayPendingProductList() {
+        pendingProducts = new OrderDetailsDAO().getPendingProducts();
         DefaultTableModel modelDrinks = (DefaultTableModel) tablePendingDrinks.getModel();
+        DefaultTableModel modelDishes = (DefaultTableModel) tablePendingDishes.getModel();
 
         // Sắp xếp danh sách pendingDishes dựa trên thời gian bắt đầu từ gần nhất đến xa nhất
-        Collections.sort(pendingDishes, (OrderDetailsEntity product1, OrderDetailsEntity product2)
+        Collections.sort(pendingProducts, (OrderDetailsEntity product1, OrderDetailsEntity product2)
                 -> product2.getStartTime().compareTo(product1.getStartTime())
         );
 
         // Đổ dữ liệu từ danh sách pendingDishes vào model
-        for (OrderDetailsEntity detaildish : pendingDishes) {
+        for (OrderDetailsEntity detailProduct : pendingProducts) {
+            // Get id detail
+            int detailProductId = detailProduct.getOrderDetailID();
+
             // Get name table by id table
-            String tableDiningName = new OrdersDAO().getTableNameByOrderId(detaildish.getOrderID());
+            String tableDiningName = new OrdersDAO().getTableNameByOrderId(detailProduct.getOrderID());
 
             // Get id detail dish ordered
-            String productId = detaildish.getProductID();
-            int productQuantity = detaildish.getProductQuantity();
-            String productLevel = !detaildish.getProductDesc().isEmpty() ? " (" + detaildish.getProductDesc() + ")" : "";
+            String productId = detailProduct.getProductID();
+            int productQuantity = detailProduct.getProductQuantity();
+            String productLevel = !detailProduct.getProductDesc().isEmpty() ? " (" + detailProduct.getProductDesc() + ")" : "";
 
-            System.out.println(productQuantity);
-            
             // Get info dish
             ProductsEntity productEntity = new ProductsDAO().getById(productId);
             String productName = productEntity.getProductName();
-            String productNameAndLevel = productName + productLevel + "    x" + productQuantity;
+            String productNameAndLevel = productName + productLevel + "  x" + productQuantity;
             String productKitchenArea = productEntity.getKitchenArea();
+            String productTimeAdded = new SimpleDateFormat("HH:mm").format(detailProduct.getStartTime());
 
-            // Thêm món ăn vào bảng tương ứng
-            if (productKitchenArea.equals("Khu bếp")) {
+            // Thêm sản phẩm vào bảng tương ứng
+            if (productKitchenArea != null && productKitchenArea.equals("Khu bếp")) {
                 modelDishes.addRow(new Object[]{
                     productNameAndLevel,
-                    new SimpleDateFormat("HH:mm").format(detaildish.getStartTime()),
-                    tableDiningName
+                    tableDiningName,
+                    productTimeAdded,
+                    detailProductId
                 });
-            } else if (productKitchenArea.equals("Quầy nước")) {
+            }
+
+            if (productKitchenArea != null && productKitchenArea.equals("Quầy nước")) {
                 modelDrinks.addRow(new Object[]{
                     productNameAndLevel,
-                    new SimpleDateFormat("HH:mm").format(detaildish.getStartTime()),
-                    tableDiningName
+                    tableDiningName,
+                    productTimeAdded,
+                    detailProductId
                 });
             }
         }
 
-        // Đặt model cho bảng tablePendingDishes
-        tablePendingDishes.setModel(modelDrinks);
+        // Đặt model cho bảng 
+        tablePendingDrinks.setModel(modelDrinks);
         tablePendingDishes.setModel(modelDishes);
+    }
+
+    // Init 2 button "Finish" and "Delete"
+    public static void setupButtonColumn(JTable table, int columnNumber) {
+        TableColumnModel columnModel = table.getColumnModel();
+        TableColumn column = columnModel.getColumn(columnNumber);
+        column.setCellRenderer(new ButtonRenderer());
+        column.setCellEditor(new ButtonEditor(table));
+    }
+
+    private static class ButtonRenderer extends JPanel implements TableCellRenderer {
+
+        private final JButton finishButton;
+        private final JButton deleteButton;
+
+        public ButtonRenderer() {
+            setOpaque(true);
+            setLayout(new FlowLayout(FlowLayout.CENTER, 5, 2));
+            deleteButton = createButton("Xóa", new Color(255, 100, 0), new Dimension(60, 44));
+            finishButton = createButton("Hoàn thành", new Color(51, 153, 255), new Dimension(130, 44));
+            add(finishButton);
+            add(deleteButton);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+            return this;
+        }
+    }
+
+    private static class ButtonEditor extends DefaultCellEditor {
+
+        private final JPanel panel;
+        private final JButton finishButton;
+        private final JButton deleteButton;
+        private JDialog deleteDialog;
+
+        public ButtonEditor(JTable table) {
+            super(new JTextField());
+            setClickCountToStart(1);
+            panel = new JPanel();
+            panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 2));
+
+            deleteButton = createButton("Xóa", new Color(255, 100, 0), new Dimension(60, 44));
+            finishButton = createButton("Hoàn thành", new Color(51, 153, 255), new Dimension(130, 44));
+
+            finishButton.addActionListener((ActionEvent e) -> {
+                // Get row and id detail
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow == -1) {
+                    return;
+                }
+
+                int detailID = (int) table.getValueAt(selectedRow, 3);
+                new OrderDetailsDAO().updateProductFinished(detailID); // Update finish product
+
+                // Xóa hàng được chọn từ bảng
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
+                model.removeRow(selectedRow);
+                JOptionPane.showMessageDialog(null, "In món thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            });
+
+            deleteButton.addActionListener((ActionEvent e) -> {
+                // Lấy mã chi tiết đặt hàng từ bảng
+                int detailID = (int) table.getValueAt(table.getSelectedRow(), 3);
+
+                showDeleteConfirmationDialog(deleteDialog);
+
+                // in ra
+                System.out.println("Selected Order Detail ID: " + detailID);
+            });
+
+            panel.add(finishButton);
+            panel.add(deleteButton);
+        }
+
+        private void showDeleteConfirmationDialog(JDialog deleteDialog) {
+            deleteDialog = new JDialog();
+            deleteDialog.setTitle("Xác nhận xóa");
+            deleteDialog.setSize(300, 300);
+            deleteDialog.setLocationRelativeTo(null);
+            deleteDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+            JPanel contentPane = createDeleteConfirmationPanel(deleteDialog);
+
+            // Add the panel to the dialog content pane
+            deleteDialog.setContentPane(contentPane);
+            deleteDialog.setVisible(true);
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            return panel;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return "";
+        }
+    }
+
+    public static JPanel createDeleteConfirmationPanel(JDialog deleteDialog) {
+        // Create panel main
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 10, 10, 10));
+
+        // Create panel info
+        JPanel checkBoxPanel = new JPanel();
+        checkBoxPanel.setLayout(new BoxLayout(checkBoxPanel, BoxLayout.Y_AXIS));
+
+        // Add JCheckBox into checkBoxPanel
+        checkBoxPanel.add(createCheckBox("Hết nguyên liệu"));
+        checkBoxPanel.add(Box.createVerticalStrut(10));
+        checkBoxPanel.add(createCheckBox("Khách hủy món"));
+        checkBoxPanel.add(Box.createVerticalStrut(10));
+        checkBoxPanel.add(createCheckBox("Phục vụ đặt nhầm"));
+        checkBoxPanel.add(Box.createVerticalStrut(10));
+
+        // Text field for other reasons
+        JPanel otherReasonPanel = new JPanel(new BorderLayout());
+        JTextField textField = new JTextField();
+        textField.setFont(textField.getFont().deriveFont(16f));
+        otherReasonPanel.add(textField);
+        otherReasonPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        otherReasonPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Lí do khác",
+                TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION,
+                new Font("SansSerif", Font.BOLD, 16))
+        );
+
+        checkBoxPanel.add(otherReasonPanel);
+
+        // Create button panel: 
+        JPanel buttonPanel = new JPanel();
+        JButton okButton = createButton("Xác nhận", new Color(255, 255, 255), new Dimension(100, 34));
+        JButton cancelButton = createButton("Đóng", new Color(255, 255, 255), new Dimension(80, 34));
+
+        // - Setup add button
+        okButton.setForeground(Color.BLACK);
+        okButton.setFont(new Font(okButton.getFont().getName(), Font.PLAIN, 14));
+        cancelButton.setForeground(Color.BLACK);
+        cancelButton.setFont(new Font(cancelButton.getFont().getName(), Font.PLAIN, 14));
+
+        // Handle button click
+        okButton.addActionListener((ActionEvent e) -> {
+            System.out.println("OK button clicked");
+            deleteDialog.dispose();
+        });
+
+        cancelButton.addActionListener((ActionEvent e) -> {
+            deleteDialog.dispose();
+        });
+
+        buttonPanel.add(okButton);
+        buttonPanel.add(cancelButton);
+        checkBoxPanel.add(otherReasonPanel, BorderLayout.SOUTH);
+        panel.add(checkBoxPanel, BorderLayout.CENTER);
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        return panel;
+    }
+
+    private static JCheckBox createCheckBox(String text) {
+        JCheckBox checkBox = new JCheckBox(text);
+        checkBox.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
+        return checkBox;
     }
 
     @SuppressWarnings("unchecked")
@@ -110,13 +291,9 @@ public class ConfirmDishes extends javax.swing.JFrame {
         labelPosition = new javax.swing.JLabel();
         labelAccount = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        btnLast = new javax.swing.JButton();
-        btnNext = new javax.swing.JButton();
-        btnPre = new javax.swing.JButton();
-        btnFirst = new javax.swing.JButton();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel4 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        jScrollPane5 = new javax.swing.JScrollPane();
         tablePendingDishes = new javax.swing.JTable();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -365,7 +542,7 @@ public class ConfirmDishes extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 497, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(labelHouse)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(labelAccount)
@@ -382,43 +559,11 @@ public class ConfirmDishes extends javax.swing.JFrame {
                 .addContainerGap())
             .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(labelPosition, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(labelHouse, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(labelAccount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(labelHouse, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-
-        btnLast.setText(">|");
-        btnLast.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnLast.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLastActionPerformed(evt);
-            }
-        });
-
-        btnNext.setText(">>");
-        btnNext.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnNext.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNextActionPerformed(evt);
-            }
-        });
-
-        btnPre.setText("<<");
-        btnPre.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnPre.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPreActionPerformed(evt);
-            }
-        });
-
-        btnFirst.setText("|<");
-        btnFirst.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnFirst.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnFirstActionPerformed(evt);
-            }
-        });
 
         jTabbedPane1.setBackground(new java.awt.Color(255, 255, 255));
         jTabbedPane1.setFont(new java.awt.Font("Cascadia Code PL", 0, 14)); // NOI18N
@@ -431,21 +576,36 @@ public class ConfirmDishes extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Tên món", "Thời gian", "Tên bàn", "Xác nhận"
+                "Tên món", "Tên bàn", "Thời gian", "Xác nhận", "Mã chi tiết"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         tablePendingDishes.setRowHeight(50);
-        jScrollPane2.setViewportView(tablePendingDishes);
+        jScrollPane5.setViewportView(tablePendingDishes);
+        if (tablePendingDishes.getColumnModel().getColumnCount() > 0) {
+            tablePendingDishes.getColumnModel().getColumn(0).setResizable(false);
+            tablePendingDishes.getColumnModel().getColumn(1).setResizable(false);
+            tablePendingDishes.getColumnModel().getColumn(4).setMinWidth(0);
+            tablePendingDishes.getColumnModel().getColumn(4).setPreferredWidth(0);
+            tablePendingDishes.getColumnModel().getColumn(4).setMaxWidth(0);
+        }
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1020, Short.MAX_VALUE)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 1020, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Phòng bếp ", new javax.swing.ImageIcon(getClass().getResource("/icon/chef.png")), jPanel4); // NOI18N
@@ -458,11 +618,26 @@ public class ConfirmDishes extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Tên món", "Thời gian", "Tên bàn", "Xác nhận"
+                "Tên món", "Tên bàn", "Thời gian", "Xác nhận", "Mã chi tiết"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         tablePendingDrinks.setRowHeight(50);
         jScrollPane3.setViewportView(tablePendingDrinks);
+        if (tablePendingDrinks.getColumnModel().getColumnCount() > 0) {
+            tablePendingDrinks.getColumnModel().getColumn(0).setResizable(false);
+            tablePendingDrinks.getColumnModel().getColumn(1).setResizable(false);
+            tablePendingDrinks.getColumnModel().getColumn(4).setMinWidth(0);
+            tablePendingDrinks.getColumnModel().getColumn(4).setPreferredWidth(0);
+            tablePendingDrinks.getColumnModel().getColumn(4).setMaxWidth(0);
+        }
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -472,7 +647,7 @@ public class ConfirmDishes extends javax.swing.JFrame {
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Quầy nước ", new javax.swing.ImageIcon(getClass().getResource("/icon/drink.png")), jPanel5); // NOI18N
@@ -483,30 +658,15 @@ public class ConfirmDishes extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1020, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(btnFirst, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnPre, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnLast, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1020, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(20, Short.MAX_VALUE)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 536, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnPre, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnLast, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnFirst, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(60, 60, 60))
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(61, 61, 61))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -592,22 +752,6 @@ public class ConfirmDishes extends javax.swing.JFrame {
         openFullScreenWindow(khoHang);
     }//GEN-LAST:event_btnWarehouseActionPerformed
 
-    private void btnLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastActionPerformed
-
-    }//GEN-LAST:event_btnLastActionPerformed
-
-    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
-
-    }//GEN-LAST:event_btnNextActionPerformed
-
-    private void btnPreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreActionPerformed
-
-    }//GEN-LAST:event_btnPreActionPerformed
-
-    private void btnFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstActionPerformed
-
-    }//GEN-LAST:event_btnFirstActionPerformed
-
     public static void main(String args[]) {
 
         try {
@@ -615,10 +759,12 @@ public class ConfirmDishes extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ConfirmDishes.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ConfirmDishes.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
         java.awt.EventQueue.invokeLater(() -> {
@@ -635,13 +781,9 @@ public class ConfirmDishes extends javax.swing.JFrame {
     private javax.swing.JButton btnClient;
     private javax.swing.JButton btnConfirm;
     private javax.swing.JButton btnDinnerTable;
-    private javax.swing.JButton btnFirst;
-    private javax.swing.JButton btnLast;
-    private javax.swing.JButton btnNext;
     private javax.swing.JButton btnOrder;
     private javax.swing.JButton btnOverview;
     private javax.swing.JButton btnPay;
-    private javax.swing.JButton btnPre;
     private javax.swing.JButton btnReport;
     private javax.swing.JButton btnStaff;
     private javax.swing.JButton btnWarehouse;
@@ -652,8 +794,8 @@ public class ConfirmDishes extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel labelAccount;
     private javax.swing.JLabel labelHouse;

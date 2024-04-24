@@ -174,11 +174,11 @@ public class DiningTables extends javax.swing.JFrame {
 
         // Add ActionListener to Call a method to display detailed information
         tableButton.addActionListener((ActionEvent e) -> {
+            // Display border bode when click
             if (selectedTableButton != null && selectedTableButton != tableButton) {
-                setTableButtonBorder(selectedTableButton, false);
+                Common.setTableButtonBorder(selectedTableButton, false);
             }
-            selectedTableButton = tableButton; // Đặt button hiện tại là button được chọn
-            setTableButtonBorder(selectedTableButton, true); // Đặt màu viền cho button hiện tại
+            Common.setTableButtonBorder(selectedTableButton = tableButton, true);
 
             displayDetailedDiningTable(diningTable);
             displayOrderedDishesByTable(diningTable.getTableID());
@@ -186,11 +186,6 @@ public class DiningTables extends javax.swing.JFrame {
         });
 
         return tableButton;
-    }
-
-    private void setTableButtonBorder(JButton button, boolean isSelected) {
-        Color borderColor = isSelected ? new Color(60, 60, 60) : new Color(255, 255, 255);
-        button.setBorder(BorderFactory.createLineBorder(borderColor, 5, true));
     }
 
     private void setTableButtonColors(JButton tableButton, String status) {
@@ -224,9 +219,13 @@ public class DiningTables extends javax.swing.JFrame {
         // Get info detail order through dining table id
         List<OrderDetailsEntity> detailOrderList = new OrderDetailsDAO().getByTableId(tableId);
 
+        // Create a Map để lưu trữ số lượng và giá của mỗi món
+        Map<String, Integer> productPriceMap = new HashMap<>();
+        Map<String, Integer> productQuantityMap = new HashMap<>();
+
         // Display dishes on the table
         for (OrderDetailsEntity detailOrder : detailOrderList) {
-            // Get id dish
+            // Get info dish
             String dishId = detailOrder.getProductID();
             String dishLevel = !detailOrder.getProductDesc().isEmpty() ? " (" + detailOrder.getProductDesc() + ")" : "";
 
@@ -234,14 +233,37 @@ public class DiningTables extends javax.swing.JFrame {
             ProductsEntity productEntity = new ProductsDAO().getById(dishId);
             String productName = productEntity.getProductName();
             String productNameAndLevel = productName + dishLevel;
-            String productPrice = String.valueOf(productEntity.getPrice());
-            String convertDishPrice = Common.addCommasToNumber(productPrice) + " ₫";
 
-            // Add table
+            // Tăng số lượng của món trong Map
+            int quantity = detailOrder.getProductQuantity();
+            if (productQuantityMap.containsKey(productNameAndLevel)) {
+                quantity += productQuantityMap.get(productNameAndLevel);
+            }
+
+            productQuantityMap.put(productNameAndLevel, quantity);
+            productPriceMap.put(productNameAndLevel, productEntity.getPrice());
+        }
+
+        // Add data into the table
+        for (Map.Entry<String, Integer> entry : productQuantityMap.entrySet()) {
+            // Get name and level -> ex: Mì cay (Cấp 7)
+            String productNameAndLevel = entry.getKey();
+            int totalQuantity = entry.getValue();
+
+            // Get unit price and quantity -> ex: 50.000₫ x 3
+            int unitPrice = productPriceMap.get(productNameAndLevel);
+            String convertUnitPrice = Common.addCommasToNumber(String.valueOf(unitPrice)) + "₫";
+            String unitPriceAndtotalQuantity = convertUnitPrice + "  x" + totalQuantity;
+
+            // Get total price -> ex: 50.000 x 3 = 150.000
+            int totalPrice = unitPrice * totalQuantity;
+            String convertTotalPrice = Common.addCommasToNumber(String.valueOf(totalPrice)) + "₫";
+
+            // Add row into the table
             model.addRow(new Object[]{
                 productNameAndLevel,
-                convertDishPrice,
-                detailOrder.getProductQuantity()
+                unitPriceAndtotalQuantity,
+                convertTotalPrice
             });
         }
     }
@@ -607,13 +629,13 @@ public class DiningTables extends javax.swing.JFrame {
         btnChuyenBan.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnChuyenBan.setText("Chuyển bàn");
 
-        tableListOrderedDishes.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        tableListOrderedDishes.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tableListOrderedDishes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Các món ăn đã gọi", "Đơn giá", "SL"
+                "Các món ăn đã gọi", "Đơn giá", "Tổng giá"
             }
         ));
         tableListOrderedDishes.setAlignmentX(2.0F);
@@ -621,8 +643,9 @@ public class DiningTables extends javax.swing.JFrame {
         tableListOrderedDishes.setRowHeight(30);
         jScrollPane1.setViewportView(tableListOrderedDishes);
         if (tableListOrderedDishes.getColumnModel().getColumnCount() > 0) {
-            tableListOrderedDishes.getColumnModel().getColumn(0).setPreferredWidth(160);
-            tableListOrderedDishes.getColumnModel().getColumn(2).setPreferredWidth(20);
+            tableListOrderedDishes.getColumnModel().getColumn(0).setPreferredWidth(140);
+            tableListOrderedDishes.getColumnModel().getColumn(1).setResizable(false);
+            tableListOrderedDishes.getColumnModel().getColumn(2).setResizable(false);
         }
 
         btnAddOrder.setBackground(new java.awt.Color(51, 102, 0));

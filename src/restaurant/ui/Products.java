@@ -8,11 +8,9 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 
-import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.dao.ProductsDAO;
 import restaurant.dao.OrdersDAO;
@@ -21,9 +19,14 @@ import restaurant.entity.ProductsEntity;
 import restaurant.entity.OrdersEntity;
 import restaurant.entity.OrderDetailsEntity;
 
+import restaurant.utils.Common;
+import static restaurant.utils.Common.createButton;
+import static restaurant.utils.Common.getScaledImageIcon;
+
 public class Products extends javax.swing.JFrame {
 
     private String imagePath;
+    private String kitchenArea;
     private List<ProductsEntity> dishesList;
     Map<String, String> userInfo = Common.getUserInfo();
 
@@ -45,27 +48,28 @@ public class Products extends javax.swing.JFrame {
         String id = textDishID.getText();
         String name = textDishName.getText();
         String category = textCategory.getText();
-        String moneyText = textMoney.getText();
+        String priceText = textMoney.getText();
         String status = comboBoxStatus.getSelectedItem().toString();
         String desc = textDesc.getText();
 
         try {
-            if (id.isEmpty() || name.isEmpty() || category.isEmpty() || moneyText.isEmpty()) {
+            if (id.isEmpty() || name.isEmpty() || category.isEmpty() || priceText.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
 
-            int money = Integer.parseInt(Common.removeCommasFromNumber(moneyText));
-            if (money < 0) {
+            int price = Integer.parseInt(Common.removeCommasFromNumber(priceText));
+            if (price < 0) {
                 JOptionPane.showMessageDialog(null, "Số tiền là số không âm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
 
             ProductsEntity model = new ProductsEntity();
             model.setProductID(id);
             model.setProductName(name);
-            model.setPrice(money);
+            model.setCategory(category);
+            model.setKitchenArea(kitchenArea);
+            model.setPrice(price);
             model.setDescription(desc);
             model.setImageURL(imagePath);
-            model.setCategory(category);
             model.setStatus(status);
 
             return model;
@@ -111,64 +115,26 @@ public class Products extends javax.swing.JFrame {
     }
 
     private JPanel createButtonDishItem(ProductsEntity dishItem) {
-        // Get URL image
-        String imagePath = dishItem.getImageURL();
-        ImageIcon originalIcon = new ImageIcon(imagePath);
-        Image originalImage = originalIcon.getImage();
+        // Create a image product
+        String imageUrl = dishItem.getImageURL();
+        ImageIcon scaledIcon = getScaledImageIcon(imageUrl, 150, 150);
 
-        // Tính tỷ lệ thu nhỏ để hình ảnh vừa với JPanel có kích thước 150x150
-        int maxWidth = 150;
-        int maxHeight = 150;
-        int originalWidth = originalIcon.getIconWidth();
-        int originalHeight = originalIcon.getIconHeight();
-        double scale = Math.min((double) maxWidth / originalWidth, (double) maxHeight / originalHeight);
-        int scaledWidth = (int) (originalWidth * scale);
-        int scaledHeight = (int) (originalHeight * scale);
-
-        // Tạo một ImageIcon đã được thu nhỏ
-        Image scaledImage = originalImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
-        ImageIcon scaledIcon = new ImageIcon(scaledImage);
-
-        // Tạo một JPanel chính để chứa hình ảnh và background trắng
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.setPreferredSize(new Dimension(140, 174));
-        mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        Border border = BorderFactory.createLineBorder(Color.GRAY);
-        mainPanel.setBorder(border);
-
-        // Tạo một image label để chứa hình ảnh thu nhỏ của món ăn
-        JLabel imageLabel = new JLabel(scaledIcon);
-        imageLabel.setHorizontalAlignment(JLabel.CENTER); // Căn chỉnh nằm giữa 
-        mainPanel.add(imageLabel, BorderLayout.CENTER); // Thêm JLabel của hình ảnh vào JPanel chính
-
-        // Tạo một JPanel con để chứa tên, giá và button
-        JPanel infoPanel = new JPanel();
-        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-        infoPanel.setBackground(Color.WHITE);
-
-        // Tạo một JLabel để chứa tên của món ăn và đặt kiểu chữ
+        // Create a JLabel name
         JLabel textLabel = new JLabel(dishItem.getProductName());
         textLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        Font boldFont = new Font(textLabel.getFont().getName(), Font.BOLD, 14);
-        textLabel.setFont(boldFont);
-        infoPanel.add(textLabel); // Thêm JLabel của tên món ăn vào JPanel con
+        textLabel.setFont(new Font(textLabel.getFont().getName(), Font.BOLD, 14));
 
-        // Tạo một JLabel để chứa giá tiền của món ăn và đặt kiểu chữ
+        // Create a JLabel price
         String formattedPrice = Common.addCommasToNumber(String.valueOf(dishItem.getPrice()));
         JLabel priceLabel = new JLabel(formattedPrice + " VND");
         priceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         priceLabel.setFont(new Font(priceLabel.getFont().getName(), Font.PLAIN, 14));
-        infoPanel.add(priceLabel);
+
+        // Create border in half
+        MatteBorder topBorder = BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 200));
 
         // Create button "Đặt món"
-        JButton orderButton = new JButton("Đặt món");
-        orderButton.setAlignmentX(Component.CENTER_ALIGNMENT); // orderButton nằm giữa JPanel con
-        orderButton.setPreferredSize(new Dimension(120, 40)); // Kích thước nút và kiểu chữ
-        orderButton.setFont(new Font(orderButton.getFont().getName(), Font.BOLD, 15)); // kiểu chữ 
-        orderButton.setForeground(Color.WHITE); // Màu chữ
-        orderButton.setBackground(new Color(51, 153, 255)); // Màu nền
-        orderButton.setFocusPainted(false); // Loại bỏ đường viền khi nút được chọn
+        JButton orderButton = createButton("Đặt món", new Color(51, 153, 255), new Dimension(120, 40));
         orderButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -177,16 +143,30 @@ public class Products extends javax.swing.JFrame {
             }
         });
 
-        // Thêm orderButton vào JPanel con
-        infoPanel.add(orderButton);
-        infoPanel.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
+        // Create label top contains (scaledIcon) 
+        JLabel labelTop = new JLabel(scaledIcon);
+        labelTop.setHorizontalAlignment(JLabel.CENTER);
 
-        // Tạo đường viền top để biểu thị ranh giới và làm nhấn màu nhẹ nhàng của panel ở dưới
-        MatteBorder topBorder = BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 200));
-        infoPanel.setBorder(BorderFactory.createCompoundBorder(topBorder, infoPanel.getBorder()));
+        // Create panel bottom contains (name, price, border, button)
+        JPanel panelBottom = new JPanel();
+        panelBottom.add(textLabel);
+        panelBottom.add(priceLabel);
+        panelBottom.add(orderButton);
+        panelBottom.setBackground(Color.WHITE);
+        panelBottom.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
+        panelBottom.setLayout(new BoxLayout(panelBottom, BoxLayout.Y_AXIS));
+        panelBottom.setBorder(BorderFactory.createCompoundBorder(topBorder, panelBottom.getBorder()));
 
-        // Add infoPanel vào mainPanel
-        mainPanel.add(infoPanel, BorderLayout.SOUTH);
+        // Create a panel main 
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setPreferredSize(new Dimension(140, 174));
+        mainPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        // mainPanel contains (labelTop, panelBottom)
+        mainPanel.add(labelTop, BorderLayout.CENTER);
+        mainPanel.add(panelBottom, BorderLayout.SOUTH);
 
         // Call method displayDetailedInfo when user clicked
         mainPanel.addMouseListener(new MouseAdapter() {
@@ -208,21 +188,27 @@ public class Products extends javax.swing.JFrame {
         textCategory.setText(dishItem.getCategory());
         textDesc.setText(dishItem.getDescription());
         imagePath = dishItem.getImageURL();
+        kitchenArea = dishItem.getKitchenArea();
+        if ("Khu bếp".equals(kitchenArea)) {
+            radioKitchenAreaDrinks.setSelected(false);
+            radioKitchenAreaDishes.setSelected(true);
+        } else if ("Quầy nước".equals(kitchenArea)) {
+            radioKitchenAreaDrinks.setSelected(true);
+            radioKitchenAreaDishes.setSelected(false);
+        }
 
-        // Avatar 
-        btnFood.setBorder(null);
-        btnFood.setPreferredSize(new Dimension(94, 94));
-
-        String avatarPath = dishItem.getImageURL();
-        ImageIcon icon = new ImageIcon(avatarPath);
-        Image image = icon.getImage().getScaledInstance(94, 94, Image.SCALE_SMOOTH);
-        ImageIcon scaledIcon = new ImageIcon(image);
-        btnFood.setIcon(scaledIcon);
+        String imageUrl = dishItem.getImageURL();
+        ImageIcon scaledIcon = getScaledImageIcon(imageUrl, 94, 94);
 
         // Format date if needed
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy  -  HH:mm:ss");
         textAdditionalDay.setText(dateFormat.format(dishItem.getDateAdded()));
         textUpdateDay.setText(dateFormat.format(dishItem.getLastUpdated()));
+
+        // Avatar 
+        btnFood.setBorder(null);
+        btnFood.setIcon(scaledIcon);
+        btnFood.setPreferredSize(new Dimension(94, 94));
     }
 
     // handle when click button "Đặt món" 
@@ -232,10 +218,11 @@ public class Products extends javax.swing.JFrame {
             return;
         }
 
+        // Get info
         String foodName = dishItem.getProductName();
         DefaultTableModel saveOrder = (DefaultTableModel) tableOrder.getModel();
 
-        // Thêm một hàng mới với thông tin của món ăn
+        // Add new row into the table
         Object[] rowData = {foodName, 1};
         saveOrder.insertRow(0, rowData);
     }
@@ -305,8 +292,8 @@ public class Products extends javax.swing.JFrame {
         textDesc = new javax.swing.JTextField();
         btnChoseIngredients = new javax.swing.JButton();
         jLabel12 = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
+        radioKitchenAreaDishes = new javax.swing.JRadioButton();
+        radioKitchenAreaDrinks = new javax.swing.JRadioButton();
         scrollPane = new javax.swing.JScrollPane();
         panelListDishes = new javax.swing.JPanel();
 
@@ -622,7 +609,7 @@ public class Products extends javax.swing.JFrame {
             .addComponent(labelHouse, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        jTabbedPane3.setBackground(new java.awt.Color(248, 248, 248));
+        jTabbedPane3.setBackground(new java.awt.Color(255, 255, 255));
         jTabbedPane3.setFont(new java.awt.Font("Cascadia Code PL", 0, 14)); // NOI18N
 
         jPanel9.setBackground(new java.awt.Color(248, 248, 248));
@@ -849,15 +836,25 @@ public class Products extends javax.swing.JFrame {
         jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel12.setText("Khu chế biến:");
 
-        jRadioButton1.setBackground(new java.awt.Color(255, 255, 255));
-        jRadioButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jRadioButton1.setSelected(true);
-        jRadioButton1.setText("Nhà bếp");
-        jRadioButton1.setPreferredSize(new java.awt.Dimension(76, 25));
+        radioKitchenAreaDishes.setBackground(new java.awt.Color(255, 255, 255));
+        radioKitchenAreaDishes.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        radioKitchenAreaDishes.setSelected(true);
+        radioKitchenAreaDishes.setText("Khu bếp");
+        radioKitchenAreaDishes.setPreferredSize(new java.awt.Dimension(76, 25));
+        radioKitchenAreaDishes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioKitchenAreaDishesActionPerformed(evt);
+            }
+        });
 
-        jRadioButton2.setBackground(new java.awt.Color(255, 255, 255));
-        jRadioButton2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jRadioButton2.setText("Quầy nước");
+        radioKitchenAreaDrinks.setBackground(new java.awt.Color(255, 255, 255));
+        radioKitchenAreaDrinks.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        radioKitchenAreaDrinks.setText("Quầy nước");
+        radioKitchenAreaDrinks.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioKitchenAreaDrinksActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
@@ -878,9 +875,9 @@ public class Products extends javax.swing.JFrame {
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel10Layout.createSequentialGroup()
                                 .addGap(18, 18, 18)
-                                .addComponent(jRadioButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(radioKitchenAreaDishes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jRadioButton2))
+                                .addComponent(radioKitchenAreaDrinks))
                             .addGroup(jPanel10Layout.createSequentialGroup()
                                 .addGap(17, 17, 17)
                                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -938,8 +935,8 @@ public class Products extends javax.swing.JFrame {
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jRadioButton2)
-                        .addComponent(jRadioButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(radioKitchenAreaDrinks)
+                        .addComponent(radioKitchenAreaDishes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(12, 12, 12)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnChoseIngredients, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
@@ -1258,16 +1255,16 @@ public class Products extends javax.swing.JFrame {
                 int dishQuantity = Integer.parseInt(row.get(1).toString());
                 String dishDesc = row.get(2) != null ? row.get(2).toString() : "";
                 String dishId = ProductsDAO.getIdDishFromName(dishName);
-                String dishStatus = "Chưa xử lý";
 
-                // Add new dish on detail order
-                OrderDetailsEntity newDetail = new OrderDetailsEntity();
-                newDetail.setOrderID(existingOrder.getOrderId());
-                newDetail.setProductID(dishId);
-                newDetail.setProductQuantity(dishQuantity);
-                newDetail.setProductStatus(dishStatus);
-                newDetail.setProductDesc(dishDesc);
-                new OrderDetailsDAO().insert(newDetail);
+                // Add new each dish on detail order
+                for (int i = 1; i <= dishQuantity; i++) {
+                    OrderDetailsEntity newDetail = new OrderDetailsEntity();
+                    newDetail.setOrderID(existingOrder.getOrderId());
+                    newDetail.setProductID(dishId);
+                    newDetail.setProductQuantity(1);
+                    newDetail.setProductDesc(dishDesc);
+                    new OrderDetailsDAO().insert(newDetail);
+                }
             }
 
             Dialog.alert(this, "Thêm món ăn thành công!");
@@ -1279,6 +1276,8 @@ public class Products extends javax.swing.JFrame {
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         ProductsEntity model = getModel();
+
+        System.out.println(kitchenArea);
 
         if (!new ProductsDAO().isDuplicatedId(model.getProductID())) {
             Dialog.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
@@ -1298,6 +1297,18 @@ public class Products extends javax.swing.JFrame {
         DiningTables chonBan = new DiningTables(userInfo);
         openFullScreenWindow(chonBan);
     }//GEN-LAST:event_btnNameDiningTableActionPerformed
+
+    private void radioKitchenAreaDishesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioKitchenAreaDishesActionPerformed
+        kitchenArea = radioKitchenAreaDishes.getText();
+        radioKitchenAreaDishes.setSelected(true);
+        radioKitchenAreaDrinks.setSelected(false);
+    }//GEN-LAST:event_radioKitchenAreaDishesActionPerformed
+
+    private void radioKitchenAreaDrinksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioKitchenAreaDrinksActionPerformed
+        kitchenArea = radioKitchenAreaDrinks.getText();
+        radioKitchenAreaDrinks.setSelected(true);
+        radioKitchenAreaDishes.setSelected(false);
+    }//GEN-LAST:event_radioKitchenAreaDrinksActionPerformed
 
     public static void searchAndClassifyMenu(String keyword, String phanLoai, JPanel panel) {
 //        try (Connection connection = getConnection()) {
@@ -1410,8 +1421,6 @@ public class Products extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel37;
     private javax.swing.JPanel jPanel9;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane3;
     private javax.swing.JLabel labelAccount;
@@ -1419,6 +1428,8 @@ public class Products extends javax.swing.JFrame {
     private javax.swing.JLabel labelLogo;
     private javax.swing.JLabel labelPosition;
     private javax.swing.JPanel panelListDishes;
+    private javax.swing.JRadioButton radioKitchenAreaDishes;
+    private javax.swing.JRadioButton radioKitchenAreaDrinks;
     private javax.swing.JScrollPane scrollPane;
     private javax.swing.JTable tableOrder;
     private javax.swing.JTextField textAdditionalDay;

@@ -8,8 +8,9 @@ import restaurant.entity.OrderDetailsEntity;
 
 public class OrderDetailsDAO {
 
-    public static final String INSERT_SQL = "INSERT INTO OrderDetails (OrderID, ProductID, ProductQuantity, ProductStatus, ProductDesc, StartTime) VALUES (?, ?, ?, ?, ?, GETDATE())";
-    public static final String UPDATE_SQL = "UPDATE OrderDetails SET OrderID=?, ProductID=?, ProductQuantity=?, ProductStatus=?, ProductDesc=?, EndTime=GETDATE() WHERE OrderDetailID=?";
+    public static final String INSERT_SQL = "INSERT INTO OrderDetails (OrderID, ProductID, ProductQuantity, ProductStatus, ProductDesc, StartTime) VALUES (?, ?, ?, N'Chưa xử lý', ?, GETDATE())";
+    public static final String UPDATE_FINISHED_PRODUCT_SQL = "UPDATE OrderDetails SET ProductStatus=N'Đã hoàn thành', OrderNote='', EndTime=GETDATE() WHERE OrderDetailID=?";
+    public static final String UPDATE_REMOVE_PRODUCT_SQL = "UPDATE OrderDetails SET ProductStatus=N'Đã xóa', OrderNote=?, EndTime=GETDATE() WHERE OrderDetailID=?";
     public static final String DELETE_SQL = "DELETE FROM OrderDetails WHERE OrderDetailID=?";
     public static final String SELECT_ALL_SQL = "SELECT * FROM OrderDetails";
     public static final String SELECT_BY_ORDER_ID_SQL = "SELECT * FROM OrderDetails WHERE OrderID = ?";
@@ -25,18 +26,18 @@ public class OrderDetailsDAO {
                 model.getOrderID(),
                 model.getProductID(),
                 model.getProductQuantity(),
-                model.getProductStatus(),
                 model.getProductDesc()
         );
     }
 
-    public void update(OrderDetailsEntity model) {
-        JDBC.executeUpdate(UPDATE_SQL,
-                model.getOrderID(),
-                model.getProductID(),
-                model.getProductQuantity(),
+    public void updateProductFinished(int detailID) {
+        JDBC.executeUpdate(UPDATE_FINISHED_PRODUCT_SQL, detailID);
+    }
+
+    public void updateProductRemove(OrderDetailsEntity model) {
+        JDBC.executeUpdate(UPDATE_REMOVE_PRODUCT_SQL,
                 model.getProductStatus(),
-                model.getProductDesc(),
+                model.getOrderNote(),
                 model.getOrderDetailID()
         );
     }
