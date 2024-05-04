@@ -85,4 +85,16 @@ public class JDBC {
         throw new RuntimeException(e); // Ném lại RuntimeException để chương trình dừng lại.
     }
 
+    public static long getLastInsertId() throws SQLException {
+        String sql = "SELECT SCOPE_IDENTITY()"; // Get last identity value
+        try (PreparedStatement stmt = prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1); // Retrieve and return the ID
+            } else {
+                throw new SQLException("Failed to retrieve last inserted ID");
+            }
+        }
+    }
+
 }

@@ -5,6 +5,7 @@ import java.util.Date;
 public class OrdersEntity {
 
     private int orderId;
+    private int invoiceID;
     private String tableId;
     private String status;
     private String method;
@@ -16,6 +17,14 @@ public class OrdersEntity {
 
     public void setOrderId(int orderId) {
         this.orderId = orderId;
+    }
+
+    public int getInvoiceID() {
+        return invoiceID;
+    }
+
+    public void setInvoiceID(int invoiceID) {
+        this.invoiceID = invoiceID;
     }
 
     public String getTableId() {

@@ -1,19 +1,20 @@
 package restaurant.ui;
 
-import restaurant.dao.IngrediantDAO;
-import static restaurant.dao.IngrediantDAO.searchAndClassifyIngredient;
-import restaurant.entity.IngrediantEntity;
-import restaurant.utils.Dialog;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.text.DecimalFormat;
-import javax.swing.JFrame;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
+import javax.swing.JFrame;
+import java.text.DecimalFormat;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseAdapter;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
 import restaurant.utils.Common;
+import restaurant.utils.Dialog;
+import restaurant.dao.IngrediantDAO;
+import restaurant.entity.IngrediantEntity;
+import static restaurant.dao.IngrediantDAO.searchAndClassifyIngredient;
 
 public class Warehouse extends javax.swing.JFrame {
 
@@ -969,12 +970,12 @@ public class Warehouse extends javax.swing.JFrame {
     }//GEN-LAST:event_btnOrderActionPerformed
 
     private void btnPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPayActionPerformed
-        Bills hoaDon = new Bills(userInfo);
+        Invoices hoaDon = new Invoices(userInfo);
         openFullScreenWindow(hoaDon);
     }//GEN-LAST:event_btnPayActionPerformed
 
     private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
-        ConfirmDishes nvBep = new ConfirmDishes(userInfo);
+        ConfirmProducts nvBep = new ConfirmProducts(userInfo);
         openFullScreenWindow(nvBep);
     }//GEN-LAST:event_btnConfirmActionPerformed
 
@@ -1198,9 +1199,6 @@ public class Warehouse extends javax.swing.JFrame {
 
         java.awt.EventQueue.invokeLater(() -> {
             Map<String, String> userInfo = new HashMap<>();
-            userInfo.put("hoTen", "YourName");
-            userInfo.put("chucVu", "YourPosition");
-
             Warehouse khoHang = new Warehouse(userInfo);
             khoHang.setVisible(true);
         });

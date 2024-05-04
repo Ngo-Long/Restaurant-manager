@@ -8,13 +8,14 @@ import restaurant.entity.OrdersEntity;
 
 public class OrdersDAO {
 
-    public static final String INSERT_SQL = "INSERT INTO Orders (TableID, Status, Method, CreatedDate) VALUES (?, ?, ?, GETDATE())";
-    public static final String UPDATE_SQL = "UPDATE Orders SET TableID=?, Status=?, Method=? WHERE OrderID=?";
+    public static final String INSERT_SQL = "INSERT INTO Orders (InvoiceID, TableID, Status, Method, CreatedDate) VALUES (?, ?, ?, ?, GETDATE())";
     public static final String DELETE_SQL = "DELETE FROM Orders WHERE OrderID=?";
+    public static final String UPDATE_SQL = "UPDATE Orders SET TableID=?, Status=?, Method=? WHERE OrderID=?";
+    public static final String UPDATE_STATUS_BY_INVOICE_ID = "UPDATE Orders SET Status=N'Đơn hàng hoàn thành' "
+            + "WHERE OrderID = (SELECT OrderID FROM Orders WHERE InvoiceID = ?)";
     public static final String SELECT_ALL_SQL = "SELECT * FROM Orders";
-    public static final String SELECT_ORDER_BY_TABLE_ID = "SELECT * FROM Orders WHERE TableID = ?";
     public static final String SELECT_ORDER_BY_ORDER_ID = "SELECT * FROM Orders WHERE OrderID = ?";
-    public static final String IS_TABLE_PAID = "SELECT COUNT(*) FROM Orders WHERE TableID = ? AND Status = N'Đã thanh toán'";
+    public static final String SELECT_ORDER_BY_TABLE_ID = "SELECT * FROM Orders WHERE Status = N'Đang đặt hàng' and TableID = ?";
 
     public List<OrdersEntity> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
@@ -22,6 +23,7 @@ public class OrdersDAO {
 
     public void insert(OrdersEntity model) {
         JDBC.executeUpdate(INSERT_SQL,
+                model.getInvoiceID(),
                 model.getTableId(),
                 model.getStatus(),
                 model.getMethod()
@@ -56,16 +58,8 @@ public class OrdersDAO {
         return orders.isEmpty() ? null : orders.get(0);
     }
 
-    public boolean isTablePaid(String tableId) {
-        try (ResultSet rs = JDBC.executeQuery(IS_TABLE_PAID, tableId)) {
-            if (rs.next()) {
-                int count = rs.getInt(1);
-                return count > 0;
-            }
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        }
-        return false;
+    public void updateStatusByInvoiceId(int invoiceId) {
+        JDBC.executeUpdate(UPDATE_STATUS_BY_INVOICE_ID, invoiceId);
     }
 
     private List<OrdersEntity> fetchByQuery(String sql, Object... args) {

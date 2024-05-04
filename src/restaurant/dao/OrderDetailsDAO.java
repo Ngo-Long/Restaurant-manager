@@ -8,18 +8,19 @@ import restaurant.entity.OrderDetailsEntity;
 
 public class OrderDetailsDAO {
 
-    public static final String INSERT_SQL = "INSERT INTO OrderDetails (OrderID, ProductID, ProductQuantity, ProductStatus, ProductDesc, StartTime) VALUES (?, ?, ?, N'Chưa xử lý', ?, GETDATE())";
-    public static final String UPDATE_FINISHED_PRODUCT_SQL = "UPDATE OrderDetails SET ProductStatus=N'Đã hoàn thành', OrderNote='', EndTime=GETDATE() WHERE OrderDetailID=?";
-    public static final String UPDATE_REMOVE_PRODUCT_SQL = "UPDATE OrderDetails SET ProductStatus=N'Đã xóa', OrderNote=?, EndTime=GETDATE() WHERE OrderDetailID=?";
+    public static final String INSERT_SQL = "INSERT INTO OrderDetails (OrderID, ProductID, ProductQuantity, ProductStatus, ProductDesc, OrderNote, StartTime) VALUES (?, ?, ?, N'Chưa xử lý', ?, N'', GETDATE())";
     public static final String DELETE_SQL = "DELETE FROM OrderDetails WHERE OrderDetailID=?";
     public static final String SELECT_ALL_SQL = "SELECT * FROM OrderDetails";
+    public static final String UPDATE_FINISHED_PRODUCT_SQL = "UPDATE OrderDetails SET ProductStatus=N'Đã hoàn thành', OrderNote='', EndTime=GETDATE() WHERE OrderDetailID=?";
+    public static final String UPDATE_REMOVE_PRODUCT_SQL = "UPDATE OrderDetails SET ProductStatus=N'Đã xóa', OrderNote=?, EndTime=GETDATE() WHERE OrderDetailID=?";
     public static final String SELECT_BY_ORDER_ID_SQL = "SELECT * FROM OrderDetails WHERE OrderID = ?";
     public static final String SELECT_PENDING_PRODUCTS_SQL = "SELECT * FROM OrderDetails WHERE ProductStatus = N'Chưa xử lý'";
-    public static final String SELECT_ORDERED_BY_TABLE_ID_SQL = "SELECT od.* "
-            + "FROM OrderDetails od "
+    public static final String SELECT_CONFIRMED_PRODUCTS_SQL = "SELECT * FROM OrderDetails WHERE ProductStatus != N'Chưa xử lý'";
+    public static final String SELECT_ORDERED_BY_TABLE_ID_SQL = "SELECT od.* FROM OrderDetails od "
             + "JOIN Orders o ON od.OrderID = o.OrderID "
-            + "JOIN DiningTables dt ON o.TableID = dt.TableID "
-            + "WHERE dt.TableID = ? AND o.Status = N'Chờ thanh toán'";
+            + "JOIN DiningTables t ON o.TableID = t.TableID "
+            + "JOIN Invoices i ON o.InvoiceID = i.InvoiceID "
+            + "WHERE od.ProductStatus != N'Đã xóa' AND i.Status = N'Chờ thanh toán' AND t.TableID = ?";
 
     public void insert(OrderDetailsEntity model) {
         JDBC.executeUpdate(INSERT_SQL,
@@ -27,18 +28,6 @@ public class OrderDetailsDAO {
                 model.getProductID(),
                 model.getProductQuantity(),
                 model.getProductDesc()
-        );
-    }
-
-    public void updateProductFinished(int detailID) {
-        JDBC.executeUpdate(UPDATE_FINISHED_PRODUCT_SQL, detailID);
-    }
-
-    public void updateProductRemove(OrderDetailsEntity model) {
-        JDBC.executeUpdate(UPDATE_REMOVE_PRODUCT_SQL,
-                model.getProductStatus(),
-                model.getOrderNote(),
-                model.getOrderDetailID()
         );
     }
 
@@ -50,15 +39,27 @@ public class OrderDetailsDAO {
         return fetchByQuery(SELECT_ALL_SQL);
     }
 
+    public void updateProductFinished(int detailID) {
+        JDBC.executeUpdate(UPDATE_FINISHED_PRODUCT_SQL, detailID);
+    }
+
+    public void updateProductRemove(int detailID, String selectedReason) {
+        JDBC.executeUpdate(UPDATE_REMOVE_PRODUCT_SQL, selectedReason, detailID);
+    }
+
     public List<OrderDetailsEntity> getPendingProducts() {
         return fetchByQuery(SELECT_PENDING_PRODUCTS_SQL);
+    }
+
+    public List<OrderDetailsEntity> getConfirmedProducts() {
+        return fetchByQuery(SELECT_CONFIRMED_PRODUCTS_SQL);
     }
 
     public List<OrderDetailsEntity> getByOrderId(int orderId) {
         return fetchByQuery(SELECT_BY_ORDER_ID_SQL, orderId);
     }
 
-    public List<OrderDetailsEntity> getByTableId(String tableId) {
+    public List<OrderDetailsEntity> getOrderdByTableId(String tableId) {
         return fetchByQuery(SELECT_ORDERED_BY_TABLE_ID_SQL, tableId);
     }
 

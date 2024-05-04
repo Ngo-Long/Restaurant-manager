@@ -16,19 +16,6 @@ public class TablesDAO {
     public static final String SELECT_BY_ID_SQL = "SELECT * FROM DiningTables WHERE TableID=?";
     public static final String CHECK_DUPLICATED_ID_SQL = "SELECT COUNT(*) FROM DiningTables WHERE TableID=?";
 
-    public List<TablesEntity> getAll() {
-        return fetchByQuery(SELECT_ALL_SQL);
-    }
-
-    public List<TablesEntity> getAllByArea(String area) {
-        return fetchByQuery(SELECT_ALL_AREA_SQL, area);
-    }
-
-    public TablesEntity getById(String id) {
-        List<TablesEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
-        return list.isEmpty() ? null : list.get(0);
-    }
-
     public void insert(TablesEntity entity) {
         JDBC.executeUpdate(INSERT_SQL,
                 entity.getTableID(),
@@ -55,6 +42,19 @@ public class TablesDAO {
 
     public void delete(String id) {
         JDBC.executeUpdate(DELETE_SQL, id);
+    }
+
+    public TablesEntity getById(String id) {
+        List<TablesEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    public List<TablesEntity> getAll() {
+        return fetchByQuery(SELECT_ALL_SQL);
+    }
+
+    public List<TablesEntity> getAllByArea(String area) {
+        return fetchByQuery(SELECT_ALL_AREA_SQL, area);
     }
 
     public boolean isIdDuplicated(String id) {

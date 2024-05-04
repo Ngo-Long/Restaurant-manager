@@ -143,15 +143,15 @@ public class Login extends javax.swing.JFrame {
         if (userInfo != null) {
             Common.setUserInfo(userInfo);  // Lưu thông tin 
 
-            switch (userInfo.get("chucVu")) {
+            switch (userInfo.get("Position")) {
                 case "Quản Lý" ->
                     openWindow(new Overview(userInfo));
                 case "Phục Vụ" ->
                     openWindow(new Products(userInfo));
                 case "Thu Ngân" ->
-                    openWindow(new Bills(userInfo));
+                    openWindow(new Invoices(userInfo));
                 case "Đầu Bếp" ->
-                    openWindow(new ConfirmDishes(userInfo));
+                    openWindow(new ConfirmProducts(userInfo));
                 case "Kho" ->
                     openWindow(new Warehouse(userInfo));
                 default -> {
@@ -168,7 +168,7 @@ public class Login extends javax.swing.JFrame {
 
     private Map<String, String> isValidLogin(String username, String password) {
         try (Connection connection = getConnection()) {
-            String sql = "SELECT idNhanVien, chucVu, hoTen FROM NhanVien WHERE idNhanVien IN (SELECT idNhanVien FROM TaiKhoan WHERE taiKhoan = ? AND matKhau = ?)";
+            String sql = "SELECT EmployeeID, Position, FullName FROM Employees WHERE EmployeeID IN (SELECT EmployeeID FROM Accounts WHERE Username = ? AND Password = ?)";
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 preparedStatement.setString(1, username);
                 preparedStatement.setString(2, password);
@@ -176,9 +176,9 @@ public class Login extends javax.swing.JFrame {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
                         Map<String, String> result = new HashMap<>();
-                        result.put("idNhanVien", resultSet.getString("idNhanVien"));
-                        result.put("chucVu", resultSet.getString("chucVu"));
-                        result.put("hoTen", resultSet.getString("hoTen"));
+                        result.put("EmployeeID", resultSet.getString("EmployeeID"));
+                        result.put("Position", resultSet.getString("Position"));
+                        result.put("FullName", resultSet.getString("FullName"));
                         return result;
                     }
                 }

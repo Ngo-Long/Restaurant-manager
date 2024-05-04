@@ -151,6 +151,13 @@ public class Common {
 
     // Add commas to number after 3 number
     public static String addCommasToNumber(String num) {
+        // Remove trailing spaces first
+        num = num.trim();
+
+        if (num.isEmpty()) {
+            return num; // Return empty string if input is empty
+        }
+
         String regex = "(\\d)(?=(\\d{3})+$)";
         String[] split = num.split("\\.");
 
@@ -163,6 +170,13 @@ public class Common {
 
     // Remove commas from number
     public static String removeCommasFromNumber(String num) {
+        // Remove trailing spaces first
+        num = num.trim();
+
+        if (num.isEmpty()) {
+            return num; // Return empty string if input is empty
+        }
+
         return num.replaceAll(",", "");
     }
 
@@ -408,5 +422,37 @@ public class Common {
         return new ImageIcon(scaledImage);
     }
 
-   
+    // Update the row index
+    public static void updateSelectRowAfterRemoval(JTable table, int selectedRow) {
+        if (table == null || selectedRow < 0) {
+            return;
+        }
+
+        // Get model
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.removeRow(selectedRow);
+
+        // Chọn selectedRow nếu nó nhỏ hơn tổng hàng
+        int newSelectedRow = Math.min(selectedRow, model.getRowCount() - 1);
+
+        // Chọn hàng mới
+        table.setRowSelectionInterval(newSelectedRow, newSelectedRow);
+    }
+
+    // Đổi màu hàng của table
+    public static void setColorForRow(JTable table, int rowIndex, Color color) {
+        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (row == rowIndex) {
+                    c.setBackground(color);
+                } else {
+                    c.setBackground(Color.white);
+                }
+                return c;
+            }
+        });
+        table.repaint();
+    }
 }

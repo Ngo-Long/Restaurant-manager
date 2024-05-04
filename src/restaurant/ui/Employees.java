@@ -2493,12 +2493,12 @@ public class Employees extends javax.swing.JFrame {
     }//GEN-LAST:event_btnOrderActionPerformed
 
     private void btnPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPayActionPerformed
-        Bills hoaDon = new Bills(userInfo);
+        Invoices hoaDon = new Invoices(userInfo);
         openFullScreenWindow(hoaDon);
     }//GEN-LAST:event_btnPayActionPerformed
 
     private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
-        ConfirmDishes nvBep = new ConfirmDishes(userInfo);
+        ConfirmProducts nvBep = new ConfirmProducts(userInfo);
         openFullScreenWindow(nvBep);
     }//GEN-LAST:event_btnConfirmActionPerformed
 
