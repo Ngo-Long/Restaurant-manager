@@ -1,67 +1,63 @@
 package restaurant.utils;
 
 import java.awt.*;
+import java.io.File;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.table.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
 public class Common {
 
-    // Get info user
-    private static Map<String, String> userInfo;
+    // Cài đặt tên trong mọi file
+    public static void setAccountLabel(javax.swing.JLabel label) {
+        String fullName = "";
+        String position = "";
 
-    public static Map<String, String> getUserInfo() {
-        if (userInfo == null) {
-            userInfo = new HashMap<>();
+        // Kiểm tra và gán giá trị cho fullName
+        if (Auth.user != null && Auth.user.getFullName() != null) {
+            fullName = Auth.user.getFullName();
         }
-        return userInfo;
-    }
 
-    // Set info user
-    public static void setUserInfo(Map<String, String> newUserInfo) {
-        userInfo = newUserInfo;
-    }
-
-    // Display user info on bar
-    public static void displayUserInfoBar(Map<String, String> userInfo, JLabel labelAccount, JLabel labelPosition) {
-        if (userInfo != null && userInfo.containsKey("hoTen") && userInfo.containsKey("chucVu")) {
-            String hoTen = userInfo.get("hoTen");
-            String chucVu = userInfo.get("chucVu");
-
-            labelAccount.setText("Tài khoản: " + hoTen);
-            labelPosition.setText("Chức vụ: " + chucVu);
+        // Kiểm tra và gán giá trị cho position
+        if (Auth.user != null && Auth.user.getPosition() != null) {
+            position = Auth.user.getPosition();
         }
-    }
 
-    // Display user name
-    public static void displayUserName(Map<String, String> userInfo, JLabel name) {
-        if (userInfo != null && userInfo.containsKey("hoTen") && userInfo.containsKey("chucVu")) {
-            String hoTen = userInfo.get("hoTen");
-            name.setText(hoTen);
-        }
+        // Chuyển đổi thành chuỗi in hoa và gán vào labelAccount
+        label.setText(fullName.toUpperCase() + " - " + position.toUpperCase());
     }
 
     // Hàm chung để tùy chỉnh bảng
     public static void customizeTable(JTable table, int[] columnsNotCentered) {
-        // Thiết lập Renderer cho tiêu đề
+        // Thiết lập bảng
+        table.setGridColor(Color.WHITE);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Chọn duy nhất một hàng
+        table.setDefaultEditor(Object.class, null);  // Không cho phép chỉnh sửa nội dung trong bảng
+        table.setBorder(new LineBorder(Color.WHITE));
+
+        // Thiết lập cho tiêu đề
         DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer();
         headerRenderer.setHorizontalAlignment(SwingConstants.CENTER); // Căn giữa tiêu đề
-        headerRenderer.setBackground(Color.LIGHT_GRAY); // Màu nền cho tiêu đề
+        headerRenderer.setOpaque(true);
+        headerRenderer.setBackground(Color.WHITE); // Màu nền cho tiêu đề
         headerRenderer.setForeground(Color.BLACK); // Màu chữ cho tiêu đề
+        table.getTableHeader().setFont(new Font("Be Vietnam Pro", Font.PLAIN, 14));
 
-        // Thiết lập cỡ chữ cho tiêu đề bảng
-        Font font = new Font("Be Vietnam Pro", Font.PLAIN, 14);
-        table.getTableHeader().setFont(font);
-
-        // Thiết lập Renderer cho nội dung các cột (trừ cột số 2)
+        // Thiết lập chữ trong bảng (trừ cột số 2)
         DefaultTableCellRenderer contentRenderer = new DefaultTableCellRenderer();
         contentRenderer.setHorizontalAlignment(SwingConstants.CENTER); // Căn giữa nội dung
+        contentRenderer.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+
         for (int i = 0; i < table.getColumnCount(); i++) {
             boolean isCentered = true;
             for (int column : columnsNotCentered) {
@@ -90,7 +86,40 @@ public class Common {
         labelHouse.setText(formattedTime);
     }
 
-    // Set img
+    // Tính toán thời gian còn lại và định dạng thành HH:mm
+    public static String calculateTimeRemaining(java.sql.Timestamp startTime) {
+        long elapsedTimeInMillis = System.currentTimeMillis() - startTime.getTime();
+        long hours = TimeUnit.MILLISECONDS.toHours(elapsedTimeInMillis);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(elapsedTimeInMillis) % 60;
+        return String.format("%02d:%02d", hours, minutes);
+    }
+
+    // Chọn ảnh từ thư mục
+    public static void chooseImage(JFrame frame, JButton btnImage) {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+
+        int result = fileChooser.showOpenDialog(frame);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile(); // Chọn
+            String imagePath = selectedFile.getAbsolutePath(); // Lưu đường dẫn ảnh đã chọn
+            resetImagePath(imagePath, btnImage);
+        }
+    }
+
+    // Set imgage
+    public static void resetImagePath(String path, JButton button) {
+        int width = button.getWidth();
+        int height = button.getHeight();
+
+        ImageIcon icon = new ImageIcon(path);
+        Image image = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(image);
+        button.setIcon(scaledIcon);
+    }
+
+    // Update image
     public static void setImage(String imagePath, JLabel labelLogo) {
         ImageIcon icon = new ImageIcon(imagePath);
 
@@ -102,19 +131,30 @@ public class Common {
         labelLogo.setIcon(scaledIcon);
     }
 
-    // Full screen
-    public static void openFullScreenWindow(JFrame window) {
-        window.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        window.setVisible(true);
-        window.dispose();
+    // Get image 
+    public static ImageIcon getScaledImageIcon(String imageUrl, int maxWidth, int maxHeight) {
+        // Tạo ImageIcon từ URL hình ảnh
+        ImageIcon icon = new ImageIcon(imageUrl);
+        Image image = icon.getImage();
+
+        // Tính tỷ lệ thu nhỏ để hình ảnh vừa với JPanel có kích thước maxWidth x maxHeight
+        int originalWidth = icon.getIconWidth();
+        int originalHeight = icon.getIconHeight();
+        double scale = Math.min((double) maxWidth / originalWidth, (double) maxHeight / originalHeight);
+        int scaledWidth = (int) (originalWidth * scale);
+        int scaledHeight = (int) (originalHeight * scale);
+
+        // Tạo một ImageIcon đã được thu nhỏ
+        Image scaledImage = image.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaledImage);
     }
 
     // Scroll bar
-    public static void customizeScrollBar(JScrollPane scrollPane, Color trackColor) {
+    public static void customizeScrollBar(JScrollPane scrollPane) {
         scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
             @Override
             protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
-                g.setColor(trackColor);
+                g.setColor(Color.WHITE);
                 g.fillRect(trackBounds.x, trackBounds.y, trackBounds.width, trackBounds.height);
             }
 
@@ -122,8 +162,8 @@ public class Common {
             protected void paintThumb(Graphics g, JComponent c, Rectangle thumbBounds) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(Color.GRAY);
-                g2.fillRoundRect(thumbBounds.x, thumbBounds.y, thumbBounds.width, thumbBounds.height, 10, 10);
+                g2.setColor(Color.lightGray);
+                g2.fillRoundRect(thumbBounds.x, thumbBounds.y, thumbBounds.width, thumbBounds.height, 8, 8);
                 g2.dispose();
             }
 
@@ -180,17 +220,6 @@ public class Common {
         return num.replaceAll(",", "");
     }
 
-    // Set imgage
-    public void resetImagePath(String path, JButton button) {
-        int width = button.getWidth();
-        int height = button.getHeight();
-
-        ImageIcon icon = new ImageIcon(path);
-        Image image = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        ImageIcon scaledIcon = new ImageIcon(image);
-        button.setIcon(scaledIcon);
-    }
-
     // Init 2 button "+" and "-"
     public static void setupButtonColumn(JTable table, int columnNumber) {
         TableColumnModel columnModel = table.getColumnModel();
@@ -202,8 +231,8 @@ public class Common {
     private static class ButtonRenderer extends DefaultTableCellRenderer {
 
         private final JPanel panel = new JPanel();
-        private final JButton plusButton = new JButton("➕");
         private final JButton minusButton = new JButton("➖");
+        private final JButton plusButton = new JButton("➕");
         private final JTextField textField = new JTextField();
 
         public ButtonRenderer() {
@@ -212,9 +241,9 @@ public class Common {
             textField.setFont(textFont);
 
             panel.setLayout(new BorderLayout());
-            panel.add(plusButton, BorderLayout.WEST);
+            panel.add(minusButton, BorderLayout.WEST);
             panel.add(textField, BorderLayout.CENTER);
-            panel.add(minusButton, BorderLayout.EAST);
+            panel.add(plusButton, BorderLayout.EAST);
         }
 
         @Override
@@ -242,8 +271,8 @@ public class Common {
     private static class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
 
         private final JPanel panel = new JPanel();
-        private final JButton plusButton = new JButton("➕");
         private final JButton minusButton = new JButton("➖");
+        private final JButton plusButton = new JButton("➕");
         private final JTextField textField = new JTextField();
 
         public ButtonEditor() {
@@ -276,9 +305,9 @@ public class Common {
                 fireEditingStopped();
             });
 
-            panel.add(plusButton, BorderLayout.WEST);
+            panel.add(minusButton, BorderLayout.WEST);
             panel.add(textField, BorderLayout.CENTER);
-            panel.add(minusButton, BorderLayout.EAST);
+            panel.add(plusButton, BorderLayout.EAST);
         }
 
         @Override
@@ -404,24 +433,6 @@ public class Common {
         return button;
     }
 
-    // Get image 
-    public static ImageIcon getScaledImageIcon(String imageUrl, int maxWidth, int maxHeight) {
-        // Tạo ImageIcon từ URL hình ảnh
-        ImageIcon icon = new ImageIcon(imageUrl);
-        Image image = icon.getImage();
-
-        // Tính tỷ lệ thu nhỏ để hình ảnh vừa với JPanel có kích thước maxWidth x maxHeight
-        int originalWidth = icon.getIconWidth();
-        int originalHeight = icon.getIconHeight();
-        double scale = Math.min((double) maxWidth / originalWidth, (double) maxHeight / originalHeight);
-        int scaledWidth = (int) (originalWidth * scale);
-        int scaledHeight = (int) (originalHeight * scale);
-
-        // Tạo một ImageIcon đã được thu nhỏ
-        Image scaledImage = image.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
-        return new ImageIcon(scaledImage);
-    }
-
     // Update the row index
     public static void updateSelectRowAfterRemoval(JTable table, int selectedRow) {
         if (table == null || selectedRow < 0) {
@@ -454,5 +465,23 @@ public class Common {
             }
         });
         table.repaint();
+    }
+
+    // Phương thức để kiểm tra định dạng email
+    public static boolean isValidEmail(String email) {
+        // Sử dụng biểu thức chính quy để kiểm tra định dạng email
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
+    // Thêm các button vô 1 nhóm
+    public static ButtonGroup createButtonGroup(AbstractButton... buttons) {
+        ButtonGroup buttonGroup = new ButtonGroup();
+        for (AbstractButton button : buttons) {
+            buttonGroup.add(button);
+        }
+        return buttonGroup;
     }
 }

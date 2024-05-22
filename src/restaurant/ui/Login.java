@@ -1,21 +1,17 @@
 package restaurant.ui;
 
-import static restaurant.dao.AccountDAO.getConnection;
-import java.util.Map;
-import java.util.HashMap;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import restaurant.utils.Common;
+import restaurant.dao.AccountDAO;
+import restaurant.dao.EmployeeDAO;
+import restaurant.entity.EmployeeEntity;
+import restaurant.utils.Auth;
+import restaurant.utils.Dialog;
 
 public class Login extends javax.swing.JFrame {
 
-    public Login() {
+    public Login(java.awt.Frame parent, boolean modal) {
         initComponents();
-        setLocationRelativeTo(null);
+        init();
     }
 
     @SuppressWarnings("unchecked")
@@ -23,6 +19,8 @@ public class Login extends javax.swing.JFrame {
     private void initComponents() {
 
         btnGR = new javax.swing.ButtonGroup();
+        jDialog1 = new javax.swing.JDialog();
+        jDialog2 = new javax.swing.JDialog();
         jLabel1 = new javax.swing.JLabel();
         txtUser = new javax.swing.JTextField();
         btnLogin = new javax.swing.JButton();
@@ -30,6 +28,28 @@ public class Login extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         txtPassword = new javax.swing.JPasswordField();
         jLabel4 = new javax.swing.JLabel();
+
+        javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
+        jDialog1.getContentPane().setLayout(jDialog1Layout);
+        jDialog1Layout.setHorizontalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        jDialog1Layout.setVerticalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jDialog2Layout = new javax.swing.GroupLayout(jDialog2.getContentPane());
+        jDialog2.getContentPane().setLayout(jDialog2Layout);
+        jDialog2Layout.setHorizontalGroup(
+            jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        jDialog2Layout.setVerticalGroup(
+            jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Đăng nhập");
@@ -39,6 +59,7 @@ public class Login extends javax.swing.JFrame {
         jLabel1.setText("ĐĂNG NHẬP ");
 
         txtUser.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txtUser.setText("quanly001");
         txtUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtUserActionPerformed(evt);
@@ -64,6 +85,7 @@ public class Login extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(51, 51, 51));
         jLabel3.setText("Tên đăng nhập");
 
+        txtPassword.setText("123");
         txtPassword.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtPasswordActionPerformed(evt);
@@ -123,73 +145,9 @@ public class Login extends javax.swing.JFrame {
     private void txtUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUserActionPerformed
     }//GEN-LAST:event_txtUserActionPerformed
 
-    private void openWindow(JFrame frame) {
-        java.awt.EventQueue.invokeLater(() -> {
-            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-            frame.setVisible(true);
-        });
-    }
-
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        String username = txtUser.getText();
-        String password = new String(txtPassword.getPassword());
-
-        if (username.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ thông tin!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        Map<String, String> userInfo = isValidLogin(username, password);
-        if (userInfo != null) {
-            Common.setUserInfo(userInfo);  // Lưu thông tin 
-
-            switch (userInfo.get("Position")) {
-                case "Quản Lý" ->
-                    openWindow(new Overview(userInfo));
-                case "Phục Vụ" ->
-                    openWindow(new Products(userInfo));
-                case "Thu Ngân" ->
-                    openWindow(new Invoices(userInfo));
-                case "Đầu Bếp" ->
-                    openWindow(new ConfirmProducts(userInfo));
-                case "Kho" ->
-                    openWindow(new Warehouse(userInfo));
-                default -> {
-                    JOptionPane.showMessageDialog(this, "Chức vụ không hợp lệ!", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-            }
-
-            this.dispose();
-        } else {
-            JOptionPane.showMessageDialog(this, "Đăng nhập thất bại!", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        this.login();
     }//GEN-LAST:event_btnLoginActionPerformed
-
-    private Map<String, String> isValidLogin(String username, String password) {
-        try (Connection connection = getConnection()) {
-            String sql = "SELECT EmployeeID, Position, FullName FROM Employees WHERE EmployeeID IN (SELECT EmployeeID FROM Accounts WHERE Username = ? AND Password = ?)";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                preparedStatement.setString(1, username);
-                preparedStatement.setString(2, password);
-
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    if (resultSet.next()) {
-                        Map<String, String> result = new HashMap<>();
-                        result.put("EmployeeID", resultSet.getString("EmployeeID"));
-                        result.put("Position", resultSet.getString("Position"));
-                        result.put("FullName", resultSet.getString("FullName"));
-                        return result;
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Lỗi kiểm tra", "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 
     private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
     }//GEN-LAST:event_txtPasswordActionPerformed
@@ -208,13 +166,22 @@ public class Login extends javax.swing.JFrame {
         }
 
         java.awt.EventQueue.invokeLater(() -> {
-            new Login().setVisible(true);
+            Login dialog = new Login(new javax.swing.JFrame(), true);
+            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    System.exit(0);
+                }
+            });
+            dialog.setVisible(true);
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup btnGR;
     private javax.swing.JButton btnLogin;
+    private javax.swing.JDialog jDialog1;
+    private javax.swing.JDialog jDialog2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -223,4 +190,39 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JTextField txtUser;
     // End of variables declaration//GEN-END:variables
 
+    void init() {
+        setLocationRelativeTo(null);
+    }
+
+    void openFullScreenWindow(JFrame window) {
+        window.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        window.setVisible(true);
+        this.dispose();
+    }
+
+    void login() {
+        String username = txtUser.getText();
+        String password = new String(txtPassword.getPassword());
+
+        if (username.isEmpty() || password.isEmpty()) {
+            Dialog.alert(this, "Vui lòng nhập đầy đủ thông tin!");
+            return;
+        }
+
+        AccountDAO account = new AccountDAO();
+        if (!account.checkLogin(username, password)) {
+            Dialog.alert(this, "Sai tên đăng nhập hoặc mật khẩu!");
+            return;
+        }
+
+        String employeeID = account.findEmployeeIDByAccount(username, password);
+        EmployeeEntity employee = new EmployeeDAO().getById(employeeID);
+        if (employee == null) {
+            Dialog.alert(this, "Không tìm thấy thông tin nhân viên!");
+            return;
+        }
+
+        Auth.user = employee;
+        openFullScreenWindow(new Overview());
+    }
 }

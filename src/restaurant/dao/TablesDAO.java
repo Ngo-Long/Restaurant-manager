@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.ArrayList;
+import restaurant.utils.JDBC;
 
 public class TablesDAO {
 
@@ -14,6 +15,11 @@ public class TablesDAO {
     public static final String SELECT_ALL_SQL = "SELECT * FROM DiningTables";
     public static final String SELECT_ALL_AREA_SQL = "SELECT * FROM DiningTables WHERE Area = ?";
     public static final String SELECT_BY_ID_SQL = "SELECT * FROM DiningTables WHERE TableID=?";
+    public static final String SELECT_NAME_BY_ID_SQL = "SELECT TableID FROM DiningTables WHERE TableName = ?";
+    public static final String SELECT_NAME_BY_INVOICE_ID_SQL = "SELECT dt.TableName FROM DiningTables dt "
+            + "JOIN Orders o ON dt.TableID = o.TableID "
+            + "JOIN Invoices i ON o.InvoiceID = i.InvoiceID "
+            + "WHERE i.InvoiceID = ?;";
     public static final String CHECK_DUPLICATED_ID_SQL = "SELECT COUNT(*) FROM DiningTables WHERE TableID=?";
 
     public void insert(TablesEntity entity) {
@@ -68,6 +74,32 @@ public class TablesDAO {
         }
 
         return false;
+    }
+
+    public String getIdByName(String tableName) {
+        try (ResultSet rs = JDBC.executeQuery("SELECT TableID FROM DiningTables WHERE TableName = ?", tableName)) {
+            if (rs.next()) {
+                return rs.getString("TableID");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<String> getTableNamesByInvoiceId(int invoiceId) {
+        List<String> tableNames = new ArrayList<>();
+
+        try (ResultSet rs = JDBC.executeQuery(SELECT_NAME_BY_INVOICE_ID_SQL, invoiceId)) {
+            while (rs.next()) {
+                String tableName = rs.getString("TableName");
+                tableNames.add(tableName);
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException("Error while fetching table names from database.", ex);
+        }
+
+        return tableNames;
     }
 
     private List<TablesEntity> fetchByQuery(String sql, Object... args) {

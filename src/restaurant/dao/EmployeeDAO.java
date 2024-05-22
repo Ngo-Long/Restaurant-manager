@@ -1,194 +1,99 @@
 package restaurant.dao;
 
+import restaurant.utils.JDBC;
 import restaurant.entity.EmployeeEntity;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+
 import java.sql.ResultSet;
-import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.util.ArrayList;
+import java.sql.PreparedStatement;
+
 import java.util.List;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import static restaurant.utils.JDBC.getConnection;
 
 public class EmployeeDAO {
 
-    private static final String DATABASE_URL = "jdbc:sqlserver://localhost:1433;user=sa;password=123;databaseName=QuanLyNhaHang;encrypt=true;trustServerCertificate=true";
-    private static final String DATABASE_USERNAME = "sa";
-    private static final String DATABASE_PASSWORD = "123";
+    public static final String INSERT_SQL = "INSERT INTO Employees (EmployeeID, ShiftID, FullName, Gender, Phone, DateOfBirth, IDCard, Email, Address, UrlImage, Position, Status, Salary, Description, Bank, AccountNumber, HireDate) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static final String UPDATE_SQL = "UPDATE Employees SET ShiftID=?, FullName=?, Gender=?, Phone=?, DateOfBirth=?, IDCard=?, Email=?, Address=?, UrlImage=?, Position=?, Status=?, Salary=?, Description=?, Bank=?, AccountNumber=?, HireDate=? WHERE EmployeeID=?";
+    public static final String DELETE_SQL = "DELETE FROM Employees WHERE EmployeeID =?";
+    public static final String IS_EXISTS_SQL = "SELECT COUNT(*) FROM Employees WHERE EmployeeID = ?";
+    public static final String SELECT_ALL_SQL = "SELECT * FROM Employees";
+    public static final String SELECT_BY_ID_SQL = "SELECT * FROM Employees WHERE EmployeeID=?";
 
-    public static Connection getConnection() throws SQLException {
-        Connection conn = null;
-        try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            conn = DriverManager.getConnection(DATABASE_URL, DATABASE_USERNAME, DATABASE_PASSWORD);
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-        }
-        return conn;
+    public void insert(EmployeeEntity entity) {
+        JDBC.executeUpdate(INSERT_SQL,
+                entity.getEmployeeID(),
+                entity.getShiftID(),
+                entity.getFullName(),
+                entity.getGender(),
+                entity.getPhone(),
+                entity.getDateOfBirth(),
+                entity.getIdCard(),
+                entity.getEmail(),
+                entity.getAddress(),
+                entity.getUrlImage(),
+                entity.getPosition(),
+                entity.getStatus(),
+                entity.getSalary(),
+                entity.getDescription(),
+                entity.getBank(),
+                entity.getAccountNumber(),
+                entity.getHireDate()
+        );
     }
 
-    // Check if an employee ID already exists
-    public static boolean isIdExists(String idNhanVien) {
-        try (Connection connection = getConnection()) {
-            String sql = "SELECT COUNT(*) FROM NhanVien WHERE idNhanVien = ?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                preparedStatement.setString(1, idNhanVien);
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    if (resultSet.next()) {
-                        int count = resultSet.getInt(1);
-                        return count > 0;
-                    }
-                }
+    public void update(EmployeeEntity entity) {
+        JDBC.executeUpdate(UPDATE_SQL,
+                entity.getShiftID(),
+                entity.getFullName(),
+                entity.getGender(),
+                entity.getPhone(),
+                entity.getDateOfBirth(),
+                entity.getIdCard(),
+                entity.getEmail(),
+                entity.getAddress(),
+                entity.getUrlImage(),
+                entity.getPosition(),
+                entity.getStatus(),
+                entity.getSalary(),
+                entity.getDescription(),
+                entity.getBank(),
+                entity.getAccountNumber(),
+                entity.getHireDate(),
+                entity.getEmployeeID()
+        );
+    }
+
+    public void delete(String id) {
+        JDBC.executeUpdate(DELETE_SQL, id);
+    }
+
+    public EmployeeEntity getById(String id) {
+        List<EmployeeEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    public List<EmployeeEntity> getAll() {
+        return fetchByQuery(SELECT_ALL_SQL);
+    }
+
+    public boolean isIdExists(String employeeID) {
+        try (ResultSet rs = JDBC.executeQuery(IS_EXISTS_SQL, employeeID)) {
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
         return false;
     }
 
-    // Create a new employee
-    public static void insertEmployee(String idNhanVien, String idCa, String hoTen, String gioiTinh, String sdt,
-            String ngaySinh, String cmnd, String email, String diaChi, String hinhAnh, String chucVu,
-            String trangThai, double luong, String moTa, String nganHang, String soTaiKhoan) throws ParseException {
-        try (Connection connection = getConnection()) {
-            String sql = "INSERT INTO NhanVien (idNhanVien, idCa, hoTen, gioiTinh, sdt, ngaySinh, cmnd, email, diaChi, hinhAnh, chucVu, trangThai, luong, moTa, nganHang, soTaiKhoan) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                preparedStatement.setString(1, idNhanVien);
-                preparedStatement.setString(2, idCa);
-                preparedStatement.setString(3, hoTen);
-                preparedStatement.setString(4, gioiTinh);
-                preparedStatement.setString(5, sdt);
-                preparedStatement.setString(6, ngaySinh);
-                preparedStatement.setString(7, cmnd);
-                preparedStatement.setString(8, email);
-                preparedStatement.setString(9, diaChi);
-                preparedStatement.setString(10, hinhAnh);
-                preparedStatement.setString(11, chucVu);
-                preparedStatement.setString(12, trangThai);
-                preparedStatement.setDouble(13, luong);
-                preparedStatement.setString(14, moTa);
-                preparedStatement.setString(15, nganHang);
-                preparedStatement.setString(16, soTaiKhoan);
-
-                int rowsAffected = preparedStatement.executeUpdate();
-
-                if (rowsAffected > 0) {
-                    JOptionPane.showMessageDialog(null, "Thêm nhân viên thành công!", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Thêm nhân viên thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi khi thêm mới nhân viên.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        }
-    }
-
-    // Read employee details
-    public static EmployeeEntity viewEmployeeDetails(String idNhanVien) {
-        EmployeeEntity employee = null;
-
-        try (Connection connection = getConnection()) {
-            String sql = "SELECT * FROM NhanVien WHERE idNhanVien = ?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                preparedStatement.setString(1, idNhanVien);
-                ResultSet resultSet = preparedStatement.executeQuery();
-
-                if (resultSet.next()) {
-                    employee = new EmployeeEntity(
-                            resultSet.getString("idNhanVien"),
-                            resultSet.getString("idCa"),
-                            resultSet.getString("hoTen"),
-                            resultSet.getString("gioiTinh"),
-                            resultSet.getString("sdt"),
-                            resultSet.getDate("ngaySinh"),
-                            resultSet.getString("cmnd"),
-                            resultSet.getString("email"),
-                            resultSet.getString("diaChi"),
-                            resultSet.getString("hinhAnh"),
-                            resultSet.getString("chucVu"),
-                            resultSet.getString("trangThai"),
-                            resultSet.getDouble("luong"),
-                            resultSet.getString("moTa"),
-                            resultSet.getString("nganHang"),
-                            resultSet.getString("soTaiKhoan"),
-                            resultSet.getTimestamp("ngayVaoLam")
-                    );
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return employee;
-    }
-
-    // Update employee information
-    public static void updateEmployee(String idNhanVien, String idCa, String newHoTen, String newChucVu, double newLuong,
-            String newGioiTinh, String newSdt, String newNgaySinh, String newCmnd, String newEmail, String newDiaChi,
-            String newHinhAnhPath, String newMoTa, String newNganHang, String newSoTaiKhoan, String newTrangThai) {
-
-        try (Connection connection = getConnection()) {
-            String sql = "UPDATE NhanVien SET hoTen = ?, chucVu = ?, luong = ?, gioiTinh = ?, sdt = ?, ngaySinh = ?, cmnd = ?, "
-                    + "email = ?, diaChi = ?, hinhAnh = ?, moTa = ?, nganHang = ?, soTaiKhoan = ?, trangThai = ?, idCa = ? WHERE idNhanVien = ?";
-
-            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                preparedStatement.setString(1, newHoTen);
-                preparedStatement.setString(2, newChucVu);
-                preparedStatement.setDouble(3, newLuong);
-                preparedStatement.setString(4, newGioiTinh);
-                preparedStatement.setString(5, newSdt);
-                preparedStatement.setString(6, newNgaySinh);
-                preparedStatement.setString(7, newCmnd);
-                preparedStatement.setString(8, newEmail);
-                preparedStatement.setString(9, newDiaChi);
-                preparedStatement.setString(10, newHinhAnhPath);
-                preparedStatement.setString(11, newMoTa);
-                preparedStatement.setString(12, newNganHang);
-                preparedStatement.setString(13, newSoTaiKhoan);
-                preparedStatement.setString(14, newTrangThai);
-                preparedStatement.setString(15, idCa);
-                preparedStatement.setString(16, idNhanVien);
-
-                int rowsAffected = preparedStatement.executeUpdate();
-
-                if (rowsAffected > 0) {
-                    JOptionPane.showMessageDialog(null, "Sửa thông tin nhân viên thành công!", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Sửa thông tin nhân viên thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        } catch (SQLIntegrityConstraintViolationException e) {
-            JOptionPane.showMessageDialog(null, "Lỗi: Ràng buộc dữ liệu bị vi phạm. Kiểm tra giá trị cập nhật.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi khi cập nhật thông tin nhân viên.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    // Update employee status to "Nghỉ Việc"
-    public static void updateEmployeeStatus(String idNhanVien, String newStatus) {
-        try (Connection connection = getConnection()) {
-            String sql = "UPDATE NhanVien SET trangThai = ? WHERE idNhanVien = ?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                preparedStatement.setString(1, newStatus);
-                preparedStatement.setString(2, idNhanVien);
-
-                int rowsAffected = preparedStatement.executeUpdate();
-
-                if (rowsAffected > 0) {
-                    JOptionPane.showMessageDialog(null, "Cập nhật trạng thái nhân viên thành công!", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Cập nhật trạng thái nhân viên thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi khi cập nhật trạng thái nhân viên.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        }
+    public void updateStatusToResigned(String employeeID) {
+        JDBC.executeUpdate("UPDATE Employees SET Status = 'Nghỉ việc' WHERE EmployeeID = ?", employeeID);
     }
 
     public static void searchAndClassifyEmployee(String keyword, String chucVu, String idCa, DefaultTableModel model) {
@@ -199,7 +104,6 @@ public class EmployeeDAO {
             if ("Tất Cả CV".equals(chucVu)) {
                 chucVu = null;
             }
-
             if ("Tất Cả Ca".equals(idCa)) {
                 idCa = null;
             }
@@ -215,7 +119,6 @@ public class EmployeeDAO {
                 ResultSet resultSet = preparedStatement.executeQuery();
 
                 model.setRowCount(0);
-
                 while (resultSet.next()) {
                     Object[] row = {
                         resultSet.getString("idNhanVien"),
@@ -242,43 +145,40 @@ public class EmployeeDAO {
         }
     }
 
-    public static List<EmployeeEntity> getAllEmployees() {
-        List<EmployeeEntity> employeeList = new ArrayList<>();
+    private List<EmployeeEntity> fetchByQuery(String sql, Object... args) {
+        List<EmployeeEntity> list = new ArrayList<>();
 
-        try (Connection connection = getConnection()) {
-            String sql = "SELECT * FROM NhanVien";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                ResultSet resultSet = preparedStatement.executeQuery();
-
-                while (resultSet.next()) {
-                    EmployeeEntity employee = new EmployeeEntity(
-                            resultSet.getString("idNhanVien"),
-                            resultSet.getString("idCa"),
-                            resultSet.getString("hoTen"),
-                            resultSet.getString("gioiTinh"),
-                            resultSet.getString("sdt"),
-                            resultSet.getDate("ngaySinh"),
-                            resultSet.getString("cmnd"),
-                            resultSet.getString("email"),
-                            resultSet.getString("diaChi"),
-                            resultSet.getString("hinhAnh"),
-                            resultSet.getString("chucVu"),
-                            resultSet.getString("trangThai"),
-                            resultSet.getDouble("luong"),
-                            resultSet.getString("moTa"),
-                            resultSet.getString("nganHang"),
-                            resultSet.getString("soTaiKhoan"),
-                            resultSet.getTimestamp("ngayVaoLam")
-                    );
-
-                    employeeList.add(employee);
-                }
+        try (ResultSet rs = JDBC.executeQuery(sql, args)) {
+            while (rs.next()) {
+                EmployeeEntity model = readFromResultSet(rs);
+                list.add(model);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
         }
 
-        return employeeList;
+        return list;
     }
 
+    private EmployeeEntity readFromResultSet(ResultSet rs) throws SQLException {
+        EmployeeEntity model = new EmployeeEntity();
+        model.setEmployeeID(rs.getString("EmployeeID"));
+        model.setShiftID(rs.getString("ShiftID"));
+        model.setFullName(rs.getString("FullName"));
+        model.setGender(rs.getString("Gender"));
+        model.setPhone(rs.getString("Phone"));
+        model.setDateOfBirth(rs.getDate("DateOfBirth"));
+        model.setIdCard(rs.getString("IDCard"));
+        model.setEmail(rs.getString("Email"));
+        model.setAddress(rs.getString("Address"));
+        model.setUrlImage(rs.getString("UrlImage"));
+        model.setPosition(rs.getString("Position"));
+        model.setStatus(rs.getString("Status"));
+        model.setSalary(rs.getLong("Salary"));
+        model.setDescription(rs.getString("Description"));
+        model.setBank(rs.getString("Bank"));
+        model.setAccountNumber(rs.getString("AccountNumber"));
+        model.setHireDate(rs.getDate("HireDate"));
+        return model;
+    }
 }

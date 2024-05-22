@@ -5,17 +5,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import restaurant.utils.JDBC;
 
 public class ProductsDAO {
 
-    public static final String INSERT_SQL = "INSERT INTO Products (ProductID, ProductName, Price, Description, ImageURL, Category, KitchenArea, Status, DateAdded, LastUpdated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())";
-    public static final String UPDATE_SQL = "UPDATE Products SET ProductName=?, Price=?, Description=?, ImageURL=?, Category=?, KitchenArea=?, Status=?, LastUpdated=GETDATE() WHERE ProductID=?";
-    public static final String DELETE_SQL = "DELETE FROM Products WHERE ProductID=?";
-    public static final String SELECT_ALL_SQL = "SELECT * FROM Products ORDER BY ProductName";
-    public static final String SELECT_BY_ID_SQL = "SELECT * FROM Products WHERE ProductID=?";
-    public static final String CHECK_DUPLICATED_ID_SQL = "SELECT COUNT(*) FROM Products WHERE ProductID=?";
-    public static final String CHECK_DUPLICATED_NAME_SQL = "SELECT COUNT(*) FROM Products WHERE ProductName = ?";
-    public static final String SELECT_ID_BY_NAME_SQL = "SELECT ProductID FROM Products WHERE ProductName=?";
+    final String INSERT_SQL = "INSERT INTO Products (ProductID, ProductName, Price, Description, ImageURL, "
+            + "Category, KitchenArea, Status, DateAdded, LastUpdated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())";
+    final String UPDATE_SQL = "UPDATE Products SET ProductName=?, Price=?, Description=?, ImageURL=?, "
+            + "Category=?, KitchenArea=?, Status=?, LastUpdated=GETDATE() WHERE ProductID=?";
+    final String DELETE_SQL = "DELETE FROM Products WHERE ProductID=?";
+    final String SELECT_ALL_SQL = "SELECT * FROM Products ORDER BY ProductName";
+    final String SELECT_BY_ID_SQL = "SELECT * FROM Products WHERE ProductID=?";
+    final String CHECK_DUPLICATED_ID_SQL = "SELECT COUNT(*) FROM Products WHERE ProductID=?";
+    final String CHECK_DUPLICATED_NAME_SQL = "SELECT COUNT(*) FROM Products WHERE ProductName = ?";
+    static final String SELECT_ID_BY_NAME_SQL = "SELECT ProductID FROM Products WHERE ProductName=?";
 
     public void insert(ProductsEntity model) {
         JDBC.executeUpdate(INSERT_SQL,

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import restaurant.entity.OrderDetailsEntity;
+import restaurant.utils.JDBC;
 
 public class OrderDetailsDAO {
 
@@ -21,6 +22,12 @@ public class OrderDetailsDAO {
             + "JOIN DiningTables t ON o.TableID = t.TableID "
             + "JOIN Invoices i ON o.InvoiceID = i.InvoiceID "
             + "WHERE od.ProductStatus != N'Đã xóa' AND i.Status = N'Chờ thanh toán' AND t.TableID = ?";
+    public static final String SELECT_TOTAL_AMOUNT_SQL = "SELECT SUM(od.ProductQuantity * p.Price) AS TotalAmount "
+            + "FROM OrderDetails od "
+            + "JOIN Products p ON od.ProductID = p.ProductID "
+            + "JOIN Orders o ON od.OrderID = o.OrderID "
+            + "JOIN Invoices i ON o.InvoiceID = i.InvoiceID "
+            + "WHERE i.InvoiceID = ?";
 
     public void insert(OrderDetailsEntity model) {
         JDBC.executeUpdate(INSERT_SQL,
@@ -61,6 +68,18 @@ public class OrderDetailsDAO {
 
     public List<OrderDetailsEntity> getOrderdByTableId(String tableId) {
         return fetchByQuery(SELECT_ORDERED_BY_TABLE_ID_SQL, tableId);
+    }
+
+    public int getTotalAmountByInvoiceID(int invoiceID) {
+        try (ResultSet rs = JDBC.executeQuery(SELECT_TOTAL_AMOUNT_SQL, invoiceID)) {
+            if (rs.next()) {
+                return rs.getInt("TotalAmount");
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+
+        return 0;
     }
 
     private List<OrderDetailsEntity> fetchByQuery(String sql, Object... args) {

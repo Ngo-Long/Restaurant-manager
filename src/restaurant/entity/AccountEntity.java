@@ -2,57 +2,49 @@ package restaurant.entity;
 
 public class AccountEntity {
 
-    private String idTaiKhoan;
-    private String idNhanVien;
-    private String taiKhoan;
-    private String matKhau;
-    private String ngayTao;
+    private String accountID;
+    private String employeeID;
+    private String username;
+    private String password;
+    private String createdDate;
 
-    public AccountEntity(String idTaiKhoan, String idNhanVien, String taiKhoan, String matKhau, String ngayTao) {
-        this.idTaiKhoan = idTaiKhoan;
-        this.idNhanVien = idNhanVien;
-        this.taiKhoan = taiKhoan;
-        this.matKhau = matKhau;
-        this.ngayTao = ngayTao;
+    public String getAccountID() {
+        return accountID;
     }
 
-    public String getIdTaiKhoan() {
-        return idTaiKhoan;
+    public void setAccountID(String accountID) {
+        this.accountID = accountID;
     }
 
-    public void setIdTaiKhoan(String idTaiKhoan) {
-        this.idTaiKhoan = idTaiKhoan;
+    public String getEmployeeID() {
+        return employeeID;
     }
 
-    public String getIdNhanVien() {
-        return idNhanVien;
+    public void setEmployeeID(String employeeID) {
+        this.employeeID = employeeID;
     }
 
-    public void setIdNhanVien(String idNhanVien) {
-        this.idNhanVien = idNhanVien;
+    public String getUsername() {
+        return username;
     }
 
-    public String getTaiKhoan() {
-        return taiKhoan;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void setTaiKhoan(String taiKhoan) {
-        this.taiKhoan = taiKhoan;
+    public String getPassword() {
+        return password;
     }
 
-    public String getMatKhau() {
-        return matKhau;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public void setMatKhau(String matKhau) {
-        this.matKhau = matKhau;
+    public String getCreatedDate() {
+        return createdDate;
     }
 
-    public String getNgayTao() {
-        return ngayTao;
-    }
-
-    public void setNgayTao(String ngayTao) {
-        this.ngayTao = ngayTao;
+    public void setCreatedDate(String createdDate) {
+        this.createdDate = createdDate;
     }
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import restaurant.entity.InvoicesEntity;
+import restaurant.utils.JDBC;
 
 public class InvoicesDAO {
 
@@ -12,15 +13,12 @@ public class InvoicesDAO {
     public static final String UPDATE_SQL = "UPDATE Invoices SET EmployeeID=?, Tax=?, Discount=?, PaymentMethod=?, Note=?, "
             + "TotalAmount=?, Status=?, PaymentTime=GETDATE() WHERE InvoiceID=?";
     public static final String DELETE_SQL = "DELETE FROM Invoices WHERE InvoiceID=?";
-    public static final String SELECT_ALL_SQL = "SELECT * FROM Invoices";
+    public static final String SELECT_ALL_SQL = "SELECT * FROM Invoices;";
+    public static final String SELECT_ALL_UNPAID_SQL = "SELECT * FROM Invoices WHERE Status = N'Chờ thanh toán';";
     public static final String SELECT_BY_ID_SQL = "SELECT * FROM Invoices WHERE InvoiceID = ?";
     public static final String SELECT_BY_TABLE_ID_SQL = "SELECT InvoiceID FROM Orders WHERE TableID = ? AND InvoiceID IN "
-            + "(SELECT InvoiceID FROM Invoices WHERE Status != 'Thanh toán thành công')";
+            + "(SELECT InvoiceID FROM Invoices WHERE Status != 'Đã thanh toán')";
     public static final String SELECT_LATEST_ID_SQL = "SELECT TOP 1 InvoiceID FROM Invoices ORDER BY InvoiceID DESC";
-
-    public List<InvoicesEntity> getAll() {
-        return fetchByQuery(SELECT_ALL_SQL);
-    }
 
     public int insert() {
         JDBC.executeUpdate(INSERT_SQL);
@@ -52,6 +50,14 @@ public class InvoicesDAO {
 
     public void delete(int id) {
         JDBC.executeUpdate(DELETE_SQL, id);
+    }
+
+    public List<InvoicesEntity> getAll() {
+        return fetchByQuery(SELECT_ALL_SQL);
+    }
+
+    public List<InvoicesEntity> getAllUnPaid() {
+        return fetchByQuery(SELECT_ALL_UNPAID_SQL);
     }
 
     public int getIdByTableId(String tableId) {
