@@ -16,259 +16,10 @@ import static restaurant.utils.Common.addCommasToNumber;
 
 public class DiningTables extends javax.swing.JFrame {
 
-    String selectedArea;
-    private JButton selectedTableButton;
-    private List<TablesEntity> diningTableList;
-    private List<TablesEntity> diningTableListByArea;
-
     public DiningTables() {
         initComponents();
-        Common.initClock(labelHouse);
-        Common.setAccountLabel(labelAccount);
-        Common.customizeScrollBar(scrollPaneTableDining);
-        Common.customizeTable(tableListOrderedDishes, new int[]{0});
+        this.init();
 
-        displayDiningTableList();
-
-        // Listen for events when the user selects an area from cbArea
-        cbArea.addActionListener((ActionEvent e) -> {
-            selectedArea = (String) cbArea.getSelectedItem();
-            displayDiningTableListByArea(selectedArea);
-        });
-        cbArea.setSelectedIndex(0);
-    }
-
-    TablesEntity getModel() {
-        String tableId = textDiningTableId.getText();
-        String name = textName.getText();
-        String area = textArea.getText();
-        String numberSeatsText = textNumberSeats.getText();
-        String surchargeText = textSurcharge.getText();
-        String status = "Còn trống";
-        String desc = textDesc.getText();
-
-        if (tableId.isEmpty() || name.isEmpty() || numberSeatsText.isEmpty() || surchargeText.isEmpty() || area.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Vui lòng chọn bàn", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        }
-
-        int numberSeats = Integer.parseInt(numberSeatsText);
-        int surcharge = Integer.parseInt(Common.removeCommasFromNumber(surchargeText));
-
-        if (numberSeats < 0 || surcharge < 0) {
-            JOptionPane.showMessageDialog(null, "Số chỗ ngồi và Phụ thu phải là số không âm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        }
-
-        TablesEntity model = new TablesEntity();
-        model.setTableID(tableId);
-        model.setTableName(name);
-        model.setArea(area);
-        model.setSeatingCapacity(numberSeats);
-        model.setSurcharge(surcharge);
-        model.setStatus(status);
-        model.setDescription(desc);
-
-        return model;
-    }
-
-    void openFullScreenWindow(JFrame window) {
-        window.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        window.setVisible(true);
-        this.dispose();
-    }
-
-    void displayDiningTableList() {
-        // Get dining table list
-        diningTableList = new TablesDAO().getAll();
-
-        // Create a DefaultComboBoxModel 
-        DefaultComboBoxModel<String> comboBoxModelTables = new DefaultComboBoxModel<>();
-        comboBoxModelTables.addElement("Chọn bàn");
-
-        // Create a Set to store unique area names
-        DefaultComboBoxModel<String> comboBoxModelArea = new DefaultComboBoxModel<>();
-        Set<String> areaSet = new HashSet<>();
-
-        for (TablesEntity diningTable : diningTableList) {
-            // Add table name to the ComboBoxModel
-            comboBoxModelTables.addElement(diningTable.getTableName());
-
-            // Collect unique area names
-            areaSet.add(diningTable.getArea());
-        }
-
-        // Convert the Set to an array
-        String[] areas = areaSet.toArray(String[]::new);
-
-        // Populate the comboBoxArea with unique area names
-        for (String area : areas) {
-            comboBoxModelArea.addElement(area);
-        }
-
-        // Set the ComboBoxModel to the comboBox
-        cbArea.setModel(comboBoxModelArea);
-        cbDinnerTables.setModel(comboBoxModelTables);
-    }
-
-    void displayDiningTableListByArea(String selectedArea) {
-        // Reset each time an area is selected
-        panelDiningTableList.removeAll();
-
-        // Get dining table list for the selected area
-        diningTableListByArea = new TablesDAO().getAllByArea(selectedArea);
-
-        // Init GridBagLayout
-        GridBagLayout gridBagLayout = new GridBagLayout();
-        panelDiningTableList.setLayout(gridBagLayout);
-
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.anchor = GridBagConstraints.CENTER;
-        constraints.insets = new Insets(2, 6, 2, 6);
-
-        int columnCount = 0;
-
-        // Iterate through the dining table list for the selected area
-        for (TablesEntity diningTable : diningTableListByArea) {
-            // Create and set colors based on status
-            JButton tableButton = createTableButton(diningTable);
-
-            // Check if the table has any ordered dishes
-            String tableId = diningTable.getTableID();
-            List<OrderDetailsEntity> detailOrderList = new OrderDetailsDAO().getOrderdByTableId(tableId);
-            setTableButtonColors(tableButton, !detailOrderList.isEmpty() ? "Đang phục vụ" : "Còn trống");
-
-            // Đặt các ràng buộc cho thành phần
-            gridBagLayout.setConstraints(tableButton, constraints);
-            if (++columnCount == 5) {
-                columnCount = 0;
-                constraints.gridx = 0;
-                constraints.gridy++;
-            } else {
-                constraints.gridx++;
-            }
-
-            panelDiningTableList.add(tableButton); // Add button to the panel
-        }
-
-        // Refresh the panel
-        panelDiningTableList.revalidate();
-        panelDiningTableList.repaint();
-    }
-
-    JButton createTableButton(TablesEntity diningTable) {
-        // Create a button for a dining table with the icon
-        java.net.URL imageURL = getClass().getResource("/icon/dining-room.png");
-        ImageIcon icon = new ImageIcon(imageURL);
-        JButton tableButton = new JButton(diningTable.getTableName(), icon);
-
-        // Set the preferred size of the button based on the icon size
-        tableButton.setPreferredSize(new Dimension(150, 150));
-        tableButton.setHorizontalTextPosition(SwingConstants.CENTER);
-        tableButton.setFont(new Font("Cascadia Code PL", Font.PLAIN, 16));
-        tableButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        tableButton.setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255), 5, true));
-
-        // Add ActionListener to Call a method to display detailed information
-        tableButton.addActionListener((ActionEvent e) -> {
-            // Display border bode when click
-            if (selectedTableButton != null && selectedTableButton != tableButton) {
-                Common.setTableButtonBorder(selectedTableButton, false);
-            }
-            Common.setTableButtonBorder(selectedTableButton = tableButton, true);
-
-            displayDetailedDiningTable(diningTable);
-            displayOrderedDishesByTable(diningTable.getTableID());
-
-        });
-
-        return tableButton;
-    }
-
-    void setTableButtonColors(JButton tableButton, String status) {
-        if ("Đã đặt".equals(status)) {
-            tableButton.setBackground(new Color(255, 153, 51)); // Màu nền FF9933
-        } else if ("Đang phục vụ".equals(status)) {
-            tableButton.setBackground(new Color(255, 102, 102)); // Màu nền FF6666
-        } else if ("Còn trống".equals(status)) {
-            tableButton.setBackground(new Color(255, 255, 255)); // Màu nền FFF
-        }
-    }
-
-    void displayDetailedDiningTable(TablesEntity diningTable) {
-        // Set detailed information in your text fields, combobox, etc.
-        String surcharge = Common.addCommasToNumber(String.valueOf(diningTable.getSurcharge()));
-        textSurcharge.setText(surcharge);
-        textDiningTableId.setText(diningTable.getTableID());
-        textName.setText(diningTable.getTableName());
-        labelNameDiningTable.setText(diningTable.getTableName());
-        textArea.setText(diningTable.getArea());
-        textNumberSeats.setText(String.valueOf(diningTable.getSeatingCapacity()));
-        textDesc.setText(diningTable.getDescription());
-    }
-
-    void displayOrderedDishesByTable(String tableId) {
-        // Reset table
-        DefaultTableModel model = (DefaultTableModel) tableListOrderedDishes.getModel();
-        model.setRowCount(0);
-
-        // Get info detail order through dining table id
-        List<OrderDetailsEntity> detailOrderList = new OrderDetailsDAO().getOrderdByTableId(tableId);
-
-        // Create a Map để lưu trữ số lượng và giá của mỗi món
-        Map<String, Integer> productPriceMap = new HashMap<>();
-        Map<String, Integer> productQuantityMap = new HashMap<>();
-
-        int totalAmount = 0; // Total money all
-
-        // Display dishes on the table
-        for (OrderDetailsEntity detailOrder : detailOrderList) {
-            // Get info dish
-            String dishId = detailOrder.getProductID();
-            String dishLevel = !detailOrder.getProductDesc().isEmpty() ? " (" + detailOrder.getProductDesc() + ")" : "";
-
-            // Get detail dish  
-            ProductsEntity productEntity = new ProductsDAO().getById(dishId);
-            String productName = productEntity.getProductName();
-            String productNameAndLevel = productName + dishLevel;
-
-            // Tăng số lượng của món trong Map
-            int quantity = detailOrder.getProductQuantity();
-            if (productQuantityMap.containsKey(productNameAndLevel)) {
-                quantity += productQuantityMap.get(productNameAndLevel);
-            }
-
-            productQuantityMap.put(productNameAndLevel, quantity);
-            productPriceMap.put(productNameAndLevel, productEntity.getPrice());
-        }
-
-        // Add data into the table
-        for (Map.Entry<String, Integer> entry : productQuantityMap.entrySet()) {
-            // Get name and level -> ex: Mì cay (Cấp 7)
-            String productNameAndLevel = entry.getKey();
-            int totalQuantity = entry.getValue();
-
-            // Get unit price and quantity -> ex: 50.000₫ x 3
-            int unitPrice = productPriceMap.get(productNameAndLevel);
-            String convertUnitPrice = Common.addCommasToNumber(String.valueOf(unitPrice)) + "₫";
-            String unitPriceAndtotalQuantity = convertUnitPrice + "  x" + totalQuantity;
-
-            // Get total price -> ex: 50.000 x 3 = 150.000
-            int totalPrice = unitPrice * totalQuantity;
-            String convertTotalPrice = Common.addCommasToNumber(String.valueOf(totalPrice)) + "₫";
-
-            totalAmount += totalPrice; // Total invoice
-
-            // Add row into the table
-            model.addRow(new Object[]{
-                productNameAndLevel,
-                unitPriceAndtotalQuantity,
-                convertTotalPrice
-            });
-        }
-
-        String totalConvert = addCommasToNumber(String.valueOf(totalAmount));
-        labelTotalAmount.setText(totalConvert + "₫ / 1 đơn");
     }
 
     @SuppressWarnings("unchecked")
@@ -279,23 +30,23 @@ public class DiningTables extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         labelHouse = new javax.swing.JLabel();
         labelAccount = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
+        labelLogo = new javax.swing.JLabel();
         panelBody = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        cbArea = new javax.swing.JComboBox<>();
+        comboboxArea = new javax.swing.JComboBox<>();
         jButton18 = new javax.swing.JButton();
         jButton19 = new javax.swing.JButton();
         jButton17 = new javax.swing.JButton();
         scrollPaneTableDining = new javax.swing.JScrollPane();
         panelDiningTableList = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
-        jTabbedPane3 = new javax.swing.JTabbedPane();
+        tabbedPaneProducts = new javax.swing.JTabbedPane();
         jPanel9 = new javax.swing.JPanel();
         labelNameDiningTable = new javax.swing.JLabel();
-        cbDinnerTables = new javax.swing.JComboBox<>();
-        btnGopBan = new javax.swing.JButton();
-        btnChuyenBan = new javax.swing.JButton();
+        comboboxTables = new javax.swing.JComboBox<>();
+        btnMergeTables = new javax.swing.JButton();
+        btnSwitchTables = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableListOrderedDishes = new javax.swing.JTable();
         btnAddOrder = new javax.swing.JButton();
@@ -363,11 +114,12 @@ public class DiningTables extends javax.swing.JFrame {
         labelAccount.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         labelAccount.setText("TÀI KHOẢN: NGÔ KIM LONG");
 
-        jLabel14.setFont(new java.awt.Font("Segoe Print", 1, 26)); // NOI18N
-        jLabel14.setForeground(new java.awt.Color(255, 153, 153));
-        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel14.setText("HOT NOODLE");
-        jLabel14.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        labelLogo.setFont(new java.awt.Font("Segoe Print", 1, 26)); // NOI18N
+        labelLogo.setForeground(new java.awt.Color(255, 153, 153));
+        labelLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelLogo.setText("HOT NOODLE");
+        labelLogo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelLogo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -375,7 +127,7 @@ public class DiningTables extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
-                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(labelLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(labelHouse)
                 .addGap(18, 18, 18)
@@ -390,7 +142,7 @@ public class DiningTables extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
-            .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
+            .addComponent(labelLogo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
             .addComponent(labelAccount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(labelHouse, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -400,10 +152,12 @@ public class DiningTables extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/filter1.png"))); // NOI18N
 
-        cbArea.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        cbArea.addActionListener(new java.awt.event.ActionListener() {
+        comboboxArea.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        comboboxArea.setToolTipText("Ấn vô chọn khu vực");
+        comboboxArea.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        comboboxArea.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbAreaActionPerformed(evt);
+                comboboxAreaActionPerformed(evt);
             }
         });
 
@@ -448,7 +202,7 @@ public class DiningTables extends javax.swing.JFrame {
                 .addGap(12, 12, 12)
                 .addComponent(jLabel5)
                 .addGap(0, 0, 0)
-                .addComponent(cbArea, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(comboboxArea, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton18, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -468,15 +222,16 @@ public class DiningTables extends javax.swing.JFrame {
                         .addComponent(jButton19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(cbArea, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(comboboxArea, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(scrollPaneTableDining, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE))
         );
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
 
-        jTabbedPane3.setBackground(new java.awt.Color(255, 255, 255));
-        jTabbedPane3.setFont(new java.awt.Font("Cascadia Code PL", 0, 14)); // NOI18N
+        tabbedPaneProducts.setBackground(new java.awt.Color(255, 255, 255));
+        tabbedPaneProducts.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        tabbedPaneProducts.setFont(new java.awt.Font("Cascadia Code PL", 0, 14)); // NOI18N
 
         jPanel9.setBackground(new java.awt.Color(255, 255, 255));
         jPanel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -484,19 +239,36 @@ public class DiningTables extends javax.swing.JFrame {
         labelNameDiningTable.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
         labelNameDiningTable.setText(" ");
 
-        cbDinnerTables.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cbDinnerTables.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bàn 1", "Bàn 2", "Bàn 3" }));
-        cbDinnerTables.setToolTipText("");
-        cbDinnerTables.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        cbDinnerTables.setName(""); // NOI18N
+        comboboxTables.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        comboboxTables.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bàn 1", "Bàn 2", "Bàn 3" }));
+        comboboxTables.setToolTipText("Ấn vô chọn bàn");
+        comboboxTables.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        comboboxTables.setName(""); // NOI18N
+        comboboxTables.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboboxTablesActionPerformed(evt);
+            }
+        });
 
-        btnGopBan.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        btnGopBan.setText("Gộp bàn");
-        btnGopBan.setToolTipText("Chọn bàn cần gộp trước ");
+        btnMergeTables.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnMergeTables.setText("Thêm / gộp bàn");
+        btnMergeTables.setToolTipText("Chọn bàn cần gộp trước ");
+        btnMergeTables.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnMergeTables.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMergeTablesActionPerformed(evt);
+            }
+        });
 
-        btnChuyenBan.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        btnChuyenBan.setText("Chuyển bàn");
-        btnChuyenBan.setToolTipText("Chọn bàn cần chuyển trước ");
+        btnSwitchTables.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnSwitchTables.setText("Chuyển bàn");
+        btnSwitchTables.setToolTipText("Chọn bàn cần chuyển trước ");
+        btnSwitchTables.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSwitchTables.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSwitchTablesActionPerformed(evt);
+            }
+        });
 
         tableListOrderedDishes.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tableListOrderedDishes.setModel(new javax.swing.table.DefaultTableModel(
@@ -522,7 +294,8 @@ public class DiningTables extends javax.swing.JFrame {
         btnAddOrder.setBackground(new java.awt.Color(0, 153, 0));
         btnAddOrder.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnAddOrder.setForeground(new java.awt.Color(255, 255, 255));
-        btnAddOrder.setText("THÊM MÓN");
+        btnAddOrder.setText("THÊM MÓN (F2)");
+        btnAddOrder.setToolTipText("Ấn F2 để chọn món ăn");
         btnAddOrder.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAddOrder.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -533,7 +306,8 @@ public class DiningTables extends javax.swing.JFrame {
         btnPay2.setBackground(new java.awt.Color(0, 0, 204));
         btnPay2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnPay2.setForeground(new java.awt.Color(255, 255, 255));
-        btnPay2.setText("THANH TOÁN");
+        btnPay2.setText("THANH TOÁN (F4)");
+        btnPay2.setToolTipText("Ấn F4 để thanh toán");
         btnPay2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnPay2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -541,7 +315,7 @@ public class DiningTables extends javax.swing.JFrame {
             }
         });
 
-        labelTenBan1.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        labelTenBan1.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         labelTenBan1.setText("Tên:");
 
         labelTenBan2.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
@@ -557,47 +331,53 @@ public class DiningTables extends javax.swing.JFrame {
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel9Layout.createSequentialGroup()
                         .addComponent(btnAddOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnPay2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addComponent(labelTenBan1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addComponent(labelTenBan1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelNameDiningTable, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(comboboxTables, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labelNameDiningTable, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addComponent(btnSwitchTables)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnMergeTables, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel9Layout.createSequentialGroup()
+                                .addComponent(labelTenBan2, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labelTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labelTenBan2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labelTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labelTotalPrice))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                        .addComponent(cbDinnerTables, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnChuyenBan)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnGopBan, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(12, Short.MAX_VALUE))
+                        .addComponent(labelTotalPrice)))
+                .addGap(12, 12, 12))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(labelTenBan1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(labelNameDiningTable, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addComponent(labelTotalPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(labelTotalAmount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(labelTenBan1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(labelTenBan2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(labelTotalAmount, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(labelTotalPrice, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
+                            .addComponent(labelTenBan2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(12, 12, 12)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbDinnerTables, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnChuyenBan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnGopBan, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnSwitchTables, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnMergeTables, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboboxTables, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -607,9 +387,9 @@ public class DiningTables extends javax.swing.JFrame {
                 .addGap(34, 34, 34))
         );
 
-        cbDinnerTables.getAccessibleContext().setAccessibleName("");
+        comboboxTables.getAccessibleContext().setAccessibleName("");
 
-        jTabbedPane3.addTab("Món đã gọi ", new javax.swing.ImageIcon(getClass().getResource("/icon/Accept.png")), jPanel9); // NOI18N
+        tabbedPaneProducts.addTab("Món đã gọi ", new javax.swing.ImageIcon(getClass().getResource("/icon/cart-done.png")), jPanel9); // NOI18N
 
         jPanel10.setBackground(new java.awt.Color(255, 255, 255));
         jPanel10.setForeground(new java.awt.Color(242, 242, 242));
@@ -783,17 +563,17 @@ public class DiningTables extends javax.swing.JFrame {
                 .addGap(17, 17, 17))
         );
 
-        jTabbedPane3.addTab("Cập nhật ", new javax.swing.ImageIcon(getClass().getResource("/icon/update.png")), jPanel10); // NOI18N
+        tabbedPaneProducts.addTab("Cập nhật ", new javax.swing.ImageIcon(getClass().getResource("/icon/update.png")), jPanel10); // NOI18N
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane3)
+            .addComponent(tabbedPaneProducts)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(tabbedPaneProducts, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout panelBodyLayout = new javax.swing.GroupLayout(panelBody);
@@ -999,62 +779,19 @@ public class DiningTables extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-
     private void textDiningTableIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textDiningTableIdActionPerformed
     }//GEN-LAST:event_textDiningTableIdActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        TablesEntity model = getModel();
-
-        if (!new TablesDAO().isIdDuplicated(model.getTableID())) {
-            Dialog.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
-            return;
-        }
-
-        try {
-            new TablesDAO().update(model);
-            displayDiningTableList();
-            displayDiningTableListByArea(selectedArea);
-            Dialog.alert(this, "Cập nhật thành công!");
-        } catch (Exception e) {
-            Dialog.alert(this, "Cập nhật thất bại!");
-        }
+        update();
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        String id = textDiningTableId.getText();
-        if (!new TablesDAO().isIdDuplicated(id)) {
-            Dialog.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
-            return;
-        }
-
-        try {
-            new TablesDAO().delete(id);
-            displayDiningTableList();
-            Dialog.alert(this, "Xóa thành công!");
-        } catch (Exception e) {
-            Dialog.alert(this, "Xóa thất bại!");
-        }
+        delete();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        TablesEntity model = getModel();
-
-        // Kiểm tra xem mã ID có bị trùng không
-        if (new TablesDAO().isIdDuplicated(model.getTableID())) {
-            Dialog.alert(this, "Mã ID đã tồn tại. Vui lòng chọn mã ID khác!");
-            return;
-        }
-
-        try {
-            new TablesDAO().insert(model);
-            displayDiningTableList();
-            displayDiningTableListByArea(selectedArea);
-            Dialog.alert(this, "Thêm mới thành công!");
-        } catch (Exception e) {
-            Dialog.alert(this, "Thêm mới thất bại!");
-            e.printStackTrace();
-        }
+        insert();
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void textSurchargeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSurchargeActionPerformed
@@ -1072,8 +809,8 @@ public class DiningTables extends javax.swing.JFrame {
     private void textAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textAreaActionPerformed
     }//GEN-LAST:event_textAreaActionPerformed
 
-    private void cbAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbAreaActionPerformed
-    }//GEN-LAST:event_cbAreaActionPerformed
+    private void comboboxAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboboxAreaActionPerformed
+    }//GEN-LAST:event_comboboxAreaActionPerformed
 
     private void btnPay2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPay2ActionPerformed
         // Add info dining table in auth
@@ -1088,6 +825,8 @@ public class DiningTables extends javax.swing.JFrame {
         // Add info dining table in auth
         TablesEntity model = getModel();
         Auth.table = model;
+        Auth.orderCount = orderCount;
+        Auth.totalAmount = totalConvert;
 
         // Switch to interface Invoices.java
         openFullScreenWindow(new Products());
@@ -1098,8 +837,11 @@ public class DiningTables extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemSystemActionPerformed
 
     private void menuLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLogoutActionPerformed
-        Auth.clear();
-        new Login(this, true).setVisible(true);
+        if (Dialog.confirm(this, "Bạn muốn đăng xuất?")) {
+            Auth.clear();
+            dispose();
+            new Login(this, true).setVisible(true);
+        }
     }//GEN-LAST:event_menuLogoutActionPerformed
 
     private void menuEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEndActionPerformed
@@ -1141,7 +883,6 @@ public class DiningTables extends javax.swing.JFrame {
     }//GEN-LAST:event_menuClientsActionPerformed
 
     private void menuRevenueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRevenueActionPerformed
-
     }//GEN-LAST:event_menuRevenueActionPerformed
 
     private void mniHuongDanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniHuongDanActionPerformed
@@ -1151,6 +892,16 @@ public class DiningTables extends javax.swing.JFrame {
     private void mniGioiThieuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniGioiThieuActionPerformed
 
     }//GEN-LAST:event_mniGioiThieuActionPerformed
+
+    private void btnSwitchTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSwitchTablesActionPerformed
+        switchTables();
+    }//GEN-LAST:event_btnSwitchTablesActionPerformed
+
+    private void btnMergeTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMergeTablesActionPerformed
+    }//GEN-LAST:event_btnMergeTablesActionPerformed
+
+    private void comboboxTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboboxTablesActionPerformed
+    }//GEN-LAST:event_comboboxTablesActionPerformed
 
     public static void main(String args[]) {
 
@@ -1175,19 +926,18 @@ public class DiningTables extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnAddOrder;
-    private javax.swing.JButton btnChuyenBan;
     private javax.swing.JButton btnDelete;
-    private javax.swing.JButton btnGopBan;
+    private javax.swing.JButton btnMergeTables;
     private javax.swing.JButton btnPay2;
+    private javax.swing.JButton btnSwitchTables;
     private javax.swing.JButton btnUpdate;
-    private javax.swing.JComboBox<String> cbArea;
-    private javax.swing.JComboBox<String> cbDinnerTables;
+    private javax.swing.JComboBox<String> comboboxArea;
+    private javax.swing.JComboBox<String> comboboxTables;
     private javax.swing.JButton jButton17;
     private javax.swing.JButton jButton18;
     private javax.swing.JButton jButton19;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
@@ -1207,9 +957,9 @@ public class DiningTables extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JPopupMenu.Separator jSeparator8;
     private javax.swing.JPopupMenu.Separator jSeparator9;
-    private javax.swing.JTabbedPane jTabbedPane3;
     private javax.swing.JLabel labelAccount;
     private javax.swing.JLabel labelHouse;
+    private javax.swing.JLabel labelLogo;
     private javax.swing.JLabel labelNameDiningTable;
     private javax.swing.JLabel labelTenBan1;
     private javax.swing.JLabel labelTenBan2;
@@ -1237,6 +987,7 @@ public class DiningTables extends javax.swing.JFrame {
     private javax.swing.JPanel panelBody;
     private javax.swing.JPanel panelDiningTableList;
     private javax.swing.JScrollPane scrollPaneTableDining;
+    private javax.swing.JTabbedPane tabbedPaneProducts;
     private javax.swing.JTable tableListOrderedDishes;
     private javax.swing.JTextField textArea;
     private javax.swing.JTextField textDesc;
@@ -1245,4 +996,383 @@ public class DiningTables extends javax.swing.JFrame {
     private javax.swing.JTextField textNumberSeats;
     private javax.swing.JTextField textSurcharge;
     // End of variables declaration//GEN-END:variables
+
+    int orderCount;
+    String totalConvert;
+    JButton selectedTableButton;
+    List<TablesEntity> dataDiningTables = new TablesDAO().getAll();
+
+    void init() {
+        Common.initClock(labelHouse);
+        Common.setAccountLabel(labelAccount);
+        Common.addClickActionToLabelLogo(labelLogo, this);
+        Common.customizeScrollBar(scrollPaneTableDining);
+        Common.customizeTable(tableListOrderedDishes, new int[]{0});
+
+        hideSecondTab();
+        displayDiningTables(dataDiningTables);
+        setupComboboxTablesByArea();
+        handleClickComboboxArea();
+    }
+
+    // <--- Common
+    void openFullScreenWindow(JFrame window) {
+        window.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        window.setVisible(true);
+        this.dispose();
+    }
+
+    void hideSecondTab() {
+        if (!Auth.isManager()) {
+            tabbedPaneProducts.removeTabAt(1);
+        }
+    }
+
+    void switchTables() {
+        // Chose table
+        String tableId = textDiningTableId.getText();
+        if ("".equals(tableId)) {
+            Dialog.warning(this, "Vui lòng chọn bàn!");
+            return;
+        }
+
+        OrdersEntity order = new OrdersDAO().getOrderByTableId(tableId);
+        if (order == null) {
+            Dialog.warning(this, "Không tìm thấy đơn đặt hàng!");
+            return;
+        }
+
+        // Chose table name in combobox
+        String newtableName = comboboxTables.getSelectedItem().toString();
+        String newTableId = new TablesDAO().getIdByName(newtableName);
+        if ("Chọn bàn".equals(newtableName)) {
+            Dialog.warning(this, "Vui lòng chọn bàn cần chuyển!");
+            return;
+        }
+
+        // Check to see if the dining table is in use
+        if (new OrdersDAO().getOrderByTableId(newTableId) != null) {
+            Dialog.warning(this, "Bàn đang có khách dùng! \nVui lòng chọn bàn khác!");
+            return;
+        }
+
+        if (!Dialog.confirm(this, "Xác nhận chuyển " + labelNameDiningTable.getText() + " qua " + newtableName)) {
+            return;
+        }
+
+        try {
+            order.setTableId(newTableId); // setup
+            new OrdersDAO().update(order); // update
+            displayDiningTables(dataDiningTables);
+            Dialog.success(this, "Chuyển bàn thành công!");
+        } catch (Exception e) {
+            Dialog.error(this, "Chuyển bàn thất bại!");
+        }
+    }
+    // end --->
+
+    // <--- CRUD
+    TablesEntity getModel() {
+        String tableId = textDiningTableId.getText();
+        String name = textName.getText();
+        String area = textArea.getText();
+        String numberSeatsText = textNumberSeats.getText();
+        String surchargeText = textSurcharge.getText();
+        String status = "Còn trống";
+        String desc = textDesc.getText();
+
+        if (tableId.isEmpty() || name.isEmpty() || numberSeatsText.isEmpty() || surchargeText.isEmpty() || area.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn bàn", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+
+        int numberSeats = Integer.parseInt(numberSeatsText);
+        int surcharge = Integer.parseInt(Common.removeCommasFromNumber(surchargeText));
+
+        if (numberSeats < 0 || surcharge < 0) {
+            JOptionPane.showMessageDialog(null, "Số chỗ ngồi và Phụ thu phải là số không âm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+
+        TablesEntity model = new TablesEntity();
+        model.setTableID(tableId);
+        model.setTableName(name);
+        model.setArea(area);
+        model.setSeatingCapacity(numberSeats);
+        model.setSurcharge(surcharge);
+        model.setStatus(status);
+        model.setDescription(desc);
+
+        return model;
+    }
+
+    void insert() {
+        TablesEntity model = getModel();
+
+        // Kiểm tra xem mã ID có bị trùng không
+        if (new TablesDAO().isIdDuplicated(model.getTableID())) {
+            Dialog.alert(this, "Mã ID đã tồn tại. Vui lòng chọn mã ID khác!");
+            return;
+        }
+
+        try {
+            new TablesDAO().insert(model);
+            Dialog.success(this, "Thêm mới thành công!");
+
+            dataDiningTables = new TablesDAO().getAll();
+            displayDiningTables(dataDiningTables);
+            setupComboboxTablesByArea();
+        } catch (Exception e) {
+            Dialog.alert(this, "Thêm mới thất bại!");
+            e.printStackTrace();
+        }
+    }
+
+    void update() {
+        TablesEntity model = getModel();
+
+        if (!new TablesDAO().isIdDuplicated(model.getTableID())) {
+            Dialog.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
+            return;
+        }
+
+        try {
+            new TablesDAO().update(model);
+            Dialog.alert(this, "Cập nhật thành công!");
+
+            dataDiningTables = new TablesDAO().getAll();
+            displayDiningTables(dataDiningTables);
+            setupComboboxTablesByArea();
+        } catch (Exception e) {
+            Dialog.alert(this, "Cập nhật thất bại!");
+        }
+    }
+
+    void delete() {
+        String id = textDiningTableId.getText();
+        if (!new TablesDAO().isIdDuplicated(id)) {
+            Dialog.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
+            return;
+        }
+
+        try {
+            new TablesDAO().delete(id);
+            Dialog.alert(this, "Xóa thành công!");
+
+            dataDiningTables = new TablesDAO().getAll();
+            displayDiningTables(dataDiningTables);
+            setupComboboxTablesByArea();
+        } catch (Exception e) {
+            Dialog.alert(this, "Xóa thất bại!");
+        }
+    }
+    // end --->
+
+    // <--- Display and handle event table dining
+    void displayDiningTables(List<TablesEntity> dataTables) {
+        // Reset 
+        panelDiningTableList.removeAll();
+
+        // Init GridBagLayout
+        GridBagLayout gridBagLayout = new GridBagLayout();
+        panelDiningTableList.setLayout(gridBagLayout);
+
+        // Init gridbag 
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.insets = new Insets(2, 6, 2, 6);
+        constraints.anchor = GridBagConstraints.CENTER;
+
+        int columnCount = 0;
+
+        // Iterate through the dining table list for the selected area
+        for (TablesEntity dataItem : dataTables) {
+            // Create and set colors based on status
+            JButton tableButton = createTableButton(dataItem);
+
+            // Check if the table has any ordered dishes
+            String tableId = dataItem.getTableID();
+            List<OrderDetailsEntity> detailOrderList = new OrderDetailsDAO().getOrderdByTableId(tableId);
+            setTableButtonColors(tableButton, !detailOrderList.isEmpty() ? "Đang phục vụ" : "Còn trống");
+
+            // Đặt các ràng buộc cho thành phần
+            gridBagLayout.setConstraints(tableButton, constraints);
+            if (++columnCount == 5) {
+                columnCount = 0;
+                constraints.gridx = 0;
+                constraints.gridy++;
+            } else {
+                constraints.gridx++;
+            }
+
+            panelDiningTableList.add(tableButton); // Add button to the panel
+        }
+
+        // Refresh the panel
+        panelDiningTableList.revalidate();
+        panelDiningTableList.repaint();
+    }
+
+    JButton createTableButton(TablesEntity diningTable) {
+        // Create a button for a dining table with the icon
+        java.net.URL imageURL = getClass().getResource("/icon/dining-room.png");
+        ImageIcon icon = new ImageIcon(imageURL);
+        JButton tableButton = new JButton(diningTable.getTableName(), icon);
+
+        // Set the preferred size of the button based on the icon size
+        tableButton.setPreferredSize(new Dimension(150, 150));
+        tableButton.setHorizontalTextPosition(SwingConstants.CENTER);
+        tableButton.setFont(new Font("Cascadia Code PL", Font.PLAIN, 16));
+        tableButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        tableButton.setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255), 5, true));
+
+        // Add ActionListener to Call a method to display detailed information
+        tableButton.addActionListener((ActionEvent e) -> {
+            // Display border bode when click
+            if (selectedTableButton != null && selectedTableButton != tableButton) {
+                Common.setTableButtonBorder(selectedTableButton, false);
+            }
+            Common.setTableButtonBorder(selectedTableButton = tableButton, true);
+
+            // Reset default
+            comboboxTables.setSelectedIndex(0);
+            displayDetailedDiningTable(diningTable);
+            displayOrderedDishesByTable(diningTable.getTableID());
+
+        });
+
+        return tableButton;
+    }
+
+    void setTableButtonColors(JButton tableButton, String status) {
+        if ("Đã đặt".equals(status)) {
+            tableButton.setBackground(new Color(255, 153, 51)); // Màu nền FF9933
+        } else if ("Đang phục vụ".equals(status)) {
+            tableButton.setBackground(new Color(255, 102, 102)); // Màu nền FF6666
+        } else if ("Còn trống".equals(status)) {
+            tableButton.setBackground(new Color(255, 255, 255)); // Màu nền FFF
+        }
+    }
+
+    void displayDetailedDiningTable(TablesEntity diningTable) {
+        // Set detailed information in your text fields, combobox, etc.
+        String surcharge = Common.addCommasToNumber(String.valueOf(diningTable.getSurcharge()));
+        textSurcharge.setText(surcharge);
+        textDiningTableId.setText(diningTable.getTableID());
+        textName.setText(diningTable.getTableName());
+        labelNameDiningTable.setText(diningTable.getTableName());
+        textArea.setText(diningTable.getArea());
+        textNumberSeats.setText(String.valueOf(diningTable.getSeatingCapacity()));
+        textDesc.setText(diningTable.getDescription());
+    }
+
+    void displayOrderedDishesByTable(String tableId) {
+        // Reset table
+        DefaultTableModel model = (DefaultTableModel) tableListOrderedDishes.getModel();
+        model.setRowCount(0);
+
+        // Get info detail order through dining table id
+        List<OrderDetailsEntity> detailOrderList = new OrderDetailsDAO().getOrderdByTableId(tableId);
+
+        // Create a Map để lưu trữ số lượng và giá của mỗi món
+        Map<String, Integer> productPriceMap = new HashMap<>();
+        Map<String, Integer> productQuantityMap = new HashMap<>();
+
+        int totalAmount = 0; // Total money all
+
+        // Display dishes on the table
+        for (OrderDetailsEntity detailOrder : detailOrderList) {
+            // Get info dish
+            String dishId = detailOrder.getProductID();
+            String dishLevel = !detailOrder.getProductDesc().isEmpty() ? " (" + detailOrder.getProductDesc() + ")" : "";
+
+            // Get detail dish  
+            ProductsEntity productEntity = new ProductsDAO().getById(dishId);
+            String productName = productEntity.getProductName();
+            String productNameAndLevel = productName + dishLevel;
+
+            // Tăng số lượng của món trong Map
+            int quantity = detailOrder.getProductQuantity();
+            if (productQuantityMap.containsKey(productNameAndLevel)) {
+                quantity += productQuantityMap.get(productNameAndLevel);
+            }
+
+            productQuantityMap.put(productNameAndLevel, quantity);
+            productPriceMap.put(productNameAndLevel, productEntity.getPrice());
+        }
+
+        // Add data into the table
+        for (Map.Entry<String, Integer> entry : productQuantityMap.entrySet()) {
+            // Get name and level -> ex: Mì cay (Cấp 7)
+            String productNameAndLevel = entry.getKey();
+            int totalQuantity = entry.getValue();
+
+            // Get unit price and quantity -> ex: 50.000₫ x 3
+            int unitPrice = productPriceMap.get(productNameAndLevel);
+            String convertUnitPrice = Common.addCommasToNumber(String.valueOf(unitPrice)) + "₫";
+            String unitPriceAndtotalQuantity = convertUnitPrice + "  x" + totalQuantity;
+
+            // Get total price -> ex: 50.000 x 3 = 150.000
+            int totalPrice = unitPrice * totalQuantity;
+            String convertTotalPrice = Common.addCommasToNumber(String.valueOf(totalPrice)) + "₫";
+
+            totalAmount += totalPrice; // Total invoice
+
+            // Add row into the table
+            model.addRow(new Object[]{
+                productNameAndLevel,
+                unitPriceAndtotalQuantity,
+                convertTotalPrice
+            });
+        }
+
+        // ex: 100.000 / 1 đơn
+        totalConvert = addCommasToNumber(String.valueOf(totalAmount));
+        orderCount = new TablesDAO().getOrderCountByTableId(textDiningTableId.getText());
+        labelTotalAmount.setText(totalConvert + "₫ / " + orderCount + " đơn");
+    }
+    // end --->
+
+    // <--- Handle event search and catogory
+    void setupComboboxTablesByArea() {
+        // Create a DefaultComboBoxModel 
+        DefaultComboBoxModel<String> comboBoxModelTables = new DefaultComboBoxModel<>();
+        comboBoxModelTables.addElement("Chọn bàn");
+
+        // Create a Set to store unique area names
+        DefaultComboBoxModel<String> comboBoxModelArea = new DefaultComboBoxModel<>();
+        Set<String> areaSet = new HashSet<>();
+
+        for (TablesEntity dataTable : dataDiningTables) {
+            // Add table name to the ComboBoxModel
+            comboBoxModelTables.addElement(dataTable.getTableName());
+
+            // Collect unique area names
+            areaSet.add(dataTable.getArea());
+        }
+
+        // Convert the Set to an array
+        String[] areas = areaSet.toArray(String[]::new);
+        for (String area : areas) {
+            comboBoxModelArea.addElement(area);
+        }
+
+        // Set the ComboBoxModel to the comboBox
+        comboboxArea.setModel(comboBoxModelArea);
+        comboboxTables.setModel(comboBoxModelTables);
+    }
+
+    void handleClickComboboxArea() {
+        comboboxArea.addActionListener((ActionEvent e) -> {
+            // Get the selected area
+            String selectedArea = (String) comboboxArea.getSelectedItem();
+
+            // Search area
+            List<TablesEntity> dataTables = new TablesDAO().searchByArea(selectedArea);
+            displayDiningTables(dataTables);
+        });
+
+        // Reset default
+        comboboxArea.setSelectedIndex(0);
+    }
+    // end --->   
 }

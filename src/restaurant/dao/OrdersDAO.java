@@ -1,6 +1,5 @@
 package restaurant.dao;
 
-import java.security.Timestamp;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,14 +13,17 @@ public class OrdersDAO {
             + "VALUES (?, ?, ?, ?, GETDATE())";
     public static final String DELETE_SQL = "DELETE FROM Orders WHERE OrderID=?";
     public static final String UPDATE_SQL = "UPDATE Orders SET TableID=?, Status=?, Method=? WHERE OrderID=?";
-    public static final String UPDATE_STATUS_BY_INVOICE_ID = "UPDATE Orders SET Status=N'Đơn hàng hoàn thành' "
-            + "WHERE OrderID = (SELECT OrderID FROM Orders WHERE InvoiceID = ?)";
     public static final String SELECT_ALL_SQL = "SELECT * FROM Orders";
     public static final String GET_BY_ID = "SELECT * FROM Orders WHERE OrderID = ?";
+    
+    public static final String UPDATE_STATUS_BY_INVOICE_ID = "UPDATE Orders SET Status=N'Đơn hàng hoàn thành' "
+            + "WHERE OrderID = (SELECT OrderID FROM Orders WHERE InvoiceID = ?)";
+    public static final String SELECT_ORDER_BY_INVOICE_ID = "SELECT * FROM Orders WHERE InvoiceID = ?";
     public static final String SELECT_CREATE_DATE_BY_INVOICE_ID = "SELECT o.CreatedDate FROM Orders o "
             + "JOIN Invoices i ON o.InvoiceID = i.InvoiceID WHERE i.InvoiceID = ?;";
-    public static final String SELECT_ORDER_BY_TABLE_ID = "SELECT * FROM Orders WHERE Status = N'Đang đặt hàng' and TableID = ?";
-    public static final String SELECT_ORDER_BY_ORDER_ID = "SELECT * FROM Orders WHERE InvoiceID = ?";
+
+    public static final String SELECT_ORDER_BY_TABLE_ID = "SELECT * FROM Orders WHERE TableID = ?";
+    public static final String SELECT_PENDING_ORDERS_BY_TABLE_ID = "SELECT * FROM Orders WHERE Status = N'Đang đặt hàng' AND TableID = ?";
 
     public List<OrdersEntity> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
@@ -64,8 +66,13 @@ public class OrdersDAO {
         return orders.isEmpty() ? null : orders.get(0);
     }
 
-    public OrdersEntity getOrderByOrderId(int id) {
-        List<OrdersEntity> orders = fetchByQuery(SELECT_ORDER_BY_ORDER_ID, id);
+    public OrdersEntity getPendingOrderByTableId(String id) {
+        List<OrdersEntity> orders = fetchByQuery(SELECT_PENDING_ORDERS_BY_TABLE_ID, id);
+        return orders.isEmpty() ? null : orders.get(0);
+    }
+
+    public OrdersEntity getOrderByInvoiceId(int id) {
+        List<OrdersEntity> orders = fetchByQuery(SELECT_ORDER_BY_INVOICE_ID, id);
         return orders.isEmpty() ? null : orders.get(0);
     }
 

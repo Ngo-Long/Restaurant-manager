@@ -1,20 +1,23 @@
 package restaurant.utils;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+
 import java.util.List;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
+import restaurant.ui.Overview;
 
 public class Common {
 
@@ -35,6 +38,23 @@ public class Common {
 
         // Chuyển đổi thành chuỗi in hoa và gán vào labelAccount
         label.setText(fullName.toUpperCase() + " - " + position.toUpperCase());
+    }
+
+    // Handle click logo
+    public static void addClickActionToLabelLogo(JLabel labelLogo, JFrame currentWindow) {
+        labelLogo.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                openFullScreenWindow(new Overview(), currentWindow);
+            }
+        });
+    }
+
+    // Swich file
+    public static void openFullScreenWindow(JFrame window, JFrame currentWindow) {
+        window.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        window.setVisible(true);
+        currentWindow.dispose();
     }
 
     // Hàm chung để tùy chỉnh bảng
@@ -95,12 +115,11 @@ public class Common {
     }
 
     // Chọn ảnh từ thư mục
-    public static void chooseImage(JFrame frame, JButton btnImage) {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+    public static void chooseImageFromDirectory(JFrame frame, JButton btnImage) {
+        String imgPath = "src/restaurant/img";
+        JFileChooser fileChooser = new JFileChooser(imgPath);
 
         int result = fileChooser.showOpenDialog(frame);
-
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile(); // Chọn
             String imagePath = selectedFile.getAbsolutePath(); // Lưu đường dẫn ảnh đã chọn

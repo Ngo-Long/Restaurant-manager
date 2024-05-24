@@ -31,6 +31,7 @@ public class Invoices extends javax.swing.JFrame {
 
         Common.initClock(labelHouse);
         Common.setAccountLabel(labelAccount);
+        Common.addClickActionToLabelLogo(labelLogo, this);
         Common.customizeTable(tablePendingInvoices, new int[]{});
         Common.customizeTable(tableFinishedInvoices, new int[]{});
         Common.customizeTable(tableListOrderedDishes, new int[]{0});
@@ -64,14 +65,12 @@ public class Invoices extends javax.swing.JFrame {
     }
 
     InvoicesEntity getModel() {
-        String employeeId = "NV001";
+        String employeeId = Auth.user.getEmployeeID();
         int tax = Integer.parseInt(removeCommasFromNumber(labelTax.getText()));
         int discount = Integer.parseInt(removeCommasFromNumber(labelDiscount.getText()));
         methodPay = radioCash.isSelected() ? "Tiền mặt" : radioCard.isSelected() ? "Thẻ" : "Chuyển khoản";
 
-        String note = "";
         int totalAmount = Integer.parseInt(removeCommasFromNumber(labelTotalAmount.getText()));
-        String status = "Đã thanh toán";
         String giveMoney = textGiveMoney.getText();
 
         try {
@@ -86,9 +85,9 @@ public class Invoices extends javax.swing.JFrame {
             model.setTax(tax);
             model.setDiscount(discount);
             model.setPaymentMethod(methodPay);
-            model.setNote(note);
+            model.setNote("");
             model.setTotalAmount(totalAmount);
-            model.setStatus(status);
+            model.setStatus("Đã thanh toán");
 
             return model;
         } catch (NumberFormatException e) {
@@ -104,9 +103,15 @@ public class Invoices extends javax.swing.JFrame {
     }
 
     void displayUserInfo() {
-        // Display name dining table
-//        tableId = userInfo.get("selectedTableId");
-//        tableName = userInfo.get("selectedTableName");
+        // Kiểm tra và gán giá trị 
+        if (Auth.table != null && Auth.table.getTableID() != null) {
+            tableId = Auth.table.getTableID();
+        }
+
+        if (Auth.table != null && Auth.table.getTableName() != null) {
+            tableName = Auth.table.getTableName();
+        }
+
         invoiceId = new InvoicesDAO().getIdByTableId(tableId);
 
         // Set case
@@ -212,7 +217,10 @@ public class Invoices extends javax.swing.JFrame {
         for (InvoicesEntity invoice : pendingInvoices) {
             // Get id order and info detail
             int invoicesId = invoice.getInvoiceID();
-            OrdersEntity order = new OrdersDAO().getOrderByOrderId(invoicesId);
+            OrdersEntity order = new OrdersDAO().getOrderByInvoiceId(invoicesId);
+            if (order == null) {
+                return;
+            }
             int orderId = order.getOrderId();
 
             int totalAmount = new OrderDetailsDAO().getTotalAmountByInvoiceID(invoicesId);
@@ -327,7 +335,7 @@ public class Invoices extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         labelHouse = new javax.swing.JLabel();
         labelAccount = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
+        labelLogo = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         menuSysten = new javax.swing.JMenu();
         menuItemSystem = new javax.swing.JMenuItem();
@@ -511,7 +519,7 @@ public class Invoices extends javax.swing.JFrame {
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
 
-        btnNameDiningTable.setFont(new java.awt.Font("Cascadia Code PL", 2, 16)); // NOI18N
+        btnNameDiningTable.setFont(new java.awt.Font("Cascadia Code PL", 0, 16)); // NOI18N
         btnNameDiningTable.setText("Chọn bàn");
         btnNameDiningTable.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(210, 210, 210), 4, true));
         btnNameDiningTable.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -742,25 +750,22 @@ public class Invoices extends javax.swing.JFrame {
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                             .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                                .addGroup(jPanel4Layout.createSequentialGroup()
                                     .addComponent(jLabel16)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(labelCashReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(labelCashReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(jPanel4Layout.createSequentialGroup()
                                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(185, 185, 185)
                                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel4Layout.createSequentialGroup()
-                                            .addGap(219, 219, 219)
-                                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                .addComponent(labelDiscount, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(labelTotalAmount, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)
-                                                .addComponent(labelTotalPrice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(labelTax, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                        .addComponent(labelTotalPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(labelTotalAmount, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
+                                            .addComponent(labelDiscount, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(labelTax, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                             .addGap(8, 8, 8))))
                 .addGap(0, 12, Short.MAX_VALUE))
         );
@@ -835,11 +840,12 @@ public class Invoices extends javax.swing.JFrame {
         labelAccount.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         labelAccount.setText("TÀI KHOẢN: NGÔ KIM LONG");
 
-        jLabel15.setFont(new java.awt.Font("Segoe Print", 1, 26)); // NOI18N
-        jLabel15.setForeground(new java.awt.Color(255, 153, 153));
-        jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel15.setText("HOT NOODLE");
-        jLabel15.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        labelLogo.setFont(new java.awt.Font("Segoe Print", 1, 26)); // NOI18N
+        labelLogo.setForeground(new java.awt.Color(255, 153, 153));
+        labelLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelLogo.setText("HOT NOODLE");
+        labelLogo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelLogo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -847,7 +853,7 @@ public class Invoices extends javax.swing.JFrame {
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
-                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(labelLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(labelHouse)
                 .addGap(18, 18, 18)
@@ -862,7 +868,7 @@ public class Invoices extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
-            .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
+            .addComponent(labelLogo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
             .addComponent(labelAccount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(labelHouse, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -1120,8 +1126,13 @@ public class Invoices extends javax.swing.JFrame {
     }//GEN-LAST:event_btnFiveHundredThousandActionPerformed
 
     private void btnPayInvoiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPayInvoiceActionPerformed
+        if (!Auth.isManager()) {
+            Dialog.warning(this, "Bạn không có quyền thanh toán!");
+            return;
+        }
+
         if (invoiceId == 0) {
-            Dialog.alert(this, "Vui lòng chọn bàn đã gọi món!");
+            Dialog.warning(this, "Vui lòng chọn bàn đã gọi món!");
             return;
         }
 
@@ -1129,7 +1140,7 @@ public class Invoices extends javax.swing.JFrame {
         try {
             new InvoicesDAO().update(model);
             new OrdersDAO().updateStatusByInvoiceId(invoiceId);
-            Dialog.alert(this, "Đã thanh toán!");
+            Dialog.success(this, "Đã thanh toán!");
             openFullScreenWindow(new DiningTables());
         } catch (Exception e) {
             System.out.println("Thanh toán thất bại!");
@@ -1173,8 +1184,11 @@ public class Invoices extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemSystemActionPerformed
 
     private void menuLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLogoutActionPerformed
-        Auth.clear();
-        new Login(this, true).setVisible(true);
+        if (Dialog.confirm(this, "Bạn muốn đăng xuất?")) {
+            Auth.clear();
+            dispose();
+            new Login(this, true).setVisible(true);
+        }
     }//GEN-LAST:event_menuLogoutActionPerformed
 
     private void menuEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEndActionPerformed
@@ -1263,7 +1277,6 @@ public class Invoices extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -1289,6 +1302,7 @@ public class Invoices extends javax.swing.JFrame {
     private javax.swing.JLabel labelCashReturn;
     private javax.swing.JLabel labelDiscount;
     private javax.swing.JLabel labelHouse;
+    private javax.swing.JLabel labelLogo;
     private javax.swing.JLabel labelTax;
     private javax.swing.JLabel labelTotalAmount;
     private javax.swing.JLabel labelTotalPrice;

@@ -14,11 +14,15 @@ public class ProductsDAO {
     final String UPDATE_SQL = "UPDATE Products SET ProductName=?, Price=?, Description=?, ImageURL=?, "
             + "Category=?, KitchenArea=?, Status=?, LastUpdated=GETDATE() WHERE ProductID=?";
     final String DELETE_SQL = "DELETE FROM Products WHERE ProductID=?";
+
     final String SELECT_ALL_SQL = "SELECT * FROM Products ORDER BY ProductName";
+    final String SELECT_ALL_BY_CATEGORY_SQL = "SELECT * FROM Products WHERE Category=? ORDER BY ProductName";
+
     final String SELECT_BY_ID_SQL = "SELECT * FROM Products WHERE ProductID=?";
+    static final String SELECT_ID_BY_NAME_SQL = "SELECT ProductID FROM Products WHERE ProductName=?";
+
     final String CHECK_DUPLICATED_ID_SQL = "SELECT COUNT(*) FROM Products WHERE ProductID=?";
     final String CHECK_DUPLICATED_NAME_SQL = "SELECT COUNT(*) FROM Products WHERE ProductName = ?";
-    static final String SELECT_ID_BY_NAME_SQL = "SELECT ProductID FROM Products WHERE ProductName=?";
 
     public void insert(ProductsEntity model) {
         JDBC.executeUpdate(INSERT_SQL,
@@ -52,6 +56,10 @@ public class ProductsDAO {
 
     public List<ProductsEntity> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
+    }
+
+    public List<ProductsEntity> getAllByCategory(String category) {
+        return fetchByQuery(SELECT_ALL_BY_CATEGORY_SQL, category);
     }
 
     public ProductsEntity getById(String id) {
@@ -90,6 +98,25 @@ public class ProductsDAO {
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+//    public List<ProductsEntity> searchByNameInCategory(String keyword, String category) {
+//        String sql = "SELECT * FROM Products WHERE ProductName LIKE ?";
+//        String searchTerm = "%" + keyword + "%";
+//
+//        if (!category.isEmpty()) {
+//            sql += " AND Category = ?";
+//            return fetchByQuery(sql, searchTerm, category);
+//        } else {
+//            return fetchByQuery(sql, searchTerm);
+//        }
+//    }
+    public List<ProductsEntity> searchByNameInCategory(String keyword, String category) {
+        String sql = "SELECT * FROM Products WHERE ProductName LIKE ? AND Category LIKE ?";
+        String searchTerm = "%" + keyword + "%";
+        String categoryTerm = "%" + category + "%";
+
+        return fetchByQuery(sql, searchTerm, categoryTerm);
     }
 
     private List<ProductsEntity> fetchByQuery(String sql, Object... args) {

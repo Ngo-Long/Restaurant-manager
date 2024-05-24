@@ -28,6 +28,7 @@ public class ConfirmProducts extends javax.swing.JFrame {
     private DefaultTableModel modelDrinks;
     private DefaultTableModel modelDishes;
     private DefaultTableModel modelProducts;
+
     private static final int DETAIL_ID_COLUMN_INDEX = 3;
     private List<OrderDetailsEntity> pendingProducts;
     private List<OrderDetailsEntity> confirmedProducts;
@@ -37,9 +38,12 @@ public class ConfirmProducts extends javax.swing.JFrame {
 
         Common.initClock(labelHouse);
         Common.setAccountLabel(labelAccount);
+        Common.addClickActionToLabelLogo(labelLogo, this);
+
         Common.customizeTable(tablePendingDishes, new int[]{});
         Common.customizeTable(tablePendingDrinks, new int[]{});
         Common.customizeTable(tableFinishedProducts, new int[]{});
+        
         setupButtonColumn(tablePendingDishes, 3);
         setupButtonColumn(tablePendingDrinks, 3);
         displayProductsInTables();
@@ -66,7 +70,7 @@ public class ConfirmProducts extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         labelHouse = new javax.swing.JLabel();
         labelAccount = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
+        labelLogo = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         menuSysten = new javax.swing.JMenu();
         menuItemSystem = new javax.swing.JMenuItem();
@@ -138,6 +142,11 @@ public class ConfirmProducts extends javax.swing.JFrame {
         tablePendingDishes.setGridColor(new java.awt.Color(255, 255, 255));
         tablePendingDishes.setRowHeight(50);
         jScrollPane5.setViewportView(tablePendingDishes);
+        if (tablePendingDishes.getColumnModel().getColumnCount() > 0) {
+            tablePendingDishes.getColumnModel().getColumn(4).setMinWidth(0);
+            tablePendingDishes.getColumnModel().getColumn(4).setPreferredWidth(0);
+            tablePendingDishes.getColumnModel().getColumn(4).setMaxWidth(0);
+        }
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -178,6 +187,11 @@ public class ConfirmProducts extends javax.swing.JFrame {
         tablePendingDrinks.setRowHeight(50);
         tablePendingDrinks.setSelectionForeground(new java.awt.Color(255, 255, 255));
         jScrollPane3.setViewportView(tablePendingDrinks);
+        if (tablePendingDrinks.getColumnModel().getColumnCount() > 0) {
+            tablePendingDrinks.getColumnModel().getColumn(4).setMinWidth(0);
+            tablePendingDrinks.getColumnModel().getColumn(4).setPreferredWidth(0);
+            tablePendingDrinks.getColumnModel().getColumn(4).setMaxWidth(0);
+        }
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -219,6 +233,11 @@ public class ConfirmProducts extends javax.swing.JFrame {
         tableFinishedProducts.setRowHeight(50);
         tableFinishedProducts.setShowGrid(false);
         jScrollPane4.setViewportView(tableFinishedProducts);
+        if (tableFinishedProducts.getColumnModel().getColumnCount() > 0) {
+            tableFinishedProducts.getColumnModel().getColumn(4).setMinWidth(0);
+            tableFinishedProducts.getColumnModel().getColumn(4).setPreferredWidth(0);
+            tableFinishedProducts.getColumnModel().getColumn(4).setMaxWidth(0);
+        }
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -257,11 +276,11 @@ public class ConfirmProducts extends javax.swing.JFrame {
         labelAccount.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         labelAccount.setText("TÀI KHOẢN: NGÔ KIM LONG");
 
-        jLabel15.setFont(new java.awt.Font("Segoe Print", 1, 26)); // NOI18N
-        jLabel15.setForeground(new java.awt.Color(255, 153, 153));
-        jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel15.setText("HOT NOODLE");
-        jLabel15.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        labelLogo.setFont(new java.awt.Font("Segoe Print", 1, 26)); // NOI18N
+        labelLogo.setForeground(new java.awt.Color(255, 153, 153));
+        labelLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelLogo.setText("HOT NOODLE");
+        labelLogo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -269,7 +288,7 @@ public class ConfirmProducts extends javax.swing.JFrame {
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
-                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(labelLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(labelHouse)
                 .addGap(18, 18, 18)
@@ -284,7 +303,7 @@ public class ConfirmProducts extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
-            .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
+            .addComponent(labelLogo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
             .addComponent(labelAccount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(labelHouse, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -483,8 +502,11 @@ public class ConfirmProducts extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemSystemActionPerformed
 
     private void menuLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLogoutActionPerformed
-        Auth.clear();
-        new Login(this, true).setVisible(true);
+        if (Dialog.confirm(this, "Bạn muốn đăng xuất?")) {
+            Auth.clear();
+            dispose();
+            new Login(this, true).setVisible(true);
+        }
     }//GEN-LAST:event_menuLogoutActionPerformed
 
     private void menuEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEndActionPerformed
@@ -560,7 +582,6 @@ public class ConfirmProducts extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton3;
-    private javax.swing.JLabel jLabel15;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
@@ -578,6 +599,7 @@ public class ConfirmProducts extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator9;
     private javax.swing.JLabel labelAccount;
     private javax.swing.JLabel labelHouse;
+    private javax.swing.JLabel labelLogo;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem menuChicken;
     private javax.swing.JMenuItem menuClients;

@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.List;
 import java.text.SimpleDateFormat;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 import javax.swing.*;
@@ -20,218 +21,9 @@ import static restaurant.utils.Common.*;
 
 public class Products extends javax.swing.JFrame {
 
-    private String imagePath;
-    private String kitchenArea;
-    private List<ProductsEntity> dishesList;
-
     public Products() {
         initComponents();
-
-        Common.initClock(labelHouse);
-        Common.setAccountLabel(labelAccount);
-        Common.customizeScrollBar(scrollPane);
-        Common.customizeTable(tableOrder, new int[]{0});
-
-        Common.setupButtonColumn(tableOrder, 1);
-        Common.setupComboBoxColumn(tableOrder, 2);
-
-        displayTableName();
-        displayDishesList();
-    }
-
-    ProductsEntity getModel() {
-        String id = textDishID.getText();
-        String name = textDishName.getText();
-        String category = textCategory.getText();
-        String priceText = textMoney.getText();
-        String status = comboBoxStatus.getSelectedItem().toString();
-        String desc = textDesc.getText();
-
-        try {
-            if (id.isEmpty() || name.isEmpty() || category.isEmpty() || priceText.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-
-            int price = Integer.parseInt(Common.removeCommasFromNumber(priceText));
-            if (price < 0) {
-                JOptionPane.showMessageDialog(null, "Số tiền là số không âm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-
-            ProductsEntity model = new ProductsEntity();
-            model.setProductID(id);
-            model.setProductName(name);
-            model.setCategory(category);
-            model.setKitchenArea(kitchenArea);
-            model.setPrice(price);
-            model.setDescription(desc);
-            model.setImageURL(imagePath);
-            model.setStatus(status);
-
-            return model;
-        } catch (NumberFormatException e) {
-            System.err.println("Lỗi: " + e.getMessage());
-            return null;
-        }
-    }
-
-    void displayTableName() {
-        String tableName = "";
-
-        if (Auth.table != null) {
-            tableName = Objects.toString(Auth.table.getTableName(), "");
-        }
-
-        btnNameDiningTable.setText(tableName.equals("") ? "Chọn bàn" : tableName);
-    }
-
-    private void displayDishesList() {
-        // Reset food list
-        panelListDishes.removeAll();
-        panelListDishes.setLayout(new GridBagLayout());
-
-        // Get food list
-        dishesList = new ProductsDAO().getAll();
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(6, 6, 6, 6);
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-
-        int columnCount = 4; // Số cột trên mỗi hàng
-        for (int i = 0; i < dishesList.size(); i++) {
-            ProductsEntity dishItem = dishesList.get(i);
-            JPanel btnDishItem = createButtonDishItem(dishItem);
-
-            // Tính toán vị trí dựa trên số cột
-            gbc.gridx = i % columnCount; // 4 item mỗi hàng
-            gbc.gridy = i / columnCount;
-
-            panelListDishes.add(btnDishItem, gbc);
-        }
-
-        // Refresh the panel
-        panelListDishes.revalidate();
-        panelListDishes.repaint();
-    }
-
-    private JPanel createButtonDishItem(ProductsEntity dishItem) {
-        // Create a image product
-        String imageUrl = dishItem.getImageURL();
-        ImageIcon scaledIcon = getScaledImageIcon(imageUrl, 150, 150);
-
-        // Create a JLabel name
-        JLabel textLabel = new JLabel(dishItem.getProductName());
-        textLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        textLabel.setFont(new Font(textLabel.getFont().getName(), Font.BOLD, 14));
-
-        // Create a JLabel price
-        String formattedPrice = Common.addCommasToNumber(String.valueOf(dishItem.getPrice()));
-        JLabel priceLabel = new JLabel(formattedPrice + " VND");
-        priceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        priceLabel.setFont(new Font(priceLabel.getFont().getName(), Font.PLAIN, 14));
-
-        // Create border in half
-        MatteBorder topBorder = BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 200));
-
-        // Create button "Đặt món"
-        JButton orderButton = createButton("Đặt món", new Color(51, 153, 255), new Dimension(120, 40));
-        orderButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                handleOrderDish(dishItem);
-                displayDetailedInfo(dishItem);
-            }
-        });
-
-        // Create label top contains (scaledIcon) 
-        JLabel labelTop = new JLabel(scaledIcon);
-        labelTop.setHorizontalAlignment(JLabel.CENTER);
-
-        // Create panel bottom contains (name, price, border, button)
-        JPanel panelBottom = new JPanel();
-        panelBottom.add(textLabel);
-        panelBottom.add(priceLabel);
-        panelBottom.add(orderButton);
-        panelBottom.setBackground(Color.WHITE);
-        panelBottom.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
-        panelBottom.setLayout(new BoxLayout(panelBottom, BoxLayout.Y_AXIS));
-        panelBottom.setBorder(BorderFactory.createCompoundBorder(topBorder, panelBottom.getBorder()));
-
-        // Create a panel main 
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.setPreferredSize(new Dimension(140, 174));
-        mainPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-        // mainPanel contains (labelTop, panelBottom)
-        mainPanel.add(labelTop, BorderLayout.CENTER);
-        mainPanel.add(panelBottom, BorderLayout.SOUTH);
-
-        // Call method displayDetailedInfo when user clicked
-        mainPanel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                displayDetailedInfo(dishItem);
-            }
-        });
-
-        return mainPanel;
-    }
-
-    private void displayDetailedInfo(ProductsEntity dishItem) {
-        // Set detailed information in your text fields, combobox, etc.
-        String money = Common.addCommasToNumber(String.valueOf(dishItem.getPrice()));
-        textMoney.setText(money);
-        textDishID.setText(dishItem.getProductID());
-        textDishName.setText(dishItem.getProductName());
-        textCategory.setText(dishItem.getCategory());
-        textDesc.setText(dishItem.getDescription());
-        imagePath = dishItem.getImageURL();
-        kitchenArea = dishItem.getKitchenArea();
-        if ("Khu bếp".equals(kitchenArea)) {
-            radioKitchenAreaDrinks.setSelected(false);
-            radioKitchenAreaDishes.setSelected(true);
-        } else if ("Quầy nước".equals(kitchenArea)) {
-            radioKitchenAreaDrinks.setSelected(true);
-            radioKitchenAreaDishes.setSelected(false);
-        }
-
-        String imageUrl = dishItem.getImageURL();
-        ImageIcon scaledIcon = getScaledImageIcon(imageUrl, 94, 94);
-
-        // Format date if needed
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy  -  HH:mm:ss");
-        textAdditionalDay.setText(dateFormat.format(dishItem.getDateAdded()));
-        textUpdateDay.setText(dateFormat.format(dishItem.getLastUpdated()));
-
-        // Avatar 
-        btnFood.setBorder(null);
-        btnFood.setIcon(scaledIcon);
-        btnFood.setPreferredSize(new Dimension(94, 94));
-    }
-
-    // handle when click button "Đặt món" 
-    private void handleOrderDish(ProductsEntity dishItem) {
-        if ("Chọn bàn".equals(btnNameDiningTable.getText())) {
-            JOptionPane.showMessageDialog(null, "Vui lòng chọn bàn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Get info
-        String productName = dishItem.getProductName();
-        DefaultTableModel saveOrder = (DefaultTableModel) tableOrder.getModel();
-
-        // Add new row into the table
-        Object[] rowData = {productName, 1};
-        saveOrder.insertRow(0, rowData);
-    }
-
-    private void openFullScreenWindow(JFrame window) {
-        window.setVisible(true);
-        window.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        this.dispose();
+        this.init();
     }
 
     @SuppressWarnings("unchecked")
@@ -239,14 +31,16 @@ public class Products extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel3 = new javax.swing.JPanel();
-        CbPhanLoai = new javax.swing.JComboBox<>();
+        CbCategoryProducts = new javax.swing.JComboBox<>();
         textSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
         scrollPane = new javax.swing.JScrollPane();
-        panelListDishes = new javax.swing.JPanel();
+        panelMainProducts = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
+        btnHistory = new javax.swing.JButton();
+        btnSearch2 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jTabbedPane3 = new javax.swing.JTabbedPane();
+        tabbedPaneProduct = new javax.swing.JTabbedPane();
         jPanel9 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableOrder = new javax.swing.JTable();
@@ -266,7 +60,7 @@ public class Products extends javax.swing.JFrame {
         btnAdd = new javax.swing.JButton();
         btnRemove = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
-        btnFood = new javax.swing.JButton();
+        btnProductImage = new javax.swing.JButton();
         jLabel13 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         textUpdateDay = new javax.swing.JTextField();
@@ -283,9 +77,11 @@ public class Products extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         labelHouse = new javax.swing.JLabel();
         labelAccount = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
+        labelLogo = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         menuSysten = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jSeparator6 = new javax.swing.JPopupMenu.Separator();
         menuItemSystem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         menuLogout = new javax.swing.JMenuItem();
@@ -316,8 +112,9 @@ public class Products extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
-        CbPhanLoai.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        CbPhanLoai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả" }));
+        CbCategoryProducts.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        CbCategoryProducts.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả" }));
+        CbCategoryProducts.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         textSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textSearch.addActionListener(new java.awt.event.ActionListener() {
@@ -326,10 +123,11 @@ public class Products extends javax.swing.JFrame {
             }
         });
 
-        btnSearch.setBackground(new java.awt.Color(0, 51, 102));
+        btnSearch.setBackground(new java.awt.Color(255, 102, 102));
         btnSearch.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnSearch.setForeground(new java.awt.Color(255, 255, 255));
-        btnSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Search.png"))); // NOI18N
+        btnSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/searchWhile.png"))); // NOI18N
+        btnSearch.setToolTipText("Tìm kiếm");
         btnSearch.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnSearch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -339,23 +137,47 @@ public class Products extends javax.swing.JFrame {
 
         scrollPane.setBorder(null);
 
-        panelListDishes.setBackground(new java.awt.Color(255, 255, 255));
+        panelMainProducts.setBackground(new java.awt.Color(255, 255, 255));
 
-        javax.swing.GroupLayout panelListDishesLayout = new javax.swing.GroupLayout(panelListDishes);
-        panelListDishes.setLayout(panelListDishesLayout);
-        panelListDishesLayout.setHorizontalGroup(
-            panelListDishesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout panelMainProductsLayout = new javax.swing.GroupLayout(panelMainProducts);
+        panelMainProducts.setLayout(panelMainProductsLayout);
+        panelMainProductsLayout.setHorizontalGroup(
+            panelMainProductsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 851, Short.MAX_VALUE)
         );
-        panelListDishesLayout.setVerticalGroup(
-            panelListDishesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        panelMainProductsLayout.setVerticalGroup(
+            panelMainProductsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 554, Short.MAX_VALUE)
         );
 
-        scrollPane.setViewportView(panelListDishes);
+        scrollPane.setViewportView(panelMainProducts);
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/filter1.png"))); // NOI18N
+
+        btnHistory.setBackground(new java.awt.Color(51, 204, 0));
+        btnHistory.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnHistory.setForeground(new java.awt.Color(255, 255, 255));
+        btnHistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/historyWhile.png"))); // NOI18N
+        btnHistory.setToolTipText("Xem lịch sử gọi món");
+        btnHistory.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnHistory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHistoryActionPerformed(evt);
+            }
+        });
+
+        btnSearch2.setBackground(new java.awt.Color(0, 153, 153));
+        btnSearch2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnSearch2.setForeground(new java.awt.Color(255, 255, 255));
+        btnSearch2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/refreshWhile.png"))); // NOI18N
+        btnSearch2.setToolTipText("Reset trang (Ctrl + F5)");
+        btnSearch2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSearch2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearch2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -363,13 +185,17 @@ public class Products extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel5)
-                .addGap(0, 0, 0)
-                .addComponent(CbPhanLoai, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(CbCategoryProducts, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSearch2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12))
             .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 861, Short.MAX_VALUE)
         );
@@ -377,20 +203,21 @@ public class Products extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(CbPhanLoai, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(CbCategoryProducts, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(textSearch, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnSearch2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 529, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
-        jTabbedPane3.setBackground(new java.awt.Color(255, 255, 255));
-        jTabbedPane3.setFont(new java.awt.Font("Cascadia Code PL", 0, 14)); // NOI18N
+        tabbedPaneProduct.setBackground(new java.awt.Color(255, 255, 255));
+        tabbedPaneProduct.setFont(new java.awt.Font("Cascadia Code PL", 0, 14)); // NOI18N
 
         jPanel9.setBackground(new java.awt.Color(255, 255, 255));
         jPanel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -406,6 +233,7 @@ public class Products extends javax.swing.JFrame {
         ));
         tableOrder.setAlignmentX(1.0F);
         tableOrder.setAlignmentY(1.0F);
+        tableOrder.setFillsViewportHeight(true);
         tableOrder.setGridColor(new java.awt.Color(255, 255, 255));
         tableOrder.setRowHeight(35);
         jScrollPane1.setViewportView(tableOrder);
@@ -418,6 +246,7 @@ public class Products extends javax.swing.JFrame {
         btnCancel.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
         btnCancel.setForeground(new java.awt.Color(255, 255, 255));
         btnCancel.setText("HỦY");
+        btnCancel.setToolTipText("Quay về bàn ăn");
         btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -425,8 +254,9 @@ public class Products extends javax.swing.JFrame {
             }
         });
 
-        btnNameDiningTable.setFont(new java.awt.Font("Cascadia Code", 2, 18)); // NOI18N
-        btnNameDiningTable.setText("Chọn bàn");
+        btnNameDiningTable.setFont(new java.awt.Font("Cascadia Code", 0, 16)); // NOI18N
+        btnNameDiningTable.setText("Chọn bàn (F1)");
+        btnNameDiningTable.setToolTipText("Ấn F1 chuyển sang bàn ăn");
         btnNameDiningTable.setBorder(null);
         btnNameDiningTable.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnNameDiningTable.addActionListener(new java.awt.event.ActionListener() {
@@ -468,15 +298,15 @@ public class Products extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(btnNameDiningTable, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnCancel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
-        jTabbedPane3.addTab("Gọi món ", new javax.swing.ImageIcon(getClass().getResource("/icon/Add to basket.png")), jPanel9); // NOI18N
+        tabbedPaneProduct.addTab("Gọi món ", new javax.swing.ImageIcon(getClass().getResource("/icon/add-to-cart.png")), jPanel9); // NOI18N
 
         jPanel10.setBackground(new java.awt.Color(255, 255, 255));
         jPanel10.setForeground(new java.awt.Color(255, 255, 255));
@@ -486,21 +316,11 @@ public class Products extends javax.swing.JFrame {
         jLabel2.setText("Mã món ăn:");
 
         textDishID.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        textDishID.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textDishIDActionPerformed(evt);
-            }
-        });
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Tên món ăn:");
 
         textDishName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        textDishName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textDishNameActionPerformed(evt);
-            }
-        });
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel9.setText("Phân loại:");
@@ -509,22 +329,12 @@ public class Products extends javax.swing.JFrame {
         jLabel17.setText("Ngày thêm:");
 
         textAdditionalDay.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        textAdditionalDay.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textAdditionalDayActionPerformed(evt);
-            }
-        });
 
         jLabel19.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel19.setText("Nguyên liệu:");
 
         comboBoxStatus.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         comboBoxStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bật hoạt động", "Tắt hoạt động" }));
-        comboBoxStatus.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboBoxStatusActionPerformed(evt);
-            }
-        });
 
         btnAdd.setBackground(new java.awt.Color(0, 153, 0));
         btnAdd.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -559,10 +369,10 @@ public class Products extends javax.swing.JFrame {
             }
         });
 
-        btnFood.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnFood.addActionListener(new java.awt.event.ActionListener() {
+        btnProductImage.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnProductImage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnFoodActionPerformed(evt);
+                btnProductImageActionPerformed(evt);
             }
         });
 
@@ -573,18 +383,8 @@ public class Products extends javax.swing.JFrame {
         jLabel18.setText("Mô tả:");
 
         textUpdateDay.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        textUpdateDay.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textUpdateDayActionPerformed(evt);
-            }
-        });
 
         textMoney.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        textMoney.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textMoneyActionPerformed(evt);
-            }
-        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setText("Trạng thái:");
@@ -593,18 +393,8 @@ public class Products extends javax.swing.JFrame {
         jLabel11.setText("Đơn giá:");
 
         textCategory.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        textCategory.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textCategoryActionPerformed(evt);
-            }
-        });
 
         textDesc.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        textDesc.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textDescActionPerformed(evt);
-            }
-        });
 
         btnChoseIngredients.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnChoseIngredients.setText("Chọn nguyên liệu");
@@ -688,7 +478,7 @@ public class Products extends javax.swing.JFrame {
                                     .addComponent(textDishID)
                                     .addComponent(textDishName))
                                 .addGap(18, 18, 18)
-                                .addComponent(btnFood, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(btnProductImage, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel10Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(35, 35, 35)
@@ -712,7 +502,7 @@ public class Products extends javax.swing.JFrame {
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(textDishName, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
                             .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(btnFood, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnProductImage, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(textCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -749,27 +539,25 @@ public class Products extends javax.swing.JFrame {
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(textUpdateDay, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
                     .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRemove, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(19, 19, 19))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
-        jTabbedPane3.addTab("Cập nhật ", new javax.swing.ImageIcon(getClass().getResource("/icon/update.png")), jPanel10); // NOI18N
+        tabbedPaneProduct.addTab("Cập nhật ", new javax.swing.ImageIcon(getClass().getResource("/icon/update.png")), jPanel10); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane3)
+            .addComponent(tabbedPaneProduct)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jTabbedPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(tabbedPaneProduct)
         );
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
@@ -785,11 +573,11 @@ public class Products extends javax.swing.JFrame {
         labelAccount.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         labelAccount.setText("TÀI KHOẢN: NGÔ KIM LONG");
 
-        jLabel14.setFont(new java.awt.Font("Segoe Print", 1, 26)); // NOI18N
-        jLabel14.setForeground(new java.awt.Color(255, 153, 153));
-        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel14.setText("HOT NOODLE");
-        jLabel14.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        labelLogo.setFont(new java.awt.Font("Segoe Print", 1, 26)); // NOI18N
+        labelLogo.setForeground(new java.awt.Color(255, 153, 153));
+        labelLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelLogo.setText("HOT NOODLE");
+        labelLogo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -797,7 +585,7 @@ public class Products extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
-                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(labelLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(labelHouse)
                 .addGap(18, 18, 18)
@@ -812,13 +600,25 @@ public class Products extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
-            .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
+            .addComponent(labelLogo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
             .addComponent(labelAccount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(labelHouse, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         menuSysten.setText("Hệ thống");
 
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/refreshWhile.png"))); // NOI18N
+        jMenuItem1.setText("Reset");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        menuSysten.add(jMenuItem1);
+        menuSysten.add(jSeparator6);
+
+        menuItemSystem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         menuItemSystem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Refresh.png"))); // NOI18N
         menuItemSystem.setText("Đổi mật khẩu");
         menuItemSystem.addActionListener(new java.awt.event.ActionListener() {
@@ -1001,13 +801,328 @@ public class Products extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 12, Short.MAX_VALUE))
+                .addGap(0, 8, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        insert();
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+        delete();
+    }//GEN-LAST:event_btnRemoveActionPerformed
+
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        cancel();
+    }//GEN-LAST:event_btnCancelActionPerformed
+
+
+    private void btnProductImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductImageActionPerformed
+        Common.chooseImageFromDirectory(this, btnProductImage);
+    }//GEN-LAST:event_btnProductImageActionPerformed
+
+
+    private void btnChoseIngredientsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChoseIngredientsActionPerformed
+//        ChoseIngredient choseIngredientFrame = new ChoseIngredient();
+//        choseIngredientFrame.setLocationRelativeTo(this); // Hiển thị frame mới ở giữa frame hiện tại
+//        choseIngredientFrame.setVisible(true);
+    }//GEN-LAST:event_btnChoseIngredientsActionPerformed
+
+    private void textSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSearchActionPerformed
+        displayProductsBySearchAndCategory();
+    }//GEN-LAST:event_textSearchActionPerformed
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        displayProductsBySearchAndCategory();
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
+        submit();
+    }//GEN-LAST:event_btnSubmitActionPerformed
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        update();
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void btnNameDiningTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNameDiningTableActionPerformed
+        openFullScreenWindow(new DiningTables());
+    }//GEN-LAST:event_btnNameDiningTableActionPerformed
+
+    private void radioKitchenAreaDishesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioKitchenAreaDishesActionPerformed
+        kitchenArea = radioKitchenAreaDishes.getText();
+        radioKitchenAreaDishes.setSelected(true);
+        radioKitchenAreaDrinks.setSelected(false);
+    }//GEN-LAST:event_radioKitchenAreaDishesActionPerformed
+
+    private void radioKitchenAreaDrinksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioKitchenAreaDrinksActionPerformed
+        kitchenArea = radioKitchenAreaDrinks.getText();
+        radioKitchenAreaDrinks.setSelected(true);
+        radioKitchenAreaDishes.setSelected(false);
+    }//GEN-LAST:event_radioKitchenAreaDrinksActionPerformed
+
+    private void menuItemSystemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemSystemActionPerformed
+
+    }//GEN-LAST:event_menuItemSystemActionPerformed
+
+    private void menuLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLogoutActionPerformed
+        if (Dialog.confirm(this, "Bạn muốn đăng xuất?")) {
+            Auth.clear();
+            dispose();
+            new Login(this, true).setVisible(true);
+        }
+    }//GEN-LAST:event_menuLogoutActionPerformed
+
+    private void menuEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEndActionPerformed
+        if (Dialog.confirm(this, "Bạn muốn kết thúc làm việc?")) {
+            System.exit(0);
+        }
+    }//GEN-LAST:event_menuEndActionPerformed
+
+    private void menuTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTablesActionPerformed
+        cancel();
+    }//GEN-LAST:event_menuTablesActionPerformed
+
+    private void menuDishesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDishesActionPerformed
+        openFullScreenWindow(new Products());
+    }//GEN-LAST:event_menuDishesActionPerformed
+
+    private void menuChickenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChickenActionPerformed
+        openFullScreenWindow(new ConfirmProducts());
+    }//GEN-LAST:event_menuChickenActionPerformed
+
+    private void menuPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuPayActionPerformed
+        openFullScreenWindow(new Invoices());
+    }//GEN-LAST:event_menuPayActionPerformed
+
+    private void menuEmployeeListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEmployeeListActionPerformed
+        openFullScreenWindow(new Employees());
+    }//GEN-LAST:event_menuEmployeeListActionPerformed
+
+    private void menuIngridiantsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuIngridiantsActionPerformed
+
+    }//GEN-LAST:event_menuIngridiantsActionPerformed
+
+    private void menuEmployeesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEmployeesActionPerformed
+
+    }//GEN-LAST:event_menuEmployeesActionPerformed
+
+    private void menuClientsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuClientsActionPerformed
+
+    }//GEN-LAST:event_menuClientsActionPerformed
+
+    private void menuRevenueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRevenueActionPerformed
+
+    }//GEN-LAST:event_menuRevenueActionPerformed
+
+    private void mniHuongDanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniHuongDanActionPerformed
+    }//GEN-LAST:event_mniHuongDanActionPerformed
+
+    private void mniGioiThieuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniGioiThieuActionPerformed
+    }//GEN-LAST:event_mniGioiThieuActionPerformed
+
+    private void btnHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistoryActionPerformed
+    }//GEN-LAST:event_btnHistoryActionPerformed
+
+    private void btnSearch2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearch2ActionPerformed
+        openFullScreenWindow(new Products());
+    }//GEN-LAST:event_btnSearch2ActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        openFullScreenWindow(new Products());
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    public static void main(String args[]) {
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Products.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
+        java.awt.EventQueue.invokeLater(() -> {
+            new Products().setVisible(true);
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> CbCategoryProducts;
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnChoseIngredients;
+    private javax.swing.JButton btnHistory;
+    private javax.swing.JButton btnNameDiningTable;
+    private javax.swing.JButton btnProductImage;
+    private javax.swing.JButton btnRemove;
+    private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnSearch2;
+    private javax.swing.JButton btnSubmit;
+    private javax.swing.JButton btnUpdate;
+    private javax.swing.JComboBox<String> comboBoxStatus;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel9;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JPopupMenu.Separator jSeparator3;
+    private javax.swing.JPopupMenu.Separator jSeparator4;
+    private javax.swing.JPopupMenu.Separator jSeparator5;
+    private javax.swing.JPopupMenu.Separator jSeparator6;
+    private javax.swing.JPopupMenu.Separator jSeparator8;
+    private javax.swing.JPopupMenu.Separator jSeparator9;
+    private javax.swing.JLabel labelAccount;
+    private javax.swing.JLabel labelHouse;
+    private javax.swing.JLabel labelLogo;
+    private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenuItem menuChicken;
+    private javax.swing.JMenuItem menuClients;
+    private javax.swing.JMenuItem menuDishes;
+    private javax.swing.JMenuItem menuEmployeeList;
+    private javax.swing.JMenuItem menuEmployees;
+    private javax.swing.JMenuItem menuEnd;
+    private javax.swing.JMenuItem menuIngridiants;
+    private javax.swing.JMenu menuItemHelp;
+    private javax.swing.JMenu menuItemManager;
+    private javax.swing.JMenuItem menuItemSystem;
+    private javax.swing.JMenuItem menuLogout;
+    private javax.swing.JMenuItem menuPay;
+    private javax.swing.JMenuItem menuRevenue;
+    private javax.swing.JMenu menuStatistical;
+    private javax.swing.JMenu menuSysten;
+    private javax.swing.JMenuItem menuTables;
+    private javax.swing.JMenuItem mniGioiThieu;
+    private javax.swing.JMenuItem mniHuongDan;
+    private javax.swing.JPanel panelMainProducts;
+    private javax.swing.JRadioButton radioKitchenAreaDishes;
+    private javax.swing.JRadioButton radioKitchenAreaDrinks;
+    private javax.swing.JScrollPane scrollPane;
+    private javax.swing.JTabbedPane tabbedPaneProduct;
+    private javax.swing.JTable tableOrder;
+    private javax.swing.JTextField textAdditionalDay;
+    private javax.swing.JTextField textCategory;
+    private javax.swing.JTextField textDesc;
+    private javax.swing.JTextField textDishID;
+    private javax.swing.JTextField textDishName;
+    private javax.swing.JTextField textMoney;
+    private javax.swing.JTextField textSearch;
+    private javax.swing.JTextField textUpdateDay;
+    // End of variables declaration//GEN-END:variables
+
+    String imagePath;
+    String kitchenArea;
+    String selectedCategory;
+    List<ProductsEntity> dataProductsByCategory;
+    List<ProductsEntity> dataProducts = new ProductsDAO().getAll();
+
+    void init() {
+        Common.initClock(labelHouse);
+        Common.setAccountLabel(labelAccount);
+        Common.addClickActionToLabelLogo(labelLogo, this);
+        Common.customizeScrollBar(scrollPane);
+        Common.customizeTable(tableOrder, new int[]{0});
+        Common.setupButtonColumn(tableOrder, 1);
+        Common.setupComboBoxColumn(tableOrder, 2);
+
+        // Get food list
+        hideSecondTab();
+        displayButtonTableName();
+        displayProductList(dataProducts);
+        setupComboboxCategoryProducts();
+        handleClickComboboxCategoryProducts();
+    }
+
+    // <--- common
+    void hideSecondTab() {
+        if (!Auth.isManager()) {
+            tabbedPaneProduct.removeTabAt(1);
+        }
+    }
+
+    void openFullScreenWindow(JFrame window) {
+        window.setVisible(true);
+        window.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.dispose();
+    }
+
+    void displayButtonTableName() {
+        String tableName = "";
+        int orderCount = 0;
+        String totalAmount = "";
+
+        if (Auth.table != null) {
+            tableName = Objects.toString(Auth.table.getTableName(), "");
+            orderCount = Auth.orderCount;
+            totalAmount = Auth.totalAmount;
+        }
+
+        // Đặt nội dung cho nút
+        btnNameDiningTable.setText(tableName.equals("")
+                ? "Chọn bàn (F1)"
+                : tableName + " - Tổng:" + totalAmount + "₫ / " + orderCount + "đơn");
+    }
+    // end --->
+
+    // <--- Add, update, delete, submit, delete
+    ProductsEntity getModel() {
+        String id = textDishID.getText();
+        String name = textDishName.getText();
+        String category = textCategory.getText();
+        String priceText = textMoney.getText();
+        String status = comboBoxStatus.getSelectedItem().toString();
+        String desc = textDesc.getText();
+
+        try {
+            if (id.isEmpty() || name.isEmpty() || category.isEmpty() || priceText.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+
+            int price = Integer.parseInt(Common.removeCommasFromNumber(priceText));
+            if (price < 0) {
+                JOptionPane.showMessageDialog(null, "Số tiền là số không âm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+
+            ProductsEntity model = new ProductsEntity();
+            model.setProductID(id);
+            model.setProductName(name);
+            model.setCategory(category);
+            model.setKitchenArea(kitchenArea);
+            model.setPrice(price);
+            model.setDescription(desc);
+            model.setImageURL(imagePath);
+            model.setStatus(status);
+
+            return model;
+        } catch (NumberFormatException e) {
+            System.err.println("Lỗi: " + e.getMessage());
+            return null;
+        }
+    }
+
+    void insert() {
         ProductsEntity model = getModel();
 
         if (new ProductsDAO().isDuplicatedId(model.getProductID())) {
@@ -1022,15 +1137,38 @@ public class Products extends javax.swing.JFrame {
 
         try {
             new ProductsDAO().insert(model);
-            displayDishesList();
-            Dialog.alert(this, "Thêm mới thành công!");
+            Dialog.success(this, "Thêm mới thành công!");
+
+            dataProducts = new ProductsDAO().getAll();
+            displayProductList(dataProducts);
         } catch (Exception e) {
-            Dialog.alert(this, "Thêm mới thất bại!");
+            Dialog.error(this, "Thêm mới thất bại!");
             e.printStackTrace();
         }
-    }//GEN-LAST:event_btnAddActionPerformed
+    }
 
-    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+    void update() {
+        ProductsEntity model = getModel();
+
+        if (!new ProductsDAO().isDuplicatedId(model.getProductID())) {
+            Dialog.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
+            return;
+        }
+
+        try {
+            new ProductsDAO().update(model);
+            Dialog.success(this, "Cập nhật thành công!");
+
+            dataProducts = new ProductsDAO().getAll();
+            displayProductList(dataProducts);
+        } catch (Exception e) {
+            Dialog.alert(this, "Cập nhật thất bại!");
+        }
+    }
+
+    void delete() {
+        ProductsEntity model = getModel();
+
         String id = textDishID.getText();
         if (!new ProductsDAO().isDuplicatedId(id)) {
             Dialog.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
@@ -1039,76 +1177,178 @@ public class Products extends javax.swing.JFrame {
 
         try {
             new ProductsDAO().delete(id);
-            displayDishesList();
             Dialog.alert(this, "Xóa thành công!");
+
+            dataProducts = new ProductsDAO().getAll();
+            displayProductList(dataProducts);
         } catch (Exception e) {
-            Dialog.alert(this, "Xóa thất bại!");
+            Dialog.error(this, "Xóa thất bại!");
         }
-    }//GEN-LAST:event_btnRemoveActionPerformed
+    }
 
-    private void textDishIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textDishIDActionPerformed
-    }//GEN-LAST:event_textDishIDActionPerformed
+    void cancel() {
+        // Nếu bàn chưa chọn món thì rời đi luôn
+        DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
+        if (model.getRowCount() == 0) {
+            openFullScreenWindow(new DiningTables());
+            return;
+        }
 
-    private void textDishNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textDishNameActionPerformed
-    }//GEN-LAST:event_textDishNameActionPerformed
-
-    private void textAdditionalDayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textAdditionalDayActionPerformed
-    }//GEN-LAST:event_textAdditionalDayActionPerformed
-
-    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        // Nếu bàn đã gọi món thì hỏi trước khi thoát
         Boolean result = Dialog.confirm(this, "Nếu thoát bạn sẽ mất các món ăn đã chọn?");
         if (result) {
             openFullScreenWindow(new DiningTables());
         }
-    }//GEN-LAST:event_btnCancelActionPerformed
+    }
+    // end --->    
 
-    private void btnFoodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFoodActionPerformed
-        String imgPath = "src/restaurant/img";
-        JFileChooser fileChooser = new JFileChooser(imgPath);
+    // <--- Display and handle events products
+    void displayProductList(List<ProductsEntity> dataList) {
+        // Reset food list
+        panelMainProducts.removeAll();
+        panelMainProducts.setLayout(new GridBagLayout());
 
-        int result = fileChooser.showOpenDialog(this);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-            imagePath = selectedFile.getAbsolutePath();
-            new Common().resetImagePath(imagePath, btnFood);
+        // Init gridbag 
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(0, 8, 16, 8);
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+
+        int columnCount = 5;
+        for (int i = 0; i < dataList.size(); i++) {
+            // create panel product item
+            ProductsEntity dataItem = dataList.get(i);
+            JPanel panelProduct = createPanelProduct(dataItem);
+
+            // Tính toán vị trí dựa trên số cột
+            gbc.gridx = i % columnCount;
+            gbc.gridy = i / columnCount;
+
+            panelMainProducts.add(panelProduct, gbc);
         }
-    }//GEN-LAST:event_btnFoodActionPerformed
 
+        // Refresh the panel
+        panelMainProducts.repaint();
+        panelMainProducts.revalidate();
+    }
 
-    private void textUpdateDayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textUpdateDayActionPerformed
-    }//GEN-LAST:event_textUpdateDayActionPerformed
+    JPanel createPanelProduct(ProductsEntity product) {
+        // Create a image product
+        String imageUrl = product.getImageURL();
+        ImageIcon scaledIcon = getScaledImageIcon(imageUrl, 200, 200);
 
-    private void textMoneyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textMoneyActionPerformed
-    }//GEN-LAST:event_textMoneyActionPerformed
+        // Create a JLabel name
+        JLabel textLabel = new JLabel(product.getProductName());
+        textLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        textLabel.setFont(new Font(textLabel.getFont().getName(), Font.BOLD, 14));
 
-    private void comboBoxStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxStatusActionPerformed
-    }//GEN-LAST:event_comboBoxStatusActionPerformed
+        // Create a JLabel price
+        String formattedPrice = Common.addCommasToNumber(String.valueOf(product.getPrice()));
+        JLabel priceLabel = new JLabel(formattedPrice + " VND");
+        priceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        priceLabel.setFont(new Font(priceLabel.getFont().getName(), Font.PLAIN, 14));
 
-    private void textCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textCategoryActionPerformed
-    }//GEN-LAST:event_textCategoryActionPerformed
+        // Create border in half
+        MatteBorder topBorder = BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 200));
 
-    private void textDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textDescActionPerformed
-    }//GEN-LAST:event_textDescActionPerformed
+        // Create label top contains (scaledIcon) 
+        JLabel labelTop = new JLabel(scaledIcon);
+        labelTop.setHorizontalAlignment(JLabel.CENTER);
 
-    private void btnChoseIngredientsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChoseIngredientsActionPerformed
-//        ChoseIngredient choseIngredientFrame = new ChoseIngredient();
-//        choseIngredientFrame.setLocationRelativeTo(this); // Hiển thị frame mới ở giữa frame hiện tại
-//        choseIngredientFrame.setVisible(true);
-    }//GEN-LAST:event_btnChoseIngredientsActionPerformed
+        // Create button "Đặt món"
+        JButton orderButton = createButton("Đặt món", new Color(51, 153, 255), new Dimension(120, 40));
 
-    private void textSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSearchActionPerformed
-        String keyword = textSearch.getText().trim();
-        String selectedPhanLoai = (String) CbPhanLoai.getSelectedItem();
-        searchAndClassifyMenu(keyword, selectedPhanLoai, panelListDishes);
-    }//GEN-LAST:event_textSearchActionPerformed
+        // Create panel bottom contains (name, price, border, button)
+        JPanel panelBottom = new JPanel();
+        panelBottom.add(textLabel);
+        panelBottom.add(priceLabel);
+        panelBottom.add(orderButton);
+        panelBottom.setBackground(Color.WHITE);
+        panelBottom.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
+        panelBottom.setLayout(new BoxLayout(panelBottom, BoxLayout.Y_AXIS));
+        panelBottom.setBorder(BorderFactory.createCompoundBorder(topBorder, panelBottom.getBorder()));
 
-    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        String keyword = textSearch.getText().trim();
-        String selectedPhanLoai = (String) CbPhanLoai.getSelectedItem();
-        searchAndClassifyMenu(keyword, selectedPhanLoai, panelListDishes);
-    }//GEN-LAST:event_btnSearchActionPerformed
+        // Create a panel main 
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setPreferredSize(new Dimension(146, 200));
+        mainPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
+        // mainPanel contains (labelTop, panelBottom)
+        mainPanel.add(labelTop, BorderLayout.CENTER);
+        mainPanel.add(panelBottom, BorderLayout.SOUTH);
+
+        // Call method displayDetailedInfo when user clicked
+        mainPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                displayDetailedInfo(product);
+            }
+        });
+
+        orderButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                displayDetailedInfo(product);
+                handleClickButtonOrder(product);
+            }
+        });
+
+        return mainPanel;
+    }
+
+    void displayDetailedInfo(ProductsEntity product) {
+        // Set detailed information in your text fields, combobox, etc.
+        String money = Common.addCommasToNumber(String.valueOf(product.getPrice()));
+        textMoney.setText(money);
+        textDishID.setText(product.getProductID());
+        textDishName.setText(product.getProductName());
+        textCategory.setText(product.getCategory());
+        textDesc.setText(product.getDescription());
+        imagePath = product.getImageURL();
+        kitchenArea = product.getKitchenArea();
+        if ("Khu bếp".equals(kitchenArea)) {
+            radioKitchenAreaDrinks.setSelected(false);
+            radioKitchenAreaDishes.setSelected(true);
+        } else if ("Quầy nước".equals(kitchenArea)) {
+            radioKitchenAreaDrinks.setSelected(true);
+            radioKitchenAreaDishes.setSelected(false);
+        }
+
+        String imageUrl = product.getImageURL();
+        ImageIcon scaledIcon = getScaledImageIcon(imageUrl, 94, 94);
+
+        // Format date if needed
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy  -  HH:mm:ss");
+        textAdditionalDay.setText(dateFormat.format(product.getDateAdded()));
+        textUpdateDay.setText(dateFormat.format(product.getLastUpdated()));
+
+        // Avatar 
+        btnProductImage.setBorder(null);
+        btnProductImage.setIcon(scaledIcon);
+        btnProductImage.setPreferredSize(new Dimension(94, 94));
+    }
+
+    void handleClickButtonOrder(ProductsEntity product) {
+        if ("Chọn bàn".equals(btnNameDiningTable.getText())) {
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn bàn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Get info
+        String productName = product.getProductName();
+        DefaultTableModel saveOrder = (DefaultTableModel) tableOrder.getModel();
+
+        // Add new row into the table at the end
+        Object[] rowData = {productName, 1};
+        saveOrder.addRow(rowData);
+    }
+    // end --->
+
+    // <--- Handle click button submit
+    void submit() {
         if (tableOrder != null && tableOrder.getRowCount() == 0) {
             JOptionPane.showMessageDialog(null, "Vui lòng chọn món ăn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
@@ -1122,7 +1362,7 @@ public class Products extends javax.swing.JFrame {
         String diningTableId = Auth.table.getTableID();
         try {
             // Create an order if don't have one yet
-            OrdersEntity existingOrder = new OrdersDAO().getOrderByTableId(diningTableId);
+            OrdersEntity existingOrder = new OrdersDAO().getPendingOrderByTableId(diningTableId);
             if (existingOrder == null) {
                 // Create new idcoice after create new order
                 int invoiceId = new InvoicesDAO().insert();
@@ -1130,17 +1370,16 @@ public class Products extends javax.swing.JFrame {
             }
 
             // Get newly created order information
-            existingOrder = new OrdersDAO().getOrderByTableId(diningTableId);
+            existingOrder = new OrdersDAO().getPendingOrderByTableId(diningTableId);
             addDishesToExistingOrder(existingOrder, data);
 
             // Open file table
-            DiningTables chonBan = new DiningTables();
-            openFullScreenWindow(chonBan);
+            openFullScreenWindow(new DiningTables());
         } catch (Exception e) {
-            Dialog.alert(this, "Đã xảy ra lỗi khi xử lý đơn hàng!");
+            Dialog.error(this, "Đã xảy ra lỗi khi xử lý đơn hàng!");
             e.printStackTrace();
         }
-    }//GEN-LAST:event_btnSubmitActionPerformed
+    }
 
     private void createNewOrder(int invoiceId, String diningTableId) {
         try {
@@ -1186,238 +1425,58 @@ public class Products extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
+    // end --->
 
-    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        ProductsEntity model = getModel();
+    // <--- Handle event search and catogory
+    void setupComboboxCategoryProducts() {
+        // Create a DefaultComboBoxModel 
+        DefaultComboBoxModel<String> cbModelProducts = new DefaultComboBoxModel<>();
+        cbModelProducts.addElement("Tất cả món");
+        Set<String> categorySet = new HashSet<>();
 
-        System.out.println(kitchenArea);
-
-        if (!new ProductsDAO().isDuplicatedId(model.getProductID())) {
-            Dialog.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
-            return;
+        // Collect unique kitchen area
+        for (ProductsEntity dateItem : dataProducts) {
+            categorySet.add(dateItem.getCategory());
         }
 
-        try {
-            new ProductsDAO().update(model);
-            displayDishesList();
-            Dialog.alert(this, "Cập nhật thành công!");
-        } catch (Exception e) {
-            Dialog.alert(this, "Cập nhật thất bại!");
+        // Convert the Set to an array
+        String[] categoryList = categorySet.toArray(String[]::new);
+        for (String categoryItem : categoryList) {
+            cbModelProducts.addElement(categoryItem);
         }
-    }//GEN-LAST:event_btnUpdateActionPerformed
 
-    private void btnNameDiningTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNameDiningTableActionPerformed
-        DiningTables chonBan = new DiningTables();
-        openFullScreenWindow(chonBan);
-    }//GEN-LAST:event_btnNameDiningTableActionPerformed
-
-    private void radioKitchenAreaDishesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioKitchenAreaDishesActionPerformed
-        kitchenArea = radioKitchenAreaDishes.getText();
-        radioKitchenAreaDishes.setSelected(true);
-        radioKitchenAreaDrinks.setSelected(false);
-    }//GEN-LAST:event_radioKitchenAreaDishesActionPerformed
-
-    private void radioKitchenAreaDrinksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioKitchenAreaDrinksActionPerformed
-        kitchenArea = radioKitchenAreaDrinks.getText();
-        radioKitchenAreaDrinks.setSelected(true);
-        radioKitchenAreaDishes.setSelected(false);
-    }//GEN-LAST:event_radioKitchenAreaDrinksActionPerformed
-
-    private void menuItemSystemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemSystemActionPerformed
-
-    }//GEN-LAST:event_menuItemSystemActionPerformed
-
-    private void menuLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLogoutActionPerformed
-        Auth.clear();
-        new Login(this, true).setVisible(true);
-    }//GEN-LAST:event_menuLogoutActionPerformed
-
-    private void menuEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEndActionPerformed
-        if (Dialog.confirm(this, "Bạn muốn kết thúc làm việc?")) {
-            System.exit(0);
-        }
-    }//GEN-LAST:event_menuEndActionPerformed
-
-    private void menuTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTablesActionPerformed
-        openFullScreenWindow(new DiningTables());
-    }//GEN-LAST:event_menuTablesActionPerformed
-
-    private void menuDishesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDishesActionPerformed
-        openFullScreenWindow(new Products());
-    }//GEN-LAST:event_menuDishesActionPerformed
-
-    private void menuChickenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChickenActionPerformed
-        openFullScreenWindow(new ConfirmProducts());
-    }//GEN-LAST:event_menuChickenActionPerformed
-
-    private void menuPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuPayActionPerformed
-        openFullScreenWindow(new Invoices());
-    }//GEN-LAST:event_menuPayActionPerformed
-
-    private void menuEmployeeListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEmployeeListActionPerformed
-        openFullScreenWindow(new Employees());
-    }//GEN-LAST:event_menuEmployeeListActionPerformed
-
-    private void menuIngridiantsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuIngridiantsActionPerformed
-
-    }//GEN-LAST:event_menuIngridiantsActionPerformed
-
-    private void menuEmployeesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEmployeesActionPerformed
-
-    }//GEN-LAST:event_menuEmployeesActionPerformed
-
-    private void menuClientsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuClientsActionPerformed
-
-    }//GEN-LAST:event_menuClientsActionPerformed
-
-    private void menuRevenueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRevenueActionPerformed
-
-    }//GEN-LAST:event_menuRevenueActionPerformed
-
-    private void mniHuongDanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniHuongDanActionPerformed
-
-    }//GEN-LAST:event_mniHuongDanActionPerformed
-
-    private void mniGioiThieuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniGioiThieuActionPerformed
-
-    }//GEN-LAST:event_mniGioiThieuActionPerformed
-
-    public static void searchAndClassifyMenu(String keyword, String phanLoai, JPanel panel) {
-//        try (Connection connection = getConnection()) {
-//            String sql = "SELECT * FROM MonAn WHERE (? IS NULL OR phanLoai = ?)"
-//                    + "AND (ten LIKE ? OR idMonAn LIKE ?)";
-//
-//            if ("Tất cả".equals(phanLoai)) {
-//                phanLoai = null;
-//            }
-//
-//            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-//                preparedStatement.setString(1, phanLoai);
-//                preparedStatement.setString(2, phanLoai != null ? "%" + phanLoai + "%" : "%");
-//                preparedStatement.setString(3, "%" + keyword + "%");
-//                preparedStatement.setString(4, "%" + keyword + "%");
-//                ResultSet resultSet = preparedStatement.executeQuery();
-//
-//                panel.removeAll();
-//                while (resultSet.next()) {
-//                    String item = "ID: " + resultSet.getString("idMonAn")
-//                            + " | Tên: " + resultSet.getString("ten")
-//                            + " | Giá: " + resultSet.getBigDecimal("gia")
-//                            + " | Mô tả: " + resultSet.getString("moTa")
-//                            + " | Hình ảnh: " + resultSet.getString("hinhAnh")
-//                            + " | Phân loại: " + resultSet.getString("phanLoai")
-//                            + " | Trạng thái: " + resultSet.getString("trangThai");
-//
-//                    JLabel label = new JLabel(item);
-//                    panel.add(label);
-//                }
-//
-//                if (panel.getComponentCount() > 0) {
-//                    JOptionPane.showMessageDialog(null, "Tìm kiếm và phân loại thành công!", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
-//                } else {
-//                    JOptionPane.showMessageDialog(null, "Không tìm thấy kết quả nào!", "Thông Báo", JOptionPane.WARNING_MESSAGE);
-//                }
-//
-//                panel.revalidate();
-//                panel.repaint();
-//            }
-//        } catch (SQLException e) {
-//            JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi khi tìm kiếm và phân loại nguyên liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-//            e.printStackTrace();
-//        }
+        // Set the ComboBoxModel to the comboBox
+        CbCategoryProducts.setModel(cbModelProducts);
     }
 
-    public static void main(String args[]) {
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-
-                }
-            }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Products.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-
-        java.awt.EventQueue.invokeLater(() -> {
-            new Products().setVisible(true);
+    void handleClickComboboxCategoryProducts() {
+        // Attach event 
+        CbCategoryProducts.addActionListener((ActionEvent e) -> {
+            displayProductsBySearchAndCategory();
         });
+
+        // Reset default
+        CbCategoryProducts.setSelectedIndex(0);
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> CbPhanLoai;
-    private javax.swing.JButton btnAdd;
-    private javax.swing.JButton btnCancel;
-    private javax.swing.JButton btnChoseIngredients;
-    private javax.swing.JButton btnFood;
-    private javax.swing.JButton btnNameDiningTable;
-    private javax.swing.JButton btnRemove;
-    private javax.swing.JButton btnSearch;
-    private javax.swing.JButton btnSubmit;
-    private javax.swing.JButton btnUpdate;
-    private javax.swing.JComboBox<String> comboBoxStatus;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel9;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JPopupMenu.Separator jSeparator1;
-    private javax.swing.JPopupMenu.Separator jSeparator2;
-    private javax.swing.JPopupMenu.Separator jSeparator3;
-    private javax.swing.JPopupMenu.Separator jSeparator4;
-    private javax.swing.JPopupMenu.Separator jSeparator5;
-    private javax.swing.JPopupMenu.Separator jSeparator8;
-    private javax.swing.JPopupMenu.Separator jSeparator9;
-    private javax.swing.JTabbedPane jTabbedPane3;
-    private javax.swing.JLabel labelAccount;
-    private javax.swing.JLabel labelHouse;
-    private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem menuChicken;
-    private javax.swing.JMenuItem menuClients;
-    private javax.swing.JMenuItem menuDishes;
-    private javax.swing.JMenuItem menuEmployeeList;
-    private javax.swing.JMenuItem menuEmployees;
-    private javax.swing.JMenuItem menuEnd;
-    private javax.swing.JMenuItem menuIngridiants;
-    private javax.swing.JMenu menuItemHelp;
-    private javax.swing.JMenu menuItemManager;
-    private javax.swing.JMenuItem menuItemSystem;
-    private javax.swing.JMenuItem menuLogout;
-    private javax.swing.JMenuItem menuPay;
-    private javax.swing.JMenuItem menuRevenue;
-    private javax.swing.JMenu menuStatistical;
-    private javax.swing.JMenu menuSysten;
-    private javax.swing.JMenuItem menuTables;
-    private javax.swing.JMenuItem mniGioiThieu;
-    private javax.swing.JMenuItem mniHuongDan;
-    private javax.swing.JPanel panelListDishes;
-    private javax.swing.JRadioButton radioKitchenAreaDishes;
-    private javax.swing.JRadioButton radioKitchenAreaDrinks;
-    private javax.swing.JScrollPane scrollPane;
-    private javax.swing.JTable tableOrder;
-    private javax.swing.JTextField textAdditionalDay;
-    private javax.swing.JTextField textCategory;
-    private javax.swing.JTextField textDesc;
-    private javax.swing.JTextField textDishID;
-    private javax.swing.JTextField textDishName;
-    private javax.swing.JTextField textMoney;
-    private javax.swing.JTextField textSearch;
-    private javax.swing.JTextField textUpdateDay;
-    // End of variables declaration//GEN-END:variables
+    void displayProductsBySearchAndCategory() {
+        // Lấy danh mục đã chọn
+        selectedCategory = (String) CbCategoryProducts.getSelectedItem();
+
+        // Xử lý từ khóa tìm kiếm
+        String keyword = textSearch.getText().trim().replaceAll("\\s+", "");
+
+        // Nếu danh mục là "Tất cả món", đặt selectedCategory thành chuỗi rỗng
+        if (selectedCategory.equals("Tất cả món")) {
+            selectedCategory = "";
+        }
+
+        // Tìm kiếm sản phẩm theo từ khóa và danh mục
+        List<ProductsEntity> dataProductsByCategory = new ProductsDAO().searchByNameInCategory(keyword, selectedCategory);
+
+        // Hiển thị danh sách sản phẩm
+        displayProductList(dataProductsByCategory);
+    }
+    // end --->
+
 }

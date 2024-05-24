@@ -300,7 +300,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
-                  <Component id="jLabel14" min="-2" pref="200" max="-2" attributes="0"/>
+                  <Component id="labelLogo" min="-2" pref="200" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
                   <Component id="labelHouse" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -318,7 +318,7 @@
                   <Component id="jButton3" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
-              <Component id="jLabel14" alignment="1" pref="55" max="32767" attributes="0"/>
+              <Component id="labelLogo" alignment="1" pref="55" max="32767" attributes="0"/>
               <Component id="labelAccount" alignment="0" max="32767" attributes="0"/>
               <Component id="labelHouse" alignment="0" max="32767" attributes="0"/>
           </Group>
@@ -354,7 +354,7 @@
             <Property name="text" type="java.lang.String" value="T&#xc0;I KHO&#x1ea2;N: NG&#xd4; KIM LONG"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel14">
+        <Component class="javax.swing.JLabel" name="labelLogo">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe Print" size="26" style="1"/>
@@ -364,6 +364,9 @@
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="text" type="java.lang.String" value="HOT NOODLE"/>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Hand Cursor"/>
+            </Property>
             <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
         </Component>
@@ -411,7 +414,7 @@
                       <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                       <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                      <Component id="cbArea" min="-2" pref="128" max="-2" attributes="0"/>
+                      <Component id="comboboxArea" min="-2" pref="128" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="jButton18" min="-2" pref="80" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -434,7 +437,7 @@
                               <Component id="jButton17" alignment="0" max="32767" attributes="0"/>
                               <Component id="jButton18" alignment="0" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="cbArea" alignment="1" min="-2" pref="34" max="-2" attributes="0"/>
+                          <Component id="comboboxArea" alignment="1" min="-2" pref="34" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="scrollPaneTableDining" pref="534" max="32767" attributes="0"/>
@@ -453,7 +456,7 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JComboBox" name="cbArea">
+            <Component class="javax.swing.JComboBox" name="comboboxArea">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Segoe UI" size="14" style="1"/>
@@ -461,9 +464,13 @@
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="0"/>
                 </Property>
+                <Property name="toolTipText" type="java.lang.String" value="&#x1ea4;n v&#xf4; ch&#x1ecd;n khu v&#x1ef1;c"/>
+                <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+                  <Color id="Hand Cursor"/>
+                </Property>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbAreaActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="comboboxAreaActionPerformed"/>
               </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
@@ -555,20 +562,23 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jTabbedPane3" alignment="0" max="32767" attributes="0"/>
+                  <Component id="tabbedPaneProducts" alignment="0" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jTabbedPane3" alignment="1" pref="0" max="32767" attributes="0"/>
+                  <Component id="tabbedPaneProducts" alignment="1" pref="0" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Container class="javax.swing.JTabbedPane" name="jTabbedPane3">
+            <Container class="javax.swing.JTabbedPane" name="tabbedPaneProducts">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                </Property>
+                <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+                  <Color id="Default Cursor"/>
                 </Property>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Cascadia Code PL" size="14" style="0"/>
@@ -591,7 +601,7 @@
                       <JTabbedPaneConstraints tabName="M&#xf3;n &#x111;&#xe3; g&#x1ecd;i ">
                         <Property name="tabTitle" type="java.lang.String" value="M&#xf3;n &#x111;&#xe3; g&#x1ecd;i "/>
                         <Property name="tabIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/icon/Accept.png"/>
+                          <Image iconType="3" name="/icon/cart-done.png"/>
                         </Property>
                       </JTabbedPaneConstraints>
                     </Constraint>
@@ -602,33 +612,43 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
                                       <Component id="btnAddOrder" min="-2" pref="192" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="btnPay2" max="32767" attributes="0"/>
                                   </Group>
-                                  <Component id="jScrollPane1" min="-2" pref="392" max="-2" attributes="0"/>
                                   <Group type="102" attributes="0">
-                                      <Component id="labelTenBan1" min="-2" pref="47" max="-2" attributes="0"/>
+                                      <Component id="jScrollPane1" min="-2" pref="392" max="-2" attributes="0"/>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Group type="102" attributes="0">
+                                              <Component id="labelTenBan1" min="-2" pref="35" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="labelNameDiningTable" min="-2" pref="100" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Component id="comboboxTables" max="32767" attributes="0"/>
+                                      </Group>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="labelNameDiningTable" min="-2" pref="74" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="labelTenBan2" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="labelTotalAmount" min="-2" pref="165" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Group type="102" attributes="0">
+                                              <Component id="btnSwitchTables" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="btnMergeTables" min="-2" pref="129" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Group type="102" attributes="0">
+                                              <Component id="labelTenBan2" min="-2" pref="84" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="labelTotalAmount" min="-2" pref="149" max="-2" attributes="0"/>
+                                          </Group>
+                                      </Group>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="labelTotalPrice" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <Group type="102" alignment="1" attributes="0">
-                                      <Component id="cbDinnerTables" max="32767" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="btnChuyenBan" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="btnGopBan" min="-2" pref="110" max="-2" attributes="0"/>
-                                  </Group>
                               </Group>
-                              <EmptySpace pref="12" max="32767" attributes="0"/>
+                              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -637,20 +657,22 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="labelTenBan1" alignment="0" max="32767" attributes="0"/>
                                   <Component id="labelNameDiningTable" alignment="0" max="32767" attributes="0"/>
-                                  <Group type="102" attributes="0">
-                                      <Component id="labelTotalPrice" min="-2" pref="27" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                          <Component id="labelTotalAmount" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="labelTotalPrice" alignment="0" pref="27" max="32767" attributes="0"/>
+                                          <Component id="labelTenBan2" alignment="0" max="32767" attributes="0"/>
+                                      </Group>
                                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   </Group>
-                                  <Component id="labelTotalAmount" max="32767" attributes="0"/>
-                                  <Component id="labelTenBan1" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="labelTenBan2" alignment="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="cbDinnerTables" alignment="3" min="-2" pref="34" max="-2" attributes="0"/>
-                                  <Component id="btnChuyenBan" alignment="3" min="-2" pref="34" max="-2" attributes="0"/>
-                                  <Component id="btnGopBan" alignment="3" min="-2" pref="34" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="btnSwitchTables" alignment="1" min="-2" pref="35" max="-2" attributes="0"/>
+                                  <Component id="btnMergeTables" alignment="1" min="-2" pref="35" max="-2" attributes="0"/>
+                                  <Component id="comboboxTables" min="-2" pref="34" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jScrollPane1" min="-2" pref="396" max="-2" attributes="0"/>
@@ -673,7 +695,7 @@
                         <Property name="text" type="java.lang.String" value=" "/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JComboBox" name="cbDinnerTables">
+                    <Component class="javax.swing.JComboBox" name="comboboxTables">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Segoe UI" size="14" style="0"/>
@@ -685,7 +707,7 @@
                             <StringItem index="2" value="B&#xe0;n 3"/>
                           </StringArray>
                         </Property>
-                        <Property name="toolTipText" type="java.lang.String" value=""/>
+                        <Property name="toolTipText" type="java.lang.String" value="&#x1ea4;n v&#xf4; ch&#x1ecd;n b&#xe0;n"/>
                         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                           <Color id="Hand Cursor"/>
                         </Property>
@@ -694,27 +716,42 @@
                       <AccessibilityProperties>
                         <Property name="AccessibleContext.accessibleName" type="java.lang.String" value=""/>
                       </AccessibilityProperties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="comboboxTablesActionPerformed"/>
+                      </Events>
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                       </AuxValues>
                     </Component>
-                    <Component class="javax.swing.JButton" name="btnGopBan">
+                    <Component class="javax.swing.JButton" name="btnMergeTables">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Segoe UI" size="14" style="0"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="G&#x1ed9;p b&#xe0;n"/>
+                        <Property name="text" type="java.lang.String" value="Th&#xea;m / g&#x1ed9;p b&#xe0;n"/>
                         <Property name="toolTipText" type="java.lang.String" value="Ch&#x1ecd;n b&#xe0;n c&#x1ea7;n g&#x1ed9;p tr&#x1b0;&#x1edb;c "/>
+                        <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+                          <Color id="Hand Cursor"/>
+                        </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMergeTablesActionPerformed"/>
+                      </Events>
                     </Component>
-                    <Component class="javax.swing.JButton" name="btnChuyenBan">
+                    <Component class="javax.swing.JButton" name="btnSwitchTables">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Segoe UI" size="14" style="0"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Chuy&#x1ec3;n b&#xe0;n"/>
                         <Property name="toolTipText" type="java.lang.String" value="Ch&#x1ecd;n b&#xe0;n c&#x1ea7;n chuy&#x1ec3;n tr&#x1b0;&#x1edb;c "/>
+                        <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+                          <Color id="Hand Cursor"/>
+                        </Property>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSwitchTablesActionPerformed"/>
+                      </Events>
                     </Component>
                     <Container class="javax.swing.JScrollPane" name="jScrollPane1">
                       <AuxValues>
@@ -779,7 +816,8 @@
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="TH&#xca;M M&#xd3;N"/>
+                        <Property name="text" type="java.lang.String" value="TH&#xca;M M&#xd3;N (F2)"/>
+                        <Property name="toolTipText" type="java.lang.String" value="&#x1ea4;n F2 &#x111;&#x1ec3; ch&#x1ecd;n m&#xf3;n &#x103;n"/>
                         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                           <Color id="Hand Cursor"/>
                         </Property>
@@ -799,7 +837,8 @@
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="THANH TO&#xc1;N"/>
+                        <Property name="text" type="java.lang.String" value="THANH TO&#xc1;N (F4)"/>
+                        <Property name="toolTipText" type="java.lang.String" value="&#x1ea4;n F4 &#x111;&#x1ec3; thanh to&#xe1;n"/>
                         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
                           <Color id="Hand Cursor"/>
                         </Property>
@@ -811,7 +850,7 @@
                     <Component class="javax.swing.JLabel" name="labelTenBan1">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                          <Font name="Segoe UI" size="16" style="1"/>
+                          <Font name="Segoe UI" size="16" style="0"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="T&#xea;n:"/>
                       </Properties>

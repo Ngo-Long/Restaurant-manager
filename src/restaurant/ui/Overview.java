@@ -11,6 +11,7 @@ public class Overview extends javax.swing.JFrame {
         initComponents();
         Common.initClock(labelHouse);
         Common.setAccountLabel(labelAccount);
+        Common.addClickActionToLabelLogo(labelLogo, this);
     }
 
     void openFullScreenWindow(JFrame window) {
@@ -27,7 +28,7 @@ public class Overview extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         labelHouse = new javax.swing.JLabel();
         labelAccount = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
+        labelLogo = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
@@ -113,11 +114,11 @@ public class Overview extends javax.swing.JFrame {
         labelAccount.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         labelAccount.setText("NGÔ KIM LONG - QUẢN LÝ");
 
-        jLabel14.setFont(new java.awt.Font("Segoe Print", 1, 26)); // NOI18N
-        jLabel14.setForeground(new java.awt.Color(255, 153, 153));
-        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel14.setText("HOT NOODLE");
-        jLabel14.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        labelLogo.setFont(new java.awt.Font("Segoe Print", 1, 26)); // NOI18N
+        labelLogo.setForeground(new java.awt.Color(255, 153, 153));
+        labelLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelLogo.setText("HOT NOODLE");
+        labelLogo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -125,7 +126,7 @@ public class Overview extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
-                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(labelLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(labelHouse)
                 .addGap(18, 18, 18)
@@ -138,7 +139,7 @@ public class Overview extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(labelLogo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -791,8 +792,11 @@ public class Overview extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemSystemActionPerformed
 
     private void menuLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLogoutActionPerformed
-        Auth.clear();
-        new Login(this, true).setVisible(true);
+        if (Dialog.confirm(this, "Bạn muốn đăng xuất?")) {
+            Auth.clear();
+            dispose();
+            new Login(this, true).setVisible(true);
+        }
     }//GEN-LAST:event_menuLogoutActionPerformed
 
     private void menuEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEndActionPerformed
@@ -874,7 +878,6 @@ public class Overview extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
@@ -919,6 +922,7 @@ public class Overview extends javax.swing.JFrame {
     private javax.swing.JTable jTable2;
     private javax.swing.JLabel labelAccount;
     private javax.swing.JLabel labelHouse;
+    private javax.swing.JLabel labelLogo;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem menuChicken;
     private javax.swing.JMenuItem menuClients;

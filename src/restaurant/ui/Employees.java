@@ -2,12 +2,10 @@ package restaurant.ui;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
@@ -73,7 +71,7 @@ public class Employees extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         labelHouse = new javax.swing.JLabel();
         labelAccount = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
+        labelLogo = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         menuSysten = new javax.swing.JMenu();
         menuItemSystem = new javax.swing.JMenuItem();
@@ -175,21 +173,11 @@ public class Employees extends javax.swing.JFrame {
         jLabel2.setText("Mã:");
 
         textEmployeeId.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        textEmployeeId.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textEmployeeIdActionPerformed(evt);
-            }
-        });
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("Họ tên:");
 
         textUsername.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        textUsername.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textUsernameActionPerformed(evt);
-            }
-        });
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel10.setText("Chức vụ:");
@@ -229,11 +217,6 @@ public class Employees extends javax.swing.JFrame {
         jLabel20.setText("Sđt:");
 
         textPhoneNumber.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        textPhoneNumber.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textPhoneNumberActionPerformed(evt);
-            }
-        });
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel8.setText("Địa chỉ:");
@@ -311,28 +294,13 @@ public class Employees extends javax.swing.JFrame {
 
         radioMale.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         radioMale.setText("Nam");
-        radioMale.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioMaleActionPerformed(evt);
-            }
-        });
 
         radioFemale.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         radioFemale.setText("Nữ");
-        radioFemale.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioFemaleActionPerformed(evt);
-            }
-        });
 
         radioOther.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         radioOther.setSelected(true);
         radioOther.setText("Khác");
-        radioOther.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioOtherActionPerformed(evt);
-            }
-        });
 
         btnAdd.setBackground(new java.awt.Color(0, 153, 0));
         btnAdd.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -416,7 +384,7 @@ public class Employees extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGap(28, 28, 28)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addGap(24, 24, 24)
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -441,8 +409,7 @@ public class Employees extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(23, 23, 23))))
+                                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createSequentialGroup()
@@ -494,11 +461,12 @@ public class Employees extends javax.swing.JFrame {
                                     .addComponent(textUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(12, 12, 12)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(radioMale, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(radioOther, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(radioFemale, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(radioMale, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(radioOther, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(radioFemale, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addComponent(btnAvatar, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(12, 12, 12)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -584,11 +552,11 @@ public class Employees extends javax.swing.JFrame {
         labelAccount.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         labelAccount.setText("TÀI KHOẢN: NGÔ KIM LONG");
 
-        jLabel15.setFont(new java.awt.Font("Segoe Print", 1, 26)); // NOI18N
-        jLabel15.setForeground(new java.awt.Color(255, 153, 153));
-        jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel15.setText("HOT NOODLE");
-        jLabel15.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        labelLogo.setFont(new java.awt.Font("Segoe Print", 1, 26)); // NOI18N
+        labelLogo.setForeground(new java.awt.Color(255, 153, 153));
+        labelLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelLogo.setText("HOT NOODLE");
+        labelLogo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -596,7 +564,7 @@ public class Employees extends javax.swing.JFrame {
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
-                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(labelLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(labelHouse)
                 .addGap(18, 18, 18)
@@ -611,7 +579,7 @@ public class Employees extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
-            .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
+            .addComponent(labelLogo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
             .addComponent(labelAccount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(labelHouse, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -810,8 +778,11 @@ public class Employees extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemSystemActionPerformed
 
     private void menuLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLogoutActionPerformed
-        Auth.clear();
-        new Login(this, true).setVisible(true);
+        if (Dialog.confirm(this, "Bạn muốn đăng xuất?")) {
+            Auth.clear();
+            dispose();
+            new Login(this, true).setVisible(true);
+        }
     }//GEN-LAST:event_menuLogoutActionPerformed
 
     private void menuEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEndActionPerformed
@@ -896,14 +867,6 @@ public class Employees extends javax.swing.JFrame {
         searchAndClassifyEmployee(keyword, selectedPhanLoaiChucVu, selectedPhanLoaiCa, (DefaultTableModel) tableListEmplyees.getModel());
     }//GEN-LAST:event_CbPhanLoaiChucVuActionPerformed
 
-    private void textEmployeeIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textEmployeeIdActionPerformed
-
-    }//GEN-LAST:event_textEmployeeIdActionPerformed
-
-    private void textUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textUsernameActionPerformed
-
-    }//GEN-LAST:event_textUsernameActionPerformed
-
     private void CbPositionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CbPositionActionPerformed
 
     }//GEN-LAST:event_CbPositionActionPerformed
@@ -916,10 +879,6 @@ public class Employees extends javax.swing.JFrame {
 
     }//GEN-LAST:event_textEmailActionPerformed
 
-    private void textPhoneNumberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textPhoneNumberActionPerformed
-
-    }//GEN-LAST:event_textPhoneNumberActionPerformed
-
     private void textAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textAddressActionPerformed
 
     }//GEN-LAST:event_textAddressActionPerformed
@@ -929,7 +888,7 @@ public class Employees extends javax.swing.JFrame {
     }//GEN-LAST:event_textCardActionPerformed
 
     private void btnAvatarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvatarActionPerformed
-        Common.chooseImage(this, btnAvatar);
+        Common.chooseImageFromDirectory(this, btnAvatar);
     }//GEN-LAST:event_btnAvatarActionPerformed
 
     private void btnLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastActionPerformed
@@ -959,18 +918,6 @@ public class Employees extends javax.swing.JFrame {
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         update();
     }//GEN-LAST:event_btnUpdateActionPerformed
-
-    private void radioMaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioMaleActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_radioMaleActionPerformed
-
-    private void radioFemaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioFemaleActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_radioFemaleActionPerformed
-
-    private void radioOtherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOtherActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_radioOtherActionPerformed
 
     public static void main(String args[]) {
 
@@ -1010,7 +957,6 @@ public class Employees extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
@@ -1035,6 +981,7 @@ public class Employees extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel labelAccount;
     private javax.swing.JLabel labelHouse;
+    private javax.swing.JLabel labelLogo;
     private javax.swing.JLabel labelTongNv;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem menuChicken;
@@ -1070,19 +1017,21 @@ public class Employees extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     String imagePath;
-    EmployeeDAO dao = new EmployeeDAO();
+    EmployeeDAO dao  = new EmployeeDAO();
     int row = -1;
 
     void init() {
         this.fillTable();
         this.updateStatus();
+        Common.addClickActionToLabelLogo(labelLogo, this);
         Common.customizeTable(tableListEmplyees, new int[]{});
         Common.createButtonGroup(radioMale, radioFemale, radioOther);
         addSelectionListenerToTable();
     }
 
-    // Select info employee
-    private void addSelectionListenerToTable() {
+    // <--- Display and handle event employees
+    void addSelectionListenerToTable() {
+        // Select chose employee show info
         tableListEmplyees.getSelectionModel().addListSelectionListener((ListSelectionEvent event) -> {
             if (!event.getValueIsAdjusting()) {
                 int selectedRow = tableListEmplyees.getSelectedRow();
@@ -1101,49 +1050,6 @@ public class Employees extends javax.swing.JFrame {
         window.setExtendedState(JFrame.MAXIMIZED_BOTH);
         window.setVisible(true);
         this.dispose();
-    }
-
-    EmployeeEntity getModel() {
-        // Entity model
-        EmployeeEntity model = new EmployeeEntity();
-
-        // Set info
-        model.setEmployeeID(textEmployeeId.getText());
-        model.setFullName(textUsername.getText());
-        model.setPhone(textCard.getText());
-        model.setIdCard(textCard.getText());
-        model.setEmail(textEmail.getText());
-        model.setAddress(textAddress.getText());
-        model.setDescription(textDesc.getText());
-        model.setDateOfBirth(dateBirthDay.getDate());
-        model.setPosition(CbPosition.getSelectedItem().toString());
-        model.setGender(radioMale.isSelected() ? "Nam" : (radioFemale.isSelected() ? "Nữ" : "Khác"));
-
-        return model;
-    }
-
-    void setModel(EmployeeEntity employee) {
-        textEmployeeId.setText(employee.getEmployeeID());
-        textUsername.setText(employee.getFullName());
-        textCard.setText(employee.getIdCard());
-        textEmail.setText(employee.getEmail());
-        textPhoneNumber.setText(employee.getPhone());
-        textAddress.setText(employee.getAddress());
-        textDesc.setText(employee.getDescription());
-        dateBirthDay.setDate(employee.getDateOfBirth());
-
-        String gender = employee.getGender();
-        radioMale.setSelected(gender.equals("Nam"));
-        radioFemale.setSelected(gender.equals("Nữ"));
-        radioOther.setSelected(gender.equals("Khác"));
-
-    }
-
-    void clearForm() {
-        EmployeeEntity employee = new EmployeeEntity();
-        this.setModel(employee);
-        this.row = -1;
-        this.updateStatus();
     }
 
     boolean isValidated() {
@@ -1181,26 +1087,42 @@ public class Employees extends javax.swing.JFrame {
         btnNext.setEnabled(edit && !last);
         btnLast.setEnabled(!last);
     }
+    // end --->
 
-    void resetFields() {
+    // <--- CRUP
+    EmployeeEntity getModel() {
+        // Entity model
+        EmployeeEntity model = new EmployeeEntity();
+
         // Set info
-        textEmployeeId.setText("");
-        textUsername.setText("");
-        textCard.setText("");
-        textEmail.setText("");
-        textPhoneNumber.setText("");
-        textAddress.setText("");
-        textDesc.setText("");
-        CbPosition.setSelectedIndex(0);
+        model.setEmployeeID(textEmployeeId.getText());
+        model.setFullName(textUsername.getText());
+        model.setPhone(textCard.getText());
+        model.setIdCard(textCard.getText());
+        model.setEmail(textEmail.getText());
+        model.setAddress(textAddress.getText());
+        model.setDescription(textDesc.getText());
+        model.setDateOfBirth(dateBirthDay.getDate());
+        model.setPosition(CbPosition.getSelectedItem().toString());
+        model.setGender(radioMale.isSelected() ? "Nam" : (radioFemale.isSelected() ? "Nữ" : "Khác"));
 
-        // Set date
-        String dateString = "1/1/2024";
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        try {
-            dateBirthDay.setDate(dateFormat.parse(dateString));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        return model;
+    }
+
+    void setModel(EmployeeEntity employee) {
+        textEmployeeId.setText(employee.getEmployeeID());
+        textUsername.setText(employee.getFullName());
+        textCard.setText(employee.getIdCard());
+        textEmail.setText(employee.getEmail());
+        textPhoneNumber.setText(employee.getPhone());
+        textAddress.setText(employee.getAddress());
+        textDesc.setText(employee.getDescription());
+        dateBirthDay.setDate(employee.getDateOfBirth());
+
+        String gender = employee.getGender();
+        radioMale.setSelected(gender.equals("Nam"));
+        radioFemale.setSelected(gender.equals("Nữ"));
+        radioOther.setSelected(gender.equals("Khác"));
 
     }
 
@@ -1227,6 +1149,13 @@ public class Employees extends javax.swing.JFrame {
         }
     }
 
+    void clearModel() {
+        EmployeeEntity employee = new EmployeeEntity();
+        this.setModel(employee);
+        this.row = -1;
+        this.updateStatus();
+    }
+
     void insert() {
         if (!Auth.isManager()) {
             Dialog.alert(this, "Bạn không có quyền thêm nhân viên!");
@@ -1242,7 +1171,7 @@ public class Employees extends javax.swing.JFrame {
         try {
             dao.insert(employee);
             this.fillTable();
-            this.clearForm();
+            this.clearModel();
             Dialog.alert(this, "Thêm mới thành công!");
         } catch (Exception e) {
             Dialog.alert(this, "Thêm mới thất bại!");
@@ -1280,7 +1209,7 @@ public class Employees extends javax.swing.JFrame {
             try {
                 dao.delete(textEmployeeId.getText());
                 this.fillTable();
-                this.clearForm();
+                this.clearModel();
                 Dialog.alert(this, "Xóa thành công!");
             } catch (Exception e) {
                 Dialog.alert(this, "Xóa thất bại!");
@@ -1294,7 +1223,9 @@ public class Employees extends javax.swing.JFrame {
         this.setModel(employee);
         this.updateStatus();
     }
+    // end --->
 
+    // <--- Directional
     void first() {
         this.row = 0;
         this.edit();
@@ -1318,4 +1249,6 @@ public class Employees extends javax.swing.JFrame {
         this.row = tableListEmplyees.getRowCount() - 1;
         this.edit();
     }
+    // end --->
+
 }

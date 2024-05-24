@@ -9,18 +9,22 @@ import restaurant.utils.JDBC;
 
 public class TablesDAO {
 
-    public static final String INSERT_SQL = "INSERT INTO DiningTables (TableID, TableName, Area, SeatingCapacity, Surcharge, Status, Description) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    public static final String UPDATE_SQL = "UPDATE DiningTables SET TableName=?, Area=?, SeatingCapacity=?, Surcharge=?, Status=?, Description=? WHERE TableID=?";
+    public static final String INSERT_SQL = "INSERT INTO DiningTables (TableID, TableName, Area, SeatingCapacity, "
+            + "Surcharge, Status, Description) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    public static final String UPDATE_SQL = "UPDATE DiningTables SET TableName=?, Area=?, SeatingCapacity=?, Surcharge=?, "
+            + "Status=?, Description=? WHERE TableID=?";
     public static final String DELETE_SQL = "DELETE FROM DiningTables WHERE TableID =?";
     public static final String SELECT_ALL_SQL = "SELECT * FROM DiningTables";
-    public static final String SELECT_ALL_AREA_SQL = "SELECT * FROM DiningTables WHERE Area = ?";
     public static final String SELECT_BY_ID_SQL = "SELECT * FROM DiningTables WHERE TableID=?";
+    
     public static final String SELECT_NAME_BY_ID_SQL = "SELECT TableID FROM DiningTables WHERE TableName = ?";
     public static final String SELECT_NAME_BY_INVOICE_ID_SQL = "SELECT dt.TableName FROM DiningTables dt "
             + "JOIN Orders o ON dt.TableID = o.TableID "
             + "JOIN Invoices i ON o.InvoiceID = i.InvoiceID "
             + "WHERE i.InvoiceID = ?;";
     public static final String CHECK_DUPLICATED_ID_SQL = "SELECT COUNT(*) FROM DiningTables WHERE TableID=?";
+    public static final String SELECT_ORDER_COUNT_BY_TABLE_ID_SQL = "SELECT COUNT(*) AS NumberOfOrders FROM Orders "
+            + "WHERE Status = N'Đang đặt hàng' AND TableID = ?";
 
     public void insert(TablesEntity entity) {
         JDBC.executeUpdate(INSERT_SQL,
@@ -59,8 +63,11 @@ public class TablesDAO {
         return fetchByQuery(SELECT_ALL_SQL);
     }
 
-    public List<TablesEntity> getAllByArea(String area) {
-        return fetchByQuery(SELECT_ALL_AREA_SQL, area);
+    public List<TablesEntity> searchByArea(String area) {
+        String sql = "SELECT * FROM DiningTables WHERE Area LIKE ?";
+        String areaTerm = "%" + area + "%";
+
+        return fetchByQuery(sql, areaTerm);
     }
 
     public boolean isIdDuplicated(String id) {
@@ -74,6 +81,14 @@ public class TablesDAO {
         }
 
         return false;
+    }
+
+    public int getOrderCountByTableId(String tableId) {
+        try (ResultSet rs = JDBC.executeQuery(SELECT_ORDER_COUNT_BY_TABLE_ID_SQL, tableId)) {
+            return rs.next() ? rs.getInt(1) : 0;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public String getIdByName(String tableName) {
@@ -96,7 +111,7 @@ public class TablesDAO {
                 tableNames.add(tableName);
             }
         } catch (SQLException ex) {
-            throw new RuntimeException("Error while fetching table names from database.", ex);
+            throw new RuntimeException(ex);
         }
 
         return tableNames;
@@ -111,7 +126,7 @@ public class TablesDAO {
                 list.add(model);
             }
         } catch (SQLException ex) {
-            throw new RuntimeException("Error while fetching data from database.", ex);
+            throw new RuntimeException(ex);
         }
 
         return list;

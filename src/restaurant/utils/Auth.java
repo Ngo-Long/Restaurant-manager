@@ -6,9 +6,13 @@ import restaurant.entity.TablesEntity;
 public class Auth {
 
     /**
-     * Đối tượng này chứa thông tin người sử dụng sau khi đăng nhập
+     * Đối tượng tĩnh
      */
-    public static EmployeeEntity user = null;
+    public static int orderCount = 0;// Chứa số đơn hàng của bàn gần nhất
+    public static String totalAmount = null; // Chứa tổng tiền của bàn gần nhất
+
+    public static TablesEntity table = null; // Chứa thông tin bàn gần nhất
+    public static EmployeeEntity user = null; // chứa thông tin người sử dụng sau khi đăng nhập
 
     /**
      * Xóa thông tin của người sử dụng khi có yêu cầu đăng xuất
@@ -30,9 +34,4 @@ public class Auth {
     public static boolean isManager() {
         return Auth.isLogin() && "Quản Lý".equals(user.getPosition());
     }
-    
-    /**
-     * Đối tượng này chứa thông tin bàn ăn được chọn gần nhất
-     */
-    public static TablesEntity table = null;
 }
