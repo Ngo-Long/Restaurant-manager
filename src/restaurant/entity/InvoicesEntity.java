@@ -3,15 +3,16 @@ package restaurant.entity;
 import java.sql.Timestamp;
 
 public class InvoicesEntity {
-    private int invoiceID; 
+
+    private int invoiceID;
     private String employeeID;
-    private int tax; 
+    private int tax;
     private int discount;
     private String paymentMethod;
     private Timestamp paymentTime;
-    private String status; 
-    private String note; 
-    private int totalAmount; 
+    private String status;
+    private String note;
+    private int totalAmount;
 
     public int getInvoiceID() {
         return invoiceID;

@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import restaurant.utils.JDBC;
 import restaurant.entity.AccountEntity;
 
-public class AccountDAO {
+public class AccountDAO extends RestaurantDAO<AccountEntity, String> {
 
     final String INSERT_SQL = "INSERT INTO Accounts (AccountID, EmployeeID, Username, Password, CreatedDate) VALUES (?, ?, ?, ?, ?)";
     final String UPDATE_SQL = "UPDATE Accounts SET EmployeeID=?, Username=?, Password=?, CreatedDate=? WHERE AccountID=?";
@@ -15,6 +15,7 @@ public class AccountDAO {
     final String SELECT_ALL_SQL = "SELECT * FROM Accounts";
     final String SELECT_BY_ID_SQL = "SELECT * FROM Accounts WHERE AccountID=?";
 
+    @Override
     public void insert(AccountEntity entity) {
         JDBC.executeUpdate(INSERT_SQL,
                 entity.getAccountID(),
@@ -25,6 +26,7 @@ public class AccountDAO {
         );
     }
 
+    @Override
     public void update(AccountEntity entity) {
         JDBC.executeUpdate(UPDATE_SQL,
                 entity.getEmployeeID(),
@@ -35,15 +37,18 @@ public class AccountDAO {
         );
     }
 
+    @Override
     public void delete(String id) {
         JDBC.executeUpdate(DELETE_SQL, id);
     }
 
+    @Override
     public AccountEntity getById(String id) {
         List<AccountEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
     }
 
+    @Override
     public List<AccountEntity> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
     }
@@ -72,7 +77,8 @@ public class AccountDAO {
         return null;
     }
 
-    private List<AccountEntity> fetchByQuery(String sql, Object... args) {
+    @Override
+    protected List<AccountEntity> fetchByQuery(String sql, Object... args) {
         List<AccountEntity> list = new ArrayList<>();
 
         try (ResultSet rs = JDBC.executeQuery(sql, args)) {

@@ -7,28 +7,34 @@ import java.sql.SQLException;
 import restaurant.entity.OrderDetailsEntity;
 import restaurant.utils.JDBC;
 
-public class OrderDetailsDAO {
+public class OrderDetailsDAO extends RestaurantDAO<OrderDetailsEntity, Integer> {
 
-    public static final String INSERT_SQL = "INSERT INTO OrderDetails (OrderID, ProductID, ProductQuantity, ProductStatus, ProductDesc, OrderNote, StartTime) VALUES (?, ?, ?, N'Chưa xử lý', ?, N'', GETDATE())";
-    public static final String DELETE_SQL = "DELETE FROM OrderDetails WHERE OrderDetailID=?";
-    public static final String SELECT_ALL_SQL = "SELECT * FROM OrderDetails";
-    public static final String UPDATE_FINISHED_PRODUCT_SQL = "UPDATE OrderDetails SET ProductStatus=N'Đã hoàn thành', OrderNote='', EndTime=GETDATE() WHERE OrderDetailID=?";
-    public static final String UPDATE_REMOVE_PRODUCT_SQL = "UPDATE OrderDetails SET ProductStatus=N'Đã xóa', OrderNote=?, EndTime=GETDATE() WHERE OrderDetailID=?";
-    public static final String SELECT_BY_ORDER_ID_SQL = "SELECT * FROM OrderDetails WHERE OrderID = ?";
-    public static final String SELECT_PENDING_PRODUCTS_SQL = "SELECT * FROM OrderDetails WHERE ProductStatus = N'Chưa xử lý'";
-    public static final String SELECT_CONFIRMED_PRODUCTS_SQL = "SELECT * FROM OrderDetails WHERE ProductStatus != N'Chưa xử lý'";
-    public static final String SELECT_ORDERED_BY_TABLE_ID_SQL = "SELECT od.* FROM OrderDetails od "
+    final String INSERT_SQL = "INSERT INTO OrderDetails (OrderID, ProductID, ProductQuantity, ProductStatus,"
+            + " ProductDesc, Note, StartTime) VALUES (?, ?, ?, N'Chưa xử lý', ?, N'', GETDATE())";
+    final String UPDATE_SQL = "UPDATE OrderDetails SET OrderID = ?, ProductID = ?, ProductQuantity = ?,"
+            + " ProductStatus = ?, ProductDesc = ?, Note = ?, EndTime = GETDATE() WHERE OrderDetailID = ?";
+    final String DELETE_SQL = "DELETE FROM OrderDetails WHERE OrderDetailID=?";
+    final String SELECT_ALL_SQL = "SELECT * FROM OrderDetails";
+
+    final String SELECT_BY_ID_SQL = "SELECT * FROM OrderDetails WHERE OrderDetailID=?";
+    final String SELECT_BY_ORDER_ID_SQL = "SELECT * FROM OrderDetails WHERE OrderID = ?";
+    final String SELECT_BY_TABLE_ID_SQL = "SELECT od.* FROM OrderDetails od "
             + "JOIN Orders o ON od.OrderID = o.OrderID "
             + "JOIN DiningTables t ON o.TableID = t.TableID "
             + "JOIN Invoices i ON o.InvoiceID = i.InvoiceID "
             + "WHERE od.ProductStatus != N'Đã xóa' AND i.Status = N'Chờ thanh toán' AND t.TableID = ?";
-    public static final String SELECT_TOTAL_AMOUNT_SQL = "SELECT SUM(od.ProductQuantity * p.Price) AS TotalAmount "
+
+    final String SELECT_PENDING_PRODUCTS_SQL = "SELECT * FROM OrderDetails WHERE ProductStatus = N'Chưa xử lý'";
+    final String SELECT_CONFIRMED_PRODUCTS_SQL = "SELECT * FROM OrderDetails WHERE ProductStatus != N'Chưa xử lý'";
+
+    final String SELECT_TOTAL_AMOUNT_SQL = "SELECT SUM(od.ProductQuantity * p.Price) AS TotalAmount "
             + "FROM OrderDetails od "
             + "JOIN Products p ON od.ProductID = p.ProductID "
             + "JOIN Orders o ON od.OrderID = o.OrderID "
             + "JOIN Invoices i ON o.InvoiceID = i.InvoiceID "
             + "WHERE i.InvoiceID = ?";
 
+    @Override
     public void insert(OrderDetailsEntity model) {
         JDBC.executeUpdate(INSERT_SQL,
                 model.getOrderID(),
@@ -38,20 +44,33 @@ public class OrderDetailsDAO {
         );
     }
 
-    public void delete(int id) {
+    @Override
+    public void update(OrderDetailsEntity model) {
+        JDBC.executeUpdate(UPDATE_SQL,
+                model.getOrderID(),
+                model.getProductID(),
+                model.getProductQuantity(),
+                model.getProductStatus(),
+                model.getProductDesc(),
+                model.getNote(),
+                model.getOrderDetailID()
+        );
+    }
+
+    @Override
+    public void delete(Integer id) {
         JDBC.executeUpdate(DELETE_SQL, id);
     }
 
+    @Override
+    public OrderDetailsEntity getById(Integer id) {
+        List<OrderDetailsEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    @Override
     public List<OrderDetailsEntity> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
-    }
-
-    public void updateProductFinished(int detailID) {
-        JDBC.executeUpdate(UPDATE_FINISHED_PRODUCT_SQL, detailID);
-    }
-
-    public void updateProductRemove(int detailID, String selectedReason) {
-        JDBC.executeUpdate(UPDATE_REMOVE_PRODUCT_SQL, selectedReason, detailID);
     }
 
     public List<OrderDetailsEntity> getPendingProducts() {
@@ -66,8 +85,18 @@ public class OrderDetailsDAO {
         return fetchByQuery(SELECT_BY_ORDER_ID_SQL, orderId);
     }
 
-    public List<OrderDetailsEntity> getOrderdByTableId(String tableId) {
-        return fetchByQuery(SELECT_ORDERED_BY_TABLE_ID_SQL, tableId);
+    public List<OrderDetailsEntity> getByTableId(String tableId) {
+        return fetchByQuery(SELECT_BY_TABLE_ID_SQL, tableId);
+    }
+
+    public List<OrderDetailsEntity> calculateOrderItemTotals(int orderId) {
+        String calculateOrderTotalSQL = "SELECT p.ProductName, od.ProductDesc, od.ProductQuantity, p.Price AS UnitPrice, "
+                + "(od.ProductQuantity * p.Price) AS TotalPrice "
+                + "FROM OrderDetails od "
+                + "JOIN Products p ON od.ProductID = p.ProductID "
+                + "WHERE od.OrderID = ?";
+
+        return fetchByQuery(calculateOrderTotalSQL, orderId);
     }
 
     public int getTotalAmountByInvoiceID(int invoiceID) {
@@ -82,7 +111,8 @@ public class OrderDetailsDAO {
         return 0;
     }
 
-    private List<OrderDetailsEntity> fetchByQuery(String sql, Object... args) {
+    @Override
+    protected List<OrderDetailsEntity> fetchByQuery(String sql, Object... args) {
         List<OrderDetailsEntity> list = new ArrayList<>();
 
         try (ResultSet rs = JDBC.executeQuery(sql, args)) {
@@ -105,8 +135,10 @@ public class OrderDetailsDAO {
         model.setProductQuantity(rs.getInt("ProductQuantity"));
         model.setProductStatus(rs.getString("ProductStatus"));
         model.setProductDesc(rs.getString("ProductDesc"));
-        model.setStartTime(rs.getTimestamp("StartTime"));
-        model.setEndTime(rs.getTimestamp("EndTime"));
+        model.setNote(rs.getString("Note"));
+        model.setStartTime(rs.getDate("StartTime"));
+        model.setEndTime(rs.getDate("EndTime"));
         return model;
     }
+
 }

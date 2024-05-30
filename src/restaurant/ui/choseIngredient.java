@@ -1,7 +1,6 @@
 package restaurant.ui;
 
 import restaurant.dao.IngrediantDAO;
-import static restaurant.dao.IngrediantDAO.searchAndClassifyIngredient;
 import restaurant.entity.IngrediantEntity;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -472,17 +471,13 @@ public class ChoseIngredient extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSubmitActionPerformed
 
     private void textSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSearchActionPerformed
-        // TODO add your handling code here:
         String keyword = textSearch.getText().trim();
         String selectedPhanLoaiTrangThai = "Trạng thái";
-        searchAndClassifyIngredient(keyword, selectedPhanLoaiTrangThai, (DefaultTableModel) tableIngredientList.getModel());
     }//GEN-LAST:event_textSearchActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        // TODO add your handling code here:
         String keyword = textSearch.getText().trim();
         String selectedPhanLoaiTrangThai = "Trạng thái";
-        searchAndClassifyIngredient(keyword, selectedPhanLoaiTrangThai, (DefaultTableModel) tableIngredientList.getModel());
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void textQuantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textQuantityActionPerformed

@@ -10,7 +10,7 @@ public class OrderDetailsEntity {
     private int productQuantity;
     private String productStatus;
     private String productDesc;
-    private String orderNote;
+    private String Note;
     private Date startTime;
     private Date endTime;
 
@@ -62,12 +62,12 @@ public class OrderDetailsEntity {
         this.productDesc = productDesc;
     }
 
-    public String getOrderNote() {
-        return orderNote;
+    public String getNote() {
+        return Note;
     }
 
-    public void setOrderNote(String orderNote) {
-        this.orderNote = orderNote;
+    public void setNote(String Note) {
+        this.Note = Note;
     }
 
     public Date getStartTime() {

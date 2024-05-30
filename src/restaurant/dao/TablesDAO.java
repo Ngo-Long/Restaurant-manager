@@ -16,7 +16,7 @@ public class TablesDAO {
     public static final String DELETE_SQL = "DELETE FROM DiningTables WHERE TableID =?";
     public static final String SELECT_ALL_SQL = "SELECT * FROM DiningTables";
     public static final String SELECT_BY_ID_SQL = "SELECT * FROM DiningTables WHERE TableID=?";
-    
+
     public static final String SELECT_NAME_BY_ID_SQL = "SELECT TableID FROM DiningTables WHERE TableName = ?";
     public static final String SELECT_NAME_BY_INVOICE_ID_SQL = "SELECT dt.TableName FROM DiningTables dt "
             + "JOIN Orders o ON dt.TableID = o.TableID "

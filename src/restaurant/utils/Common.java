@@ -1,61 +1,19 @@
 package restaurant.utils;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-
 import java.util.List;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
-import restaurant.ui.Overview;
 
 public class Common {
-
-    // Cài đặt tên trong mọi file
-    public static void setAccountLabel(javax.swing.JLabel label) {
-        String fullName = "";
-        String position = "";
-
-        // Kiểm tra và gán giá trị cho fullName
-        if (Auth.user != null && Auth.user.getFullName() != null) {
-            fullName = Auth.user.getFullName();
-        }
-
-        // Kiểm tra và gán giá trị cho position
-        if (Auth.user != null && Auth.user.getPosition() != null) {
-            position = Auth.user.getPosition();
-        }
-
-        // Chuyển đổi thành chuỗi in hoa và gán vào labelAccount
-        label.setText(fullName.toUpperCase() + " - " + position.toUpperCase());
-    }
-
-    // Handle click logo
-    public static void addClickActionToLabelLogo(JLabel labelLogo, JFrame currentWindow) {
-        labelLogo.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                openFullScreenWindow(new Overview(), currentWindow);
-            }
-        });
-    }
-
-    // Swich file
-    public static void openFullScreenWindow(JFrame window, JFrame currentWindow) {
-        window.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        window.setVisible(true);
-        currentWindow.dispose();
-    }
 
     // Hàm chung để tùy chỉnh bảng
     public static void customizeTable(JTable table, int[] columnsNotCentered) {
@@ -92,22 +50,8 @@ public class Common {
         }
     }
 
-    // Update clock
-    public static void initClock(JLabel labelHouse) {
-        Timer timer = new Timer(1000, e -> updateClock(labelHouse));
-        timer.start();
-    }
-
-    private static void updateClock(JLabel labelHouse) {
-        LocalTime currentTime = LocalTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        String formattedTime = currentTime.format(formatter);
-
-        labelHouse.setText(formattedTime);
-    }
-
     // Tính toán thời gian còn lại và định dạng thành HH:mm
-    public static String calculateTimeRemaining(java.sql.Timestamp startTime) {
+    public static String calculateTimeRemaining(Date startTime) {
         long elapsedTimeInMillis = System.currentTimeMillis() - startTime.getTime();
         long hours = TimeUnit.MILLISECONDS.toHours(elapsedTimeInMillis);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(elapsedTimeInMillis) % 60;
@@ -205,7 +149,8 @@ public class Common {
             }
         });
 
-        scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(5, 0));
+        scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(4, 0));
+        scrollPane.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 0));
     }
 
     // Add commas to number after 3 number

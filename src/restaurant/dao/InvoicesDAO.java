@@ -4,19 +4,19 @@ import java.util.List;
 import java.util.ArrayList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import restaurant.entity.InvoicesEntity;
 import restaurant.utils.JDBC;
+import restaurant.entity.InvoicesEntity;
+import restaurant.utils.Dialog;
 
 public class InvoicesDAO {
 
     public static final String INSERT_SQL = "INSERT INTO Invoices (Status) VALUES (N'Chờ thanh toán');";
     public static final String UPDATE_SQL = "UPDATE Invoices SET EmployeeID=?, Tax=?, Discount=?, PaymentMethod=?, Note=?, "
             + "TotalAmount=?, Status=?, PaymentTime=GETDATE() WHERE InvoiceID=?";
-    public static final String DELETE_SQL = "DELETE FROM Invoices WHERE InvoiceID=?";
     public static final String SELECT_ALL_SQL = "SELECT * FROM Invoices;";
     public static final String SELECT_ALL_UNPAID_SQL = "SELECT * FROM Invoices WHERE Status = N'Chờ thanh toán';";
     public static final String SELECT_BY_ID_SQL = "SELECT * FROM Invoices WHERE InvoiceID = ?";
-    public static final String SELECT_BY_TABLE_ID_SQL = "SELECT InvoiceID FROM Orders WHERE TableID = ? AND InvoiceID IN "
+    public static final String SELECT_ID_BY_TABLE_ID_SQL = "SELECT InvoiceID FROM Orders WHERE TableID = ? AND InvoiceID IN "
             + "(SELECT InvoiceID FROM Invoices WHERE Status != 'Đã thanh toán')";
     public static final String SELECT_LATEST_ID_SQL = "SELECT TOP 1 InvoiceID FROM Invoices ORDER BY InvoiceID DESC";
 
@@ -48,10 +48,6 @@ public class InvoicesDAO {
         );
     }
 
-    public void delete(int id) {
-        JDBC.executeUpdate(DELETE_SQL, id);
-    }
-
     public List<InvoicesEntity> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
     }
@@ -61,9 +57,10 @@ public class InvoicesDAO {
     }
 
     public int getIdByTableId(String tableId) {
-        try (ResultSet rs = JDBC.executeQuery(SELECT_BY_TABLE_ID_SQL, tableId)) {
+        try (ResultSet rs = JDBC.executeQuery(SELECT_ID_BY_TABLE_ID_SQL, tableId)) {
             return rs.next() ? rs.getInt("InvoiceID") : 0;
         } catch (SQLException ex) {
+            Dialog.error(null, "Lỗi dữ liệu!");
             throw new RuntimeException(ex);
         }
     }
@@ -77,6 +74,7 @@ public class InvoicesDAO {
                 list.add(model);
             }
         } catch (SQLException ex) {
+            Dialog.error(null, "Lỗi dữ liệu!");
             throw new RuntimeException(ex);
         }
 

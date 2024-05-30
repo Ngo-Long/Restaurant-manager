@@ -100,17 +100,6 @@ public class ProductsDAO {
         }
     }
 
-//    public List<ProductsEntity> searchByNameInCategory(String keyword, String category) {
-//        String sql = "SELECT * FROM Products WHERE ProductName LIKE ?";
-//        String searchTerm = "%" + keyword + "%";
-//
-//        if (!category.isEmpty()) {
-//            sql += " AND Category = ?";
-//            return fetchByQuery(sql, searchTerm, category);
-//        } else {
-//            return fetchByQuery(sql, searchTerm);
-//        }
-//    }
     public List<ProductsEntity> searchByNameInCategory(String keyword, String category) {
         String sql = "SELECT * FROM Products WHERE ProductName LIKE ? AND Category LIKE ?";
         String searchTerm = "%" + keyword + "%";

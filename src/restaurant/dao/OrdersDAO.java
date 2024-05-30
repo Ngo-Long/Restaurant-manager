@@ -7,28 +7,24 @@ import java.util.List;
 import restaurant.entity.OrdersEntity;
 import restaurant.utils.JDBC;
 
-public class OrdersDAO {
+public class OrdersDAO extends RestaurantDAO<OrdersEntity, Integer> {
 
-    public static final String INSERT_SQL = "INSERT INTO Orders (InvoiceID, TableID, Status, Method, CreatedDate) "
-            + "VALUES (?, ?, ?, ?, GETDATE())";
+    public static final String INSERT_SQL = "INSERT INTO Orders (InvoiceID, TableID, Status, Method,"
+            + " CreatedDate) VALUES (?, ?, ?, ?, GETDATE())";
     public static final String DELETE_SQL = "DELETE FROM Orders WHERE OrderID=?";
-    public static final String UPDATE_SQL = "UPDATE Orders SET TableID=?, Status=?, Method=? WHERE OrderID=?";
+    public static final String UPDATE_SQL = "UPDATE Orders SET TableID=?, Status=?, Total=?, Method=? WHERE OrderID=?";
     public static final String SELECT_ALL_SQL = "SELECT * FROM Orders";
-    public static final String GET_BY_ID = "SELECT * FROM Orders WHERE OrderID = ?";
-    
-    public static final String UPDATE_STATUS_BY_INVOICE_ID = "UPDATE Orders SET Status=N'Đơn hàng hoàn thành' "
-            + "WHERE OrderID = (SELECT OrderID FROM Orders WHERE InvoiceID = ?)";
-    public static final String SELECT_ORDER_BY_INVOICE_ID = "SELECT * FROM Orders WHERE InvoiceID = ?";
-    public static final String SELECT_CREATE_DATE_BY_INVOICE_ID = "SELECT o.CreatedDate FROM Orders o "
-            + "JOIN Invoices i ON o.InvoiceID = i.InvoiceID WHERE i.InvoiceID = ?;";
-
-    public static final String SELECT_ORDER_BY_TABLE_ID = "SELECT * FROM Orders WHERE TableID = ?";
+    public static final String SELECT_BY_ID = "SELECT * FROM Orders WHERE OrderID = ?";
+    public static final String SELECT_BY_INVOICE_ID = "SELECT * FROM Orders WHERE InvoiceID = ?";
+    public static final String SELECT_BY_TABLE_ID = "SELECT * FROM Orders WHERE TableID = ?";
     public static final String SELECT_PENDING_ORDERS_BY_TABLE_ID = "SELECT * FROM Orders WHERE Status = N'Đang đặt hàng' AND TableID = ?";
 
+    @Override
     public List<OrdersEntity> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
     }
 
+    @Override
     public void insert(OrdersEntity model) {
         JDBC.executeUpdate(INSERT_SQL,
                 model.getInvoiceID(),
@@ -38,21 +34,25 @@ public class OrdersDAO {
         );
     }
 
+    @Override
     public void update(OrdersEntity model) {
         JDBC.executeUpdate(UPDATE_SQL,
                 model.getTableId(),
                 model.getStatus(),
+                model.getTotal(),
                 model.getMethod(),
                 model.getOrderId()
         );
     }
 
-    public void delete(int id) {
+    @Override
+    public void delete(Integer id) {
         JDBC.executeUpdate(DELETE_SQL, id);
     }
 
-    public OrdersEntity getById(int id) {
-        List<OrdersEntity> orders = fetchByQuery(GET_BY_ID, id);
+    @Override
+    public OrdersEntity getById(Integer id) {
+        List<OrdersEntity> orders = fetchByQuery(SELECT_BY_ID, id);
         return orders.isEmpty() ? null : orders.get(0);
     }
 
@@ -61,8 +61,8 @@ public class OrdersDAO {
         return (order != null) ? new TablesDAO().getById(order.getTableId()).getTableName() : null;
     }
 
-    public OrdersEntity getOrderByTableId(String id) {
-        List<OrdersEntity> orders = fetchByQuery(SELECT_ORDER_BY_TABLE_ID, id);
+    public OrdersEntity getByTableId(String id) {
+        List<OrdersEntity> orders = fetchByQuery(SELECT_BY_TABLE_ID, id);
         return orders.isEmpty() ? null : orders.get(0);
     }
 
@@ -71,27 +71,13 @@ public class OrdersDAO {
         return orders.isEmpty() ? null : orders.get(0);
     }
 
-    public OrdersEntity getOrderByInvoiceId(int id) {
-        List<OrdersEntity> orders = fetchByQuery(SELECT_ORDER_BY_INVOICE_ID, id);
+    public OrdersEntity getByInvoiceId(int id) {
+        List<OrdersEntity> orders = fetchByQuery(SELECT_BY_INVOICE_ID, id);
         return orders.isEmpty() ? null : orders.get(0);
     }
 
-    public void updateStatusByInvoiceId(int id) {
-        JDBC.executeUpdate(UPDATE_STATUS_BY_INVOICE_ID, id);
-    }
-
-    public java.sql.Timestamp getCreateDateByInvoiceId(int id) {
-        try (ResultSet rs = JDBC.executeQuery(SELECT_CREATE_DATE_BY_INVOICE_ID, id)) {
-            if (rs.next()) {
-                return rs.getTimestamp(1);
-            }
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        }
-        return null;
-    }
-
-    private List<OrdersEntity> fetchByQuery(String sql, Object... args) {
+    @Override
+    protected List<OrdersEntity> fetchByQuery(String sql, Object... args) {
         List<OrdersEntity> list = new ArrayList<>();
 
         try (ResultSet rs = JDBC.executeQuery(sql, args)) {
@@ -111,8 +97,10 @@ public class OrdersDAO {
         model.setOrderId(rs.getInt("OrderID"));
         model.setTableId(rs.getString("TableID"));
         model.setStatus(rs.getString("Status"));
+        model.setTotal(rs.getLong("Total"));
         model.setMethod(rs.getString("Method"));
         model.setCreatedDate(rs.getTimestamp("CreatedDate"));
         return model;
     }
+
 }

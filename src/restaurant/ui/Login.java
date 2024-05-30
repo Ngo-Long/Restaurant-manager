@@ -223,6 +223,6 @@ public class Login extends javax.swing.JFrame {
         }
 
         Auth.user = employee;
-        openFullScreenWindow(new Overview());
+        openFullScreenWindow(new Main());
     }
 }

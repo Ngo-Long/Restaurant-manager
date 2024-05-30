@@ -9,6 +9,7 @@ public class OrdersEntity {
     private String tableId;
     private String status;
     private String method;
+    private long total;
     private Date createdDate;
 
     public int getOrderId() {
@@ -49,6 +50,14 @@ public class OrdersEntity {
 
     public void setMethod(String method) {
         this.method = method;
+    }
+
+    public long getTotal() {
+        return total;
+    }
+
+    public void setTotal(long total) {
+        this.total = total;
     }
 
     public Date getCreatedDate() {

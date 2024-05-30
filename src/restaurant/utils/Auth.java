@@ -1,6 +1,10 @@
 package restaurant.utils;
 
+import java.util.List;
 import restaurant.entity.EmployeeEntity;
+import restaurant.entity.InvoicesEntity;
+import restaurant.entity.OrderDetailsEntity;
+import restaurant.entity.OrdersEntity;
 import restaurant.entity.TablesEntity;
 
 public class Auth {
@@ -11,8 +15,11 @@ public class Auth {
     public static int orderCount = 0;// Chứa số đơn hàng của bàn gần nhất
     public static String totalAmount = null; // Chứa tổng tiền của bàn gần nhất
 
-    public static TablesEntity table = null; // Chứa thông tin bàn gần nhất
-    public static EmployeeEntity user = null; // chứa thông tin người sử dụng sau khi đăng nhập
+    public static OrdersEntity order = null; // Chứa thông tin hóa đơn
+    public static TablesEntity table = null; // Chứa thông tin bàn 
+    public static EmployeeEntity user = null; // chứa thông tin người dùng
+    public static InvoicesEntity invoice = null; // Chứa thông tin hóa đơn
+    public static List<OrderDetailsEntity> orderDetails = null; // Chứa thông tin các món ăn đã đặt
 
     /**
      * Xóa thông tin của người sử dụng khi có yêu cầu đăng xuất
