@@ -1,80 +1,80 @@
 package restaurant.entity;
 
-import java.text.DecimalFormat;
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class IngrediantEntity {
 
-    private String idNguyenLieu;
-    private String tenNguyenLieu;
-    private int soLuongBanDau;
-    private int soLuongToiThieu;
-    private int donGia;
-    private Date ngaySanXuat;
-    private Date ngayHetHan;
-    private String trangThai;
+    private String ingredientID;
+    private String ingredientName;
+    private int initialQuantity;
+    private int minimumQuantity;
+    private long unitPrice;
+    private Date productionDate;
+    private Date expirationDate;
+    private String status;
 
-    public String getIdNguyenLieu() {
-        return idNguyenLieu;
+    public String getIngredientID() {
+        return ingredientID;
     }
 
-    public void setIdNguyenLieu(String idNguyenLieu) {
-        this.idNguyenLieu = idNguyenLieu;
+    public void setIngredientID(String ingredientID) {
+        this.ingredientID = ingredientID;
     }
 
-    public String getTenNguyenLieu() {
-        return tenNguyenLieu;
+    public String getIngredientName() {
+        return ingredientName;
     }
 
-    public void setTenNguyenLieu(String tenNguyenLieu) {
-        this.tenNguyenLieu = tenNguyenLieu;
+    public void setIngredientName(String ingredientName) {
+        this.ingredientName = ingredientName;
     }
 
-    public int getSoLuongBanDau() {
-        return soLuongBanDau;
+    public int getInitialQuantity() {
+        return initialQuantity;
     }
 
-    public void setSoLuongBanDau(int soLuongBanDau) {
-        this.soLuongBanDau = soLuongBanDau;
+    public void setInitialQuantity(int initialQuantity) {
+        this.initialQuantity = initialQuantity;
     }
 
-    public int getSoLuongToiThieu() {
-        return soLuongToiThieu;
+    public int getMinimumQuantity() {
+        return minimumQuantity;
     }
 
-    public void setSoLuongToiThieu(int soLuongToiThieu) {
-        this.soLuongToiThieu = soLuongToiThieu;
+    public void setMinimumQuantity(int minimumQuantity) {
+        this.minimumQuantity = minimumQuantity;
     }
 
-    public int getDonGia() {
-        return donGia;
+    public long getUnitPrice() {
+        return unitPrice;
     }
 
-    public void setDonGia(int donGia) {
-        this.donGia = donGia;
+    public void setUnitPrice(long unitPrice) {
+        this.unitPrice = unitPrice;
     }
 
-    public Date getNgaySanXuat() {
-        return ngaySanXuat;
+    public Date getProductionDate() {
+        return productionDate;
     }
 
-    public void setNgaySanXuat(Date ngaySanXuat) {
-        this.ngaySanXuat = ngaySanXuat;
+    public void setProductionDate(Date productionDate) {
+        this.productionDate = productionDate;
     }
 
-    public Date getNgayHetHan() {
-        return ngayHetHan;
+    public Date getExpirationDate() {
+        return expirationDate;
     }
 
-    public void setNgayHetHan(Date ngayHetHan) {
-        this.ngayHetHan = ngayHetHan;
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
     }
 
-    public String getTrangThai() {
-        return trangThai;
+    public String getStatus() {
+        return status;
     }
 
-    public void setTrangThai(String trangThai) {
-        this.trangThai = trangThai;
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

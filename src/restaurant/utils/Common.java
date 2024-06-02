@@ -1,7 +1,12 @@
 package restaurant.utils;
 
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.File;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Date;
@@ -10,10 +15,42 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 import javax.swing.table.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
 public class Common {
+    
+    // Update clock
+    public static void initClock(JLabel labelHouse) {
+        Timer timer = new Timer(1000, e -> {
+            LocalTime currentTime = LocalTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+            String formattedTime = currentTime.format(formatter);
+
+            labelHouse.setText(formattedTime);
+        });
+        timer.start();
+    }
+
+    // Cài đặt tên trong mọi file
+    public static void setAccountLabel(JLabel labelAccount) {
+        String fullName = "";
+        String position = "";
+
+        // Kiểm tra và gán giá trị cho fullName
+        if (Auth.user != null && Auth.user.getFullName() != null) {
+            fullName = Auth.user.getFullName();
+        }
+
+        // Kiểm tra và gán giá trị cho position
+        if (Auth.user != null && Auth.user.getPosition() != null) {
+            position = Auth.user.getPosition();
+        }
+
+        // Chuyển đổi thành chuỗi in hoa và gán vào labelAccount
+        labelAccount.setText(fullName.toUpperCase() + " - " + position.toUpperCase());
+    }
 
     // Hàm chung để tùy chỉnh bảng
     public static void customizeTable(JTable table, int[] columnsNotCentered) {
@@ -447,5 +484,58 @@ public class Common {
             buttonGroup.add(button);
         }
         return buttonGroup;
+    }
+
+    // Thêm chú thích input khi không nhập gì hết
+    public static void addPlaceholder(JTextField textField, String placeholder) {
+        textField.setText(placeholder);
+        textField.setForeground(Color.GRAY);
+
+        textField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (textField.getText().equals(placeholder)) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (textField.getText().isEmpty()) {
+                    textField.setText(placeholder);
+                    textField.setForeground(Color.GRAY);
+                }
+            }
+        });
+    }
+
+    // Lấy dữ liệu thật
+    public static String getRealText(JTextField textField, String placeholder) {
+        String text = textField.getText();
+        return text.equals(placeholder) ? "" : text;
+    }
+
+    // Sử dụng hàm để thêm focus listener và đặt viền cho mỗi JTextField trong mảng
+    public static void addFocusBorder(JComponent component, Color focusColor, Color unfocusColor) {
+        // Định nghĩa các viền matte
+        MatteBorder focusedBorder = BorderFactory.createMatteBorder(0, 0, 3, 0, focusColor);
+        MatteBorder unfocusedBorder = BorderFactory.createMatteBorder(0, 0, 2, 0, unfocusColor);
+
+        // Đặt viền ban đầu
+        component.setBorder(unfocusedBorder);
+
+        // Thêm focus listener để thay đổi viền khi focus hoặc unfocus
+        component.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                component.setBorder(focusedBorder);
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                component.setBorder(unfocusedBorder);
+            }
+        });
     }
 }

@@ -3,9 +3,9 @@ package restaurant.utils;
 import java.util.List;
 import java.util.Map;
 import javax.swing.table.DefaultTableModel;
-import restaurant.dao.ProductsDAO;
-import restaurant.entity.OrderDetailsEntity;
-import restaurant.entity.ProductsEntity;
+import restaurant.dao.ProductDAO;
+import restaurant.entity.OrderDetailEntity;
+import restaurant.entity.ProductEntity;
 
 public class Ordered {
 
@@ -17,14 +17,14 @@ public class Ordered {
      * @param productPriceMap là bản đồ để lưu trữ giá của từng sản phẩm
      * @param productQuantityMap là bản đồ để lưu trữ số lượng của từng sản phẩm
      */
-    public static void processOrderedDetails(List<OrderDetailsEntity> orderDetails, Map<String, Integer> productPriceMap, Map<String, Integer> productQuantityMap) {
-        for (OrderDetailsEntity orderDetail : orderDetails) {
+    public static void processOrderedDetails(List<OrderDetailEntity> orderDetails, Map<String, Integer> productPriceMap, Map<String, Integer> productQuantityMap) {
+        for (OrderDetailEntity orderDetail : orderDetails) {
             // Get id and level
             String productId = orderDetail.getProductID();
             String productLevel = !orderDetail.getProductDesc().isEmpty() ? " (" + orderDetail.getProductDesc() + ")" : "";
 
             // Get name and level
-            ProductsEntity productEntity = new ProductsDAO().getById(productId);
+            ProductEntity productEntity = new ProductDAO().getById(productId);
             String productName = productEntity.getProductName();
             String productNameAndLevel = productName + productLevel;
 
