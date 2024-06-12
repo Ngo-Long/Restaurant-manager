@@ -15,7 +15,7 @@ import restaurant.dao.ProductDAO;
 import restaurant.dao.OrderDetailDAO;
 import restaurant.entity.ProductEntity;
 import restaurant.entity.OrderDetailEntity;
-import restaurant.frame.MainStaff;
+import restaurant.main.MainStaff;
 
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;

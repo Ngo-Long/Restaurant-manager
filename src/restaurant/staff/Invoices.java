@@ -1,37 +1,64 @@
 package restaurant.staff;
 
-import restaurant.staff.DiningTables;
-import java.util.List;
 import java.util.Map;
+import java.util.Date;
+import java.util.List;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.FileOutputStream;
+
+import java.awt.Desktop;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import javax.swing.Timer;
-import javax.swing.SwingUtilities;
+import javax.swing.JFileChooser;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JRException;
 
-import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import restaurant.dao.OrdersDAO;
+import restaurant.dao.InvoiceDAO;
+import restaurant.dao.OrderDetailDAO;
+import restaurant.dao.DiningTableDAO;
 
-import restaurant.dao.*;
-import restaurant.entity.*;
-import restaurant.frame.MainStaff;
+import restaurant.entity.OrderEntity;
+import restaurant.entity.InvoiceEntity;
+import restaurant.entity.DiningTableEntity;
+import restaurant.entity.OrderDetailEntity;
+
+import restaurant.utils.JDBC;
 import restaurant.utils.Auth;
 import restaurant.utils.Dialog;
 import restaurant.utils.Common;
-import static restaurant.utils.Common.*;
 import restaurant.utils.Ordered;
-import restaurant.dialog.BillJDialog;
+import restaurant.main.MainStaff;
+import static restaurant.utils.Common.addCommasToNumber;
+import static restaurant.utils.Common.calculateTimeRemaining;
+import static restaurant.utils.Common.removeCommasFromNumber;
+
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.view.JasperViewer;
 
 public class Invoices extends javax.swing.JPanel {
 
     private MainStaff mainStaff;
 
     public Invoices(MainStaff mainStaff) {
-        this.mainStaff = mainStaff;
         initComponents();
         this.init();
+        this.mainStaff = mainStaff;
     }
 
     @SuppressWarnings("unchecked")
@@ -112,7 +139,6 @@ public class Invoices extends javax.swing.JPanel {
         tableOrderDetails.setFillsViewportHeight(true);
         tableOrderDetails.setGridColor(new java.awt.Color(255, 255, 255));
         tableOrderDetails.setRowHeight(40);
-        tableOrderDetails.setShowGrid(false);
         jScrollPane1.setViewportView(tableOrderDetails);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -149,8 +175,6 @@ public class Invoices extends javax.swing.JPanel {
         tableUnpaidInvoices.setFillsViewportHeight(true);
         tableUnpaidInvoices.setGridColor(new java.awt.Color(255, 255, 255));
         tableUnpaidInvoices.setRowHeight(40);
-        tableUnpaidInvoices.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        tableUnpaidInvoices.setShowGrid(false);
         tableUnpaidInvoices.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableUnpaidInvoicesMouseClicked(evt);
@@ -166,7 +190,7 @@ public class Invoices extends javax.swing.JPanel {
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 547, Short.MAX_VALUE)
         );
 
         tabbedPanePay.addTab("CHỜ THANH TOÁN ", new javax.swing.ImageIcon(getClass().getResource("/icon/pay-later.png")), jPanel6); // NOI18N
@@ -187,7 +211,6 @@ public class Invoices extends javax.swing.JPanel {
         tableAllOfInvoices.setFillsViewportHeight(true);
         tableAllOfInvoices.setGridColor(new java.awt.Color(255, 255, 255));
         tableAllOfInvoices.setRowHeight(40);
-        tableAllOfInvoices.setShowGrid(false);
         jScrollPane4.setViewportView(tableAllOfInvoices);
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
@@ -215,7 +238,7 @@ public class Invoices extends javax.swing.JPanel {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabbedPanePay)
+            .addComponent(tabbedPanePay, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
@@ -273,7 +296,6 @@ public class Invoices extends javax.swing.JPanel {
 
         textGiveMoney.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         textGiveMoney.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        textGiveMoney.setActionCommand("<Not Set>");
         textGiveMoney.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(255, 0, 0)));
         textGiveMoney.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textGiveMoney.setMargin(new java.awt.Insets(2, 60, 2, 6));
@@ -406,65 +428,61 @@ public class Invoices extends javax.swing.JPanel {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addGap(0, 12, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnTwoThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnFiftyThousand, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnHundredThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(214, 214, 214))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(radioTransfer)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                                        .addComponent(jLabel10)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(textGiveMoney, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel4Layout.createSequentialGroup()
-                                        .addComponent(radioCash)
-                                        .addGap(91, 91, 91)
-                                        .addComponent(radioCard)
-                                        .addGap(182, 182, 182))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGap(195, 195, 195)
-                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(labelTax, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(labelTotalPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(labelDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(labelTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(radioTransfer)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel10)
+                                .addGap(18, 18, 18)
+                                .addComponent(textGiveMoney, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(radioCash)
+                                .addGap(91, 91, 91)
+                                .addComponent(radioCard)
+                                .addGap(182, 182, 182))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel4Layout.createSequentialGroup()
-                                        .addGap(304, 304, 304)
-                                        .addComponent(labelCashReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                                        .addGap(218, 218, 218)
-                                        .addComponent(btnTwoHundredThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btnFiveHundredThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel4Layout.createSequentialGroup()
-                                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btnPayInvoice, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addComponent(btnNameDiningTable, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jPanel4Layout.createSequentialGroup()
-                                    .addGap(120, 120, 120)
-                                    .addComponent(btnFiveThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(btnTenThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(btnTwentyThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jLabel16))
-                        .addGap(12, 12, 12))))
+                                    .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(195, 195, 195)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(labelTax, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(labelTotalPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(labelDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(labelTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGap(304, 304, 304)
+                                .addComponent(labelCashReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnPayInvoice, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnTwoThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnFiftyThousand, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnHundredThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnTwoHundredThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnFiveHundredThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnNameDiningTable, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                            .addGap(108, 108, 108)
+                            .addComponent(btnFiveThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(btnTenThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(btnTwentyThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jLabel16))
+                .addGap(12, 12, 12))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -507,18 +525,19 @@ public class Invoices extends javax.swing.JPanel {
                     .addComponent(labelCashReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnFiveThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnTenThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnTwoThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnTwentyThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnFiveThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnTenThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnTwentyThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnTwoThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnHundredThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnTwoHundredThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnFiftyThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnFiveHundredThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnPayInvoice, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -552,7 +571,7 @@ public class Invoices extends javax.swing.JPanel {
     }//GEN-LAST:event_tableUnpaidInvoicesMouseClicked
 
     private void btnNameDiningTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNameDiningTableActionPerformed
-        mainStaff.displayStaffPanels(new DiningTables(mainStaff));
+        mainStaff.displayStaffPanels(new OrderTables(mainStaff));
     }//GEN-LAST:event_btnNameDiningTableActionPerformed
 
     private void textGiveMoneyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textGiveMoneyActionPerformed
@@ -564,7 +583,7 @@ public class Invoices extends javax.swing.JPanel {
     }//GEN-LAST:event_btnPayInvoiceActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        mainStaff.displayStaffPanels(new DiningTables(mainStaff));
+        mainStaff.displayStaffPanels(new OrderTables(mainStaff));
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnFiftyThousandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiftyThousandActionPerformed
@@ -656,6 +675,7 @@ public class Invoices extends javax.swing.JPanel {
     String tableId;
     String tableName;
     String methodPay;
+    OrderEntity dataOrder;
     List<OrderDetailEntity> dataOrderDetails;
     ExecutorService executorService = Executors.newFixedThreadPool(10);
 
@@ -694,7 +714,23 @@ public class Invoices extends javax.swing.JPanel {
         int tax = Integer.parseInt(removeCommasFromNumber(labelTax.getText()));
         int discount = Integer.parseInt(removeCommasFromNumber(labelDiscount.getText()));
         methodPay = radioCash.isSelected() ? "Tiền mặt" : radioCard.isSelected() ? "Thẻ" : "Chuyển khoản";
-        int totalAmount = Integer.parseInt(removeCommasFromNumber(labelTotalAmount.getText()));
+        int total = Integer.parseInt(removeCommasFromNumber(labelTotalAmount.getText()));
+        int totalAmount = total + tax - discount;
+
+        if (invoiceId == 0) {
+            Dialog.warning(this, "Vui lòng chọn bàn đã gọi món!");
+            return null;
+        }
+
+        if (!Auth.isManager()) {
+            Dialog.warning(this, "Bạn không có quyền thanh toán!");
+            return null;
+        }
+
+        if (textGiveMoney.getText().equals("")) {
+            Dialog.warning(this, "Vui lòng nhập số tiền khách đưa!");
+            return null;
+        }
 
         InvoiceEntity model = new InvoiceEntity();
         model.setInvoiceID(invoiceId);
@@ -709,33 +745,47 @@ public class Invoices extends javax.swing.JPanel {
         return model;
     }
 
+    void bill() {
+        try {
+            // Create map contains the parameters and values ​​of the report
+            Hashtable<String, Object> map = new Hashtable<>();
+            map.put("ToInvoiceID", invoiceId);
+
+            // Compile files report
+            JasperReport report = JasperCompileManager.compileReport("src/restaurant/report/reportInvoice.jrxml");
+            JasperPrint p = JasperFillManager.fillReport(report, map, JDBC.getConnection());
+
+            // Hiển thị JasperViewer
+            JasperViewer viewer = new JasperViewer(p, false);
+            viewer.setVisible(true);
+        } catch (SQLException | JRException e) {
+            e.printStackTrace();
+        }
+    }
+
     void pay() {
-        if (!Auth.isManager()) {
-            Dialog.warning(this, "Bạn không có quyền thanh toán!");
+        InvoiceEntity model = getModel();
+        if (model == null) {
             return;
         }
-
-        if (invoiceId == 0) {
-            Dialog.warning(this, "Vui lòng chọn bàn đã gọi món!");
-            return;
-        }
-
-        if (textGiveMoney.getText().equals("")) {
-            Dialog.warning(this, "Vui lòng nhập số tiền khách đưa!");
-            return;
-        }
-
-        Auth.invoice = getModel();
-        Auth.orderDetails = dataOrderDetails;
-        new BillJDialog(null, true).setVisible(true);
 
         try {
-//            new InvoicesDAO().update(model);
-//            new OrdersDAO().updateStatusByInvoiceId(invoiceId);
-//            Dialog.success(this, "Đã thanh toán!");
-//            mainInstance.displayPanels(new DiningTables(mainInstance));
+            // Update invoice successfully
+            new InvoiceDAO().update(getModel());
+
+            // Update status order successfully
+            OrderEntity ordered = new OrdersDAO().getByInvoiceId(invoiceId);
+            ordered.setStatus("Đã thanh toán");
+            new OrdersDAO().update(ordered);
+
+            // Open bill
+            bill();
+
+            // Update status
+            Dialog.success(this, "Đã thanh toán!");
+            mainStaff.displayStaffPanels(new OrderTables(mainStaff));
         } catch (Exception e) {
-            System.out.println("Thanh toán thất bại!");
+            Dialog.success(this, "Thanh toán không thành công!");
         }
     }
 
@@ -767,17 +817,17 @@ public class Invoices extends javax.swing.JPanel {
         model.setRowCount(0);
 
         // Get info detail order through dining table id
-        OrderEntity ordered = new OrdersDAO().getByTableId(tableId);
+        dataOrder = new OrdersDAO().getPendingByTableId(tableId);
         dataOrderDetails = new OrderDetailDAO().getByTableId(tableId);
 
-        if (ordered == null || dataOrderDetails == null) {
+        if (dataOrder == null || dataOrderDetails == null) {
             labelTotalPrice.setText("0");
             labelTotalAmount.setText("0");
             return;
         }
 
         // Display total - Tổng cộng: 100.000₫ 
-        String totalConvert = addCommasToNumber(String.valueOf(ordered.getTotal()));
+        String totalConvert = addCommasToNumber(String.valueOf(dataOrder.getTotal()));
         labelTotalPrice.setText(totalConvert);
         labelTotalAmount.setText(totalConvert);
 

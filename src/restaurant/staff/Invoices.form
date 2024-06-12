@@ -60,7 +60,7 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="tabbedPanePay" alignment="0" max="32767" attributes="0"/>
+              <Component id="tabbedPanePay" alignment="0" pref="0" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -152,7 +152,6 @@
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
                         </Property>
                         <Property name="rowHeight" type="int" value="40"/>
-                        <Property name="showGrid" type="boolean" value="false"/>
                         <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
                           <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                         </Property>
@@ -187,7 +186,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jScrollPane3" alignment="1" pref="549" max="32767" attributes="0"/>
+                      <Component id="jScrollPane3" alignment="1" pref="547" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -223,8 +222,6 @@
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
                         </Property>
                         <Property name="rowHeight" type="int" value="40"/>
-                        <Property name="selectionMode" type="int" value="2"/>
-                        <Property name="showGrid" type="boolean" value="false"/>
                         <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
                           <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                         </Property>
@@ -298,7 +295,6 @@
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
                         </Property>
                         <Property name="rowHeight" type="int" value="40"/>
-                        <Property name="showGrid" type="boolean" value="false"/>
                         <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
                           <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                         </Property>
@@ -324,83 +320,76 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace min="0" pref="12" max="32767" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="btnTwoThousand" min="-2" pref="102" max="-2" attributes="0"/>
-                              <Component id="btnFiftyThousand" alignment="1" min="-2" pref="102" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="32767" attributes="0"/>
-                          <Component id="btnHundredThousand" min="-2" pref="80" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="214" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Group type="103" alignment="0" groupAlignment="1" attributes="0">
+                          <Component id="radioTransfer" min="-2" max="-2" attributes="0"/>
+                          <Component id="jPanel2" min="-2" pref="396" max="-2" attributes="0"/>
                       </Group>
-                      <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Group type="103" alignment="0" groupAlignment="1" attributes="0">
-                                  <Component id="radioTransfer" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jPanel2" min="-2" pref="396" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" alignment="1" groupAlignment="1" max="-2" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                                  <Component id="textGiveMoney" min="-2" pref="265" max="-2" attributes="0"/>
                               </Group>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="103" alignment="1" groupAlignment="1" max="-2" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                                          <Component id="textGiveMoney" min="-2" pref="265" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <Component id="radioCash" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="91" max="-2" attributes="0"/>
-                                          <Component id="radioCard" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="182" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="jLabel14" min="-2" pref="100" max="-2" attributes="0"/>
-                                              <Component id="jLabel5" min="-2" pref="98" max="-2" attributes="0"/>
-                                              <Component id="jLabel8" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
-                                              <Component id="jLabel6" min="-2" pref="98" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace min="-2" pref="195" max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="1" attributes="0">
-                                              <Component id="labelTax" min="-2" pref="93" max="-2" attributes="0"/>
-                                              <Component id="labelTotalPrice" min="-2" pref="93" max="-2" attributes="0"/>
-                                              <Component id="labelDiscount" alignment="1" min="-2" pref="93" max="-2" attributes="0"/>
-                                              <Component id="labelTotalAmount" min="-2" pref="93" max="-2" attributes="0"/>
-                                          </Group>
-                                      </Group>
-                                  </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="radioCash" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="91" max="-2" attributes="0"/>
+                                  <Component id="radioCard" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="182" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <EmptySpace min="-2" pref="304" max="-2" attributes="0"/>
-                                          <Component id="labelCashReturn" min="-2" pref="82" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <EmptySpace min="-2" pref="218" max="-2" attributes="0"/>
-                                          <Component id="btnTwoHundredThousand" min="-2" pref="80" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="btnFiveHundredThousand" min="-2" pref="92" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="btnCancel" min="-2" pref="191" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="btnPayInvoice" min="-2" pref="199" max="-2" attributes="0"/>
-                                      </Group>
+                                      <Component id="jLabel14" min="-2" pref="100" max="-2" attributes="0"/>
+                                      <Component id="jLabel5" min="-2" pref="98" max="-2" attributes="0"/>
+                                      <Component id="jLabel8" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                                      <Component id="jLabel6" min="-2" pref="98" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="btnNameDiningTable" alignment="0" min="-2" pref="396" max="-2" attributes="0"/>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <EmptySpace min="-2" pref="120" max="-2" attributes="0"/>
-                                      <Component id="btnFiveThousand" min="-2" pref="74" max="-2" attributes="0"/>
-                                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Component id="btnTenThousand" min="-2" pref="80" max="-2" attributes="0"/>
-                                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Component id="btnTwentyThousand" min="-2" pref="86" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="195" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="1" attributes="0">
+                                      <Component id="labelTax" min="-2" pref="93" max="-2" attributes="0"/>
+                                      <Component id="labelTotalPrice" min="-2" pref="93" max="-2" attributes="0"/>
+                                      <Component id="labelDiscount" alignment="1" min="-2" pref="93" max="-2" attributes="0"/>
+                                      <Component id="labelTotalAmount" min="-2" pref="93" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <Component id="jLabel16" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="-2" pref="304" max="-2" attributes="0"/>
+                                  <Component id="labelCashReturn" min="-2" pref="82" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="btnCancel" min="-2" pref="191" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="btnPayInvoice" min="-2" pref="199" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="btnTwoThousand" min="-2" pref="102" max="-2" attributes="0"/>
+                                      <Component id="btnFiftyThousand" alignment="1" min="-2" pref="102" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="btnHundredThousand" min="-2" pref="86" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="btnTwoHundredThousand" min="-2" pref="74" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="btnFiveHundredThousand" min="-2" pref="86" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Component id="btnNameDiningTable" alignment="0" min="-2" pref="396" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="108" max="-2" attributes="0"/>
+                              <Component id="btnFiveThousand" min="-2" pref="86" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                              <Component id="btnTenThousand" min="-2" pref="80" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="btnTwentyThousand" min="-2" pref="86" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
+                      <Component id="jLabel16" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -455,20 +444,22 @@
                       <Component id="jLabel16" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="btnFiveThousand" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
-                      <Component id="btnTenThousand" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
-                      <Component id="btnTwoThousand" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
-                      <Component id="btnTwentyThousand" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="btnFiveThousand" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
+                          <Component id="btnTenThousand" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
+                          <Component id="btnTwentyThousand" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
+                      </Group>
+                      <Component id="btnTwoThousand" min="-2" pref="41" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="btnHundredThousand" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
                       <Component id="btnTwoHundredThousand" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
                       <Component id="btnFiftyThousand" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
                       <Component id="btnFiveHundredThousand" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="45" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="btnPayInvoice" alignment="3" min="-2" pref="42" max="-2" attributes="0"/>
                       <Component id="btnCancel" alignment="3" min="-2" pref="42" max="-2" attributes="0"/>
@@ -609,7 +600,6 @@
               <Font name="Segoe UI" size="14" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="4"/>
-            <Property name="actionCommand" type="java.lang.String" value="&lt;Not Set&gt;"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.MatteColorBorderInfo">
                 <MatteColorBorder bottom="2" left="0" right="0" top="0">

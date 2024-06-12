@@ -1,6 +1,6 @@
 package restaurant.manager;
 
-import restaurant.frame.MainManager;
+import restaurant.main.MainManager;
 
 public class Overview extends javax.swing.JPanel {
 
@@ -59,9 +59,6 @@ public class Overview extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
 
-        panelMain.setBackground(new java.awt.Color(243, 243, 243));
-
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel5.setText("Tổng quan kinh doanh");
 
         jComboBox1.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
@@ -430,7 +427,6 @@ public class Overview extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel6.setText("Doanh thu tổng hợp");
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(

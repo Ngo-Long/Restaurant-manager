@@ -34,7 +34,7 @@ public class Common {
     }
 
     // Cài đặt tên trong mọi file
-    public static void setAccountLabel(JLabel labelAccount) {
+    public static void setAccountMenu(JMenu menu) {
         String fullName = "";
         String position = "";
 
@@ -49,7 +49,7 @@ public class Common {
         }
 
         // Chuyển đổi thành chuỗi in hoa và gán vào labelAccount
-        labelAccount.setText(fullName.toUpperCase() + " - " + position.toUpperCase());
+        menu.setText(fullName.toUpperCase() + " - " + position.toUpperCase());
     }
 
     // Hàm chung để tùy chỉnh bảng
@@ -378,7 +378,7 @@ public class Common {
 
     // Hiện border đậm khi click
     public static void setTableButtonBorder(JButton button, boolean isSelected) {
-        Color borderColor = isSelected ? new Color(60, 60, 60) : new Color(255, 255, 255);
+        Color borderColor = isSelected ? new Color(80, 80, 80) : new Color(255, 255, 255);
         button.setBorder(BorderFactory.createLineBorder(borderColor, 5, true));
     }
 

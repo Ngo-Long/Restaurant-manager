@@ -17,7 +17,7 @@ public class InvoiceDAO {
     public static final String SELECT_ALL_UNPAID_SQL = "SELECT * FROM Invoices WHERE Status = N'Chờ thanh toán';";
     public static final String SELECT_BY_ID_SQL = "SELECT * FROM Invoices WHERE InvoiceID = ?";
     public static final String SELECT_ID_BY_TABLE_ID_SQL = "SELECT InvoiceID FROM Orders WHERE TableID = ? AND InvoiceID IN "
-            + "(SELECT InvoiceID FROM Invoices WHERE Status != 'Đã thanh toán')";
+            + "(SELECT InvoiceID FROM Invoices WHERE Status != N'Đã thanh toán')";
     public static final String SELECT_LATEST_ID_SQL = "SELECT TOP 1 InvoiceID FROM Invoices ORDER BY InvoiceID DESC";
 
     public int insert() {

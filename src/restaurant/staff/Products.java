@@ -1,7 +1,5 @@
 package restaurant.staff;
 
-import restaurant.staff.DiningTables;
-import restaurant.dialog.DetailOrderJDialog;
 import java.util.*;
 import java.util.List;
 import java.text.SimpleDateFormat;
@@ -15,11 +13,13 @@ import javax.swing.table.DefaultTableModel;
 
 import restaurant.dao.*;
 import restaurant.entity.*;
-import restaurant.frame.MainStaff;
+import restaurant.main.MainStaff;
 import restaurant.utils.Auth;
 import restaurant.utils.Dialog;
 import restaurant.utils.Common;
 import static restaurant.utils.Common.*;
+import restaurant.staff.OrderTables;
+import restaurant.dialog.DetailOrderJDialog;
 
 public class Products extends javax.swing.JPanel {
 
@@ -331,8 +331,8 @@ public class Products extends javax.swing.JPanel {
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel10Layout.createSequentialGroup()
                                 .addGap(18, 18, 18)
-                                .addComponent(radioKitchenAreaDishes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
+                                .addComponent(radioKitchenAreaDishes, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(39, 39, 39)
                                 .addComponent(radioKitchenAreaDrinks)
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
@@ -358,7 +358,7 @@ public class Products extends javax.swing.JPanel {
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(comboBoxStatus, 0, 294, Short.MAX_VALUE)
                             .addComponent(textMoney))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -477,7 +477,6 @@ public class Products extends javax.swing.JPanel {
 
         scrollPane.setViewportView(panelMainProducts);
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/filter1.png"))); // NOI18N
 
         btnHistory.setBackground(new java.awt.Color(51, 204, 0));
@@ -577,7 +576,7 @@ public class Products extends javax.swing.JPanel {
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnNameDiningTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNameDiningTableActionPerformed
-        mainStaff.displayStaffPanels(new DiningTables(mainStaff));
+        mainStaff.displayStaffPanels(new OrderTables(mainStaff));
     }//GEN-LAST:event_btnNameDiningTableActionPerformed
 
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
@@ -836,14 +835,14 @@ public class Products extends javax.swing.JPanel {
         // Nếu bàn chưa chọn món thì rời đi luôn
         DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
         if (model.getRowCount() == 0) {
-            mainStaff.displayStaffPanels(new DiningTables(mainStaff));
+            mainStaff.displayStaffPanels(new OrderTables(mainStaff));
             return;
         }
 
         // Nếu bàn đã gọi món thì hỏi trước khi thoát
         Boolean result = Dialog.confirm(this, "Nếu thoát bạn sẽ mất các món ăn đã chọn?");
         if (result) {
-            mainStaff.displayStaffPanels(new DiningTables(mainStaff));
+            mainStaff.displayStaffPanels(new OrderTables(mainStaff));
         }
     }
     // end --->    
@@ -996,7 +995,6 @@ public class Products extends javax.swing.JPanel {
 
     // <--- Handle click button submit
     void submit() {
-
         if (tableOrder != null && tableOrder.getRowCount() == 0) {
             Dialog.warning(this, "Vui lòng chọn món ăn!");
             return;
@@ -1010,7 +1008,7 @@ public class Products extends javax.swing.JPanel {
         String diningTableId = Auth.table.getTableID();
         try {
             // Create an order if don't have one yet
-            OrderEntity existingOrder = new OrdersDAO().getPendingOrderByTableId(diningTableId);
+            OrderEntity existingOrder = new OrdersDAO().getPendingByTableId(diningTableId);
             if (existingOrder == null) {
                 // Create new idcoice after create new order
                 int invoiceId = new InvoiceDAO().insert();
@@ -1018,11 +1016,11 @@ public class Products extends javax.swing.JPanel {
             }
 
             // Get newly created order information
-            existingOrder = new OrdersDAO().getPendingOrderByTableId(diningTableId);
+            existingOrder = new OrdersDAO().getPendingByTableId(diningTableId);
             addDishesToExistingOrder(existingOrder, data);
 
             // Open file table
-            mainStaff.displayStaffPanels(new DiningTables(mainStaff));
+            mainStaff.displayStaffPanels(new OrderTables(mainStaff));
         } catch (Exception e) {
             Dialog.error(this, "Đã xảy ra lỗi khi xử lý đơn hàng!");
             e.printStackTrace();
@@ -1088,7 +1086,7 @@ public class Products extends javax.swing.JPanel {
         }
 
         // Convert the Set to an array
-        String[] categoryList = categorySet.toArray(String[]::new);
+        String[] categoryList = categorySet.toArray(new String[categorySet.size()]);
         for (String categoryItem : categoryList) {
             cbModelProducts.addElement(categoryItem);
         }

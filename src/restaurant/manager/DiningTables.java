@@ -1,30 +1,40 @@
 package restaurant.manager;
 
-import java.util.Set;
-import java.util.List;
-import java.util.HashSet;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
-
+import java.text.MessageFormat;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.WindowAdapter;
+import java.awt.print.PrinterException;
+
+import java.util.Set;
+import java.util.List;
+import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledExecutorService;
 
 import javax.swing.JTable;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.event.DocumentEvent;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.utils.Auth;
 import restaurant.utils.Common;
-import restaurant.frame.MainManager;
+import restaurant.main.MainManager;
+import restaurant.table.TableCustom;
 import restaurant.dao.DiningTableDAO;
 import restaurant.entity.DiningTableEntity;
 import restaurant.dialog.UpdateTableJDialog;
+import static restaurant.utils.ExportFile.exportToExcel;
 
 public final class DiningTables extends javax.swing.JPanel {
 
@@ -73,7 +83,7 @@ public final class DiningTables extends javax.swing.JPanel {
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(51, 51, 51));
         jLabel1.setText("Khu vực");
 
@@ -115,7 +125,7 @@ public final class DiningTables extends javax.swing.JPanel {
         btnExport.setBackground(new java.awt.Color(0, 153, 0));
         btnExport.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnExport.setForeground(new java.awt.Color(255, 255, 255));
-        btnExport.setText("Xuất file");
+        btnExport.setText("Export");
         btnExport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnExport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -145,7 +155,6 @@ public final class DiningTables extends javax.swing.JPanel {
             }
         });
 
-        tableDiningTables.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tableDiningTables.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
@@ -226,7 +235,7 @@ public final class DiningTables extends javax.swing.JPanel {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 564, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 547, Short.MAX_VALUE)
                         .addComponent(btnAdd)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -248,7 +257,7 @@ public final class DiningTables extends javax.swing.JPanel {
                             .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLast)
@@ -261,7 +270,7 @@ public final class DiningTables extends javax.swing.JPanel {
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(51, 51, 51));
         jLabel2.setText("Tìm kiếm");
 
@@ -289,12 +298,12 @@ public final class DiningTables extends javax.swing.JPanel {
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
                 .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(51, 51, 51));
         jLabel4.setText("Trạng thái");
 
@@ -377,7 +386,7 @@ public final class DiningTables extends javax.swing.JPanel {
                 .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelBodyLayout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 574, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(12, Short.MAX_VALUE))
+                        .addContainerGap(18, Short.MAX_VALUE))
                     .addGroup(panelBodyLayout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -385,10 +394,10 @@ public final class DiningTables extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(cbRecordNumbers, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(21, 21, 21))))
+                        .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cbRecordNumbers, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(65, 65, 65))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -410,12 +419,20 @@ public final class DiningTables extends javax.swing.JPanel {
     }//GEN-LAST:event_comboBoxAreaActionPerformed
 
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
-
+        exportToExcel(tableDiningTables, "Bàn ăn");
     }//GEN-LAST:event_btnExportActionPerformed
 
     private void btnImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportActionPerformed
-        // TODO add your handling code here:
+        MessageFormat header = new MessageFormat("Danh sách bàn ăn");
+        MessageFormat footer = new MessageFormat("Trang {0, number, integer}");
+
+        try {
+            tableDiningTables.print(JTable.PrintMode.FIT_WIDTH, header, footer);
+        } catch (PrinterException ex) {
+            Logger.getLogger(DiningTables.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnImportActionPerformed
+
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         Auth.table = null;
@@ -488,11 +505,15 @@ public final class DiningTables extends javax.swing.JPanel {
     int row = -1;
     List<DiningTableEntity> dataTables;
     ExecutorService executorService = Executors.newFixedThreadPool(3);
+    ScheduledFuture<?> scheduledFuture;
+    final int debounceDelay = 500; // milliseconds
+    ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     void init() {
         // Change display UI
-        Common.customizeTable(tableDiningTables, new int[]{});
         Common.addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
+        TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
+        Common.customizeTable(tableDiningTables, new int[]{});
 
         // Load info from list dining table
         dataTables = new DiningTableDAO().getAll();
@@ -506,6 +527,7 @@ public final class DiningTables extends javax.swing.JPanel {
 
         // Attach event when click on table
         tableDiningTablesMouseClicked();
+
     }
 
     void load(List<DiningTableEntity> dataTables) {
@@ -555,13 +577,21 @@ public final class DiningTables extends javax.swing.JPanel {
     }
 
     void loadClassify() {
-        // Get text
-        String search = textSearch.getText().trim();
-        String area = comboBoxArea.getSelectedItem().toString();
+        if (scheduledFuture != null && !scheduledFuture.isDone()) {
+            scheduledFuture.cancel(false);
+        }
 
-        // Get data and load
-        dataTables = new DiningTableDAO().searchByAreaAndName(area, search);
-        this.load(dataTables);
+        scheduledFuture = scheduledExecutorService.schedule(() -> {
+            SwingUtilities.invokeLater(() -> {
+                // Get text
+                String search = textSearch.getText().trim();
+                String area = comboBoxArea.getSelectedItem().toString();
+
+                // Get data and load
+                dataTables = new DiningTableDAO().searchByAreaAndName(area, search);
+                load(dataTables);
+            });
+        }, debounceDelay, TimeUnit.MILLISECONDS);
     }
 
     void setupCombobox() {

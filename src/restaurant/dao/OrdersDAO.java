@@ -66,7 +66,7 @@ public class OrdersDAO extends RestaurantDAO<OrderEntity, Integer> {
         return orders.isEmpty() ? null : orders.get(0);
     }
 
-    public OrderEntity getPendingOrderByTableId(String id) {
+    public OrderEntity getPendingByTableId(String id) {
         List<OrderEntity> orders = fetchByQuery(SELECT_PENDING_ORDERS_BY_TABLE_ID, id);
         return orders.isEmpty() ? null : orders.get(0);
     }

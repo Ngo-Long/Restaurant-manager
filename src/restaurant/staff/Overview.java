@@ -1,6 +1,6 @@
 package restaurant.staff;
 
-import restaurant.frame.MainStaff;
+import restaurant.main.MainStaff;
 
 public class Overview extends javax.swing.JPanel {
 
