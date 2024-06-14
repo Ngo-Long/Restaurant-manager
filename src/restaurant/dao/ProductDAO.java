@@ -1,20 +1,19 @@
 package restaurant.dao;
 
-import restaurant.entity.ProductEntity;
+import java.util.List;
+import java.util.ArrayList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import restaurant.utils.JDBC;
+import restaurant.entity.ProductEntity;
 
-public class ProductDAO {
+public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
 
     final String INSERT_SQL = "INSERT INTO Products (ProductID, ProductName, Price, Description, ImageURL, "
-            + "Category, KitchenArea, Status, DateAdded, LastUpdated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())";
+            + "Category, KitchenArea, Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     final String UPDATE_SQL = "UPDATE Products SET ProductName=?, Price=?, Description=?, ImageURL=?, "
-            + "Category=?, KitchenArea=?, Status=?, LastUpdated=GETDATE() WHERE ProductID=?";
+            + "Category=?, KitchenArea=?, Status=? WHERE ProductID=?";
     final String DELETE_SQL = "DELETE FROM Products WHERE ProductID=?";
-
     final String SELECT_ALL_SQL = "SELECT * FROM Products ORDER BY ProductName";
     final String SELECT_ALL_BY_CATEGORY_SQL = "SELECT * FROM Products WHERE Category=? ORDER BY ProductName";
 
@@ -24,6 +23,7 @@ public class ProductDAO {
     final String CHECK_DUPLICATED_ID_SQL = "SELECT COUNT(*) FROM Products WHERE ProductID=?";
     final String CHECK_DUPLICATED_NAME_SQL = "SELECT COUNT(*) FROM Products WHERE ProductName = ?";
 
+    @Override
     public void insert(ProductEntity model) {
         JDBC.executeUpdate(INSERT_SQL,
                 model.getProductID(),
@@ -37,6 +37,7 @@ public class ProductDAO {
         );
     }
 
+    @Override
     public void update(ProductEntity model) {
         JDBC.executeUpdate(UPDATE_SQL,
                 model.getProductName(),
@@ -50,21 +51,24 @@ public class ProductDAO {
         );
     }
 
+    @Override
     public void delete(String id) {
         JDBC.executeUpdate(DELETE_SQL, id);
     }
 
+    @Override
     public List<ProductEntity> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
     }
 
-    public List<ProductEntity> getAllByCategory(String category) {
-        return fetchByQuery(SELECT_ALL_BY_CATEGORY_SQL, category);
-    }
-
+    @Override
     public ProductEntity getById(String id) {
         List<ProductEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
+    }
+
+    public List<ProductEntity> getAllByCategory(String category) {
+        return fetchByQuery(SELECT_ALL_BY_CATEGORY_SQL, category);
     }
 
     public boolean isDuplicatedId(String id) {
@@ -108,7 +112,8 @@ public class ProductDAO {
         return fetchByQuery(sql, searchTerm, categoryTerm);
     }
 
-    private List<ProductEntity> fetchByQuery(String sql, Object... args) {
+    @Override
+    protected List<ProductEntity> fetchByQuery(String sql, Object... args) {
         List<ProductEntity> list = new ArrayList<>();
 
         try (ResultSet rs = JDBC.executeQuery(sql, args)) {
@@ -133,8 +138,6 @@ public class ProductDAO {
         model.setCategory(rs.getString("Category"));
         model.setKitchenArea(rs.getString("KitchenArea"));
         model.setStatus(rs.getString("Status"));
-        model.setDateAdded(rs.getTimestamp("DateAdded"));
-        model.setLastUpdated(rs.getTimestamp("LastUpdated"));
         return model;
     }
 }

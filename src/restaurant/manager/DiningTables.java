@@ -147,7 +147,7 @@ public final class DiningTables extends javax.swing.JPanel {
         btnAdd.setBackground(new java.awt.Color(0, 153, 0));
         btnAdd.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnAdd.setForeground(new java.awt.Color(255, 255, 255));
-        btnAdd.setText("Cập nhật bàn");
+        btnAdd.setText("Thêm phòng/bàn");
         btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -235,7 +235,7 @@ public final class DiningTables extends javax.swing.JPanel {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 547, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 520, Short.MAX_VALUE)
                         .addComponent(btnAdd)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -436,7 +436,7 @@ public final class DiningTables extends javax.swing.JPanel {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         Auth.table = null;
-        openUpdateTableDialog();
+        openUpdateTableDialog("Thêm phòng/bàn", true);
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
@@ -541,10 +541,9 @@ public final class DiningTables extends javax.swing.JPanel {
         for (DiningTableEntity dataTable : dataTables) {
             model.addRow(new Object[]{
                 dataTable.getTableID(),
-                dataTable.getTableName(),
-                dataTable.getArea(),
-                dataTable.getSeatingCapacity(),
-                dataTable.getSurcharge(),
+                dataTable.getName(),
+                dataTable.getLocation(),
+                dataTable.getCapacity(),
                 dataTable.getDescription(),
                 dataTable.getStatus()
             });
@@ -605,7 +604,7 @@ public final class DiningTables extends javax.swing.JPanel {
         // Load data into combobox area
         // Collect unique area names
         for (DiningTableEntity dataTable : dataTableAll) {
-            areaSet.add(dataTable.getArea());
+            areaSet.add(dataTable.getLocation());
         }
 
         // Convert the Set to a sorted array --> Set to the comboBox
@@ -613,9 +612,19 @@ public final class DiningTables extends javax.swing.JPanel {
         comboBoxArea.setModel(comboBoxModelArea);
     }
 
-    void openUpdateTableDialog() {
+    void openUpdateTableDialog(String title, boolean isEditable) {
+        if (title == null || title.equals("")) {
+            return;
+        }
+
         // Init dialog
         UpdateTableJDialog updateTableDialog = new UpdateTableJDialog(null, true);
+
+        // Set editable 
+        updateTableDialog.setTableIdEditable(isEditable);
+
+        // Set title dialog
+        updateTableDialog.setTitle(title);
 
         // Attach event when dispose
         updateTableDialog.addWindowListener(new WindowAdapter() {
@@ -642,7 +651,7 @@ public final class DiningTables extends javax.swing.JPanel {
                 DiningTableEntity table = new DiningTableDAO().getById(tableID);
 
                 Auth.table = table;
-                openUpdateTableDialog();
+                openUpdateTableDialog("Cập nhật phòng/bàn", false);
             }
         });
     }

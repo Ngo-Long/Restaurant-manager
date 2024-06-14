@@ -3,12 +3,12 @@ package restaurant.entity;
 public class DiningTableEntity {
 
     private String tableID;
-    private String tableName;
-    private int seatingCapacity;
-    private int surcharge;
+    private String name;
+    private String location;
+    private int capacity;
     private String status;
-    private String area;
     private String description;
+    private String activity;
 
     public String getTableID() {
         return tableID;
@@ -18,28 +18,28 @@ public class DiningTableEntity {
         this.tableID = tableID;
     }
 
-    public String getTableName() {
-        return tableName;
+    public String getName() {
+        return name;
     }
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getSeatingCapacity() {
-        return seatingCapacity;
+    public String getLocation() {
+        return location;
     }
 
-    public void setSeatingCapacity(int seatingCapacity) {
-        this.seatingCapacity = seatingCapacity;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
-    public int getSurcharge() {
-        return surcharge;
+    public int getCapacity() {
+        return capacity;
     }
 
-    public void setSurcharge(int surcharge) {
-        this.surcharge = surcharge;
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 
     public String getStatus() {
@@ -50,19 +50,19 @@ public class DiningTableEntity {
         this.status = status;
     }
 
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
-    }
-
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getActivity() {
+        return activity;
+    }
+
+    public void setActivity(String activity) {
+        this.activity = activity;
     }
 }

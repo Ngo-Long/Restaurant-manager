@@ -9,7 +9,7 @@ import restaurant.utils.Dialog;
 import restaurant.manager.Overview;
 import restaurant.manager.DiningTables;
 import restaurant.authentication.Login;
-import restaurant.staff.Products;
+import restaurant.manager.Products;
 
 public final class MainManager extends javax.swing.JFrame {
 
@@ -71,7 +71,7 @@ public final class MainManager extends javax.swing.JFrame {
         jMenuBar1.add(jMenu2);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Quản lí nhân viên");
+        setTitle("Hot Noodle");
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 1, 1, 1, new java.awt.Color(204, 204, 204)));
@@ -357,8 +357,7 @@ public final class MainManager extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(scrollPaneMain, javax.swing.GroupLayout.PREFERRED_SIZE, 610, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+                .addComponent(scrollPaneMain, javax.swing.GroupLayout.PREFERRED_SIZE, 610, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -387,7 +386,7 @@ public final class MainManager extends javax.swing.JFrame {
     }//GEN-LAST:event_menuTablesActionPerformed
 
     private void menuDishesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDishesActionPerformed
-//        displayManagerPanels(new Products(this));
+        displayManagerPanels(new Products(this));
     }//GEN-LAST:event_menuDishesActionPerformed
 
     private void menuChickenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChickenActionPerformed

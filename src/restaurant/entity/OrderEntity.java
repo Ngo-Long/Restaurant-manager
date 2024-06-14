@@ -6,7 +6,6 @@ public class OrderEntity {
 
     private int orderId;
     private int invoiceID;
-    private String tableId;
     private String status;
     private String method;
     private long total;
@@ -26,14 +25,6 @@ public class OrderEntity {
 
     public void setInvoiceID(int invoiceID) {
         this.invoiceID = invoiceID;
-    }
-
-    public String getTableId() {
-        return tableId;
-    }
-
-    public void setTableId(String tableId) {
-        this.tableId = tableId;
     }
 
     public String getStatus() {

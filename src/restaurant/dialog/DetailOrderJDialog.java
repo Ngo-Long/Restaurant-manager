@@ -207,7 +207,7 @@ public class DetailOrderJDialog extends javax.swing.JDialog {
         }
 
         if (Auth.table != null) {
-            labelNameTable.setText(Objects.toString(Auth.table.getTableName(), ""));
+            labelNameTable.setText(Objects.toString(Auth.table.getName(), ""));
             labelTotalAmount.setText(Auth.totalAmount + " VND" + " / " + orderCount + " đơn");
         }
     }

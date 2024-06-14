@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -13,11 +12,8 @@ import restaurant.dao.*;
 import restaurant.dialog.OrderTableJDialog;
 import restaurant.entity.*;
 import restaurant.main.MainStaff;
-import restaurant.utils.Auth;
 import restaurant.utils.Dialog;
 import restaurant.utils.Common;
-import restaurant.utils.Ordered;
-import static restaurant.utils.Common.addCommasToNumber;
 
 public final class OrderTables extends javax.swing.JPanel {
 
@@ -283,16 +279,6 @@ public final class OrderTables extends javax.swing.JPanel {
             // Create and set colors based on status
             JButton tableButton = createTableButton(dataItem);
 
-            // Check if the table has any ordered dishes
-            dataOrderDetails = new OrderDetailDAO().getByTableId(dataItem.getTableID());
-
-            // Set status
-            if (!dataOrderDetails.isEmpty()) {
-                setTableButtonColors(tableButton, "Đang phục vụ");
-            } else {
-                setTableButtonColors(tableButton, dataItem.getStatus());
-            }
-
             // Đặt các ràng buộc cho thành phần
             constraints.gridwidth = 1;
             gridBagLayout.setConstraints(tableButton, constraints);
@@ -316,15 +302,19 @@ public final class OrderTables extends javax.swing.JPanel {
         // Create a button for a dining table with the icon
         java.net.URL imageURL = getClass().getResource("/icon/dining-room.png");
         ImageIcon icon = new ImageIcon(imageURL);
-        JButton tableButton = new JButton(diningTable.getTableName(), icon);
+        JButton tableButton = new JButton(diningTable.getName(), icon);
 
         // Set the preferred size of the button based on the icon size
-        tableButton.setPreferredSize(new Dimension(150, 150));
-        tableButton.setHorizontalTextPosition(SwingConstants.CENTER);
         tableButton.setForeground(new Color(30, 30, 30));
+        tableButton.setPreferredSize(new Dimension(150, 150));
+        tableButton.setBackground(new Color(255, 255, 255));
+        tableButton.setHorizontalTextPosition(SwingConstants.CENTER);
         tableButton.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
         tableButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         tableButton.setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255), 5, true));
+
+        // Set background for status table
+        setTableButtonColors(tableButton, diningTable.getStatus());
 
         // Add ActionListener to Call a method to display detailed information
         tableButton.addActionListener((ActionEvent e) -> {
@@ -356,18 +346,14 @@ public final class OrderTables extends javax.swing.JPanel {
 
         switch (status) {
             case "Đã đặt":
-                tableButton.setBackground(new Color(255, 153, 51)); // Màu nền FF9933
+                tableButton.setBackground(new Color(255, 153, 51));
                 break;
             case "Đang phục vụ":
-                tableButton.setBackground(new Color(255, 102, 102)); // Màu nền FF6666
+                tableButton.setBackground(new Color(255, 102, 102));
                 break;
             case "Còn trống":
-                tableButton.setBackground(new Color(255, 255, 255)); // Màu nền FFF
+                tableButton.setBackground(new Color(255, 255, 255));
                 break;
-            default: {
-                tableButton.setBackground(new Color(0, 0, 0)); // Màu nền mặc định
-                break;
-            }
         }
     }
     // end --->
@@ -385,7 +371,7 @@ public final class OrderTables extends javax.swing.JPanel {
 
         // Collect unique area names
         for (DiningTableEntity dataTable : dataAllTables) {
-            areaSet.add(dataTable.getArea());
+            areaSet.add(dataTable.getLocation());
         }
 
         // Convert the Set to a sorted array

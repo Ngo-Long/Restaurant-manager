@@ -31,12 +31,10 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         textArea = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         btnAdd = new javax.swing.JButton();
         textTableName = new javax.swing.JTextField();
-        textSurcharge = new javax.swing.JTextField();
         textDesc = new javax.swing.JTextField();
         textNumberSeats = new javax.swing.JTextField();
         btnUpdate = new javax.swing.JButton();
@@ -73,7 +71,6 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
 
         textTableId.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textTableId.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        textTableId.setActionCommand("<Not Set>");
         textTableId.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(51, 204, 0)));
         textTableId.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textTableId.setMargin(new java.awt.Insets(2, 60, 2, 6));
@@ -96,7 +93,6 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
 
         textArea.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textArea.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        textArea.setActionCommand("<Not Set>");
         textArea.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
         textArea.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textArea.setMargin(new java.awt.Insets(2, 60, 2, 6));
@@ -106,11 +102,8 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
             }
         });
 
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel9.setText("Phụ thu:");
-
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel10.setText("Số chỗ ngồi:");
+        jLabel10.setText("Số ghế:");
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel11.setText("Mô tả:");
@@ -128,7 +121,6 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
 
         textTableName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textTableName.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        textTableName.setActionCommand("<Not Set>");
         textTableName.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
         textTableName.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textTableName.setMargin(new java.awt.Insets(2, 60, 2, 6));
@@ -138,21 +130,8 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
             }
         });
 
-        textSurcharge.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        textSurcharge.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        textSurcharge.setActionCommand("<Not Set>");
-        textSurcharge.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
-        textSurcharge.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        textSurcharge.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textSurcharge.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textSurchargeActionPerformed(evt);
-            }
-        });
-
         textDesc.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textDesc.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        textDesc.setActionCommand("<Not Set>");
         textDesc.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
         textDesc.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textDesc.setMargin(new java.awt.Insets(2, 60, 2, 6));
@@ -164,7 +143,6 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
 
         textNumberSeats.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textNumberSeats.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        textNumberSeats.setActionCommand("<Not Set>");
         textNumberSeats.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
         textNumberSeats.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textNumberSeats.setMargin(new java.awt.Insets(2, 60, 2, 6));
@@ -204,24 +182,22 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(0, 81, Short.MAX_VALUE)
                         .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel9)
-                            .addComponent(jLabel10)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel11)
                             .addComponent(jLabel7)
-                            .addComponent(jLabel6))
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(textTableId)
-                            .addComponent(textSurcharge, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
                             .addComponent(textArea)
                             .addComponent(textNumberSeats)
                             .addComponent(textDesc)
@@ -243,24 +219,20 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(textArea, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(textSurcharge, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(textNumberSeats, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
-                    .addComponent(textDesc, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(textDesc, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
 
         pack();
@@ -273,10 +245,6 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         insert();
     }//GEN-LAST:event_btnAddActionPerformed
-
-    private void textSurchargeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSurchargeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_textSurchargeActionPerformed
 
     private void textDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textDescActionPerformed
         // TODO add your handling code here:
@@ -342,7 +310,6 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -350,28 +317,40 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
     private javax.swing.JTextField textArea;
     private javax.swing.JTextField textDesc;
     private javax.swing.JTextField textNumberSeats;
-    private javax.swing.JTextField textSurcharge;
     private javax.swing.JTextField textTableId;
     private javax.swing.JTextField textTableName;
     // End of variables declaration//GEN-END:variables
+
+    boolean tableIdEditable = true;
 
     void init() {
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(new Color(255, 255, 255));
 
+        // Set name
         textTableName.requestFocus();
         Common.addPlaceholder(textTableId, "Mã tự động sinh nếu không nhập");
+
+        // Set info
         setModel();
 
+        // Check status and set editable 
+        textTableId.setEditable(tableIdEditable);
+
         // Đặt tất cả JTextField vào mảng
-        JTextField[] textFields = {textTableId, textTableName, textArea, textSurcharge, textNumberSeats, textArea, textDesc};
+        JTextField[] textFields = {textTableId, textTableName, textArea, textNumberSeats, textArea, textDesc};
         for (JTextField textField : textFields) {
             Common.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
         }
     }
 
-    boolean validateInput(String name, String numberSeatsText, String surchargeText, String area) {
-        if (name.isEmpty() || numberSeatsText.isEmpty() || surchargeText.isEmpty() || area.isEmpty()) {
+    public void setTableIdEditable(boolean editable) {
+        this.tableIdEditable = editable;
+        textTableId.setEditable(editable);
+    }
+
+    boolean validateInput(String tableId, String name, String numberSeatsText, String area) {
+        if (tableId.isEmpty() || name.isEmpty() || numberSeatsText.isEmpty() || area.isEmpty()) {
             Dialog.warning(this, "Vui lòng nhập đầy đủ thông tin!");
             return false;
         }
@@ -387,44 +366,28 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
             return false;
         }
 
-        try {
-            int surcharge = Integer.parseInt(Common.removeCommasFromNumber(surchargeText));
-            if (surcharge < 0) {
-                Dialog.warning(this, "Phụ thu phải là số lớn hơn 0!");
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            Dialog.warning(this, "Phụ thu phải là một số hợp lệ!");
-            return false;
-        }
-
         return true;
     }
 
     DiningTableEntity getModel() {
         String tableId = Common.getRealText(textTableId, "Mã tự động sinh nếu không nhập");
+        System.out.println(tableId);
         String name = textTableName.getText();
         String area = textArea.getText();
-        String numberSeatsText = textNumberSeats.getText();
-        String surchargeText = textSurcharge.getText();
-        String status = "Còn trống";
-        String desc = textDesc.getText();
+        String numberSeats = textNumberSeats.getText();
 
-        if (!validateInput(name, numberSeatsText, surchargeText, area)) {
+        if (!validateInput(tableId, name, numberSeats, area)) {
             return null;
         }
 
-        int numberSeats = Integer.parseInt(numberSeatsText);
-        int surcharge = Integer.parseInt(Common.removeCommasFromNumber(surchargeText));
-
         DiningTableEntity model = new DiningTableEntity();
         model.setTableID(tableId);
-        model.setTableName(name);
-        model.setArea(area);
-        model.setSeatingCapacity(numberSeats);
-        model.setSurcharge(surcharge);
-        model.setStatus(status);
-        model.setDescription(desc);
+        model.setName(name);
+        model.setLocation(area);
+        model.setCapacity(Integer.parseInt(numberSeats));
+        model.setStatus("Còn trống");
+        model.setDescription(textDesc.getText());
+        model.setActivity("Đang hoạt động");
 
         return model;
     }
@@ -436,10 +399,9 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         }
 
         textTableId.setText(table.getTableID());
-        textTableName.setText(table.getTableName());
-        textArea.setText(table.getArea());
-        textSurcharge.setText(String.valueOf(table.getSurcharge()));
-        textNumberSeats.setText(String.valueOf(table.getSeatingCapacity()));
+        textTableName.setText(table.getName());
+        textArea.setText(table.getLocation());
+        textNumberSeats.setText(String.valueOf(table.getCapacity()));
         textDesc.setText(table.getDescription());
     }
 
@@ -455,7 +417,7 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
             return;
         }
 
-        if (new DiningTableDAO().isDuplicateName(model.getTableName())) {
+        if (new DiningTableDAO().isDuplicateName(model.getName())) {
             Dialog.alert(this, "Tên bàn đã tồn tại. Vui lòng sửa tên khác!");
             return;
         }
@@ -490,7 +452,7 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
     void delete() {
         String id = textTableId.getText();
         if (!new DiningTableDAO().isIdDuplicated(id)) {
-            Dialog.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
+            Dialog.alert(this, "Mã ID không tồn tại. Vui lòng nhập lại mã ID!");
             return;
         }
 

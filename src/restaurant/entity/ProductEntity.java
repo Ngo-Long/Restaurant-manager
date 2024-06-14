@@ -12,8 +12,6 @@ public class ProductEntity {
     private String category;
     private String kitchenArea;
     private String status;
-    private Date dateAdded;
-    private Date lastUpdated;
 
     public String getProductID() {
         return productID;
@@ -77,22 +75,6 @@ public class ProductEntity {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public Date getDateAdded() {
-        return dateAdded;
-    }
-
-    public void setDateAdded(Date dateAdded) {
-        this.dateAdded = dateAdded;
-    }
-
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
     }
 
 }

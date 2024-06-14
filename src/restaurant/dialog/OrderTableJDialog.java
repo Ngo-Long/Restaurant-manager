@@ -1,9 +1,10 @@
 package restaurant.dialog;
 
-import java.awt.Color;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
+
+import java.awt.Color;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
 
@@ -11,17 +12,20 @@ import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.utils.Ordered;
-import restaurant.dao.DiningTableDAO;
-import restaurant.dao.OrderDetailDAO;
-import restaurant.dao.OrdersDAO;
-import restaurant.entity.DiningTableEntity;
-import restaurant.entity.OrderDetailEntity;
-import restaurant.entity.OrderEntity;
+
 import restaurant.main.MainStaff;
+import restaurant.staff.Products;
 import restaurant.staff.Invoices;
 import restaurant.staff.OrderTables;
-import restaurant.staff.Products;
 import restaurant.table.TableCustom;
+
+import restaurant.dao.OrderDAO;
+import restaurant.dao.DiningTableDAO;
+import restaurant.dao.OrderDetailDAO;
+
+import restaurant.entity.OrderEntity;
+import restaurant.entity.DiningTableEntity;
+import restaurant.entity.OrderDetailEntity;
 import static restaurant.utils.Common.addCommasToNumber;
 
 public final class OrderTableJDialog extends javax.swing.JDialog {
@@ -332,7 +336,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
     void init() {
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(new Color(255, 255, 255));
-        
+
         TableCustom.apply(jScrollPane3, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableListOrderedDishes, new int[]{0});
 
@@ -341,7 +345,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
 
     void switchTables() {
         // Get orderd
-        dataOrder = new OrdersDAO().getPendingByTableId(labelTableId.getText());
+        dataOrder = new OrderDAO().getPendingByTableId(labelTableId.getText());
         if (dataOrder == null) {
             Dialog.warning(this, "Không tìm thấy đơn đặt hàng!");
             return;
@@ -356,7 +360,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
 
         // Check to see if the dining table is in use
         String newTableId = new DiningTableDAO().getIdByName(newtableName);
-        if (new OrdersDAO().getByTableId(newTableId) != null) {
+        if (new OrderDAO().getByTableId(newTableId) != null) {
             Dialog.warning(this, "Bàn đang có khách dùng! \nVui lòng chọn bàn khác!");
             return;
         }
@@ -366,8 +370,8 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         }
 
         try {
-            dataOrder.setTableId(newTableId); // setup
-            new OrdersDAO().update(dataOrder); // update
+//            dataOrder.setTableId(newTableId); // setup
+            new OrderDAO().update(dataOrder); // update
 
             // Upload
             mainStaff.displayStaffPanels(new OrderTables(mainStaff));
@@ -381,7 +385,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
     public void displayDetailTable(DiningTableEntity diningTable) {
         dataTable = diningTable;
         labelTableId.setText(diningTable.getTableID());
-        labelTableName.setText(diningTable.getTableName());
+        labelTableName.setText(diningTable.getName());
     }
 
     public void displayOrderedByTable(String tableId) {
@@ -390,7 +394,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         model.setRowCount(0);
 
         // Get info detail order through dining table id
-        dataOrder = new OrdersDAO().getPendingByTableId(tableId);
+        dataOrder = new OrderDAO().getPendingByTableId(tableId);
         dataOrderDetails = new OrderDetailDAO().getByTableId(tableId);
 
         if (dataOrder == null || dataOrderDetails == null) {
@@ -400,7 +404,8 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
 
         // Display total - Tổng cộng: 100.000₫ / 1 đơn
         totalConvert = addCommasToNumber(String.valueOf(dataOrder.getTotal()));
-        orderCount = new DiningTableDAO().getOrderCountByTableId(tableId);
+//        orderCount = new DiningTableDAO().getOrderCountByTableId(tableId);
+        orderCount = 1;
         labelTotalAmount.setText(totalConvert + "₫ / " + orderCount + " đơn");
 
         // Create a Map để lưu trữ số lượng và giá của mỗi món
@@ -424,7 +429,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
 
         // Add table name to the ComboBoxModel
         for (DiningTableEntity dataTable : dataAllTables) {
-            comboBoxTables.addElement(dataTable.getTableName());
+            comboBoxTables.addElement(dataTable.getName());
         }
 
         // Set the ComboBoxModel to the comboBox

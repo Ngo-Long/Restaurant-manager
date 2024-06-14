@@ -24,7 +24,7 @@ import javax.swing.JFileChooser;
 import javax.swing.table.DefaultTableModel;
 import net.sf.jasperreports.engine.JRException;
 
-import restaurant.dao.OrdersDAO;
+import restaurant.dao.OrderDAO;
 import restaurant.dao.InvoiceDAO;
 import restaurant.dao.OrderDetailDAO;
 import restaurant.dao.DiningTableDAO;
@@ -696,8 +696,8 @@ public class Invoices extends javax.swing.JPanel {
             tableId = Auth.table.getTableID();
         }
 
-        if (Auth.table != null && Auth.table.getTableName() != null) {
-            tableName = Auth.table.getTableName();
+        if (Auth.table != null && Auth.table.getName() != null) {
+            tableName = Auth.table.getName();
         }
 
         invoiceId = new InvoiceDAO().getIdByTableId(tableId);
@@ -774,9 +774,9 @@ public class Invoices extends javax.swing.JPanel {
             new InvoiceDAO().update(getModel());
 
             // Update status order successfully
-            OrderEntity ordered = new OrdersDAO().getByInvoiceId(invoiceId);
+            OrderEntity ordered = new OrderDAO().getByInvoiceId(invoiceId);
             ordered.setStatus("Đã thanh toán");
-            new OrdersDAO().update(ordered);
+            new OrderDAO().update(ordered);
 
             // Open bill
             bill();
@@ -817,7 +817,7 @@ public class Invoices extends javax.swing.JPanel {
         model.setRowCount(0);
 
         // Get info detail order through dining table id
-        dataOrder = new OrdersDAO().getPendingByTableId(tableId);
+        dataOrder = new OrderDAO().getPendingByTableId(tableId);
         dataOrderDetails = new OrderDetailDAO().getByTableId(tableId);
 
         if (dataOrder == null || dataOrderDetails == null) {
@@ -871,7 +871,7 @@ public class Invoices extends javax.swing.JPanel {
             String status = invoice.getStatus();
 
             // Get info ordered
-            OrderEntity order = new OrdersDAO().getByInvoiceId(invoiceId);
+            OrderEntity order = new OrderDAO().getByInvoiceId(invoiceId);
             int orderId = order.getOrderId();
 
             // Get start time ordered
@@ -884,7 +884,7 @@ public class Invoices extends javax.swing.JPanel {
 
             // Get name table 
             DiningTableEntity dataTable = new DiningTableDAO().getByInvoiceId(invoiceId);
-            String tableName = dataTable.getTableName();
+            String tableName = dataTable.getName();
 
             // Add add info on table invoice
             modelPending.addRow(new Object[]{
@@ -916,7 +916,7 @@ public class Invoices extends javax.swing.JPanel {
 
             // Get name table
             DiningTableEntity dataTable = new DiningTableDAO().getByInvoiceId(invoicesId);
-            String tableName = dataTable.getTableName();
+            String tableName = dataTable.getName();
 
             // Add invoice on table
             modelConfirmed.addRow(new Object[]{

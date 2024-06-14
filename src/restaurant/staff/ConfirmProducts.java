@@ -10,7 +10,7 @@ import javax.swing.table.*;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.ExecutionException;
 
-import restaurant.dao.OrdersDAO;
+import restaurant.dao.OrderDAO;
 import restaurant.dao.ProductDAO;
 import restaurant.dao.OrderDetailDAO;
 import restaurant.entity.ProductEntity;
@@ -288,7 +288,7 @@ public class ConfirmProducts extends javax.swing.JPanel {
             int detailProductId = pendingProduct.getOrderDetailID();
 
             // Get name table by id table
-            String tableDiningName = new OrdersDAO().getTableNameByOrderId(pendingProduct.getOrderID());
+            String tableDiningName = new OrderDAO().getTableNameByOrderId(pendingProduct.getOrderID());
 
             // Get products in ordered
             String productId = pendingProduct.getProductID();
@@ -320,7 +320,7 @@ public class ConfirmProducts extends javax.swing.JPanel {
         // Thêm sản phẩm vào bảng đã xác nhận
         for (OrderDetailEntity confirmedProduct : confirmedProducts) {
             // Get name table by id table
-            String tableDiningName = new OrdersDAO().getTableNameByOrderId(confirmedProduct.getOrderID());
+            String tableDiningName = new OrderDAO().getTableNameByOrderId(confirmedProduct.getOrderID());
 
             // Get products in ordered
             String productId = confirmedProduct.getProductID();

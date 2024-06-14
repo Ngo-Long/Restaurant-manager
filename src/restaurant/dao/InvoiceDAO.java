@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import restaurant.utils.JDBC;
-import restaurant.entity.InvoiceEntity;
 import restaurant.utils.Dialog;
+import restaurant.entity.InvoiceEntity;
 
-public class InvoiceDAO {
+public class InvoiceDAO extends RestaurantDAO<InvoiceEntity, Integer> {
 
     public static final String INSERT_SQL = "INSERT INTO Invoices (Status) VALUES (N'Chờ thanh toán');";
     public static final String UPDATE_SQL = "UPDATE Invoices SET EmployeeID=?, Tax=?, Discount=?, PaymentMethod=?, Note=?, "
@@ -35,6 +35,7 @@ public class InvoiceDAO {
         return latestInvoiceID;
     }
 
+    @Override
     public void update(InvoiceEntity model) {
         JDBC.executeUpdate(UPDATE_SQL,
                 model.getEmployeeID(),
@@ -48,6 +49,7 @@ public class InvoiceDAO {
         );
     }
 
+    @Override
     public List<InvoiceEntity> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
     }
@@ -65,7 +67,8 @@ public class InvoiceDAO {
         }
     }
 
-    private List<InvoiceEntity> fetchByQuery(String sql, Object... args) {
+    @Override
+    protected List<InvoiceEntity> fetchByQuery(String sql, Object... args) {
         List<InvoiceEntity> list = new ArrayList<>();
 
         try (ResultSet rs = JDBC.executeQuery(sql, args)) {
@@ -93,5 +96,20 @@ public class InvoiceDAO {
         model.setNote(rs.getString("Note"));
         model.setTotalAmount(rs.getInt("TotalAmount"));
         return model;
+    }
+
+    @Override
+    public void insert(InvoiceEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void delete(Integer id) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public InvoiceEntity getById(Integer id) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

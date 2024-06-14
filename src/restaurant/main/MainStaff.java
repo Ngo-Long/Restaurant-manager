@@ -3,10 +3,11 @@ package restaurant.main;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import restaurant.authentication.Login;
+
 import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
+import restaurant.authentication.Login;
 
 import restaurant.staff.Overview;
 import restaurant.staff.Products;
@@ -586,7 +587,7 @@ public final class MainStaff extends javax.swing.JFrame {
         panelMain.revalidate();
         panelMain.repaint();
     }
-    
+
     void openFullScreenWindow(JFrame window) {
         window.setVisible(true);
         window.setLocationRelativeTo(null);
