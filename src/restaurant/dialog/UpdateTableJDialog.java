@@ -2,12 +2,14 @@ package restaurant.dialog;
 
 import java.awt.Color;
 import javax.swing.JTextField;
-
 import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.dao.DiningTableDAO;
 import restaurant.entity.DiningTableEntity;
+import static restaurant.utils.Common.getRealText;
+import static restaurant.utils.Common.addPlaceholder;
+import static restaurant.utils.Common.createButtonGroup;
 
 public final class UpdateTableJDialog extends javax.swing.JDialog {
 
@@ -39,6 +41,9 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         textNumberSeats = new javax.swing.JTextField();
         btnUpdate = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
+        jLabel12 = new javax.swing.JLabel();
+        radioOn = new javax.swing.JRadioButton();
+        radioOff = new javax.swing.JRadioButton();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -106,7 +111,7 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         jLabel10.setText("Số ghế:");
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel11.setText("Mô tả:");
+        jLabel11.setText("Trạng thái:");
 
         btnAdd.setBackground(new java.awt.Color(0, 153, 0));
         btnAdd.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -174,34 +179,57 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
             }
         });
 
+        jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel12.setText("Mô tả:");
+
+        radioOn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        radioOn.setSelected(true);
+        radioOn.setText("Đang hoạt động");
+        radioOn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioOnActionPerformed(evt);
+            }
+        });
+
+        radioOff.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        radioOff.setText("Ngưng hoạt động");
+        radioOff.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioOffActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel11)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 81, Short.MAX_VALUE)
-                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel11)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(textTableId)
-                            .addComponent(textArea)
-                            .addComponent(textNumberSeats)
-                            .addComponent(textDesc)
-                            .addComponent(textTableName))))
+                        .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(textTableId, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
+                        .addComponent(textTableName, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(textArea, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(textNumberSeats, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(textDesc, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(radioOn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(radioOff)))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -223,16 +251,22 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(textNumberSeats, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel11)
-                    .addComponent(textDesc, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(30, 30, 30)
+                .addGap(11, 11, 11)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(textDesc, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(radioOff, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(radioOn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addGap(40, 40, 40))
         );
 
         pack();
@@ -275,6 +309,14 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         delete();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
+    private void radioOnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOnActionPerformed
+
+    }//GEN-LAST:event_radioOnActionPerformed
+
+    private void radioOffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOffActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_radioOffActionPerformed
+
     public static void main(String args[]) {
 
         try {
@@ -298,6 +340,7 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
             });
             dialog.setVisible(true);
         });
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -307,6 +350,7 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -314,6 +358,8 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JRadioButton radioOff;
+    private javax.swing.JRadioButton radioOn;
     private javax.swing.JTextField textArea;
     private javax.swing.JTextField textDesc;
     private javax.swing.JTextField textNumberSeats;
@@ -321,36 +367,35 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
     private javax.swing.JTextField textTableName;
     // End of variables declaration//GEN-END:variables
 
-    boolean tableIdEditable = true;
+    boolean isEditable = true;
 
     void init() {
         this.setLocationRelativeTo(null);
-        this.getContentPane().setBackground(new Color(255, 255, 255));
+        this.getContentPane().setBackground(new Color(240, 240, 240));
 
-        // Set name
+        // Setup UI
+        textTableId.setEditable(isEditable);
         textTableName.requestFocus();
-        Common.addPlaceholder(textTableId, "Mã tự động sinh nếu không nhập");
+        createButtonGroup(radioOn, radioOff);
+        addPlaceholder(textTableId, "Mã tự động");
 
-        // Set info
-        setModel();
-
-        // Check status and set editable 
-        textTableId.setEditable(tableIdEditable);
-
-        // Đặt tất cả JTextField vào mảng
+        // Setup text fields 
         JTextField[] textFields = {textTableId, textTableName, textArea, textNumberSeats, textArea, textDesc};
         for (JTextField textField : textFields) {
             Common.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
         }
+
+        // Setup model
+        setModel();
     }
 
-    public void setTableIdEditable(boolean editable) {
-        this.tableIdEditable = editable;
+    public void setIsEditable(boolean editable) {
+        this.isEditable = editable;
         textTableId.setEditable(editable);
     }
 
-    boolean validateInput(String tableId, String name, String numberSeatsText, String area) {
-        if (tableId.isEmpty() || name.isEmpty() || numberSeatsText.isEmpty() || area.isEmpty()) {
+    boolean validateInput(String name, String numberSeatsText, String area) {
+        if (name.trim().isEmpty() || numberSeatsText.trim().isEmpty() || area.trim().isEmpty()) {
             Dialog.warning(this, "Vui lòng nhập đầy đủ thông tin!");
             return false;
         }
@@ -370,26 +415,29 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
     }
 
     DiningTableEntity getModel() {
-        String tableId = Common.getRealText(textTableId, "Mã tự động sinh nếu không nhập");
-        System.out.println(tableId);
+        String tableId = getRealText(textTableId, "Mã tự động");
         String name = textTableName.getText();
         String area = textArea.getText();
         String numberSeats = textNumberSeats.getText();
 
-        if (!validateInput(tableId, name, numberSeats, area)) {
+        if (!validateInput(name, numberSeats, area)) {
             return null;
         }
 
-        DiningTableEntity model = new DiningTableEntity();
-        model.setTableID(tableId);
-        model.setName(name);
-        model.setLocation(area);
-        model.setCapacity(Integer.parseInt(numberSeats));
-        model.setStatus("Còn trống");
-        model.setDescription(textDesc.getText());
-        model.setActivity("Đang hoạt động");
-
-        return model;
+        try {
+            DiningTableEntity model = new DiningTableEntity();
+            model.setTableID(tableId);
+            model.setName(name);
+            model.setLocation(area);
+            model.setCapacity(Integer.parseInt(numberSeats));
+            model.setStatus("Còn trống");
+            model.setDescription(textDesc.getText());
+            model.setActivity(radioOn.isSelected() ? "Đang hoạt động" : "Ngưng hoạt động");
+            return model;
+        } catch (NumberFormatException e) {
+            System.err.println("Lỗi: " + e.getMessage());
+            return null;
+        }
     }
 
     void setModel() {
@@ -403,14 +451,14 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         textArea.setText(table.getLocation());
         textNumberSeats.setText(String.valueOf(table.getCapacity()));
         textDesc.setText(table.getDescription());
+
+        String activiti = table.getActivity();
+        radioOn.setSelected(activiti.equals("Đang hoạt động"));
+        radioOff.setSelected(activiti.equals("Ngưng hoạt động"));
     }
 
     void insert() {
         DiningTableEntity model = getModel();
-
-        if (model == null) {
-            return;
-        }
 
         if (new DiningTableDAO().isIdDuplicated(model.getTableID())) {
             Dialog.warning(this, "Mã ID đã tồn tại. Vui lòng chọn mã ID khác!");
@@ -465,4 +513,5 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         }
     }
     // end --->
+
 }

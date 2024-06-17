@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.WindowAdapter;
+import java.awt.event.ActionListener;
 import java.awt.print.PrinterException;
 
 import java.util.Set;
@@ -21,20 +22,23 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.utils.Auth;
-import restaurant.utils.Common;
 import restaurant.main.MainManager;
 import restaurant.table.TableCustom;
 import restaurant.dao.DiningTableDAO;
 import restaurant.entity.DiningTableEntity;
 import restaurant.dialog.UpdateTableJDialog;
+import static restaurant.utils.Common.addFocusBorder;
+import static restaurant.utils.Common.addPlaceholder;
+import static restaurant.utils.Common.customizeTable;
 import static restaurant.utils.ExportFile.exportToExcel;
+import static restaurant.utils.Common.createButtonGroup;
 
 public final class DiningTables extends javax.swing.JPanel {
 
@@ -68,16 +72,16 @@ public final class DiningTables extends javax.swing.JPanel {
         btnPrev = new javax.swing.JButton();
         btnFirst = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        cbRecordNumbers = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         textSearch = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
-        jLabel5 = new javax.swing.JLabel();
-        cbRecordNumbers = new javax.swing.JComboBox<>();
+        radioOn = new javax.swing.JRadioButton();
+        radioOff = new javax.swing.JRadioButton();
+        radioAll = new javax.swing.JRadioButton();
 
         panelBody.setToolTipText("");
 
@@ -157,13 +161,13 @@ public final class DiningTables extends javax.swing.JPanel {
 
         tableDiningTables.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Mã bàn", "Tên bàn", "Khu vực", "Số ghế", "Phụ thu", "Mô tả", "Trạng thái"
+                "Mã bàn", "Tên bàn", "Số ghế", "Khu vực", "Mô tả", "Trạng thái"
             }
         ));
         tableDiningTables.setGridColor(new java.awt.Color(255, 255, 255));
@@ -172,7 +176,6 @@ public final class DiningTables extends javax.swing.JPanel {
         if (tableDiningTables.getColumnModel().getColumnCount() > 0) {
             tableDiningTables.getColumnModel().getColumn(0).setPreferredWidth(20);
             tableDiningTables.getColumnModel().getColumn(1).setPreferredWidth(120);
-            tableDiningTables.getColumnModel().getColumn(6).setPreferredWidth(120);
         }
 
         btnLast.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -215,6 +218,12 @@ public final class DiningTables extends javax.swing.JPanel {
         jLabel6.setForeground(new java.awt.Color(102, 102, 102));
         jLabel6.setText("Hiển thị 1 - 10 trên tổng số 10 bàn");
 
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel5.setText("Số bản ghi:");
+
+        cbRecordNumbers.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "5", "10", "20", "30", "40", "50" }));
+        cbRecordNumbers.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -230,8 +239,12 @@ public final class DiningTables extends javax.swing.JPanel {
                         .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnLast, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(200, 200, 200)
+                        .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel6))
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbRecordNumbers, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
@@ -257,15 +270,17 @@ public final class DiningTables extends javax.swing.JPanel {
                             .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLast)
                     .addComponent(btnNext)
                     .addComponent(btnPrev)
                     .addComponent(btnFirst)
-                    .addComponent(jLabel6))
-                .addGap(12, 12, 12))
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbRecordNumbers, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(11, 11, 11))
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -307,24 +322,25 @@ public final class DiningTables extends javax.swing.JPanel {
         jLabel4.setForeground(new java.awt.Color(51, 51, 51));
         jLabel4.setText("Trạng thái");
 
-        jRadioButton1.setText("Đang hoạt động");
-        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+        radioOn.setSelected(true);
+        radioOn.setText("Đang hoạt động");
+        radioOn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton1ActionPerformed(evt);
+                radioOnActionPerformed(evt);
             }
         });
 
-        jRadioButton2.setText("Ngừng hoạt động");
-        jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
+        radioOff.setText("Ngưng hoạt động");
+        radioOff.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton2ActionPerformed(evt);
+                radioOffActionPerformed(evt);
             }
         });
 
-        jRadioButton3.setText("Tất cả");
-        jRadioButton3.addActionListener(new java.awt.event.ActionListener() {
+        radioAll.setText("Tất cả");
+        radioAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton3ActionPerformed(evt);
+                radioAllActionPerformed(evt);
             }
         });
 
@@ -335,9 +351,9 @@ public final class DiningTables extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jRadioButton3)
-                    .addComponent(jRadioButton2)
-                    .addComponent(jRadioButton1)
+                    .addComponent(radioAll)
+                    .addComponent(radioOff)
+                    .addComponent(radioOn)
                     .addComponent(jLabel4))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -347,19 +363,13 @@ public final class DiningTables extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addComponent(jLabel4)
                 .addGap(18, 18, 18)
-                .addComponent(jRadioButton1)
+                .addComponent(radioOn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jRadioButton2)
+                .addComponent(radioOff)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jRadioButton3)
+                .addComponent(radioAll)
                 .addContainerGap(29, Short.MAX_VALUE))
         );
-
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel5.setText("Số bản ghi:");
-
-        cbRecordNumbers.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "5", "10", "20", "30", "40", "50" }));
-        cbRecordNumbers.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         javax.swing.GroupLayout panelBodyLayout = new javax.swing.GroupLayout(panelBody);
         panelBody.setLayout(panelBodyLayout);
@@ -370,11 +380,7 @@ public final class DiningTables extends javax.swing.JPanel {
                 .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(panelBodyLayout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(cbRecordNumbers, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1022, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(18, Short.MAX_VALUE))
@@ -393,11 +399,7 @@ public final class DiningTables extends javax.swing.JPanel {
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cbRecordNumbers, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(65, 65, 65))))
+                        .addGap(67, 152, Short.MAX_VALUE))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -415,7 +417,6 @@ public final class DiningTables extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void comboBoxAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxAreaActionPerformed
-        initEventClassify();
     }//GEN-LAST:event_comboBoxAreaActionPerformed
 
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
@@ -436,20 +437,17 @@ public final class DiningTables extends javax.swing.JPanel {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         Auth.table = null;
-        openUpdateTableDialog("Thêm phòng/bàn", true);
+        openUpdateDialog("Thêm phòng/bàn", true);
     }//GEN-LAST:event_btnAddActionPerformed
 
-    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton1ActionPerformed
+    private void radioOnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOnActionPerformed
+    }//GEN-LAST:event_radioOnActionPerformed
 
-    private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton2ActionPerformed
+    private void radioOffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOffActionPerformed
+    }//GEN-LAST:event_radioOffActionPerformed
 
-    private void jRadioButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton3ActionPerformed
+    private void radioAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioAllActionPerformed
+    }//GEN-LAST:event_radioAllActionPerformed
 
     private void btnLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastActionPerformed
         last();
@@ -468,7 +466,6 @@ public final class DiningTables extends javax.swing.JPanel {
     }//GEN-LAST:event_btnFirstActionPerformed
 
     private void textSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSearchActionPerformed
-        initEventClassify();
     }//GEN-LAST:event_textSearchActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -493,44 +490,173 @@ public final class DiningTables extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panelBody;
+    private javax.swing.JRadioButton radioAll;
+    private javax.swing.JRadioButton radioOff;
+    private javax.swing.JRadioButton radioOn;
     private javax.swing.JTable tableDiningTables;
     private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
     int row = -1;
+    int debounceDelay = 500; // milliseconds
     List<DiningTableEntity> dataTables;
-    ExecutorService executorService = Executors.newFixedThreadPool(3);
+
     ScheduledFuture<?> scheduledFuture;
-    final int debounceDelay = 500; // milliseconds
+    ExecutorService executorService = Executors.newFixedThreadPool(3);
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     void init() {
-        // Change display UI
-        Common.addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
+        // <--- Setup UI common --->
+        createButtonGroup(radioOn, radioOff, radioAll);
+
+        // edit field text
+        addPlaceholder(textSearch, "Theo tên bàn");
+        addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
+
+        // edit table
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
-        Common.customizeTable(tableDiningTables, new int[]{});
+        customizeTable(tableDiningTables, new int[]{});
 
-        // Load info from list dining table
-        dataTables = new DiningTableDAO().getAll();
-        load(dataTables);
-
-        // Init combobox area
-        setupCombobox();
+        // <--- Setup main --->
+        // setup combobox
+        setupMultipleCombobox();
 
         // Load list by search and classify when change
-        initEventClassify();
+        initEventHandlers();
+        loadDataByCriteria();
 
-        // Attach event when click on table
-        tableDiningTablesMouseClicked();
-
+        // handle click table
+        tablesMouseClicked();
     }
 
-    void load(List<DiningTableEntity> dataTables) {
+    public void setupMultipleCombobox() {
+        // Get data list
+        List<DiningTableEntity> dataTableAll = new DiningTableDAO().getAll();
+
+        // Add into combobox 
+        DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
+
+        // Use TreeSet to automatically sort and remove duplicate elements
+        Set<String> areaSet = new HashSet<>();
+
+        // Load data into combobox 
+        for (DiningTableEntity dataTable : dataTableAll) {
+            areaSet.add(dataTable.getLocation());
+        }
+
+        // Add "--Tất cả--" to the beginning of the set
+        comboBoxModel.addElement("-- Tất cả --");
+
+        // Convert the Set to a sorted array --> Set to the comboBox
+        areaSet.stream().sorted().forEach(comboBoxModel::addElement);
+        comboBoxArea.setModel(comboBoxModel);
+    }
+
+    void tablesMouseClicked() {
+        tableDiningTables.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JTable target = (JTable) e.getSource();
+                int row = target.getSelectedRow();
+                if (row == -1) {
+                    return;
+                }
+
+                // Lấy dữ liệu từ hàng được chọn
+                String id = (String) target.getValueAt(row, 0);
+                DiningTableEntity table = new DiningTableDAO().getById(id);
+
+                Auth.table = table;
+                openUpdateDialog("Cập nhật phòng/bàn", false);
+            }
+        });
+    }
+
+    void openUpdateDialog(String title, boolean isEditable) {
+        if (title == null || title.equals("")) {
+            return;
+        }
+
+        // Init dialog
+        UpdateTableJDialog dialog = new UpdateTableJDialog(null, true);
+
+        dialog.setTitle(title); // Set title dialog
+        dialog.setIsEditable(isEditable); // Set editable 
+
+        // Attach event when dispose
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                loadDataByCriteria();
+                setupMultipleCombobox();
+            }
+        });
+
+        dialog.setVisible(true);
+    }
+
+    // <--- Load data
+    void initEventHandlers() {
+        // Attach event textSearch
+        textSearch.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                loadDataByCriteria();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                loadDataByCriteria();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                loadDataByCriteria();
+            }
+        });
+
+        // Attach event comboBoxArea, radioOn, radioOff, radioAll
+        ActionListener actionListener = (ActionEvent e) -> {
+            loadDataByCriteria();
+        };
+
+        comboBoxArea.addActionListener(actionListener);
+        radioOn.addActionListener(actionListener);
+        radioOff.addActionListener(actionListener);
+        radioAll.addActionListener(actionListener);
+    }
+
+    public void loadDataByCriteria() {
+        if (scheduledFuture != null && !scheduledFuture.isDone()) {
+            scheduledFuture.cancel(false);
+        }
+
+        scheduledFuture = scheduledExecutorService.schedule(() -> {
+            SwingUtilities.invokeLater(() -> {
+                // Get info criterias
+                String searchName = textSearch.getText().trim();
+                if (searchName.equals("Theo tên bàn")) {
+                    searchName = "";
+                }
+
+                String location = comboBoxArea.getSelectedItem().toString();
+                if (location.equals("-- Tất cả --")) {
+                    location = "";
+                }
+
+                String selectedRadio = radioOn.isSelected() ? radioOn.getText()
+                        : radioOff.isSelected() ? radioOff.getText() : "";
+
+                // Get data and load
+                dataTables = new DiningTableDAO().searchByCriteria(searchName, location, selectedRadio);
+                this.fillTable(dataTables);
+            });
+        }, debounceDelay, TimeUnit.MILLISECONDS);
+    }
+
+    public void fillTable(List<DiningTableEntity> dataTables) {
         System.out.println("Đang load dữ liệu từ cơ sở dữ liệu...");
 
         // Display table
@@ -542,120 +668,16 @@ public final class DiningTables extends javax.swing.JPanel {
             model.addRow(new Object[]{
                 dataTable.getTableID(),
                 dataTable.getName(),
-                dataTable.getLocation(),
                 dataTable.getCapacity(),
+                dataTable.getLocation(),
                 dataTable.getDescription(),
-                dataTable.getStatus()
+                dataTable.getActivity()
             });
         }
     }
+    // end --->
 
-    void initEventClassify() {
-        // Attach event textSearch
-        textSearch.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                loadClassify();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                loadClassify();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                loadClassify();
-            }
-        });
-
-        // Attach event comboBoxArea
-        comboBoxArea.addActionListener((ActionEvent e) -> {
-            loadClassify();
-        });
-    }
-
-    void loadClassify() {
-        if (scheduledFuture != null && !scheduledFuture.isDone()) {
-            scheduledFuture.cancel(false);
-        }
-
-        scheduledFuture = scheduledExecutorService.schedule(() -> {
-            SwingUtilities.invokeLater(() -> {
-                // Get text
-                String search = textSearch.getText().trim();
-                String area = comboBoxArea.getSelectedItem().toString();
-
-                // Get data and load
-                dataTables = new DiningTableDAO().searchByAreaAndName(area, search);
-                load(dataTables);
-            });
-        }, debounceDelay, TimeUnit.MILLISECONDS);
-    }
-
-    void setupCombobox() {
-        // Get data table list
-        List<DiningTableEntity> dataTableAll = new DiningTableDAO().getAll();
-
-        // Add into combobox area
-        DefaultComboBoxModel<String> comboBoxModelArea = new DefaultComboBoxModel<>();
-        Set<String> areaSet = new HashSet<>();
-
-        // Load data into combobox area
-        // Collect unique area names
-        for (DiningTableEntity dataTable : dataTableAll) {
-            areaSet.add(dataTable.getLocation());
-        }
-
-        // Convert the Set to a sorted array --> Set to the comboBox
-        areaSet.stream().sorted().forEach(comboBoxModelArea::addElement);
-        comboBoxArea.setModel(comboBoxModelArea);
-    }
-
-    void openUpdateTableDialog(String title, boolean isEditable) {
-        if (title == null || title.equals("")) {
-            return;
-        }
-
-        // Init dialog
-        UpdateTableJDialog updateTableDialog = new UpdateTableJDialog(null, true);
-
-        // Set editable 
-        updateTableDialog.setTableIdEditable(isEditable);
-
-        // Set title dialog
-        updateTableDialog.setTitle(title);
-
-        // Attach event when dispose
-        updateTableDialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosed(WindowEvent e) {
-                dataTables = new DiningTableDAO().getAll();
-                load(dataTables);
-            }
-        });
-
-        // Open dialog
-        updateTableDialog.setVisible(true);
-    }
-
-    void tableDiningTablesMouseClicked() {
-        tableDiningTables.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                JTable target = (JTable) e.getSource();
-                int row = target.getSelectedRow();
-
-                // Lấy dữ liệu từ hàng được chọn
-                String tableID = (String) target.getValueAt(row, 0);
-                DiningTableEntity table = new DiningTableDAO().getById(tableID);
-
-                Auth.table = table;
-                openUpdateTableDialog("Cập nhật phòng/bàn", false);
-            }
-        });
-    }
-
+    // <--- Directional
     void edit() {
         this.selectTableRow(this.row);
         this.directional();
@@ -702,4 +724,5 @@ public final class DiningTables extends javax.swing.JPanel {
         this.row = tableDiningTables.getRowCount() - 1;
         this.edit();
     }
+    // end --->
 }

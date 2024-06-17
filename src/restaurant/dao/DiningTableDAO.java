@@ -74,13 +74,15 @@ public class DiningTableDAO extends RestaurantDAO<DiningTableEntity, String> {
         return null;
     }
 
-    public List<DiningTableEntity> searchByAreaAndName(String area, String name) {
-        String sql = "SELECT TableID, Name, Location, Capacity, Status, Description, Activity "
-                + "FROM DiningTables WHERE Location LIKE ? AND Name LIKE ?";
-        String areaTerm = "%" + area + "%";
-        String nameTerm = "%" + name + "%";
+    public List<DiningTableEntity> searchByCriteria(String name, String location, String activity) {
+        String sql = "SELECT * FROM DiningTables WHERE Name LIKE ? "
+                + "AND Location LIKE ? AND Activity LIKE ?";
 
-        return fetchByQuery(sql, areaTerm, nameTerm);
+        String nameTerm = "%" + name + "%";
+        String locationTerm = "%" + location + "%";
+        String activityTerm = "%" + activity + "%";
+
+        return this.fetchByQuery(sql, nameTerm, locationTerm, activityTerm);
     }
 
     public boolean isIdDuplicated(String id) {

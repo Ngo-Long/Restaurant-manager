@@ -28,7 +28,6 @@ import javax.swing.BorderFactory;
 import javax.swing.border.MatteBorder;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
-import java.text.SimpleDateFormat;
 
 import restaurant.dao.OrderDAO;
 import restaurant.dao.InvoiceDAO;
@@ -44,6 +43,7 @@ import restaurant.dialog.DetailOrderJDialog;
 import restaurant.entity.OrderEntity;
 import restaurant.entity.ProductEntity;
 import restaurant.entity.OrderDetailEntity;
+import static restaurant.utils.Auth.product;
 import static restaurant.utils.Common.createButton;
 import static restaurant.utils.Common.getScaledImageIcon;
 
@@ -455,10 +455,6 @@ public class Products extends javax.swing.JPanel {
     }
 
     JPanel createPanelProduct(ProductEntity product) {
-        // Create a image product
-        String imageUrl = product.getImageURL();
-        ImageIcon scaledIcon = getScaledImageIcon(imageUrl, 200, 200);
-
         // Create a JLabel name
         JLabel textLabel = new JLabel(product.getProductName());
         textLabel.setForeground(new Color(30, 30, 30));
@@ -466,7 +462,8 @@ public class Products extends javax.swing.JPanel {
         textLabel.setFont(new Font(textLabel.getFont().getName(), Font.BOLD, 14));
 
         // Create a JLabel price
-        String formattedPrice = Common.addCommasToNumber(String.valueOf(product.getPrice()));
+        String price = String.valueOf(product.getPrice());
+        String formattedPrice = Common.addCommasToNumber(price);
         JLabel priceLabel = new JLabel(formattedPrice + " VND");
         priceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         priceLabel.setFont(new Font(priceLabel.getFont().getName(), Font.PLAIN, 14));
@@ -475,6 +472,7 @@ public class Products extends javax.swing.JPanel {
         MatteBorder topBorder = BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 200));
 
         // Create label top contains (scaledIcon) 
+        ImageIcon scaledIcon = getScaledImageIcon(product.getImageURL(), 200, 200);
         JLabel labelTop = new JLabel(scaledIcon);
         labelTop.setHorizontalAlignment(JLabel.CENTER);
 

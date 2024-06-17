@@ -386,7 +386,7 @@ public final class OrderTables extends javax.swing.JPanel {
         comboboxArea.addActionListener((ActionEvent e) -> {
             // Get the selected area
             selectedArea = (String) comboboxArea.getSelectedItem();
-            dataTables = new DiningTableDAO().searchByAreaAndName(selectedArea, "");
+            dataTables = new DiningTableDAO().searchByCriteria("", selectedArea, "");
             this.loadDiningTables(dataTables); // load
         });
 

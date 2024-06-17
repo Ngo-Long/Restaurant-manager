@@ -7,10 +7,11 @@ public class ProductEntity {
     private String productID;
     private String productName;
     private int price;
-    private String description;
+    private String unit;
     private String imageURL;
     private String category;
     private String kitchenArea;
+    private String description;
     private String status;
 
     public String getProductID() {
@@ -37,12 +38,12 @@ public class ProductEntity {
         this.price = price;
     }
 
-    public String getDescription() {
-        return description;
+    public String getUnit() {
+        return unit;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
     public String getImageURL() {
@@ -67,6 +68,14 @@ public class ProductEntity {
 
     public void setKitchenArea(String kitchenArea) {
         this.kitchenArea = kitchenArea;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getStatus() {

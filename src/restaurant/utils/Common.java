@@ -14,13 +14,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
 public class Common {
-    
+
     // Update clock
     public static void initClock(JLabel labelHouse) {
         Timer timer = new Timer(1000, e -> {
@@ -96,7 +98,7 @@ public class Common {
     }
 
     // Chọn ảnh từ thư mục
-    public static void chooseImageFromDirectory(JFrame frame, JButton btnImage) {
+    public static String chooseImageFromDirectory(JFrame frame, JButton btnImage) {
         String imgPath = "src/restaurant/img";
         JFileChooser fileChooser = new JFileChooser(imgPath);
 
@@ -104,12 +106,16 @@ public class Common {
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile(); // Chọn
             String imagePath = selectedFile.getAbsolutePath(); // Lưu đường dẫn ảnh đã chọn
-            resetImagePath(imagePath, btnImage);
+            setImagePath(imagePath, btnImage);
+
+            return imagePath;
         }
+
+        return null;
     }
 
     // Set imgage
-    public static void resetImagePath(String path, JButton button) {
+    public static void setImagePath(String path, JButton button) {
         int width = button.getWidth();
         int height = button.getHeight();
 
@@ -192,30 +198,33 @@ public class Common {
 
     // Add commas to number after 3 number
     public static String addCommasToNumber(String num) {
-        // Remove trailing spaces first
+        // Remove leading and trailing spaces
         num = num.trim();
-
         if (num.isEmpty()) {
-            return num; // Return empty string if input is empty
+            return num;
         }
 
-        String regex = "(\\d)(?=(\\d{3})+$)";
-        String[] split = num.split("\\.");
+        StringBuilder result = new StringBuilder();
+        String[] parts = num.split("\\.");
 
-        if (split.length == 2) {
-            return split[0].replaceAll(regex, "$1,") + "." + split[1];
-        } else {
-            return num.replaceAll(regex, "$1,");
+        // Handle integer part
+        String integerPart = parts[0];
+        String formattedIntegerPart = integerPart.replaceAll("(\\d)(?=(\\d{3})+$)", "$1,");
+        result.append(formattedIntegerPart);
+
+        // Handle decimal part if exists
+        if (parts.length > 1) {
+            result.append(".").append(parts[1]);
         }
+
+        return result.toString();
     }
 
     // Remove commas from number
     public static String removeCommasFromNumber(String num) {
-        // Remove trailing spaces first
         num = num.trim();
-
         if (num.isEmpty()) {
-            return num; // Return empty string if input is empty
+            return num;
         }
 
         return num.replaceAll(",", "");
@@ -521,20 +530,25 @@ public class Common {
         // Định nghĩa các viền matte
         MatteBorder focusedBorder = BorderFactory.createMatteBorder(0, 0, 3, 0, focusColor);
         MatteBorder unfocusedBorder = BorderFactory.createMatteBorder(0, 0, 2, 0, unfocusColor);
+        EmptyBorder paddingBorder = (EmptyBorder) BorderFactory.createEmptyBorder(0, 5, 0, 0);
+
+        // Tạo viền kết hợp với khoảng trống
+        Border focusedCombinedBorder = BorderFactory.createCompoundBorder(focusedBorder, paddingBorder);
+        Border unfocusedCombinedBorder = BorderFactory.createCompoundBorder(unfocusedBorder, paddingBorder);
 
         // Đặt viền ban đầu
-        component.setBorder(unfocusedBorder);
+        component.setBorder(unfocusedCombinedBorder);
 
         // Thêm focus listener để thay đổi viền khi focus hoặc unfocus
         component.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                component.setBorder(focusedBorder);
+                component.setBorder(focusedCombinedBorder);
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                component.setBorder(unfocusedBorder);
+                component.setBorder(unfocusedCombinedBorder);
             }
         });
     }
