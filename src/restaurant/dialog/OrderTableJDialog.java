@@ -216,7 +216,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btnSwitchTables1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addComponent(jTextField1))
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -235,8 +235,8 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
                     .addComponent(btnSwitchTables, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSwitchTables1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -244,7 +244,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAddOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnPay, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         pack();
@@ -345,7 +345,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
 
     void switchTables() {
         // Get orderd
-        dataOrder = new OrderDAO().getPendingByTableId(labelTableId.getText());
+        dataOrder = new OrderDAO().getByTableId(labelTableId.getText());
         if (dataOrder == null) {
             Dialog.warning(this, "Không tìm thấy đơn đặt hàng!");
             return;
@@ -388,14 +388,16 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         labelTableName.setText(diningTable.getName());
     }
 
-    public void displayOrderedByTable(String tableId) {
+    public void displayOrderedByTable(String tableID) {
         // Reset table
         DefaultTableModel model = (DefaultTableModel) tableListOrderedDishes.getModel();
         model.setRowCount(0);
 
-        // Get info detail order through dining table id
-        dataOrder = new OrderDAO().getPendingByTableId(tableId);
-        dataOrderDetails = new OrderDetailDAO().getByTableId(tableId);
+        // Get data order and order deatails
+        dataOrder = new OrderDAO().getByTableId(tableID);
+        dataOrderDetails = (dataOrder != null)
+                ? new OrderDetailDAO().getByOrderId(dataOrder.getOrderId())
+                : null;
 
         if (dataOrder == null || dataOrderDetails == null) {
             labelTotalAmount.setText("0₫ / 0 đơn");
@@ -415,6 +417,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         // Init process ---> Add products into the table
         Ordered.processOrderedDetails(dataOrderDetails, productPriceMap, productQuantityMap);
         Ordered.addOrderedToTable(model, productPriceMap, productQuantityMap);
+
     }
 
     void setupComboboxTables() {

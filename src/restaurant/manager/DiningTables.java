@@ -508,7 +508,7 @@ public final class DiningTables extends javax.swing.JPanel {
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     void init() {
-        // <--- Setup UI common --->
+        // <--- Fuction common from file common --->
         createButtonGroup(radioOn, radioOff, radioAll);
 
         // edit field text

@@ -136,14 +136,14 @@ public class Common {
         ImageIcon scaledIcon = new ImageIcon(image);
         labelLogo.setIcon(scaledIcon);
     }
-
+   
     // Get image 
     public static ImageIcon getScaledImageIcon(String imageUrl, int maxWidth, int maxHeight) {
-        // Tạo ImageIcon từ URL hình ảnh
+        // Create imageIcon
         ImageIcon icon = new ImageIcon(imageUrl);
         Image image = icon.getImage();
 
-        // Tính tỷ lệ thu nhỏ để hình ảnh vừa với JPanel có kích thước maxWidth x maxHeight
+        // Tính tỷ lệ ảnh để vừa với kích thước cha
         int originalWidth = icon.getIconWidth();
         int originalHeight = icon.getIconHeight();
         double scale = Math.min((double) maxWidth / originalWidth, (double) maxHeight / originalHeight);

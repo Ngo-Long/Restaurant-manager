@@ -5,19 +5,21 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import restaurant.entity.OrderEntity;
+import restaurant.utils.Dialog;
 import restaurant.utils.JDBC;
 
 public class OrderDAO extends RestaurantDAO<OrderEntity, Integer> {
 
-    public static final String INSERT_SQL = "INSERT INTO Orders (InvoiceID, Status, Method,"
+    final String INSERT_SQL = "INSERT INTO Orders (InvoiceID, Status, Method,"
             + " CreatedDate) VALUES (?, ?, ?, ?, GETDATE())";
-    public static final String DELETE_SQL = "DELETE FROM Orders WHERE OrderID=?";
-    public static final String UPDATE_SQL = "UPDATE Orders SET Status=?, Total=?, Method=? WHERE OrderID=?";
-    public static final String SELECT_ALL_SQL = "SELECT * FROM Orders";
-    public static final String SELECT_BY_ID = "SELECT * FROM Orders WHERE OrderID = ?";
-    public static final String SELECT_BY_TABLE_ID = "SELECT * FROM Orders WHERE TableID = ?";
-    public static final String SELECT_BY_INVOICE_ID = "SELECT * FROM Orders WHERE InvoiceID = ?";
-    public static final String SELECT_PENDING_ORDERS_BY_TABLE_ID = "SELECT * FROM Orders WHERE Status = N'Đang đặt hàng' AND TableID = ?";
+    final String DELETE_SQL = "DELETE FROM Orders WHERE OrderID=?";
+    final String UPDATE_SQL = "UPDATE Orders SET Status=?, Total=?, Method=? WHERE OrderID=?";
+    final String SELECT_ALL_SQL = "SELECT * FROM Orders";
+    final String SELECT_BY_ID = "SELECT * FROM Orders WHERE OrderID = ?";
+    final String SELECT_BY_TABLE_ID = "SELECT o.* FROM Orders o JOIN OrderTable ot ON o.OrderID = ot.OrderID"
+            + " WHERE ot.Status = N'Đang hoạt động' AND ot.TableID = ?";
+    final String SELECT_BY_INVOICE_ID = "SELECT * FROM Orders WHERE InvoiceID = ?";
+    final String SELECT_LATEST_ID_SQL = "SELECT TOP 1 OrderID FROM Orders ORDER BY OrderID DESC";
 
     @Override
     public void insert(OrderEntity model) {
@@ -26,6 +28,23 @@ public class OrderDAO extends RestaurantDAO<OrderEntity, Integer> {
                 model.getStatus(),
                 model.getMethod()
         );
+    }
+
+    public int insert(int invoiceId, String status, String method) {
+        JDBC.executeUpdate(INSERT_SQL, invoiceId, status, method);
+
+        int latestID = 0;
+
+        try (ResultSet rs = JDBC.executeQuery(SELECT_LATEST_ID_SQL)) {
+            if (rs.next()) {
+                latestID = rs.getInt("OrderID");
+            }
+        } catch (SQLException ex) {
+            Dialog.error(null, "Tạo đơn hàng thất bại!");
+            throw new RuntimeException(ex);
+        }
+
+        return latestID;
     }
 
     @Override
@@ -61,11 +80,6 @@ public class OrderDAO extends RestaurantDAO<OrderEntity, Integer> {
 
     public OrderEntity getByInvoiceId(int id) {
         List<OrderEntity> orders = fetchByQuery(SELECT_BY_INVOICE_ID, id);
-        return orders.isEmpty() ? null : orders.get(0);
-    }
-
-    public OrderEntity getPendingByTableId(String id) {
-        List<OrderEntity> orders = fetchByQuery(SELECT_PENDING_ORDERS_BY_TABLE_ID, id);
         return orders.isEmpty() ? null : orders.get(0);
     }
 

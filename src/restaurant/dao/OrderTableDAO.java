@@ -24,6 +24,10 @@ public class OrderTableDAO extends RestaurantDAO<OrderTableEntity, Integer> {
         );
     }
 
+    public void insert(int orderID, String tableID, String status) {
+        JDBC.executeUpdate(INSERT_SQL, orderID, tableID, status);
+    }
+
     @Override
     public void update(OrderTableEntity orderTable) {
         JDBC.executeUpdate(UPDATE_SQL,

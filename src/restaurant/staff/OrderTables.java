@@ -208,7 +208,6 @@ public final class OrderTables extends javax.swing.JPanel {
     OrderEntity dataOrder;
     DiningTableEntity dataTable;
     List<DiningTableEntity> dataTables;
-    List<OrderDetailEntity> dataOrderDetails;
     ExecutorService executorService = Executors.newFixedThreadPool(3);
 
     void init() {
@@ -235,8 +234,8 @@ public final class OrderTables extends javax.swing.JPanel {
             return;
         }
 
-        dataOrderDetails = new OrderDetailDAO().getByTableId(tableID);
-        if (!dataOrderDetails.isEmpty()) {
+        dataOrder = new OrderDAO().getByTableId(tableID);
+        if (dataOrder != null) {
             Dialog.warning(this, "Bàn này đang có người ngồi!");
             return;
         }
@@ -318,25 +317,29 @@ public final class OrderTables extends javax.swing.JPanel {
 
         // Add ActionListener to Call a method to display detailed information
         tableButton.addActionListener((ActionEvent e) -> {
-            // Display border bode when click
-            if (selectedTableButton != null && selectedTableButton != tableButton) {
-                Common.setTableButtonBorder(selectedTableButton, false);
-            }
-            Common.setTableButtonBorder(selectedTableButton = tableButton, true);
-
-            // Init dialog
-            OrderTableJDialog orderTableDialog = new OrderTableJDialog(null, true, mainStaff);
-
-            // Transmit data via file orderTableDialog
-            orderTableDialog.displayDetailTable(diningTable);
-            orderTableDialog.displayOrderedByTable(diningTable.getTableID());
-            orderTableDialog.setLocationRelativeTo(new MainStaff());
-
-            // Open dialog
-            orderTableDialog.setVisible(true);
+            handleEventClickTableBtn(tableButton, diningTable);
         });
 
         return tableButton;
+    }
+
+    void handleEventClickTableBtn(JButton tableBtn, DiningTableEntity data) {
+        // Display border bode when click
+        if (selectedTableButton != null && selectedTableButton != tableBtn) {
+            Common.setTableButtonBorder(selectedTableButton, false);
+        }
+        Common.setTableButtonBorder(selectedTableButton = tableBtn, true);
+
+        // Init dialog
+        OrderTableJDialog dialog = new OrderTableJDialog(null, true, mainStaff);
+
+        // Transmit data via file orderTableDialog
+        dialog.displayDetailTable(data);
+        dialog.displayOrderedByTable(data.getTableID());
+        dialog.setLocationRelativeTo(new MainStaff());
+
+        // Open dialog
+        dialog.setVisible(true);
     }
 
     void setTableButtonColors(JButton tableButton, String status) {

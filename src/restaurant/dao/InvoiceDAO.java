@@ -10,15 +10,15 @@ import restaurant.entity.InvoiceEntity;
 
 public class InvoiceDAO extends RestaurantDAO<InvoiceEntity, Integer> {
 
-    public static final String INSERT_SQL = "INSERT INTO Invoices (Status) VALUES (N'Chờ thanh toán');";
-    public static final String UPDATE_SQL = "UPDATE Invoices SET EmployeeID=?, Tax=?, Discount=?, PaymentMethod=?, Note=?, "
+    final String INSERT_SQL = "INSERT INTO Invoices (Status) VALUES (N'Chờ thanh toán');";
+    final String UPDATE_SQL = "UPDATE Invoices SET EmployeeID=?, Tax=?, Discount=?, PaymentMethod=?, Note=?, "
             + "TotalAmount=?, Status=?, PaymentTime=GETDATE() WHERE InvoiceID=?";
-    public static final String SELECT_ALL_SQL = "SELECT * FROM Invoices;";
-    public static final String SELECT_ALL_UNPAID_SQL = "SELECT * FROM Invoices WHERE Status = N'Chờ thanh toán';";
-    public static final String SELECT_BY_ID_SQL = "SELECT * FROM Invoices WHERE InvoiceID = ?";
-    public static final String SELECT_ID_BY_TABLE_ID_SQL = "SELECT InvoiceID FROM Orders WHERE TableID = ? AND InvoiceID IN "
+    final String SELECT_ALL_SQL = "SELECT * FROM Invoices;";
+    final String SELECT_ALL_UNPAID_SQL = "SELECT * FROM Invoices WHERE Status = N'Chờ thanh toán';";
+    final String SELECT_BY_ID_SQL = "SELECT * FROM Invoices WHERE InvoiceID = ?";
+    final String SELECT_ID_BY_TABLE_ID_SQL = "SELECT InvoiceID FROM Orders WHERE TableID = ? AND InvoiceID IN "
             + "(SELECT InvoiceID FROM Invoices WHERE Status != N'Đã thanh toán')";
-    public static final String SELECT_LATEST_ID_SQL = "SELECT TOP 1 InvoiceID FROM Invoices ORDER BY InvoiceID DESC";
+    final String SELECT_LATEST_ID_SQL = "SELECT TOP 1 InvoiceID FROM Invoices ORDER BY InvoiceID DESC";
 
     public int insert() {
         JDBC.executeUpdate(INSERT_SQL);
@@ -29,6 +29,7 @@ public class InvoiceDAO extends RestaurantDAO<InvoiceEntity, Integer> {
                 latestInvoiceID = rs.getInt("InvoiceID");
             }
         } catch (SQLException ex) {
+            Dialog.error(null, "Tạo hóa đơn thất bại!");
             throw new RuntimeException(ex);
         }
 
