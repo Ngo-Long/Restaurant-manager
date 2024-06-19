@@ -58,23 +58,38 @@ public class Common {
     public static void customizeTable(JTable table, int[] columnsNotCentered) {
         // Thiết lập bảng
         table.setGridColor(Color.WHITE);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Chọn duy nhất một hàng
-        table.setDefaultEditor(Object.class, null);  // Không cho phép chỉnh sửa nội dung trong bảng
+        table.setDefaultEditor(Object.class, null);  // Ko sửa nội 
         table.setBorder(new LineBorder(Color.WHITE));
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Chọn duy nhất một hàng
+
+        // Thiết lập header
+        table.getTableHeader().setOpaque(true);
+        table.getTableHeader().setBackground(new Color(235, 235, 235));
+        table.getTableHeader().setFont(new Font("Be Vietnam Pro", Font.PLAIN, 16));
 
         // Thiết lập cho tiêu đề
         DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer();
-        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER); // Căn giữa tiêu đề
-        headerRenderer.setOpaque(true);
-        headerRenderer.setBackground(Color.WHITE); // Màu nền cho tiêu đề
-        headerRenderer.setForeground(Color.BLACK); // Màu chữ cho tiêu đề
-        table.getTableHeader().setFont(new Font("Be Vietnam Pro", Font.PLAIN, 14));
+        headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
-        // Thiết lập chữ trong bảng (trừ cột số 2)
+        // Thiết lập chữ trong bảng
         DefaultTableCellRenderer contentRenderer = new DefaultTableCellRenderer();
-        contentRenderer.setHorizontalAlignment(SwingConstants.CENTER); // Căn giữa nội dung
-        contentRenderer.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        contentRenderer.setOpaque(true);
+        contentRenderer.setBackground(Color.white);
+        contentRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        contentRenderer.setFont(new Font("Be Vietnam Pro", Font.PLAIN, 14));
 
+        // Thiết lập renderer title
+        DefaultTableCellRenderer notHeaderRenderer = new DefaultTableCellRenderer();
+        notHeaderRenderer.setHorizontalAlignment(SwingConstants.LEFT);
+
+        // Thiết lập renderer cột
+        DefaultTableCellRenderer notContenRenderer = new DefaultTableCellRenderer();
+        notContenRenderer.setOpaque(true);
+        contentRenderer.setBackground(Color.white);
+        notHeaderRenderer.setHorizontalAlignment(SwingConstants.LEFT);
+        notContenRenderer.setFont(new Font("Be Vietnam Pro", Font.PLAIN, 14));
+
+        // Căn giữa
         for (int i = 0; i < table.getColumnCount(); i++) {
             boolean isCentered = true;
             for (int column : columnsNotCentered) {
@@ -83,8 +98,13 @@ public class Common {
                     break;
                 }
             }
+
             if (isCentered) {
                 table.getColumnModel().getColumn(i).setCellRenderer(contentRenderer);
+//                table.getColumnModel().getColumn(i).setHeaderRenderer(headerRenderer);
+            } else {
+                table.getColumnModel().getColumn(i).setCellRenderer(notContenRenderer);
+//                table.getColumnModel().getColumn(i).setHeaderRenderer(notHeaderRenderer);
             }
         }
     }
@@ -136,7 +156,7 @@ public class Common {
         ImageIcon scaledIcon = new ImageIcon(image);
         labelLogo.setIcon(scaledIcon);
     }
-   
+
     // Get image 
     public static ImageIcon getScaledImageIcon(String imageUrl, int maxWidth, int maxHeight) {
         // Create imageIcon
@@ -246,7 +266,7 @@ public class Common {
         private final JTextField textField = new JTextField();
 
         public ButtonRenderer() {
-            // Đặt kích thước chữ cho JTextField
+            // Set font size for JTextField
             Font textFont = new Font(textField.getFont().getName(), Font.PLAIN, 16);
             textField.setFont(textFont);
 
@@ -254,6 +274,9 @@ public class Common {
             panel.add(minusButton, BorderLayout.WEST);
             panel.add(textField, BorderLayout.CENTER);
             panel.add(plusButton, BorderLayout.EAST);
+
+            // Set panel background color
+            panel.setBackground(Color.white);
         }
 
         @Override
@@ -318,6 +341,9 @@ public class Common {
             panel.add(minusButton, BorderLayout.WEST);
             panel.add(textField, BorderLayout.CENTER);
             panel.add(plusButton, BorderLayout.EAST);
+
+            // Set panel background color
+            panel.setBackground(Color.white);
         }
 
         @Override

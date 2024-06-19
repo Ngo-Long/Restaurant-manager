@@ -9,13 +9,13 @@ import java.util.ArrayList;
 
 public class IngrediantDAO extends RestaurantDAO<IngrediantEntity, String> {
 
-    public static final String INSERT_SQL = "INSERT INTO Ingredients (IngredientID, IngredientName, InitialQuantity, MinimumQuantity, UnitPrice, ProductionDate, ExpirationDate, Status) "
+    public static final String INSERT_SQL = "INSERT INTO Ingredient (IngredientID, IngredientName, InitialQuantity, MinimumQuantity, UnitPrice, ProductionDate, ExpirationDate, Status) "
             + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    public static final String UPDATE_SQL = "UPDATE Ingredients SET IngredientName=?, InitialQuantity=?, MinimumQuantity=?, UnitPrice=?, ProductionDate=?, ExpirationDate=?, Status=? WHERE IngredientID=?";
-    public static final String DELETE_SQL = "DELETE FROM Ingredients WHERE IngredientID =?";
-    public static final String IS_EXISTS_SQL = "SELECT COUNT(*) FROM Ingredients WHERE IngredientID = ?";
-    public static final String SELECT_ALL_SQL = "SELECT * FROM Ingredients";
-    public static final String SELECT_BY_ID_SQL = "SELECT * FROM Ingredients WHERE IngredientID=?";
+    public static final String UPDATE_SQL = "UPDATE Ingredient SET IngredientName=?, InitialQuantity=?, MinimumQuantity=?, UnitPrice=?, ProductionDate=?, ExpirationDate=?, Status=? WHERE IngredientID=?";
+    public static final String DELETE_SQL = "DELETE FROM Ingredient WHERE IngredientID =?";
+    public static final String IS_EXISTS_SQL = "SELECT COUNT(*) FROM Ingredient WHERE IngredientID = ?";
+    public static final String SELECT_ALL_SQL = "SELECT * FROM Ingredient";
+    public static final String SELECT_BY_ID_SQL = "SELECT * FROM Ingredient WHERE IngredientID=?";
 
     @Override
     public void insert(IngrediantEntity entity) {

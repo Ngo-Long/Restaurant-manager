@@ -9,21 +9,27 @@ import restaurant.utils.JDBC;
 
 public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
 
-    final String INSERT_SQL = "INSERT INTO OrderDetails (OrderID, ProductID, ProductQuantity, ProductStatus,"
+    final String INSERT_SQL = "INSERT INTO OrderDetail (OrderID, ProductID, ProductQuantity, ProductStatus,"
             + " ProductDesc, Note, StartTime) VALUES (?, ?, ?, N'Chưa xử lý', ?, N'', GETDATE())";
-    final String UPDATE_SQL = "UPDATE OrderDetails SET OrderID = ?, ProductID = ?, ProductQuantity = ?,"
+    final String UPDATE_SQL = "UPDATE OrderDetail SET OrderID = ?, ProductID = ?, ProductQuantity = ?,"
             + " ProductStatus = ?, ProductDesc = ?, Note = ?, EndTime = GETDATE() WHERE OrderDetailID = ?";
-    final String DELETE_SQL = "DELETE FROM OrderDetails WHERE OrderDetailID=?";
-    final String SELECT_ALL_SQL = "SELECT * FROM OrderDetails";
-
-    final String SELECT_BY_ID_SQL = "SELECT * FROM OrderDetails WHERE OrderDetailID=?";
-    final String SELECT_BY_ORDER_ID_SQL = "SELECT od.* FROM OrderDetails od "
-            + "JOIN Orders o ON od.OrderID = o.OrderID "
-            + "JOIN Invoices i ON o.InvoiceID = i.InvoiceID "
+    final String DELETE_SQL = "DELETE FROM OrderDetail WHERE OrderDetailID=?";
+    final String SELECT_ALL_SQL = "SELECT * FROM OrderDetail";
+    final String SELECT_BY_ID_SQL = "SELECT * FROM OrderDetail WHERE OrderDetailID=?";
+    
+    final String SELECT_BY_ORDER_ID_SQL = "SELECT od.* FROM OrderDetail od "
+            + "JOIN [Order] o ON od.OrderID = o.OrderID "
+            + "JOIN Invoice i ON o.InvoiceID = i.InvoiceID "
             + "WHERE od.ProductStatus != 'Đã xóa' AND i.Status = N'Chờ thanh toán' AND od.OrderID = ?";
+    
+    final String SELECT_ORDER_PRODUCT_BY_ORDER_ID_SQL = "SELECT p.ProductName, od.ProductDesc, "
+            + "od.ProductQuantity, p.Price AS UnitPrice, (od.ProductQuantity * p.Price) AS TotalPrice "
+            + "FROM OrderDetail od "
+            + "JOIN Product p ON od.ProductID = p.ProductID "
+            + "WHERE od.OrderID = ?";
 
-    final String SELECT_PENDING_PRODUCTS_SQL = "SELECT * FROM OrderDetails WHERE ProductStatus = N'Chưa xử lý'";
-    final String SELECT_CONFIRMED_PRODUCTS_SQL = "SELECT * FROM OrderDetails WHERE ProductStatus != N'Chưa xử lý'";
+    final String SELECT_PENDING_PRODUCTS_SQL = "SELECT * FROM OrderDetail WHERE ProductStatus = N'Chưa xử lý'";
+    final String SELECT_CONFIRMED_PRODUCTS_SQL = "SELECT * FROM OrderDetail WHERE ProductStatus != N'Chưa xử lý'";
 
     @Override
     public void insert(OrderDetailEntity model) {
@@ -76,14 +82,8 @@ public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
         return fetchByQuery(SELECT_BY_ORDER_ID_SQL, orderId);
     }
 
-    public List<OrderDetailEntity> calculateOrderItemTotals(int orderId) {
-        String calculateOrderTotalSQL = "SELECT p.ProductName, od.ProductDesc, od.ProductQuantity, p.Price AS UnitPrice, "
-                + "(od.ProductQuantity * p.Price) AS TotalPrice "
-                + "FROM OrderDetails od "
-                + "JOIN Products p ON od.ProductID = p.ProductID "
-                + "WHERE od.OrderID = ?";
-
-        return fetchByQuery(calculateOrderTotalSQL, orderId);
+    public List<OrderDetailEntity> getOrderedProductsByOrderId(int orderId) {
+        return fetchByQuery(SELECT_ORDER_PRODUCT_BY_ORDER_ID_SQL, orderId);
     }
 
     @Override

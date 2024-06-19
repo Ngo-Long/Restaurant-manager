@@ -9,13 +9,13 @@ import java.util.ArrayList;
 
 public class EmployeeDAO extends RestaurantDAO<EmployeeEntity, String> {
 
-    public static final String INSERT_SQL = "INSERT INTO Employees (EmployeeID, ShiftID, FullName, Gender, Phone, DateOfBirth, IDCard, Email, Address, UrlImage, Position, Status, Salary, Description, Bank, AccountNumber, HireDate) "
+    public static final String INSERT_SQL = "INSERT INTO Employee (EmployeeID, ShiftID, FullName, Gender, Phone, DateOfBirth, IDCard, Email, Address, UrlImage, Position, Status, Salary, Description, Bank, AccountNumber, HireDate) "
             + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    public static final String UPDATE_SQL = "UPDATE Employees SET ShiftID=?, FullName=?, Gender=?, Phone=?, DateOfBirth=?, IDCard=?, Email=?, Address=?, UrlImage=?, Position=?, Status=?, Salary=?, Description=?, Bank=?, AccountNumber=?, HireDate=? WHERE EmployeeID=?";
-    public static final String DELETE_SQL = "DELETE FROM Employees WHERE EmployeeID =?";
-    public static final String IS_EXISTS_SQL = "SELECT COUNT(*) FROM Employees WHERE EmployeeID = ?";
-    public static final String SELECT_ALL_SQL = "SELECT * FROM Employees";
-    public static final String SELECT_BY_ID_SQL = "SELECT * FROM Employees WHERE EmployeeID=?";
+    public static final String UPDATE_SQL = "UPDATE Employee SET ShiftID=?, FullName=?, Gender=?, Phone=?, DateOfBirth=?, IDCard=?, Email=?, Address=?, UrlImage=?, Position=?, Status=?, Salary=?, Description=?, Bank=?, AccountNumber=?, HireDate=? WHERE EmployeeID=?";
+    public static final String DELETE_SQL = "DELETE FROM Employee WHERE EmployeeID =?";
+    public static final String IS_EXISTS_SQL = "SELECT COUNT(*) FROM Employee WHERE EmployeeID = ?";
+    public static final String SELECT_ALL_SQL = "SELECT * FROM Employee";
+    public static final String SELECT_BY_ID_SQL = "SELECT * FROM Employee WHERE EmployeeID=?";
 
     @Override
     public void insert(EmployeeEntity entity) {
@@ -91,7 +91,7 @@ public class EmployeeDAO extends RestaurantDAO<EmployeeEntity, String> {
     }
 
     public void updateStatusToResigned(String employeeID) {
-        JDBC.executeUpdate("UPDATE Employees SET Status = 'Nghỉ việc' WHERE EmployeeID = ?", employeeID);
+        JDBC.executeUpdate("UPDATE Employee SET Status = 'Nghỉ việc' WHERE EmployeeID = ?", employeeID);
     }
 
     @Override

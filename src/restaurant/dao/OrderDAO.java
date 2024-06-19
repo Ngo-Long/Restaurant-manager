@@ -10,16 +10,17 @@ import restaurant.utils.JDBC;
 
 public class OrderDAO extends RestaurantDAO<OrderEntity, Integer> {
 
-    final String INSERT_SQL = "INSERT INTO Orders (InvoiceID, Status, Method,"
-            + " CreatedDate) VALUES (?, ?, ?, ?, GETDATE())";
-    final String DELETE_SQL = "DELETE FROM Orders WHERE OrderID=?";
-    final String UPDATE_SQL = "UPDATE Orders SET Status=?, Total=?, Method=? WHERE OrderID=?";
-    final String SELECT_ALL_SQL = "SELECT * FROM Orders";
-    final String SELECT_BY_ID = "SELECT * FROM Orders WHERE OrderID = ?";
-    final String SELECT_BY_TABLE_ID = "SELECT o.* FROM Orders o JOIN OrderTable ot ON o.OrderID = ot.OrderID"
+    final String INSERT_SQL = "INSERT INTO [Order] (InvoiceID, Status, Method, CreatedDate)"
+            + " VALUES (?, ?, ?, GETDATE())";
+    final String DELETE_SQL = "DELETE FROM [Order] WHERE OrderID=?";
+    final String UPDATE_SQL = "UPDATE [Order] SET Status=?, Total=?, Method=? WHERE OrderID=?";
+    final String SELECT_ALL_SQL = "SELECT * FROM [Order]";
+    final String SELECT_BY_ID = "SELECT * FROM [Order] WHERE OrderID = ?";
+    final String SELECT_BY_TABLE_ID = "SELECT o.* FROM [Order] o"
+            + " JOIN OrderTable ot ON o.OrderID = ot.OrderID"
             + " WHERE ot.Status = N'Đang hoạt động' AND ot.TableID = ?";
-    final String SELECT_BY_INVOICE_ID = "SELECT * FROM Orders WHERE InvoiceID = ?";
-    final String SELECT_LATEST_ID_SQL = "SELECT TOP 1 OrderID FROM Orders ORDER BY OrderID DESC";
+    final String SELECT_BY_INVOICE_ID = "SELECT * FROM [Order] WHERE InvoiceID = ?";
+    final String SELECT_LATEST_ID_SQL = "SELECT TOP 1 OrderID FROM [Order] ORDER BY OrderID DESC";
 
     @Override
     public void insert(OrderEntity model) {

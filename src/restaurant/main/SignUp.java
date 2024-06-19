@@ -1,4 +1,4 @@
-package restaurant.authentication;
+package restaurant.main;
 
 import javax.swing.JFrame;
 
@@ -97,6 +97,7 @@ public class SignUp extends javax.swing.JFrame {
         jPasswordField1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jPasswordField1.setForeground(new java.awt.Color(102, 102, 102));
 
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel8.setText("Đã có tài khoản?");
 
         jButton1.setBackground(new java.awt.Color(255, 153, 153));
@@ -104,6 +105,7 @@ public class SignUp extends javax.swing.JFrame {
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Sign Up");
 
+        buttonLogin.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         buttonLogin.setForeground(new java.awt.Color(255, 51, 51));
         buttonLogin.setText("Login");
         buttonLogin.addActionListener(new java.awt.event.ActionListener() {

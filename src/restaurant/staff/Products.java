@@ -3,8 +3,8 @@ package restaurant.staff;
 import java.util.Set;
 import java.util.List;
 import java.util.Vector;
-import java.util.Objects;
 import java.util.HashSet;
+import java.util.Objects;
 
 import java.awt.Font;
 import java.awt.Color;
@@ -19,42 +19,47 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+
+import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.border.MatteBorder;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.MatteBorder;
 import javax.swing.event.DocumentEvent;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import restaurant.dao.DiningTableDAO;
 
 import restaurant.dao.OrderDAO;
 import restaurant.dao.InvoiceDAO;
 import restaurant.dao.ProductDAO;
-import restaurant.dao.OrderDetailDAO;
 import restaurant.dao.OrderTableDAO;
+import restaurant.dao.DiningTableDAO;
+import restaurant.dao.OrderDetailDAO;
 
 import restaurant.utils.Auth;
 import restaurant.utils.Dialog;
 import restaurant.utils.Common;
 import restaurant.main.MainStaff;
 import restaurant.dialog.DetailOrderJDialog;
+import restaurant.entity.DiningTableEntity;
 
 import restaurant.table.TableCustom;
 import restaurant.entity.OrderEntity;
 import restaurant.entity.ProductEntity;
 import restaurant.entity.OrderDetailEntity;
+import static restaurant.utils.Common.addCommasToNumber;
 import static restaurant.utils.Common.getScaledImageIcon;
 
 public class Products extends javax.swing.JPanel {
@@ -78,8 +83,11 @@ public class Products extends javax.swing.JPanel {
         btnSubmit = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
         btnSearch1 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        labelOrderTable = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        labelTotal = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         CbCategory = new javax.swing.JComboBox<>();
         textSearch = new javax.swing.JTextField();
@@ -99,7 +107,7 @@ public class Products extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Tên món ăn             ", "Số lượng", "Cấp độ"
+                "Mã món", "Tên món ăn ", "Số lượng", "Cấp độ"
             }
         ));
         tableOrder.setAlignmentX(1.0F);
@@ -109,7 +117,11 @@ public class Products extends javax.swing.JPanel {
         tableOrder.setRowHeight(35);
         jScrollPane1.setViewportView(tableOrder);
         if (tableOrder.getColumnModel().getColumnCount() > 0) {
-            tableOrder.getColumnModel().getColumn(0).setPreferredWidth(150);
+            tableOrder.getColumnModel().getColumn(0).setMinWidth(0);
+            tableOrder.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tableOrder.getColumnModel().getColumn(0).setMaxWidth(0);
+            tableOrder.getColumnModel().getColumn(1).setPreferredWidth(200);
+            tableOrder.getColumnModel().getColumn(2).setPreferredWidth(100);
         }
 
         btnSubmit.setBackground(new java.awt.Color(0, 153, 0));
@@ -148,11 +160,42 @@ public class Products extends javax.swing.JPanel {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 51, 51));
-        jLabel1.setText("ORDER");
+        labelOrderTable.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        labelOrderTable.setForeground(new java.awt.Color(255, 51, 51));
+        labelOrderTable.setText("ORDER");
 
+        jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jTextField1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED), "Ghi chú", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Segoe UI", 0, 16))); // NOI18N
+
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel1.setText("Tổng cộng");
+
+        labelTotal.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        labelTotal.setForeground(new java.awt.Color(255, 51, 51));
+        labelTotal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labelTotal.setText("0₫");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(8, 8, 8)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(labelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(labelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -164,17 +207,18 @@ public class Products extends javax.swing.JPanel {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(btnSearch1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelOrderTable, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                         .addGap(12, 12, 12))))
         );
         jPanel2Layout.setVerticalGroup(
@@ -182,12 +226,14 @@ public class Products extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(labelOrderTable, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnSearch1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -267,12 +313,12 @@ public class Products extends javax.swing.JPanel {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(CbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 294, Short.MAX_VALUE)
                 .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -281,7 +327,7 @@ public class Products extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12))
-            .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 826, Short.MAX_VALUE)
+            .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -292,10 +338,11 @@ public class Products extends javax.swing.JPanel {
                     .addComponent(textSearch, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnSearch2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
-                .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 538, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -306,17 +353,17 @@ public class Products extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(12, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(24, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE))
+                .addGap(12, 12, 12))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -340,11 +387,9 @@ public class Products extends javax.swing.JPanel {
     }//GEN-LAST:event_btnSubmitActionPerformed
 
     private void textSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSearchActionPerformed
-        displayProductsBySearchAndCategory();
     }//GEN-LAST:event_textSearchActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        displayProductsBySearchAndCategory();
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistoryActionPerformed
@@ -352,11 +397,9 @@ public class Products extends javax.swing.JPanel {
     }//GEN-LAST:event_btnHistoryActionPerformed
 
     private void btnSearch2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearch2ActionPerformed
-//        openFullScreenWindow(new Products());
     }//GEN-LAST:event_btnSearch2ActionPerformed
 
     private void btnSearch1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearch1ActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_btnSearch1ActionPerformed
 
 
@@ -373,39 +416,76 @@ public class Products extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel labelOrderTable;
+    private javax.swing.JLabel labelTotal;
     private javax.swing.JPanel panelMainProducts;
     private javax.swing.JScrollPane scrollPane;
     private javax.swing.JTable tableOrder;
     private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
+    String tableID;
+    String tableName;
     String imagePath;
     String kitchenArea;
     String selectedCategory;
+
+    OrderEntity existingOrder;
+    DiningTableEntity dataTable;
+    List<ProductEntity> dataProducts;
     List<ProductEntity> dataProductsByCategory;
-    List<ProductEntity> dataProducts = new ProductDAO().getAll();
+
     ScheduledFuture<?> scheduledFuture;
     ExecutorService executorService = Executors.newFixedThreadPool(3);
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     void init() {
+        // Setup common
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
-        Common.customizeTable(tableOrder, new int[]{0});
+        Common.customizeTable(tableOrder, new int[]{1});
         Common.customizeScrollBar(scrollPane);
-        Common.setupButtonColumn(tableOrder, 1);
-        Common.setupComboBoxColumn(tableOrder, 2);
+        Common.setupButtonColumn(tableOrder, 2);
+        Common.setupComboBoxColumn(tableOrder, 3);
 
-        // Setup
+        // Set
+        displayTableName();
+
+        // Setup combobox
         setupComboboxCategory();
+
+        // Calc total amount
+        tableOrder.getModel().addTableModelListener((TableModelEvent e) -> {
+            calculateTotalAmount();
+        });
 
         // Load data
         initEventHandlers();
         loadDataByCriteria();
+
     }
 
+    void displayTableName() {
+        // Kiểm tra và gán giá trị 
+        if (Auth.table != null && Auth.table.getTableID() != null) {
+            tableID = Auth.table.getTableID();
+        }
+
+        if (Auth.table != null && Auth.table.getName() != null) {
+            tableName = Auth.table.getName();
+        }
+
+        // Set case
+        labelOrderTable.setText(tableID == null ? "ORDER [ Bàn Trống ]" : "ORDER [ " + tableName + " ]");
+    }
+
+    // <--- Load data
     void setupComboboxCategory() {
+        // Get data all
+        dataProducts = new ProductDAO().getAll();
+
         // Create a DefaultComboBoxModel 
         DefaultComboBoxModel<String> cbModelProducts = new DefaultComboBoxModel<>();
         cbModelProducts.addElement("Tất cả món");
@@ -453,7 +533,7 @@ public class Products extends javax.swing.JPanel {
         CbCategory.addActionListener(actionListener);
     }
 
-    public void loadDataByCriteria() {
+    void loadDataByCriteria() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
@@ -475,6 +555,7 @@ public class Products extends javax.swing.JPanel {
             });
         }, 300, TimeUnit.MILLISECONDS);
     }
+    // end --->
 
     // <--- Display and handle events products
     void displayProductList(List<ProductEntity> dataList) {
@@ -551,23 +632,49 @@ public class Products extends javax.swing.JPanel {
         mainPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                handleClickOrder(product);
+                // Add products to the table
+                handleClickOrderProduct(product);
+
+                // Calculate and display total amount
+                calculateTotalAmount();
             }
         });
 
         return mainPanel;
     }
 
-    void handleClickOrder(ProductEntity product) {
+    void handleClickOrderProduct(ProductEntity product) {
         // Get info
+        String productID = product.getProductID();
         String productName = product.getProductName();
         DefaultTableModel saveOrder = (DefaultTableModel) tableOrder.getModel();
 
         // Add new row into the table at the end
-        Object[] rowData = {productName, 1};
+        Object[] rowData = {productID, productName, 1};
         saveOrder.addRow(rowData);
+
     }
 
+    void calculateTotalAmount() {
+        long totalAmount = 0;
+        DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String id = model.getValueAt(i, 0).toString();
+            ProductEntity product = new ProductDAO().getById(id);
+
+            String quantityStr = model.getValueAt(i, 2).toString();
+            long quantity = Long.parseLong(quantityStr);
+            long price = product.getPrice();
+
+            totalAmount += price * quantity;
+        }
+
+        // Format totalAmount to display
+        String formattedTotal = addCommasToNumber(String.valueOf(totalAmount));
+        labelTotal.setText(formattedTotal + "₫");
+    }
+    
     // <--- Handle click button submit and cancel
     void cancel() {
         // Nếu bàn chưa chọn món thì rời đi luôn
@@ -592,25 +699,30 @@ public class Products extends javax.swing.JPanel {
 
         // Get data from the table ordering more dishes
         DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
-        Vector<Vector> data = model.getDataVector();
+        Vector<Vector> orderProducts = model.getDataVector();
 
-        // Get diningTableId in auth
-        String tableID = Auth.table.getTableID();
         try {
             // Create an order if don't have one yet
-            OrderEntity existingOrder = new OrderDAO().getPendingByTableId(tableID);
+            existingOrder = new OrderDAO().getByTableId(tableID);
             if (existingOrder == null) {
                 // Create new invoice
                 int invoiceID = new InvoiceDAO().insert();
 
                 // Create new order
                 int orderId = new OrderDAO().insert(invoiceID, "Đang đặt hàng", "Tại nhà hàng");
-                new OrderTableDAO().insert(orderId, tableID, "Đang đặt hàng");
+
+                // Set OrderTable
+                new OrderTableDAO().insert(orderId, tableID, "Đang hoạt động");
             }
 
             // Get newly created order information
-            existingOrder = new OrderDAO().getPendingByTableId(tableID);
-            addDishesToExistingOrder(existingOrder, data);
+            existingOrder = new OrderDAO().getByTableId(tableID);
+            addProductsToOrderd(existingOrder, orderProducts);
+
+            // Set status table
+            dataTable = new DiningTableDAO().getById(tableID);
+            dataTable.setStatus("Đang phục vụ");
+            new DiningTableDAO().update(dataTable);
 
             // Open file table
             mainStaff.displayStaffPanels(new OrderTables(mainStaff));
@@ -620,13 +732,10 @@ public class Products extends javax.swing.JPanel {
         }
     }
 
-    private void addDishesToExistingOrder(OrderEntity existingOrder, Vector<Vector> data) {
+    void addProductsToOrderd(OrderEntity existingOrder, Vector<Vector> orderProducts) {
         try {
-            // Get the current order detail list of an existing order
-            List<OrderDetailEntity> currentDetails = new OrderDetailDAO().getByOrderId(existingOrder.getOrderId());
-
             // For each new list of dishes
-            for (Vector<Object> row : data) {
+            for (Vector<Object> row : orderProducts) {
                 String dishName = row.get(0).toString();
                 int dishQuantity = Integer.parseInt(row.get(1).toString());
                 String dishDesc = row.get(2) != null ? row.get(2).toString() : "";

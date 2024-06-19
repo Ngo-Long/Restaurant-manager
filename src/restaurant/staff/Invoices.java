@@ -77,7 +77,6 @@ public class Invoices extends javax.swing.JPanel {
         jScrollPane4 = new javax.swing.JScrollPane();
         tableAllOfInvoices = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
-        btnNameDiningTable = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         labelTotalPrice = new javax.swing.JLabel();
         labelTax = new javax.swing.JLabel();
@@ -104,6 +103,8 @@ public class Invoices extends javax.swing.JPanel {
         btnTwoThousand = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         radioTransfer = new javax.swing.JRadioButton();
+        labelOrderTable = new javax.swing.JLabel();
+        btnSearch1 = new javax.swing.JButton();
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setPreferredSize(new java.awt.Dimension(860, 555));
@@ -190,7 +191,7 @@ public class Invoices extends javax.swing.JPanel {
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 547, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
         );
 
         tabbedPanePay.addTab("CHỜ THANH TOÁN ", new javax.swing.ImageIcon(getClass().getResource("/icon/pay-later.png")), jPanel6); // NOI18N
@@ -238,21 +239,10 @@ public class Invoices extends javax.swing.JPanel {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabbedPanePay, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(tabbedPanePay)
         );
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
-
-        btnNameDiningTable.setFont(new java.awt.Font("Segoe UI Semibold", 0, 17)); // NOI18N
-        btnNameDiningTable.setForeground(new java.awt.Color(30, 30, 30));
-        btnNameDiningTable.setText("Chọn bàn");
-        btnNameDiningTable.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(210, 210, 210), 4, true));
-        btnNameDiningTable.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnNameDiningTable.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNameDiningTableActionPerformed(evt);
-            }
-        });
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(51, 51, 51));
@@ -422,13 +412,33 @@ public class Invoices extends javax.swing.JPanel {
         radioTransfer.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         radioTransfer.setText("Chuyển khoản");
 
+        labelOrderTable.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        labelOrderTable.setForeground(new java.awt.Color(255, 51, 51));
+        labelOrderTable.setText("PAY");
+
+        btnSearch1.setBackground(new java.awt.Color(255, 51, 51));
+        btnSearch1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnSearch1.setForeground(new java.awt.Color(255, 255, 255));
+        btnSearch1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/cart-while-24px.png"))); // NOI18N
+        btnSearch1.setToolTipText("Tìm kiếm");
+        btnSearch1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSearch1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearch1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addGap(0, 12, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(btnSearch1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labelOrderTable, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(radioTransfer)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -473,7 +483,6 @@ public class Invoices extends javax.swing.JPanel {
                                 .addComponent(btnTwoHundredThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(btnFiveHundredThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addComponent(btnNameDiningTable, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(jPanel4Layout.createSequentialGroup()
                             .addGap(108, 108, 108)
                             .addComponent(btnFiveThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -488,7 +497,10 @@ public class Invoices extends javax.swing.JPanel {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addComponent(btnNameDiningTable, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(labelOrderTable, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnSearch1))
+                .addGap(12, 12, 12)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(144, 144, 144)
@@ -537,7 +549,7 @@ public class Invoices extends javax.swing.JPanel {
                     .addComponent(btnTwoHundredThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnFiftyThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnFiveHundredThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnPayInvoice, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -569,10 +581,6 @@ public class Invoices extends javax.swing.JPanel {
     private void tableUnpaidInvoicesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableUnpaidInvoicesMouseClicked
         handleClickTable(evt);
     }//GEN-LAST:event_tableUnpaidInvoicesMouseClicked
-
-    private void btnNameDiningTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNameDiningTableActionPerformed
-        mainStaff.displayStaffPanels(new OrderTables(mainStaff));
-    }//GEN-LAST:event_btnNameDiningTableActionPerformed
 
     private void textGiveMoneyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textGiveMoneyActionPerformed
 
@@ -626,6 +634,10 @@ public class Invoices extends javax.swing.JPanel {
         calculateCashReturn();
     }//GEN-LAST:event_btnTwoThousandActionPerformed
 
+    private void btnSearch1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearch1ActionPerformed
+
+    }//GEN-LAST:event_btnSearch1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
@@ -633,8 +645,8 @@ public class Invoices extends javax.swing.JPanel {
     private javax.swing.JButton btnFiveHundredThousand;
     private javax.swing.JButton btnFiveThousand;
     private javax.swing.JButton btnHundredThousand;
-    private javax.swing.JButton btnNameDiningTable;
     private javax.swing.JButton btnPayInvoice;
+    private javax.swing.JButton btnSearch1;
     private javax.swing.JButton btnTenThousand;
     private javax.swing.JButton btnTwentyThousand;
     private javax.swing.JButton btnTwoHundredThousand;
@@ -656,6 +668,7 @@ public class Invoices extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JLabel labelCashReturn;
     private javax.swing.JLabel labelDiscount;
+    private javax.swing.JLabel labelOrderTable;
     private javax.swing.JLabel labelTax;
     private javax.swing.JLabel labelTotalAmount;
     private javax.swing.JLabel labelTotalPrice;
@@ -672,7 +685,7 @@ public class Invoices extends javax.swing.JPanel {
     Timer timer;
     int index = 0;
     int invoiceId;
-    String tableId;
+    String tableID;
     String tableName;
     String methodPay;
     OrderEntity dataOrder;
@@ -685,29 +698,23 @@ public class Invoices extends javax.swing.JPanel {
         Common.customizeTable(tableOrderDetails, new int[]{0});
         Common.createButtonGroup(radioCash, radioCard, radioTransfer);
 
-        displayInfoButtonTable();
-        displayOrderDetails(tableId);
+        displayPayTable();
+        displayOrderDetails(tableID);
         displayProductsOfTable();
     }
 
-    void displayInfoButtonTable() {
+    void displayPayTable() {
         // Kiểm tra và gán giá trị 
         if (Auth.table != null && Auth.table.getTableID() != null) {
-            tableId = Auth.table.getTableID();
+            tableID = Auth.table.getTableID();
         }
 
         if (Auth.table != null && Auth.table.getName() != null) {
             tableName = Auth.table.getName();
         }
 
-        invoiceId = new InvoiceDAO().getIdByTableId(tableId);
-
         // Set case
-        btnNameDiningTable.setText(invoiceId == 0
-                ? (tableName == null || tableName.equals("")
-                ? "Chọn bàn"
-                : "Trống - " + tableName)
-                : "Đơn hàng[" + invoiceId + "] - " + tableName);
+        labelOrderTable.setText(tableID == null ? "PAY [ Bàn Trống ]" : "PAY [ " + tableName + " ]");
     }
 
     InvoiceEntity getModel() {
@@ -817,8 +824,8 @@ public class Invoices extends javax.swing.JPanel {
         model.setRowCount(0);
 
         // Get info detail order through dining table id
-        dataOrder = new OrderDAO().getPendingByTableId(tableId);
-        dataOrderDetails = new OrderDetailDAO().getByTableId(tableId);
+        dataOrder = new OrderDAO().getByTableId(tableId);
+        dataOrderDetails = new OrderDetailDAO().getByOrderId(dataOrder.getOrderId());
 
         if (dataOrder == null || dataOrderDetails == null) {
             labelTotalPrice.setText("0");
@@ -879,7 +886,7 @@ public class Invoices extends javax.swing.JPanel {
             String orderTimeFormat = calculateTimeRemaining(orderTime);
 
             // Get total amount ordered
-            int totalAmount = new OrderDetailDAO().getTotalAmountByInvoiceID(invoiceId);
+            long totalAmount = order.getTotal();
             String totalAmountConvert = addCommasToNumber(String.valueOf(totalAmount)) + " ₫";
 
             // Get name table 
@@ -940,16 +947,12 @@ public class Invoices extends javax.swing.JPanel {
         }
 
         tableName = tableUnpaidInvoices.getValueAt(selectedRow, 1).toString();
-        tableId = new DiningTableDAO().getIdByName(tableName);
-        invoiceId = new InvoiceDAO().getIdByTableId(tableId);
-        displayOrderDetails(tableId);
+        tableID = new DiningTableDAO().getIdByName(tableName);
+        invoiceId = new InvoiceDAO().getIdByTableId(tableID);
+        displayOrderDetails(tableID);
 
         // Set case
-        btnNameDiningTable.setText(invoiceId == 0
-                ? (tableName == null || tableName.equals("")
-                ? "Chọn bàn"
-                : "Trống - " + tableName)
-                : "Đơn hàng[" + invoiceId + "] - " + tableName);
+        labelOrderTable.setText(tableID == null ? "PAY [ Bàn Trống ]" : "PAY [ " + tableName + " ]");
 
         // Move pane
         tabbedPanePay.setSelectedIndex(0);

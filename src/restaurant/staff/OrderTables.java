@@ -33,11 +33,12 @@ public final class OrderTables extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         comboboxArea = new javax.swing.JComboBox<>();
-        btnEmpty = new javax.swing.JButton();
-        btnStatusServing = new javax.swing.JButton();
-        btnBooked = new javax.swing.JButton();
         scrollPaneTableDining = new javax.swing.JScrollPane();
         panelDiningTableList = new javax.swing.JPanel();
+        textSearch = new javax.swing.JTextField();
+        btnSearch2 = new javax.swing.JButton();
+        btnHistory = new javax.swing.JButton();
+        btnSearch = new javax.swing.JButton();
 
         panelBody.setToolTipText("");
 
@@ -55,39 +56,6 @@ public final class OrderTables extends javax.swing.JPanel {
             }
         });
 
-        btnEmpty.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnEmpty.setForeground(new java.awt.Color(51, 51, 51));
-        btnEmpty.setText("Còn trống");
-        btnEmpty.setBorder(null);
-        btnEmpty.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnEmpty.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEmptyActionPerformed(evt);
-            }
-        });
-
-        btnStatusServing.setBackground(new java.awt.Color(255, 102, 102));
-        btnStatusServing.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnStatusServing.setForeground(new java.awt.Color(51, 51, 51));
-        btnStatusServing.setText("Đang phục vụ");
-        btnStatusServing.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnStatusServing.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnStatusServingActionPerformed(evt);
-            }
-        });
-
-        btnBooked.setBackground(new java.awt.Color(255, 153, 51));
-        btnBooked.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnBooked.setForeground(new java.awt.Color(51, 51, 51));
-        btnBooked.setText("Đã đặt");
-        btnBooked.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnBooked.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBookedActionPerformed(evt);
-            }
-        });
-
         scrollPaneTableDining.setBorder(null);
         scrollPaneTableDining.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -97,7 +65,7 @@ public final class OrderTables extends javax.swing.JPanel {
         panelDiningTableList.setLayout(panelDiningTableListLayout);
         panelDiningTableListLayout.setHorizontalGroup(
             panelDiningTableListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1235, Short.MAX_VALUE)
+            .addGap(0, 1254, Short.MAX_VALUE)
         );
         panelDiningTableListLayout.setVerticalGroup(
             panelDiningTableListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -106,6 +74,49 @@ public final class OrderTables extends javax.swing.JPanel {
 
         scrollPaneTableDining.setViewportView(panelDiningTableList);
 
+        textSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        textSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textSearchActionPerformed(evt);
+            }
+        });
+
+        btnSearch2.setBackground(new java.awt.Color(0, 153, 153));
+        btnSearch2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnSearch2.setForeground(new java.awt.Color(255, 255, 255));
+        btnSearch2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/refreshWhile.png"))); // NOI18N
+        btnSearch2.setToolTipText("Reset trang (Ctrl + F5)");
+        btnSearch2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSearch2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearch2ActionPerformed(evt);
+            }
+        });
+
+        btnHistory.setBackground(new java.awt.Color(51, 204, 0));
+        btnHistory.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnHistory.setForeground(new java.awt.Color(255, 255, 255));
+        btnHistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/historyWhile.png"))); // NOI18N
+        btnHistory.setToolTipText("Xem lịch sử gọi món");
+        btnHistory.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnHistory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHistoryActionPerformed(evt);
+            }
+        });
+
+        btnSearch.setBackground(new java.awt.Color(255, 51, 51));
+        btnSearch.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnSearch.setForeground(new java.awt.Color(255, 255, 255));
+        btnSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/searchWhile.png"))); // NOI18N
+        btnSearch.setToolTipText("Tìm kiếm");
+        btnSearch.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -113,30 +124,33 @@ public final class OrderTables extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addComponent(jLabel5)
-                .addGap(0, 0, 0)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(comboboxArea, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnEmpty, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnStatusServing, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnBooked)
+                .addComponent(btnSearch2, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12))
-            .addComponent(scrollPaneTableDining)
+            .addComponent(scrollPaneTableDining, javax.swing.GroupLayout.DEFAULT_SIZE, 1256, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(12, Short.MAX_VALUE)
+                .addGap(12, 12, 12)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnStatusServing, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
-                        .addComponent(btnBooked, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnEmpty, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(comboboxArea, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(comboboxArea, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(textSearch, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSearch2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnHistory, javax.swing.GroupLayout.Alignment.LEADING)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(scrollPaneTableDining, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(scrollPaneTableDining, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout panelBodyLayout = new javax.swing.GroupLayout(panelBody);
@@ -145,15 +159,15 @@ public final class OrderTables extends javax.swing.JPanel {
             panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBodyLayout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 1250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1256, Short.MAX_VALUE)
+                .addGap(12, 12, 12))
         );
         panelBodyLayout.setVerticalGroup(
             panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBodyLayout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 591, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE)
+                .addGap(12, 12, 12))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -174,29 +188,33 @@ public final class OrderTables extends javax.swing.JPanel {
 
     }//GEN-LAST:event_comboboxAreaActionPerformed
 
-    private void btnEmptyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmptyActionPerformed
-        updateStatus("Còn trống");
-    }//GEN-LAST:event_btnEmptyActionPerformed
+    private void textSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSearchActionPerformed
 
-    private void btnStatusServingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStatusServingActionPerformed
-        updateStatus("Đang phục vụ");
-    }//GEN-LAST:event_btnStatusServingActionPerformed
+    }//GEN-LAST:event_textSearchActionPerformed
 
-    private void btnBookedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBookedActionPerformed
-        updateStatus("Đã đặt");
-    }//GEN-LAST:event_btnBookedActionPerformed
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void btnSearch2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearch2ActionPerformed
+
+    }//GEN-LAST:event_btnSearch2ActionPerformed
+
+    private void btnHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistoryActionPerformed
+    }//GEN-LAST:event_btnHistoryActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBooked;
-    private javax.swing.JButton btnEmpty;
-    private javax.swing.JButton btnStatusServing;
+    private javax.swing.JButton btnHistory;
+    private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnSearch2;
     private javax.swing.JComboBox<String> comboboxArea;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel panelBody;
     private javax.swing.JPanel panelDiningTableList;
     private javax.swing.JScrollPane scrollPaneTableDining;
+    private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
     int orderCount;
@@ -305,8 +323,8 @@ public final class OrderTables extends javax.swing.JPanel {
 
         // Set the preferred size of the button based on the icon size
         tableButton.setForeground(new Color(30, 30, 30));
-        tableButton.setPreferredSize(new Dimension(150, 150));
         tableButton.setBackground(new Color(255, 255, 255));
+        tableButton.setPreferredSize(new Dimension(150, 150));
         tableButton.setHorizontalTextPosition(SwingConstants.CENTER);
         tableButton.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
         tableButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -335,8 +353,8 @@ public final class OrderTables extends javax.swing.JPanel {
 
         // Transmit data via file orderTableDialog
         dialog.displayDetailTable(data);
-        dialog.displayOrderedByTable(data.getTableID());
-        dialog.setLocationRelativeTo(new MainStaff());
+        dialog.displayOrderedOfTable(data.getTableID());
+        dialog.setLocationRelativeTo(null);
 
         // Open dialog
         dialog.setVisible(true);

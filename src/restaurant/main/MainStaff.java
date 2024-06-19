@@ -3,11 +3,17 @@ package restaurant.main;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.border.Border;
 
 import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
-import restaurant.authentication.Login;
 
 import restaurant.staff.Overview;
 import restaurant.staff.Products;
@@ -33,12 +39,12 @@ public final class MainStaff extends javax.swing.JFrame {
         panelMain = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         buttonOverview = new javax.swing.JButton();
-        buttonDiningTable = new javax.swing.JButton();
-        buttonProduct = new javax.swing.JButton();
-        buttonPay = new javax.swing.JButton();
-        buttonOverview4 = new javax.swing.JButton();
-        buttonOverview5 = new javax.swing.JButton();
-        buttonOverview6 = new javax.swing.JButton();
+        btnTable = new javax.swing.JButton();
+        btnProduct = new javax.swing.JButton();
+        btnPay = new javax.swing.JButton();
+        btnOrderTake = new javax.swing.JButton();
+        btnClosingShift = new javax.swing.JButton();
+        btnWareHouse = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         menuSystem = new javax.swing.JMenu();
         menuChange = new javax.swing.JMenuItem();
@@ -97,7 +103,10 @@ public final class MainStaff extends javax.swing.JFrame {
 
         scrollPaneMain.setViewportView(panelMain);
 
-        buttonOverview.setText("Tổng quan");
+        buttonOverview.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        buttonOverview.setForeground(new java.awt.Color(51, 51, 51));
+        buttonOverview.setText("Tổng Quan");
+        buttonOverview.setBorder(null);
         buttonOverview.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonOverview.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -105,51 +114,60 @@ public final class MainStaff extends javax.swing.JFrame {
             }
         });
 
-        buttonDiningTable.setText("Bàn ăn");
-        buttonDiningTable.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        buttonDiningTable.addActionListener(new java.awt.event.ActionListener() {
+        btnTable.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnTable.setText("Bàn Ăn");
+        btnTable.setBorder(null);
+        btnTable.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnTable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonDiningTableActionPerformed(evt);
+                btnTableActionPerformed(evt);
             }
         });
 
-        buttonProduct.setText("Món ăn");
-        buttonProduct.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        buttonProduct.addActionListener(new java.awt.event.ActionListener() {
+        btnProduct.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnProduct.setText("Món Ăn");
+        btnProduct.setBorder(null);
+        btnProduct.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnProduct.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonProductActionPerformed(evt);
+                btnProductActionPerformed(evt);
             }
         });
 
-        buttonPay.setText("Thanh Toán");
-        buttonPay.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        buttonPay.addActionListener(new java.awt.event.ActionListener() {
+        btnPay.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnPay.setText("Thanh Toán");
+        btnPay.setBorder(null);
+        btnPay.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnPay.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonPayActionPerformed(evt);
+                btnPayActionPerformed(evt);
             }
         });
 
-        buttonOverview4.setText("Mang về");
-        buttonOverview4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        buttonOverview4.addActionListener(new java.awt.event.ActionListener() {
+        btnOrderTake.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnOrderTake.setText("Mang Về");
+        btnOrderTake.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnOrderTake.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonOverview4ActionPerformed(evt);
+                btnOrderTakeActionPerformed(evt);
             }
         });
 
-        buttonOverview5.setText("Chốt ca");
-        buttonOverview5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        buttonOverview5.addActionListener(new java.awt.event.ActionListener() {
+        btnClosingShift.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnClosingShift.setText("Chốt Ca");
+        btnClosingShift.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnClosingShift.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonOverview5ActionPerformed(evt);
+                btnClosingShiftActionPerformed(evt);
             }
         });
 
-        buttonOverview6.setText("Kho hàng");
-        buttonOverview6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        buttonOverview6.addActionListener(new java.awt.event.ActionListener() {
+        btnWareHouse.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnWareHouse.setText("Kho Hàng");
+        btnWareHouse.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnWareHouse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonOverview6ActionPerformed(evt);
+                btnWareHouseActionPerformed(evt);
             }
         });
 
@@ -159,33 +177,33 @@ public final class MainStaff extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addComponent(buttonOverview, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(buttonOverview, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(buttonDiningTable, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnTable, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(buttonProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(buttonPay, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnPay, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(buttonOverview4, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnOrderTake, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(buttonOverview5, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnClosingShift, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(buttonOverview6, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(btnWareHouse, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(322, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(buttonOverview, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buttonDiningTable, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buttonProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buttonPay, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buttonOverview4, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buttonOverview5, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buttonOverview6, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(buttonOverview, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnTable, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPay, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnOrderTake, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnClosingShift, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnWareHouse, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -398,15 +416,15 @@ public final class MainStaff extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scrollPaneMain, javax.swing.GroupLayout.DEFAULT_SIZE, 1281, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(scrollPaneMain, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(scrollPaneMain, javax.swing.GroupLayout.PREFERRED_SIZE, 616, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0)
+                .addComponent(scrollPaneMain, javax.swing.GroupLayout.DEFAULT_SIZE, 618, Short.MAX_VALUE))
         );
 
         pack();
@@ -476,29 +494,29 @@ public final class MainStaff extends javax.swing.JFrame {
         displayStaffPanels(new Overview(this));
     }//GEN-LAST:event_buttonOverviewActionPerformed
 
-    private void buttonDiningTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDiningTableActionPerformed
+    private void btnTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTableActionPerformed
         displayStaffPanels(new OrderTables(this));
-    }//GEN-LAST:event_buttonDiningTableActionPerformed
+    }//GEN-LAST:event_btnTableActionPerformed
 
-    private void buttonProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonProductActionPerformed
+    private void btnProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductActionPerformed
         displayStaffPanels(new Products(this));
-    }//GEN-LAST:event_buttonProductActionPerformed
+    }//GEN-LAST:event_btnProductActionPerformed
 
-    private void buttonPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPayActionPerformed
+    private void btnPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPayActionPerformed
         displayStaffPanels(new Invoices(this));
-    }//GEN-LAST:event_buttonPayActionPerformed
+    }//GEN-LAST:event_btnPayActionPerformed
 
-    private void buttonOverview4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonOverview4ActionPerformed
+    private void btnOrderTakeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderTakeActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_buttonOverview4ActionPerformed
+    }//GEN-LAST:event_btnOrderTakeActionPerformed
 
-    private void buttonOverview5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonOverview5ActionPerformed
+    private void btnClosingShiftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClosingShiftActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_buttonOverview5ActionPerformed
+    }//GEN-LAST:event_btnClosingShiftActionPerformed
 
-    private void buttonOverview6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonOverview6ActionPerformed
+    private void btnWareHouseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWareHouseActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_buttonOverview6ActionPerformed
+    }//GEN-LAST:event_btnWareHouseActionPerformed
 
     private void menuItemEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemEmployeeActionPerformed
         openFullScreenWindow(new MainStaff());
@@ -528,13 +546,13 @@ public final class MainStaff extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton buttonDiningTable;
+    private javax.swing.JButton btnClosingShift;
+    private javax.swing.JButton btnOrderTake;
+    private javax.swing.JButton btnPay;
+    private javax.swing.JButton btnProduct;
+    private javax.swing.JButton btnTable;
+    private javax.swing.JButton btnWareHouse;
     private javax.swing.JButton buttonOverview;
-    private javax.swing.JButton buttonOverview4;
-    private javax.swing.JButton buttonOverview5;
-    private javax.swing.JButton buttonOverview6;
-    private javax.swing.JButton buttonPay;
-    private javax.swing.JButton buttonProduct;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem6;
@@ -573,11 +591,64 @@ public final class MainStaff extends javax.swing.JFrame {
     private javax.swing.JScrollPane scrollPaneMain;
     // End of variables declaration//GEN-END:variables
 
+    JButton selectedButton = buttonOverview;
+
     void init() {
+        // Common
         Common.setAccountMenu(menuStaff);
         Common.customizeScrollBar(scrollPaneMain);
 
+        setupTables();
+        selectButton(buttonOverview);
+        
         displayStaffPanels(new Overview(this));
+    }
+
+    void setupTables() {
+        // Khởi tạo màu cho các nút
+        Color defaultText = new Color(11, 11, 11);
+        Color defaultBg = new Color(255, 255, 255);
+
+        Color selectedText = Color.WHITE;
+        Color selectedBg = new Color(255, 51, 51);
+
+        // Mảng chứa các nút cần xử lý
+        JButton[] buttons = {buttonOverview, btnTable, btnProduct, btnPay,
+            btnOrderTake, btnClosingShift, btnWareHouse};
+
+        // Thiết lập sự kiện cho từng nút
+        for (JButton button : buttons) {
+            button.setForeground(defaultText);
+            button.setBackground(defaultBg);
+            button.setFont(button.getFont().deriveFont(Font.PLAIN));
+
+            button.addActionListener((ActionEvent e) -> {
+                // Kiểm tra nếu nút hiện tại không phải là nút đã được chọn trước đó
+                if (selectedButton != button) {
+                    // Đặt lại màu cho nút trước đó nếu có
+                    if (selectedButton != null) {
+                        selectedButton.setForeground(defaultText);
+                        selectedButton.setBackground(defaultBg);
+                        selectedButton.setFont(selectedButton.getFont().deriveFont(Font.PLAIN));
+                    }
+
+                    // Thiết lập lại màu cho nút hiện tại
+                    button.setForeground(selectedText);
+                    button.setBackground(selectedBg);
+                    button.setFont(button.getFont().deriveFont(Font.BOLD));
+
+                    // Cập nhật nút được chọn hiện tại
+                    selectedButton = button;
+                }
+            });
+        }
+    }
+
+    void selectButton(JButton button) {
+        button.setForeground(Color.white);
+        button.setBackground(new Color(255, 51, 51));
+        button.setFont(button.getFont().deriveFont(Font.BOLD));
+        selectedButton = button;
     }
 
     public void displayStaffPanels(JPanel panel) {
@@ -589,8 +660,9 @@ public final class MainStaff extends javax.swing.JFrame {
     }
 
     void openFullScreenWindow(JFrame window) {
+        window.setExtendedState(JFrame.MAXIMIZED_BOTH);
         window.setVisible(true);
-        window.setLocationRelativeTo(null);
+        window.setAlwaysOnTop(true);
         this.dispose();
     }
 }

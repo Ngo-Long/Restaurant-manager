@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.HashMap;
 
 import java.awt.Color;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
 
@@ -51,7 +53,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         labelTenBan1 = new javax.swing.JLabel();
         labelTableName = new javax.swing.JLabel();
         labelTenBan2 = new javax.swing.JLabel();
-        labelTotalAmount = new javax.swing.JLabel();
+        labelStartTime = new javax.swing.JLabel();
         btnSwitchTables1 = new javax.swing.JButton();
         btnSwitchTables = new javax.swing.JButton();
         comboboxTables = new javax.swing.JComboBox<>();
@@ -59,9 +61,11 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         btnPay = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         tableListOrderedDishes = new javax.swing.JTable();
-        jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
         labelTableId = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        labelTotal = new javax.swing.JLabel();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -86,8 +90,8 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Ordered");
-        setBackground(new java.awt.Color(255, 255, 255));
+        setTitle("Đơn hàng ");
+        setBackground(new java.awt.Color(51, 102, 255));
 
         labelTenBan1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         labelTenBan1.setText("Tên:");
@@ -95,9 +99,9 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         labelTableName.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
 
         labelTenBan2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        labelTenBan2.setText("Tổng cộng:");
+        labelTenBan2.setText("Giờ vào:");
 
-        labelTotalAmount.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelStartTime.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         btnSwitchTables1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnSwitchTables1.setText("Chuyển bàn");
@@ -160,7 +164,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Các món ăn đã gọi", "Đơn giá", "SL", "Tổng giá"
+                "Các món ăn", "Đơn giá", "SL", "Tổng giá"
             }
         ));
         tableListOrderedDishes.setAlignmentX(2.0F);
@@ -175,10 +179,41 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
             tableListOrderedDishes.getColumnModel().getColumn(3).setPreferredWidth(80);
         }
 
-        jLabel2.setText("Ghi chú:");
-
         labelTableId.setForeground(new java.awt.Color(242, 242, 242));
         labelTableId.setText("Mã bàn");
+
+        jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTextField1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED), "Ghi chú", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Segoe UI", 0, 16))); // NOI18N
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel1.setText("Tổng cộng");
+
+        labelTotal.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        labelTotal.setForeground(new java.awt.Color(255, 51, 51));
+        labelTotal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labelTotal.setText("0");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(labelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(labelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -187,9 +222,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(84, 84, 84))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane3)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btnAddOrder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -207,7 +240,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(labelTenBan2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(labelTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(labelStartTime, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(labelTableId)
                                 .addGap(0, 0, Short.MAX_VALUE))
@@ -223,7 +256,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(labelTotalAmount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(labelStartTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(labelTenBan2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(labelTenBan1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -235,12 +268,12 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
                     .addComponent(btnSwitchTables, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSwitchTables1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAddOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnPay, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -311,18 +344,20 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
     private javax.swing.JButton btnSwitchTables1;
     private javax.swing.JComboBox<String> comboboxTables;
     private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JList<String> jList1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel labelStartTime;
     private javax.swing.JLabel labelTableId;
     private javax.swing.JLabel labelTableName;
     private javax.swing.JLabel labelTenBan1;
     private javax.swing.JLabel labelTenBan2;
-    private javax.swing.JLabel labelTotalAmount;
+    private javax.swing.JLabel labelTotal;
     private javax.swing.JTable tableListOrderedDishes;
     // End of variables declaration//GEN-END:variables
 
@@ -388,36 +423,40 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         labelTableName.setText(diningTable.getName());
     }
 
-    public void displayOrderedByTable(String tableID) {
+    public void displayOrderedOfTable(String tableID) {
         // Reset table
         DefaultTableModel model = (DefaultTableModel) tableListOrderedDishes.getModel();
         model.setRowCount(0);
 
-        // Get data order and order deatails
-        dataOrder = new OrderDAO().getByTableId(tableID);
-        dataOrderDetails = (dataOrder != null)
-                ? new OrderDetailDAO().getByOrderId(dataOrder.getOrderId())
-                : null;
+        try {
+            // Get data order and order deatails
+            dataOrder = new OrderDAO().getByTableId(tableID);
+            dataOrderDetails = new OrderDetailDAO().getByOrderId(dataOrder.getOrderId());
 
-        if (dataOrder == null || dataOrderDetails == null) {
-            labelTotalAmount.setText("0₫ / 0 đơn");
-            return;
+            // Set title
+            this.setTitle("Chi tiết Order [ " + dataOrder.getOrderId() + " ]");
+            
+            // Set start time
+            String startTime = new SimpleDateFormat("HH:mm:ss").format(dataOrder.getCreatedDate());
+            labelStartTime.setText(startTime);
+
+            // Set total 
+            totalConvert = addCommasToNumber(String.valueOf(dataOrder.getTotal()));
+            labelTotal.setText(totalConvert + "₫");
+
+            // Create a map to store the quantity and price of each item
+            Map<String, Integer> productPriceMap = new HashMap<>();
+            Map<String, Integer> productQuantityMap = new HashMap<>();
+
+            // Init process ---> Add products into the table
+            Ordered.processOrderedDetails(dataOrderDetails, productPriceMap, productQuantityMap);
+            Ordered.addOrderedToTable(model, productPriceMap, productQuantityMap);
+        } catch (Exception e) {
+            this.setTitle("Chi tiết Order [ Trống ]");
+            labelStartTime.setText("Trống");
+            System.out.println(e);
+
         }
-
-        // Display total - Tổng cộng: 100.000₫ / 1 đơn
-        totalConvert = addCommasToNumber(String.valueOf(dataOrder.getTotal()));
-//        orderCount = new DiningTableDAO().getOrderCountByTableId(tableId);
-        orderCount = 1;
-        labelTotalAmount.setText(totalConvert + "₫ / " + orderCount + " đơn");
-
-        // Create a Map để lưu trữ số lượng và giá của mỗi món
-        Map<String, Integer> productPriceMap = new HashMap<>();
-        Map<String, Integer> productQuantityMap = new HashMap<>();
-
-        // Init process ---> Add products into the table
-        Ordered.processOrderedDetails(dataOrderDetails, productPriceMap, productQuantityMap);
-        Ordered.addOrderedToTable(model, productPriceMap, productQuantityMap);
-
     }
 
     void setupComboboxTables() {

@@ -9,19 +9,19 @@ import restaurant.entity.ProductEntity;
 
 public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
 
-    final String INSERT_SQL = "INSERT INTO Products (ProductID, ProductName, Price, Unit, ImageURL, "
+    final String INSERT_SQL = "INSERT INTO Product (ProductID, ProductName, Price, Unit, ImageURL, "
             + "Category, KitchenArea, Description, Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    final String UPDATE_SQL = "UPDATE Products SET ProductName=?, Price=?, Unit=?, ImageURL=?, "
+    final String UPDATE_SQL = "UPDATE Product SET ProductName=?, Price=?, Unit=?, ImageURL=?, "
             + "Category=?, KitchenArea=?, Description=?, Status=? WHERE ProductID=?";
-    final String DELETE_SQL = "DELETE FROM Products WHERE ProductID=?";
-    final String SELECT_ALL_SQL = "SELECT * FROM Products ORDER BY ProductName";
-    final String SELECT_ALL_BY_CATEGORY_SQL = "SELECT * FROM Products WHERE Category=? ORDER BY ProductName";
+    final String DELETE_SQL = "DELETE FROM Product WHERE ProductID=?";
+    final String SELECT_ALL_SQL = "SELECT * FROM Product ORDER BY ProductName";
+    final String SELECT_ALL_BY_CATEGORY_SQL = "SELECT * FROM Product WHERE Category=? ORDER BY ProductName";
 
-    final String SELECT_BY_ID_SQL = "SELECT * FROM Products WHERE ProductID=?";
-    static final String SELECT_ID_BY_NAME_SQL = "SELECT ProductID FROM Products WHERE ProductName=?";
+    final String SELECT_BY_ID_SQL = "SELECT * FROM Product WHERE ProductID=?";
+    static final String SELECT_ID_BY_NAME_SQL = "SELECT ProductID FROM Product WHERE ProductName=?";
 
-    final String CHECK_DUPLICATED_ID_SQL = "SELECT COUNT(*) FROM Products WHERE ProductID=?";
-    final String CHECK_DUPLICATED_NAME_SQL = "SELECT COUNT(*) FROM Products WHERE ProductName = ?";
+    final String CHECK_DUPLICATED_ID_SQL = "SELECT COUNT(*) FROM Product WHERE ProductID=?";
+    final String CHECK_DUPLICATED_NAME_SQL = "SELECT COUNT(*) FROM Product WHERE ProductName = ?";
 
     @Override
     public void insert(ProductEntity model) {
@@ -107,7 +107,7 @@ public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
     }
 
     public List<ProductEntity> searchByCriteria(String name, String category, String status) {
-        String sql = "SELECT * FROM Products WHERE ProductName LIKE ? AND Category LIKE ? AND Status LIKE ? "
+        String sql = "SELECT * FROM Product WHERE ProductName LIKE ? AND Category LIKE ? AND Status LIKE ? "
                 + "ORDER BY ProductName";
 
         String nameTerm = "%" + name + "%";
@@ -137,7 +137,7 @@ public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
         ProductEntity model = new ProductEntity();
         model.setProductID(rs.getString("ProductID"));
         model.setProductName(rs.getString("ProductName"));
-        model.setPrice(rs.getInt("Price"));
+        model.setPrice(rs.getLong("Price"));
         model.setUnit(rs.getString("Unit"));
         model.setImageURL(rs.getString("ImageURL"));
         model.setCategory(rs.getString("Category"));

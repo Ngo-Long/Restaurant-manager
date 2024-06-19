@@ -9,17 +9,17 @@ import restaurant.entity.DiningTableEntity;
 
 public class DiningTableDAO extends RestaurantDAO<DiningTableEntity, String> {
 
-    final String INSERT_SQL = "INSERT INTO DiningTables (TableID, Name, Location, Capacity, "
+    final String INSERT_SQL = "INSERT INTO DiningTable (TableID, Name, Location, Capacity, "
             + "Status, Description, Activity) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    final String UPDATE_SQL = "UPDATE DiningTables SET Name=?, Location=?, Capacity=?, "
+    final String UPDATE_SQL = "UPDATE DiningTable SET Name=?, Location=?, Capacity=?, "
             + "Status=?, Description=?, Activity=? WHERE TableID=?";
-    final String DELETE_SQL = "DELETE FROM DiningTables WHERE TableID = ?";
-    final String SELECT_ALL_SQL = "SELECT TableID, Name, Location, Capacity, Status, Description, Activity FROM DiningTables "
+    final String DELETE_SQL = "DELETE FROM DiningTable WHERE TableID = ?";
+    final String SELECT_ALL_SQL = "SELECT TableID, Name, Location, Capacity, Status, Description, Activity FROM DiningTable "
             + "ORDER BY TRY_CAST(SUBSTRING(Name, PATINDEX('%[0-9]%', Name), LEN(Name)) AS INT)";
     final String SELECT_BY_ID_SQL = "SELECT TableID, Name, Location, Capacity, Status, Description, Activity "
-            + "FROM DiningTables WHERE TableID=?";
-    final String CHECK_DUPLICATED_ID_SQL = "SELECT COUNT(*) FROM DiningTables WHERE TableID=?";
-    final String CHECK_DUPLICATED_NAME_SQL = "SELECT COUNT(*) FROM DiningTables WHERE Name = ?";
+            + "FROM DiningTable WHERE TableID=?";
+    final String CHECK_DUPLICATED_ID_SQL = "SELECT COUNT(*) FROM DiningTable WHERE TableID=?";
+    final String CHECK_DUPLICATED_NAME_SQL = "SELECT COUNT(*) FROM DiningTable WHERE Name = ?";
 
     @Override
     public void insert(DiningTableEntity entity) {
@@ -64,7 +64,7 @@ public class DiningTableDAO extends RestaurantDAO<DiningTableEntity, String> {
     }
 
     public String getIdByName(String tableName) {
-        try (ResultSet rs = JDBC.executeQuery("SELECT TableID FROM DiningTables WHERE Name = ?", tableName)) {
+        try (ResultSet rs = JDBC.executeQuery("SELECT TableID FROM DiningTable WHERE Name = ?", tableName)) {
             if (rs.next()) {
                 return rs.getString("TableID");
             }
@@ -75,7 +75,7 @@ public class DiningTableDAO extends RestaurantDAO<DiningTableEntity, String> {
     }
 
     public List<DiningTableEntity> searchByCriteria(String name, String location, String activity) {
-        String sql = "SELECT * FROM DiningTables WHERE Name LIKE ? "
+        String sql = "SELECT * FROM DiningTable WHERE Name LIKE ? "
                 + "AND Location LIKE ? AND Activity LIKE ?";
 
         String nameTerm = "%" + name + "%";

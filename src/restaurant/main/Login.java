@@ -1,4 +1,4 @@
-package restaurant.authentication;
+package restaurant.main;
 
 import restaurant.main.*;
 import javax.swing.JFrame;
@@ -76,12 +76,14 @@ public final class Login extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         jLabel6.setText("Email");
 
+        textUser.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textUser.setText("quanly001");
 
         jLabel7.setBackground(new java.awt.Color(102, 102, 102));
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         jLabel7.setText("Password");
 
+        textPassword.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textPassword.setText("123");
         textPassword.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -93,17 +95,20 @@ public final class Login extends javax.swing.JFrame {
         buttonLogin.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         buttonLogin.setForeground(new java.awt.Color(255, 255, 255));
         buttonLogin.setText("Login");
+        buttonLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonLoginActionPerformed(evt);
             }
         });
 
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel8.setText("Đăng ký tài khoản?");
 
         buttonResign.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         buttonResign.setForeground(new java.awt.Color(255, 51, 51));
         buttonResign.setText("Sign Up");
+        buttonResign.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonResign.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonResignActionPerformed(evt);
@@ -129,7 +134,7 @@ public final class Login extends javax.swing.JFrame {
                         .addComponent(buttonResign)))
                 .addContainerGap(41, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, LeftLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(131, Short.MAX_VALUE)
                 .addComponent(jLabel5)
                 .addGap(132, 132, 132))
         );
@@ -152,7 +157,7 @@ public final class Login extends javax.swing.JFrame {
                 .addGroup(LeftLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(buttonResign))
-                .addContainerGap(80, Short.MAX_VALUE))
+                .addContainerGap(83, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 153, 153));
@@ -225,7 +230,6 @@ public final class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonLoginActionPerformed
 
     private void textPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textPasswordActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_textPasswordActionPerformed
 
     public static void main(String args[]) {
@@ -277,8 +281,8 @@ public final class Login extends javax.swing.JFrame {
     }
 
     void openFullScreenWindow(JFrame window) {
+        window.setExtendedState(JFrame.MAXIMIZED_BOTH);
         window.setVisible(true);
-        window.setLocationRelativeTo(null);
         this.dispose();
     }
 

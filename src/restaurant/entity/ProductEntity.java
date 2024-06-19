@@ -6,7 +6,7 @@ public class ProductEntity {
 
     private String productID;
     private String productName;
-    private int price;
+    private long price;
     private String unit;
     private String imageURL;
     private String category;
@@ -30,11 +30,11 @@ public class ProductEntity {
         this.productName = productName;
     }
 
-    public int getPrice() {
+    public long getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(long price) {
         this.price = price;
     }
 
