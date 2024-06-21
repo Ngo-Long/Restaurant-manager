@@ -6,9 +6,10 @@ public class OrderEntity {
 
     private int orderId;
     private int invoiceID;
-    private String status;
+    private String note;
     private String method;
     private long total;
+    private String status;
     private Date createdDate;
 
     public int getOrderId() {
@@ -27,12 +28,12 @@ public class OrderEntity {
         this.invoiceID = invoiceID;
     }
 
-    public String getStatus() {
-        return status;
+    public String getNote() {
+        return note;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public String getMethod() {
@@ -49,6 +50,14 @@ public class OrderEntity {
 
     public void setTotal(long total) {
         this.total = total;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Date getCreatedDate() {

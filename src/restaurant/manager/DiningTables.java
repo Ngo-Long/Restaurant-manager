@@ -1,6 +1,5 @@
 package restaurant.manager;
 
-import java.text.MessageFormat;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
@@ -22,6 +21,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.swing.JTable;
+import java.text.MessageFormat;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.DefaultComboBoxModel;
@@ -516,7 +516,7 @@ public final class DiningTables extends javax.swing.JPanel {
 
         // edit table
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
-        customizeTable(tableDiningTables, new int[]{});
+        customizeTable(tableDiningTables, new int[]{}, 30);
 
         // <--- Setup main --->
         // setup combobox

@@ -1,24 +1,21 @@
 package restaurant.main;
 
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.border.Border;
 
 import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
-
 import restaurant.staff.Overview;
 import restaurant.staff.Products;
 import restaurant.staff.Invoices;
-import restaurant.staff.OrderTables;
+import restaurant.staff.TableOrder;
 import restaurant.staff.ConfirmProducts;
 
 public final class MainStaff extends javax.swing.JFrame {
@@ -35,6 +32,15 @@ public final class MainStaff extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem6 = new javax.swing.JMenuItem();
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu3 = new javax.swing.JMenu();
+        jMenu4 = new javax.swing.JMenu();
+        jMenu5 = new javax.swing.JMenu();
+        jPopupMenu1 = new javax.swing.JPopupMenu();
+        jPopupMenu2 = new javax.swing.JPopupMenu();
         scrollPaneMain = new javax.swing.JScrollPane();
         panelMain = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
@@ -45,6 +51,9 @@ public final class MainStaff extends javax.swing.JFrame {
         btnOrderTake = new javax.swing.JButton();
         btnClosingShift = new javax.swing.JButton();
         btnWareHouse = new javax.swing.JButton();
+        btnCheck = new javax.swing.JButton();
+        btnBell = new javax.swing.JButton();
+        btnMenu = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         menuSystem = new javax.swing.JMenu();
         menuChange = new javax.swing.JMenuItem();
@@ -57,8 +66,6 @@ public final class MainStaff extends javax.swing.JFrame {
         menuDishes = new javax.swing.JMenuItem();
         menuChicken = new javax.swing.JMenuItem();
         menuPay = new javax.swing.JMenuItem();
-        jSeparator4 = new javax.swing.JPopupMenu.Separator();
-        menuEmployeeList = new javax.swing.JMenuItem();
         menuStatistical = new javax.swing.JMenu();
         menuRevenue = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
@@ -75,6 +82,8 @@ public final class MainStaff extends javax.swing.JFrame {
         menuVaiTro = new javax.swing.JMenu();
         menuItemEmployee = new javax.swing.JMenuItem();
         menuItemManager = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        jMenuItem4 = new javax.swing.JMenuItem();
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -82,6 +91,20 @@ public final class MainStaff extends javax.swing.JFrame {
 
         jCheckBoxMenuItem1.setSelected(true);
         jCheckBoxMenuItem1.setText("jCheckBoxMenuItem1");
+
+        jMenu1.setText("jMenu1");
+
+        jMenuItem2.setText("jMenuItem2");
+
+        jMenuItem3.setText("jMenuItem3");
+
+        jMenu3.setText("File");
+        jMenuBar1.add(jMenu3);
+
+        jMenu4.setText("Edit");
+        jMenuBar1.add(jMenu4);
+
+        jMenu5.setText("jMenu5");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Hot Noodle");
@@ -94,11 +117,11 @@ public final class MainStaff extends javax.swing.JFrame {
         panelMain.setLayout(panelMainLayout);
         panelMainLayout.setHorizontalGroup(
             panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1286, Short.MAX_VALUE)
+            .addGap(0, 1369, Short.MAX_VALUE)
         );
         panelMainLayout.setVerticalGroup(
             panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 717, Short.MAX_VALUE)
+            .addGap(0, 790, Short.MAX_VALUE)
         );
 
         scrollPaneMain.setViewportView(panelMain);
@@ -171,6 +194,36 @@ public final class MainStaff extends javax.swing.JFrame {
             }
         });
 
+        btnCheck.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnCheck.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/check-mark.png"))); // NOI18N
+        btnCheck.setBorder(null);
+        btnCheck.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCheck.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCheckActionPerformed(evt);
+            }
+        });
+
+        btnBell.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnBell.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/bell.png"))); // NOI18N
+        btnBell.setBorder(null);
+        btnBell.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBell.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBellActionPerformed(evt);
+            }
+        });
+
+        btnMenu.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/menu.png"))); // NOI18N
+        btnMenu.setBorder(null);
+        btnMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMenuActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -190,20 +243,30 @@ public final class MainStaff extends javax.swing.JFrame {
                 .addComponent(btnClosingShift, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnWareHouse, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(322, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnBell, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnCheck, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(buttonOverview, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnTable, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnPay, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnOrderTake, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnClosingShift, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnWareHouse, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnMenu, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
+                    .addComponent(btnBell, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
+                    .addComponent(btnCheck, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(buttonOverview, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnTable, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnPay, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnOrderTake, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnClosingShift, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnWareHouse, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -292,18 +355,6 @@ public final class MainStaff extends javax.swing.JFrame {
             }
         });
         menuManager.add(menuPay);
-        menuManager.add(jSeparator4);
-
-        menuEmployeeList.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
-        menuEmployeeList.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Clien list.png"))); // NOI18N
-        menuEmployeeList.setText("Nhân viên");
-        menuEmployeeList.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuEmployeeList.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuEmployeeListActionPerformed(evt);
-            }
-        });
-        menuManager.add(menuEmployeeList);
 
         menuBar.add(menuManager);
 
@@ -410,6 +461,13 @@ public final class MainStaff extends javax.swing.JFrame {
 
         menuBar.add(menuVaiTro);
 
+        jMenu2.setText("jMenu2");
+
+        jMenuItem4.setText("jMenuItem4");
+        jMenu2.add(jMenuItem4);
+
+        menuBar.add(jMenu2);
+
         setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -417,7 +475,7 @@ public final class MainStaff extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(scrollPaneMain, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(scrollPaneMain, javax.swing.GroupLayout.DEFAULT_SIZE, 1280, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -449,7 +507,7 @@ public final class MainStaff extends javax.swing.JFrame {
     }//GEN-LAST:event_menuEndActionPerformed
 
     private void menuTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTablesActionPerformed
-        displayStaffPanels(new OrderTables(this));
+        displayStaffPanels(new TableOrder(this));
     }//GEN-LAST:event_menuTablesActionPerformed
 
     private void menuDishesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDishesActionPerformed
@@ -463,9 +521,6 @@ public final class MainStaff extends javax.swing.JFrame {
     private void menuPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuPayActionPerformed
         displayStaffPanels(new Invoices(this));
     }//GEN-LAST:event_menuPayActionPerformed
-
-    private void menuEmployeeListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEmployeeListActionPerformed
-    }//GEN-LAST:event_menuEmployeeListActionPerformed
 
     private void menuRevenueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRevenueActionPerformed
 
@@ -495,7 +550,7 @@ public final class MainStaff extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonOverviewActionPerformed
 
     private void btnTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTableActionPerformed
-        displayStaffPanels(new OrderTables(this));
+        displayStaffPanels(new TableOrder(this));
     }//GEN-LAST:event_btnTableActionPerformed
 
     private void btnProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductActionPerformed
@@ -526,6 +581,18 @@ public final class MainStaff extends javax.swing.JFrame {
         openFullScreenWindow(new MainManager());
     }//GEN-LAST:event_menuItemManagerActionPerformed
 
+    private void btnCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCheckActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnCheckActionPerformed
+
+    private void btnBellActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBellActionPerformed
+        displayStaffPanels(new ConfirmProducts(this));
+    }//GEN-LAST:event_btnBellActionPerformed
+
+    private void btnMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnMenuActionPerformed
+
     public static void main(String args[]) {
 
         try {
@@ -546,7 +613,10 @@ public final class MainStaff extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBell;
+    private javax.swing.JButton btnCheck;
     private javax.swing.JButton btnClosingShift;
+    private javax.swing.JButton btnMenu;
     private javax.swing.JButton btnOrderTake;
     private javax.swing.JButton btnPay;
     private javax.swing.JButton btnProduct;
@@ -554,13 +624,23 @@ public final class MainStaff extends javax.swing.JFrame {
     private javax.swing.JButton btnWareHouse;
     private javax.swing.JButton buttonOverview;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenu jMenu5;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPopupMenu jPopupMenu1;
+    private javax.swing.JPopupMenu jPopupMenu2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
-    private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JPopupMenu.Separator jSeparator8;
     private javax.swing.JPopupMenu.Separator jSeparator9;
@@ -569,7 +649,6 @@ public final class MainStaff extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuChicken;
     private javax.swing.JMenuItem menuClients;
     private javax.swing.JMenuItem menuDishes;
-    private javax.swing.JMenuItem menuEmployeeList;
     private javax.swing.JMenuItem menuEnd;
     private javax.swing.JMenuItem menuIngridiants;
     private javax.swing.JMenuItem menuInstruct;
@@ -600,7 +679,7 @@ public final class MainStaff extends javax.swing.JFrame {
 
         setupTables();
         selectButton(buttonOverview);
-        
+
         displayStaffPanels(new Overview(this));
     }
 
@@ -614,7 +693,7 @@ public final class MainStaff extends javax.swing.JFrame {
 
         // Mảng chứa các nút cần xử lý
         JButton[] buttons = {buttonOverview, btnTable, btnProduct, btnPay,
-            btnOrderTake, btnClosingShift, btnWareHouse};
+            btnOrderTake, btnClosingShift, btnWareHouse, btnBell, btnCheck, btnMenu};
 
         // Thiết lập sự kiện cho từng nút
         for (JButton button : buttons) {

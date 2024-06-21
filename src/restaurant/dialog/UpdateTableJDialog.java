@@ -370,6 +370,7 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
     boolean isEditable = true;
 
     void init() {
+        // Set system
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(new Color(240, 240, 240));
 

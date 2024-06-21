@@ -26,11 +26,11 @@ import restaurant.main.MainManager;
 import restaurant.entity.ProductEntity;
 
 import static restaurant.utils.Common.getRealText;
-import static restaurant.utils.Common.setImagePath;
 import static restaurant.utils.Common.createButtonGroup;
 import static restaurant.utils.Common.addCommasToNumber;
 import static restaurant.utils.Common.removeCommasFromNumber;
-import static restaurant.utils.Common.chooseImageFromDirectory;
+import static restaurant.utils.ImageUtils.setImageButtonIcon;
+import static restaurant.utils.ImageUtils.chooseImageFromDirectory;
 
 public final class UpdateProductJDialog extends javax.swing.JDialog {
 
@@ -717,9 +717,9 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         // Set image
         if (product.getImageURL() == null) {
             imagePath = "src/restaurant/img/background.jpg";
-            setImagePath(imagePath, btnProductImage);
+            setImageButtonIcon(imagePath, btnProductImage);
         } else {
-            setImagePath(product.getImageURL(), btnProductImage);
+            setImageButtonIcon(product.getImageURL(), btnProductImage);
         }
     }
 

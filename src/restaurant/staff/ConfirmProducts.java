@@ -1,24 +1,36 @@
 package restaurant.staff;
 
-import restaurant.dialog.reasonDeletionJDialog;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.util.*;
-import java.util.List;
-import javax.swing.*;
-import javax.swing.table.*;
 import java.text.SimpleDateFormat;
-import java.util.concurrent.ExecutionException;
 
-import restaurant.dao.OrderDAO;
-import restaurant.dao.ProductDAO;
-import restaurant.dao.OrderDetailDAO;
-import restaurant.entity.ProductEntity;
-import restaurant.entity.OrderDetailEntity;
-import restaurant.main.MainStaff;
+import java.util.List;
+import java.util.Comparator;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.DefaultCellEditor;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
+import restaurant.main.MainStaff;
+import restaurant.dao.ProductDAO;
+import restaurant.table.TableCustom;
+import restaurant.dao.DiningTableDAO;
+import restaurant.dao.OrderDetailDAO;
+import restaurant.entity.ProductEntity;
+import restaurant.entity.DiningTableEntity;
+import restaurant.entity.OrderDetailEntity;
+import restaurant.dialog.HistoryProductsJDialog;
+import restaurant.dialog.ReasonDeletionJDialog;
 import static restaurant.utils.Common.createButton;
 import static restaurant.staff.ConfirmProducts.DETAIL_ID_COLUMN_INDEX;
 
@@ -36,30 +48,17 @@ public class ConfirmProducts extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        tabbedPanePay2 = new javax.swing.JTabbedPane();
-        jPanel7 = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
         tablePendingDishes = new javax.swing.JTable();
-        jPanel8 = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        tablePendingDrinks = new javax.swing.JTable();
-        jPanel9 = new javax.swing.JPanel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        tableFinishedProducts = new javax.swing.JTable();
+        btnHistory = new javax.swing.JButton();
+        btnReset = new javax.swing.JButton();
+        btnSearch = new javax.swing.JButton();
+        textSearch = new javax.swing.JTextField();
+        btnSearch1 = new javax.swing.JButton();
+        labelOrderTable = new javax.swing.JLabel();
 
-        tabbedPanePay2.setBackground(new java.awt.Color(255, 255, 255));
-        tabbedPanePay2.setDoubleBuffered(true);
-        tabbedPanePay2.setFocusCycleRoot(true);
-        tabbedPanePay2.setFocusTraversalPolicyProvider(true);
-        tabbedPanePay2.setFont(new java.awt.Font("Cascadia Code PL", 0, 14)); // NOI18N
-        tabbedPanePay2.setInheritsPopupMenu(true);
-        tabbedPanePay2.setOpaque(true);
-
-        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel7.setAutoscrolls(true);
-        jPanel7.setFocusCycleRoot(true);
-        jPanel7.setFocusTraversalPolicyProvider(true);
-        jPanel7.setInheritsPopupMenu(true);
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         tablePendingDishes.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         tablePendingDishes.setForeground(new java.awt.Color(51, 51, 51));
@@ -85,216 +84,210 @@ public class ConfirmProducts extends javax.swing.JPanel {
         tablePendingDishes.setGridColor(new java.awt.Color(255, 255, 255));
         tablePendingDishes.setRowHeight(50);
         jScrollPane7.setViewportView(tablePendingDishes);
+        if (tablePendingDishes.getColumnModel().getColumnCount() > 0) {
+            tablePendingDishes.getColumnModel().getColumn(4).setMinWidth(0);
+            tablePendingDishes.getColumnModel().getColumn(4).setPreferredWidth(0);
+            tablePendingDishes.getColumnModel().getColumn(4).setMaxWidth(0);
+        }
 
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 1258, Short.MAX_VALUE)
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
-        );
-
-        tabbedPanePay2.addTab("NHÀ BẾP ", new javax.swing.ImageIcon(getClass().getResource("/icon/chef.png")), jPanel7); // NOI18N
-
-        jPanel8.setBackground(new java.awt.Color(255, 255, 255));
-
-        tablePendingDrinks.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        tablePendingDrinks.setForeground(new java.awt.Color(51, 51, 51));
-        tablePendingDrinks.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Tên món", "Tên bàn", "Thời gian", "Xác nhận", "Mã chi tiết"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+        btnHistory.setBackground(new java.awt.Color(51, 204, 0));
+        btnHistory.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnHistory.setForeground(new java.awt.Color(255, 255, 255));
+        btnHistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/historyWhile.png"))); // NOI18N
+        btnHistory.setToolTipText("Xem lịch sử gọi món");
+        btnHistory.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnHistory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHistoryActionPerformed(evt);
             }
         });
-        tablePendingDrinks.setFillsViewportHeight(true);
-        tablePendingDrinks.setGridColor(new java.awt.Color(255, 255, 255));
-        tablePendingDrinks.setRowHeight(50);
-        tablePendingDrinks.setSelectionForeground(new java.awt.Color(255, 255, 255));
-        jScrollPane3.setViewportView(tablePendingDrinks);
 
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1258, Short.MAX_VALUE)
-        );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
-        );
-
-        tabbedPanePay2.addTab("QUẦY NƯỚC ", new javax.swing.ImageIcon(getClass().getResource("/icon/drink.png")), jPanel8); // NOI18N
-
-        jPanel9.setBackground(new java.awt.Color(255, 255, 255));
-
-        tableFinishedProducts.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        tableFinishedProducts.setForeground(new java.awt.Color(51, 51, 51));
-        tableFinishedProducts.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Tên món", "Tên bàn", "Thời gian", "Trạng thái", "Mã chi tiết"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+        btnReset.setBackground(new java.awt.Color(0, 153, 153));
+        btnReset.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnReset.setForeground(new java.awt.Color(255, 255, 255));
+        btnReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/refreshWhile.png"))); // NOI18N
+        btnReset.setToolTipText("Reset trang (Ctrl + F5)");
+        btnReset.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetActionPerformed(evt);
             }
         });
-        tableFinishedProducts.setAlignmentX(0.0F);
-        tableFinishedProducts.setAlignmentY(0.0F);
-        tableFinishedProducts.setFillsViewportHeight(true);
-        tableFinishedProducts.setGridColor(new java.awt.Color(255, 255, 255));
-        tableFinishedProducts.setRowHeight(50);
-        tableFinishedProducts.setShowGrid(false);
-        jScrollPane4.setViewportView(tableFinishedProducts);
 
-        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
-        jPanel9.setLayout(jPanel9Layout);
-        jPanel9Layout.setHorizontalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1258, Short.MAX_VALUE)
-        );
-        jPanel9Layout.setVerticalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
-        );
+        btnSearch.setBackground(new java.awt.Color(255, 51, 51));
+        btnSearch.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnSearch.setForeground(new java.awt.Color(255, 255, 255));
+        btnSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/searchWhile.png"))); // NOI18N
+        btnSearch.setToolTipText("Tìm kiếm");
+        btnSearch.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
 
-        tabbedPanePay2.addTab("LỊCH SỬ ", new javax.swing.ImageIcon(getClass().getResource("/icon/history.png")), jPanel9); // NOI18N
+        textSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        textSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textSearchActionPerformed(evt);
+            }
+        });
+
+        btnSearch1.setBackground(new java.awt.Color(255, 51, 51));
+        btnSearch1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnSearch1.setForeground(new java.awt.Color(255, 255, 255));
+        btnSearch1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/cart-while-24px.png"))); // NOI18N
+        btnSearch1.setToolTipText("Tìm kiếm");
+        btnSearch1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSearch1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearch1ActionPerformed(evt);
+            }
+        });
+
+        labelOrderTable.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        labelOrderTable.setForeground(new java.awt.Color(255, 51, 51));
+        labelOrderTable.setText("Chờ chế biến");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(12, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 1234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnSearch1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labelOrderTable)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(12, 12, 12))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(textSearch, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                        .addComponent(btnReset, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(labelOrderTable, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSearch1)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 528, Short.MAX_VALUE)
+                .addGap(12, 12, 12))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(tabbedPanePay2, javax.swing.GroupLayout.PREFERRED_SIZE, 1258, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(12, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addComponent(tabbedPanePay2, javax.swing.GroupLayout.PREFERRED_SIZE, 594, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(12, 12, 12))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistoryActionPerformed
+        new HistoryProductsJDialog(null, true).setVisible(true);
+    }//GEN-LAST:event_btnHistoryActionPerformed
+
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
+        mainStaff.displayStaffPanels(new ConfirmProducts(mainStaff));
+    }//GEN-LAST:event_btnResetActionPerformed
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void textSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSearchActionPerformed
+
+    }//GEN-LAST:event_textSearchActionPerformed
+
+    private void btnSearch1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearch1ActionPerformed
+
+    }//GEN-LAST:event_btnSearch1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
-    private javax.swing.JPanel jPanel9;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JButton btnHistory;
+    private javax.swing.JButton btnReset;
+    private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnSearch1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane7;
-    private javax.swing.JTabbedPane tabbedPanePay2;
-    private javax.swing.JTable tableFinishedProducts;
+    private javax.swing.JLabel labelOrderTable;
     private javax.swing.JTable tablePendingDishes;
-    private javax.swing.JTable tablePendingDrinks;
+    private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
     int detailID;
     int selectedRow;
     static final int DETAIL_ID_COLUMN_INDEX = 3;
-    List<OrderDetailEntity> pendingProducts;
-    List<OrderDetailEntity> confirmedProducts;
-
-    DefaultTableModel modelDrinks;
-    DefaultTableModel modelDishes;
-    DefaultTableModel modelProducts;
+    List<OrderDetailEntity> dataList;
 
     void init() {
         // Tùy chỉnh bảng
-        Common.customizeTable(tablePendingDishes, new int[]{});
-        Common.customizeTable(tablePendingDrinks, new int[]{});
-        Common.customizeTable(tableFinishedProducts, new int[]{});
+        TableCustom.apply(jScrollPane7, TableCustom.TableType.MULTI_LINE);
+        Common.customizeTable(tablePendingDishes, new int[]{}, 50);
+        setupButtonColumnConfirm(tablePendingDishes, 3);
 
-        // Thiết lập cột nút cho bảng
-        setupButtonColumn(tablePendingDishes, 3);
-        setupButtonColumn(tablePendingDrinks, 3);
-
-        // Khởi chạy luồng SwingWorker để truy vấn dữ liệu từ cơ sở dữ liệu
-        new SwingWorker<Void, Void>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                pendingProducts = new OrderDetailDAO().getPendingProducts();
-                confirmedProducts = new OrderDetailDAO().getConfirmedProducts();
-                return null;
-            }
-
-            @Override
-            protected void done() {
-                try {
-                    get();
-                    displayProductsInTables();
-                } catch (InterruptedException | ExecutionException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }.execute();
+        dataList = new OrderDetailDAO().getPendingProducts();
+        displayProductsInTables();
     }
 
     // <--- Display products by kitchen
     void displayProductsInTables() {
         // Get model
-        modelDrinks = (DefaultTableModel) tablePendingDrinks.getModel();
-        modelDishes = (DefaultTableModel) tablePendingDishes.getModel();
-        modelProducts = (DefaultTableModel) tableFinishedProducts.getModel();
-
-        // Xóa tất cả các dòng trong bảng trước khi cập nhật dữ liệu mới
-        modelDrinks.setRowCount(0);
-        modelDishes.setRowCount(0);
-        modelProducts.setRowCount(0);
+        DefaultTableModel model = (DefaultTableModel) tablePendingDishes.getModel();
+        model.setRowCount(0);
 
         // Fetch pending and confirmed products
-        pendingProducts = new OrderDetailDAO().getPendingProducts();
-        confirmedProducts = new OrderDetailDAO().getConfirmedProducts();
+        dataList = new OrderDetailDAO().getPendingProducts();
+        tablePendingDishes.setModel(model);
 
-        // Đặt model cho bảng 
-        tablePendingDrinks.setModel(modelDrinks);
-        tablePendingDishes.setModel(modelDishes);
-        tableFinishedProducts.setModel(modelProducts);
-
-        // Prepare data for pending and confirmed products table
-        fillPendingProductsTable(modelDrinks, modelDishes);
-        fillConfirmedProductsTable(modelProducts);
+        // Load data
+        this.fillTable(model);
     }
 
-    void fillPendingProductsTable(DefaultTableModel modelDrinks, DefaultTableModel modelDishes) {
+    void fillTable(DefaultTableModel model) {
         // Sắp xếp theo thời gian bắt đầu từ gần nhất
-        pendingProducts.sort(Comparator.comparing(OrderDetailEntity::getStartTime).reversed());
+        dataList.sort(Comparator.comparing(OrderDetailEntity::getStartTime).reversed());
 
         // Thêm sản phẩm vào bảng tương ứng
-        for (OrderDetailEntity pendingProduct : pendingProducts) {
-            // Get id detail
-            int detailProductId = pendingProduct.getOrderDetailID();
+        for (OrderDetailEntity dataItem : dataList) {
+            // Get detail id and order id
+            int detailProductId = dataItem.getOrderDetailID();
+            int orderID = dataItem.getOrderID();
 
             // Get name table by id table
-            String tableDiningName = new OrderDAO().getTableNameByOrderId(pendingProduct.getOrderID());
+            DiningTableEntity tableDining = new DiningTableDAO().getByOrderID(orderID);
+            String tableName = tableDining.getName();
 
             // Get products in ordered
-            String productId = pendingProduct.getProductID();
-            int productQuantity = pendingProduct.getProductQuantity();
-            String productLevel = !pendingProduct.getProductDesc().isEmpty() ? " (" + pendingProduct.getProductDesc() + ")" : "";
-            String productTimeAdded = new SimpleDateFormat("HH:mm").format(pendingProduct.getStartTime());
+            String productId = dataItem.getProductID();
+            int productQuantity = dataItem.getProductQuantity();
+            String productLevel = !dataItem.getProductDesc().isEmpty() ? " (" + dataItem.getProductDesc() + ")" : "";
+            String productTimeAdded = new SimpleDateFormat("HH:mm").format(dataItem.getStartTime());
 
             // Get info product
             ProductEntity productEntity = new ProductDAO().getById(productId);
@@ -302,70 +295,37 @@ public class ConfirmProducts extends javax.swing.JPanel {
             String productNameAndLevel = productName + productLevel + " x" + productQuantity;
             String productKitchenArea = productEntity.getKitchenArea();
 
-            // Thêm sản phẩm vào bảng tương ứng (Khu bếp, Quầy nước)
-            DefaultTableModel model = productKitchenArea.equals("Khu bếp") ? modelDishes : modelDrinks;
+            // Thêm sản phẩm vào bảng 
             model.addRow(new Object[]{
                 productNameAndLevel,
-                tableDiningName,
+                tableName,
                 productTimeAdded,
                 detailProductId
             });
         }
     }
-
-    void fillConfirmedProductsTable(DefaultTableModel modelProducts) {
-        // Sắp xếp theo thời gian kết thúc từ gần nhất
-        confirmedProducts.sort(Comparator.comparing(OrderDetailEntity::getEndTime).reversed());
-
-        // Thêm sản phẩm vào bảng đã xác nhận
-        for (OrderDetailEntity confirmedProduct : confirmedProducts) {
-            // Get name table by id table
-            String tableDiningName = new OrderDAO().getTableNameByOrderId(confirmedProduct.getOrderID());
-
-            // Get products in ordered
-            String productId = confirmedProduct.getProductID();
-            int productQuantity = confirmedProduct.getProductQuantity();
-            String productStatus = confirmedProduct.getProductStatus();
-            String productLevel = !confirmedProduct.getProductDesc().isEmpty() ? " (" + confirmedProduct.getProductDesc() + ")" : "";
-            String productTimeAdded = new SimpleDateFormat("HH:mm").format(confirmedProduct.getStartTime());
-            String productTimeUpdate = new SimpleDateFormat("HH:mm").format(confirmedProduct.getEndTime());
-
-            // Get info product
-            ProductEntity productEntity = new ProductDAO().getById(productId);
-            String productName = productEntity.getProductName();
-            String productNameAndLevel = productName + productLevel + " x" + productQuantity;
-
-            // Add too table
-            Object[] rowData = {
-                productNameAndLevel,
-                tableDiningName,
-                productTimeAdded + " - " + productTimeUpdate,
-                productStatus
-            };
-            modelProducts.addRow(rowData);
-        }
-    }
     // end --->    
 
     // <--- Init 2 button "Finish" and "Delete"
-    void setupButtonColumn(JTable table, int columnNumber) {
+    void setupButtonColumnConfirm(JTable table, int columnNumber) {
         TableColumn column = table.getColumnModel().getColumn(columnNumber);
-        column.setCellRenderer(new ButtonRenderer());
-        column.setCellEditor(new ButtonEditor(table));
+        column.setCellRenderer((TableCellRenderer) new ButtonRenderer());
+        column.setCellEditor((TableCellEditor) new ButtonEditor(table));
     }
 
     class ButtonRenderer extends JPanel implements TableCellRenderer {
 
         public ButtonRenderer() {
             setOpaque(true);
+            setBackground(Color.white);
             setLayout(new FlowLayout(FlowLayout.CENTER, 5, 2));
-            add(createButton("Hoàn thành", new Color(0, 153, 0), new Dimension(130, 44)));
+            add(createButton("Hoàn thành", new Color(51, 153, 0), new Dimension(130, 44)));
             add(createButton("Xóa", new Color(255, 0, 51), new Dimension(60, 44)));
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+            setBackground(isSelected ? table.getSelectionBackground() : Color.white);
             return this;
         }
     }
@@ -380,11 +340,12 @@ public class ConfirmProducts extends javax.swing.JPanel {
             super(new JTextField());
             setClickCountToStart(1);
             panel = new JPanel();
+            panel.setBackground(Color.white);
             panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 2));
 
             // Create button
             deleteButton = createButton("Xóa", new Color(255, 0, 51), new Dimension(60, 44));
-            finishButton = createButton("Hoàn thành", new Color(0, 153, 0), new Dimension(130, 44));
+            finishButton = createButton("Hoàn thành", new Color(51, 153, 0), new Dimension(130, 44));
 
             // Handle click button
             finishButton.addActionListener((ActionEvent e) -> handleClickFinishButton(table));
@@ -436,21 +397,27 @@ public class ConfirmProducts extends javax.swing.JPanel {
     void handleClickDeleteButton(JTable table) {
         selectedRow = table.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(table, "Hãy chọn một dòng rồi ấn nút", "Xác nhận", JOptionPane.WARNING_MESSAGE);
+            Dialog.warning(this, "Hãy chọn một dòng rồi ấn nút");
             return;
         }
 
         // Sau khi cửa sổ đã đóng, lấy lý do đã chọn
-        reasonDeletionJDialog reasonDialog = new reasonDeletionJDialog(null, true);
+        ReasonDeletionJDialog reasonDialog = new ReasonDeletionJDialog(null, true);
         reasonDialog.setVisible(true);
+
         String selectedReason = reasonDialog.getSelectedReason();
+        if (selectedReason.endsWith("")) {
+            reasonDialog = new ReasonDeletionJDialog(null, true);
+            reasonDialog.setVisible(true);
+            return;
+        }
 
         // Get id detail product and current time
         detailID = (int) table.getValueAt(selectedRow, DETAIL_ID_COLUMN_INDEX);
 
         // Update delete order detail item
         OrderDetailEntity model = new OrderDetailDAO().getById(detailID);
-        model.setProductStatus("Đã xóa");
+        model.setProductStatus("Đã hủy");
         model.setNote(selectedReason);
         new OrderDetailDAO().update(model);
 
@@ -464,7 +431,7 @@ public class ConfirmProducts extends javax.swing.JPanel {
         int rowCount = model.getRowCount();
 
         if (rowCount <= 0) {
-            JOptionPane.showMessageDialog(table, "Lỗi rồi!", "Xác nhận", JOptionPane.WARNING_MESSAGE);
+            Dialog.warning(this, "Lỗi rồi!");
             return;
         }
 

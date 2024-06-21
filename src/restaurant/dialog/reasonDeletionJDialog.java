@@ -4,9 +4,9 @@ import java.awt.Color;
 import javax.swing.JCheckBox;
 import restaurant.utils.Dialog;
 
-public class reasonDeletionJDialog extends javax.swing.JDialog {
+public class ReasonDeletionJDialog extends javax.swing.JDialog {
 
-    public reasonDeletionJDialog(java.awt.Frame parent, boolean modal) {
+    public ReasonDeletionJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         init();
@@ -142,9 +142,7 @@ public class reasonDeletionJDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(buttonSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(buttonClose, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(0, 0, 0)))
+                    .addComponent(buttonClose, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
@@ -173,11 +171,11 @@ public class reasonDeletionJDialog extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(reasonDeletionJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ReasonDeletionJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
         java.awt.EventQueue.invokeLater(() -> {
-            reasonDeletionJDialog dialog = new reasonDeletionJDialog(new javax.swing.JFrame(), true);
+            ReasonDeletionJDialog dialog = new ReasonDeletionJDialog(new javax.swing.JFrame(), true);
             dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent e) {

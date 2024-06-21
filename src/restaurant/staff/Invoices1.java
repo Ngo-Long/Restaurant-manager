@@ -388,7 +388,7 @@ public class Invoices1 extends javax.swing.JPanel {
         jLabel16.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         labelCashReturn3.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
-        labelCashReturn3.setForeground(new java.awt.Color(51, 153, 0));
+        labelCashReturn3.setForeground(new java.awt.Color(51, 51, 51));
         labelCashReturn3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelCashReturn3.setText("20,000 VND");
         labelCashReturn3.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -425,7 +425,7 @@ public class Invoices1 extends javax.swing.JPanel {
         jLabel19.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         labelCashReturn2.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
-        labelCashReturn2.setForeground(new java.awt.Color(255, 153, 0));
+        labelCashReturn2.setForeground(new java.awt.Color(51, 51, 51));
         labelCashReturn2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelCashReturn2.setText("100,000 VND");
         labelCashReturn2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -455,7 +455,7 @@ public class Invoices1 extends javax.swing.JPanel {
         jPanel7.setBackground(new java.awt.Color(255, 255, 255));
 
         labelCashReturn1.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
-        labelCashReturn1.setForeground(new java.awt.Color(0, 89, 142));
+        labelCashReturn1.setForeground(new java.awt.Color(51, 51, 51));
         labelCashReturn1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelCashReturn1.setText("100,000 VND");
         labelCashReturn1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -610,7 +610,7 @@ public class Invoices1 extends javax.swing.JPanel {
         jLabel18.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         labelCashReturn4.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
-        labelCashReturn4.setForeground(new java.awt.Color(255, 102, 153));
+        labelCashReturn4.setForeground(new java.awt.Color(51, 51, 51));
         labelCashReturn4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelCashReturn4.setText("20,000 VND");
         labelCashReturn4.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));

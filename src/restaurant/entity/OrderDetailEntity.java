@@ -1,6 +1,6 @@
 package restaurant.entity;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class OrderDetailEntity {
 
@@ -11,8 +11,8 @@ public class OrderDetailEntity {
     private String productStatus;
     private String productDesc;
     private String Note;
-    private Date startTime;
-    private Date endTime;
+    private Timestamp startTime;
+    private Timestamp endTime;
 
     public int getOrderDetailID() {
         return orderDetailID;
@@ -70,19 +70,19 @@ public class OrderDetailEntity {
         this.Note = Note;
     }
 
-    public Date getStartTime() {
+    public Timestamp getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(Timestamp startTime) {
         this.startTime = startTime;
     }
 
-    public Date getEndTime() {
+    public Timestamp getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(Timestamp endTime) {
         this.endTime = endTime;
     }
 }

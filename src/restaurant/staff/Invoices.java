@@ -591,7 +591,7 @@ public class Invoices extends javax.swing.JPanel {
     }//GEN-LAST:event_btnPayInvoiceActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        mainStaff.displayStaffPanels(new OrderTables(mainStaff));
+        mainStaff.displayStaffPanels(new TableOrder(mainStaff));
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnFiftyThousandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiftyThousandActionPerformed
@@ -790,7 +790,7 @@ public class Invoices extends javax.swing.JPanel {
 
             // Update status
             Dialog.success(this, "Đã thanh toán!");
-            mainStaff.displayStaffPanels(new OrderTables(mainStaff));
+            mainStaff.displayStaffPanels(new TableOrder(mainStaff));
         } catch (Exception e) {
             Dialog.success(this, "Thanh toán không thành công!");
         }

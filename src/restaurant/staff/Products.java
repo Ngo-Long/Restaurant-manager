@@ -4,7 +4,6 @@ import java.util.Set;
 import java.util.List;
 import java.util.Vector;
 import java.util.HashSet;
-import java.util.Objects;
 
 import java.awt.Font;
 import java.awt.Color;
@@ -33,12 +32,10 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.BorderFactory;
 import javax.swing.SwingUtilities;
-import javax.swing.border.MatteBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.dao.OrderDAO;
@@ -59,8 +56,9 @@ import restaurant.table.TableCustom;
 import restaurant.entity.OrderEntity;
 import restaurant.entity.ProductEntity;
 import restaurant.entity.OrderDetailEntity;
+import restaurant.utils.ColumnTable;
 import static restaurant.utils.Common.addCommasToNumber;
-import static restaurant.utils.Common.getScaledImageIcon;
+import static restaurant.utils.ImageUtils.getScaledImageIcon;
 
 public class Products extends javax.swing.JPanel {
 
@@ -84,7 +82,7 @@ public class Products extends javax.swing.JPanel {
         btnCancel = new javax.swing.JButton();
         btnSearch1 = new javax.swing.JButton();
         labelOrderTable = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        textNote = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         labelTotal = new javax.swing.JLabel();
@@ -101,13 +99,13 @@ public class Products extends javax.swing.JPanel {
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setPreferredSize(new java.awt.Dimension(420, 592));
 
-        tableOrder.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        tableOrder.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tableOrder.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Mã món", "Tên món ăn ", "Số lượng", "Cấp độ"
+                "Mã món", "Tên món ăn ", "Số lượng", "Thành tiền"
             }
         ));
         tableOrder.setAlignmentX(1.0F);
@@ -120,8 +118,9 @@ public class Products extends javax.swing.JPanel {
             tableOrder.getColumnModel().getColumn(0).setMinWidth(0);
             tableOrder.getColumnModel().getColumn(0).setPreferredWidth(0);
             tableOrder.getColumnModel().getColumn(0).setMaxWidth(0);
-            tableOrder.getColumnModel().getColumn(1).setPreferredWidth(200);
-            tableOrder.getColumnModel().getColumn(2).setPreferredWidth(100);
+            tableOrder.getColumnModel().getColumn(1).setPreferredWidth(220);
+            tableOrder.getColumnModel().getColumn(2).setPreferredWidth(77);
+            tableOrder.getColumnModel().getColumn(3).setPreferredWidth(87);
         }
 
         btnSubmit.setBackground(new java.awt.Color(0, 153, 0));
@@ -164,8 +163,8 @@ public class Products extends javax.swing.JPanel {
         labelOrderTable.setForeground(new java.awt.Color(255, 51, 51));
         labelOrderTable.setText("ORDER");
 
-        jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED), "Ghi chú", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Segoe UI", 0, 16))); // NOI18N
+        textNote.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        textNote.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED), "Ghi chú", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Segoe UI", 0, 16))); // NOI18N
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
@@ -212,7 +211,7 @@ public class Products extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(textNote, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -233,7 +232,7 @@ public class Products extends javax.swing.JPanel {
                 .addGap(0, 0, 0)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(textNote, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -334,12 +333,12 @@ public class Products extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(CbCategory, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(textSearch, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSearch2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(CbCategory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                    .addComponent(textSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                    .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                    .addComponent(btnSearch2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                    .addComponent(btnHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addGap(0, 0, 0))
@@ -397,6 +396,7 @@ public class Products extends javax.swing.JPanel {
     }//GEN-LAST:event_btnHistoryActionPerformed
 
     private void btnSearch2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearch2ActionPerformed
+        mainStaff.displayStaffPanels(new Products(mainStaff));
     }//GEN-LAST:event_btnSearch2ActionPerformed
 
     private void btnSearch1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearch1ActionPerformed
@@ -418,12 +418,12 @@ public class Products extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel labelOrderTable;
     private javax.swing.JLabel labelTotal;
     private javax.swing.JPanel panelMainProducts;
     private javax.swing.JScrollPane scrollPane;
     private javax.swing.JTable tableOrder;
+    private javax.swing.JTextField textNote;
     private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
@@ -445,28 +445,29 @@ public class Products extends javax.swing.JPanel {
     void init() {
         // Setup common
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
-        Common.customizeTable(tableOrder, new int[]{1});
+        Common.customizeTable(tableOrder, new int[]{1}, 30);
         Common.customizeScrollBar(scrollPane);
-        Common.setupButtonColumn(tableOrder, 2);
-        Common.setupComboBoxColumn(tableOrder, 3);
+        Common.addPlaceholder(textNote, "Tối đa 60 ký tự");
+        ColumnTable.setupButtonColumn(tableOrder, 2);
 
-        // Set
+        // Setup
         displayTableName();
-
-        // Setup combobox
+        displayOrderOfTable();
         setupComboboxCategory();
 
-        // Calc total amount
+        // Calc total amount click column 2
         tableOrder.getModel().addTableModelListener((TableModelEvent e) -> {
-            calculateTotalAmount();
+            if (e.getColumn() == 2) {
+                calculateTotalAmount();
+            }
         });
 
         // Load data
         initEventHandlers();
         loadDataByCriteria();
-
     }
 
+    // <--- Common 
     void displayTableName() {
         // Kiểm tra và gán giá trị 
         if (Auth.table != null && Auth.table.getTableID() != null) {
@@ -481,7 +482,22 @@ public class Products extends javax.swing.JPanel {
         labelOrderTable.setText(tableID == null ? "ORDER [ Bàn Trống ]" : "ORDER [ " + tableName + " ]");
     }
 
-    // <--- Load data
+    void displayOrderOfTable() {
+        // Get order
+        existingOrder = new OrderDAO().getByTableId(tableID);
+        if (existingOrder == null) {
+            return;
+        }
+
+        // Set text note
+        String note = existingOrder.getNote();
+        if (note.equals("")) {
+            Common.addPlaceholder(textNote, "Tối đa 60 ký tự");
+        } else {
+            textNote.setText(note);
+        }
+    }
+
     void setupComboboxCategory() {
         // Get data all
         dataProducts = new ProductDAO().getAll();
@@ -505,7 +521,9 @@ public class Products extends javax.swing.JPanel {
         // Set the ComboBoxModel to the comboBox
         CbCategory.setModel(cbModelProducts);
     }
+    // end --->
 
+    // <--- Load data
     void initEventHandlers() {
         // Attach event textSearch
         textSearch.getDocument().addDocumentListener(new DocumentListener() {
@@ -644,14 +662,19 @@ public class Products extends javax.swing.JPanel {
     }
 
     void handleClickOrderProduct(ProductEntity product) {
-        // Get info
-        String productID = product.getProductID();
-        String productName = product.getProductName();
+        // Get model
         DefaultTableModel saveOrder = (DefaultTableModel) tableOrder.getModel();
 
-        // Add new row into the table at the end
-        Object[] rowData = {productID, productName, 1};
-        saveOrder.addRow(rowData);
+        String priceStr = String.valueOf(product.getPrice());
+        String formattedPrice = Common.addCommasToNumber(priceStr);
+
+        // Update model
+        saveOrder.addRow(new Object[]{
+            product.getProductID(),
+            product.getProductName(),
+            1,
+            formattedPrice
+        });
 
     }
 
@@ -660,38 +683,53 @@ public class Products extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
 
         for (int i = 0; i < model.getRowCount(); i++) {
+            // Get price
             String id = model.getValueAt(i, 0).toString();
             ProductEntity product = new ProductDAO().getById(id);
-
-            String quantityStr = model.getValueAt(i, 2).toString();
-            long quantity = Long.parseLong(quantityStr);
             long price = product.getPrice();
 
-            totalAmount += price * quantity;
+            // Get quantity
+            String quantityStr = model.getValueAt(i, 2).toString();
+            int quantity = Integer.parseInt(quantityStr);
+
+            // Calculate subtotal for the row
+            long subtotal = price * quantity;
+            String convertSubtotal = addCommasToNumber(String.valueOf(subtotal));
+
+            // Set value
+            model.setValueAt(convertSubtotal, i, 3);
+
+            // Accumulate subtotal to totalAmount
+            totalAmount += subtotal;
         }
 
         // Format totalAmount to display
         String formattedTotal = addCommasToNumber(String.valueOf(totalAmount));
         labelTotal.setText(formattedTotal + "₫");
     }
-    
+
     // <--- Handle click button submit and cancel
     void cancel() {
         // Nếu bàn chưa chọn món thì rời đi luôn
         DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
         if (model.getRowCount() == 0) {
-            mainStaff.displayStaffPanels(new OrderTables(mainStaff));
+            mainStaff.displayStaffPanels(new TableOrder(mainStaff));
             return;
         }
 
         // Nếu bàn đã gọi món thì hỏi trước khi thoát
         Boolean result = Dialog.confirm(this, "Nếu thoát bạn sẽ mất các món ăn đã chọn?");
         if (result) {
-            mainStaff.displayStaffPanels(new OrderTables(mainStaff));
+            mainStaff.displayStaffPanels(new TableOrder(mainStaff));
         }
     }
 
     void submit() {
+        if (labelOrderTable.getText().equals("ORDER [ Bàn Trống ]")) {
+            Dialog.warning(this, "Vui lòng chọn bàn ăn!");
+            return;
+        }
+
         if (tableOrder != null && tableOrder.getRowCount() == 0) {
             Dialog.warning(this, "Vui lòng chọn món ăn!");
             return;
@@ -711,43 +749,54 @@ public class Products extends javax.swing.JPanel {
                 // Create new order
                 int orderId = new OrderDAO().insert(invoiceID, "Đang đặt hàng", "Tại nhà hàng");
 
+                // Set status table
+                dataTable = new DiningTableDAO().getById(tableID);
+                dataTable.setStatus("Đang phục vụ");
+                new DiningTableDAO().update(dataTable);
+
                 // Set OrderTable
                 new OrderTableDAO().insert(orderId, tableID, "Đang hoạt động");
             }
 
-            // Get newly created order information
+            // Get newly created order information and update note
             existingOrder = new OrderDAO().getByTableId(tableID);
-            addProductsToOrderd(existingOrder, orderProducts);
+            String note = Common.getRealText(textNote, "Tối đa 60 ký tự");
+            if (note.length() > 60) {
+                Dialog.warning(this, "Vui lòng nhập tối đa 60 ký tự!");
+                return;
+            }
 
-            // Set status table
-            dataTable = new DiningTableDAO().getById(tableID);
-            dataTable.setStatus("Đang phục vụ");
-            new DiningTableDAO().update(dataTable);
+            existingOrder.setNote(note);
+            new OrderDAO().update(existingOrder);
+
+            // Add product to the order
+            addProductsToOrderd(existingOrder.getOrderId(), orderProducts);
 
             // Open file table
-            mainStaff.displayStaffPanels(new OrderTables(mainStaff));
+            mainStaff.displayStaffPanels(new TableOrder(mainStaff));
+            System.out.println("Tạo đơn hàng thành công");
         } catch (Exception e) {
             Dialog.error(this, "Đã xảy ra lỗi khi xử lý đơn hàng!");
             e.printStackTrace();
         }
     }
 
-    void addProductsToOrderd(OrderEntity existingOrder, Vector<Vector> orderProducts) {
+    void addProductsToOrderd(int orderID, Vector<Vector> orderProducts) {
         try {
             // For each new list of dishes
             for (Vector<Object> row : orderProducts) {
-                String dishName = row.get(0).toString();
-                int dishQuantity = Integer.parseInt(row.get(1).toString());
-                String dishDesc = row.get(2) != null ? row.get(2).toString() : "";
-                String dishId = ProductDAO.getIdDishFromName(dishName);
+                String productID = row.get(0).toString();
+                String name = row.get(1).toString();
+                int quantity = Integer.parseInt(row.get(2).toString());
+//                String desc = row.get(3) != null ? row.get(3).toString() : "";
 
                 // Add new each dish on detail order
-                for (int i = 1; i <= dishQuantity; i++) {
+                for (int i = 1; i <= quantity; i++) {
                     OrderDetailEntity newDetail = new OrderDetailEntity();
-                    newDetail.setOrderID(existingOrder.getOrderId());
-                    newDetail.setProductID(dishId);
+                    newDetail.setOrderID(orderID);
+                    newDetail.setProductID(productID);
                     newDetail.setProductQuantity(1);
-                    newDetail.setProductDesc(dishDesc);
+                    newDetail.setProductDesc("");
                     new OrderDetailDAO().insert(newDetail);
                 }
             }

@@ -2,6 +2,7 @@ package restaurant.dao;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import restaurant.entity.OrderDetailEntity;
@@ -16,20 +17,28 @@ public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
     final String DELETE_SQL = "DELETE FROM OrderDetail WHERE OrderDetailID=?";
     final String SELECT_ALL_SQL = "SELECT * FROM OrderDetail";
     final String SELECT_BY_ID_SQL = "SELECT * FROM OrderDetail WHERE OrderDetailID=?";
-    
+
     final String SELECT_BY_ORDER_ID_SQL = "SELECT od.* FROM OrderDetail od "
             + "JOIN [Order] o ON od.OrderID = o.OrderID "
             + "JOIN Invoice i ON o.InvoiceID = i.InvoiceID "
             + "WHERE od.ProductStatus != 'Đã xóa' AND i.Status = N'Chờ thanh toán' AND od.OrderID = ?";
-    
+
     final String SELECT_ORDER_PRODUCT_BY_ORDER_ID_SQL = "SELECT p.ProductName, od.ProductDesc, "
             + "od.ProductQuantity, p.Price AS UnitPrice, (od.ProductQuantity * p.Price) AS TotalPrice "
             + "FROM OrderDetail od "
             + "JOIN Product p ON od.ProductID = p.ProductID "
             + "WHERE od.OrderID = ?";
 
+    final String SELECT_BY_CRITERIA = "SELECT od.* FROM OrderDetail od "
+            + "JOIN Product p ON od.ProductID = p.ProductID "
+            + "WHERE ProductStatus != N'Chưa xử lý' "
+            + "AND ProductStatus LIKE ? "
+            + "AND p.KitchenArea LIKE ? "
+            + "AND p.ProductName LIKE ? "
+            + "AND od.StartTime >= ? "
+            + "AND od.EndTime <= ? ";
+
     final String SELECT_PENDING_PRODUCTS_SQL = "SELECT * FROM OrderDetail WHERE ProductStatus = N'Chưa xử lý'";
-    final String SELECT_CONFIRMED_PRODUCTS_SQL = "SELECT * FROM OrderDetail WHERE ProductStatus != N'Chưa xử lý'";
 
     @Override
     public void insert(OrderDetailEntity model) {
@@ -70,12 +79,20 @@ public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
         return fetchByQuery(SELECT_ALL_SQL);
     }
 
-    public List<OrderDetailEntity> getPendingProducts() {
-        return fetchByQuery(SELECT_PENDING_PRODUCTS_SQL);
+    public List<OrderDetailEntity> searchByCriteria(String status, String kitchen,
+            String name, String startDate, String endDate) {
+
+        String statusTerm = "%" + status + "%";
+        String kitchenTerm = "%" + kitchen + "%";
+        String nameTerm = "%" + name + "%";
+        String startDayTerm = startDate + " 00:00:00";
+        String endDayTerm = endDate + " 23:59:59";
+
+        return fetchByQuery(SELECT_BY_CRITERIA, statusTerm, kitchenTerm, nameTerm, startDayTerm, endDayTerm);
     }
 
-    public List<OrderDetailEntity> getConfirmedProducts() {
-        return fetchByQuery(SELECT_CONFIRMED_PRODUCTS_SQL);
+    public List<OrderDetailEntity> getPendingProducts() {
+        return fetchByQuery(SELECT_PENDING_PRODUCTS_SQL);
     }
 
     public List<OrderDetailEntity> getByOrderId(int orderId) {
@@ -111,9 +128,8 @@ public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
         model.setProductStatus(rs.getString("ProductStatus"));
         model.setProductDesc(rs.getString("ProductDesc"));
         model.setNote(rs.getString("Note"));
-        model.setStartTime(rs.getDate("StartTime"));
-        model.setEndTime(rs.getDate("EndTime"));
+        model.setStartTime(rs.getTimestamp("StartTime"));
+        model.setEndTime(rs.getTimestamp("EndTime"));
         return model;
     }
-
 }

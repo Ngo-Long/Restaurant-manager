@@ -59,14 +59,14 @@ public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
     }
 
     @Override
-    public List<ProductEntity> getAll() {
-        return fetchByQuery(SELECT_ALL_SQL);
-    }
-
-    @Override
     public ProductEntity getById(String id) {
         List<ProductEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
+    }
+
+    @Override
+    public List<ProductEntity> getAll() {
+        return fetchByQuery(SELECT_ALL_SQL);
     }
 
     public List<ProductEntity> getAllByCategory(String category) {

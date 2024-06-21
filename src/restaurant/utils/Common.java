@@ -4,11 +4,8 @@ import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.io.File;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -55,57 +52,63 @@ public class Common {
     }
 
     // Hàm chung để tùy chỉnh bảng
-    public static void customizeTable(JTable table, int[] columnsNotCentered) {
-        // Thiết lập bảng
+    public static void customizeTable(JTable table, int[] columnsNotCentered, int rowHeight) {
+        // Setup table
+        table.setRowHeight(rowHeight);         // Set row height for the table
         table.setGridColor(Color.WHITE);
         table.setDefaultEditor(Object.class, null);  // Ko sửa nội 
         table.setBorder(new LineBorder(Color.WHITE));
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Chọn duy nhất một hàng
 
-        // Thiết lập header
-        table.getTableHeader().setOpaque(true);
-        table.getTableHeader().setBackground(new Color(235, 235, 235));
-        table.getTableHeader().setFont(new Font("Be Vietnam Pro", Font.PLAIN, 16));
+        // Setup header common
+        JTableHeader tableHeader = table.getTableHeader();
+        tableHeader.setOpaque(true);
+        tableHeader.setReorderingAllowed(false);
+        tableHeader.setBackground(new Color(235, 235, 235));
+        tableHeader.setFont(new Font("Be Vietnam Pro", Font.PLAIN, 15));
 
-        // Thiết lập cho tiêu đề
+        // Setup header center
         DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer();
         headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        tableHeader.setDefaultRenderer(headerRenderer);
 
-        // Thiết lập chữ trong bảng
+        // Setup header not center
+        DefaultTableCellRenderer notCenterHeader = (DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer();
+        headerRenderer.setHorizontalAlignment(SwingConstants.LEFT);
+        tableHeader.setDefaultRenderer(headerRenderer);
+
+        // Setup renderer cho nội dung căn giữa
         DefaultTableCellRenderer contentRenderer = new DefaultTableCellRenderer();
-        contentRenderer.setOpaque(true);
-        contentRenderer.setBackground(Color.white);
         contentRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-        contentRenderer.setFont(new Font("Be Vietnam Pro", Font.PLAIN, 14));
-
-        // Thiết lập renderer title
-        DefaultTableCellRenderer notHeaderRenderer = new DefaultTableCellRenderer();
-        notHeaderRenderer.setHorizontalAlignment(SwingConstants.LEFT);
-
-        // Thiết lập renderer cột
-        DefaultTableCellRenderer notContenRenderer = new DefaultTableCellRenderer();
-        notContenRenderer.setOpaque(true);
         contentRenderer.setBackground(Color.white);
-        notHeaderRenderer.setHorizontalAlignment(SwingConstants.LEFT);
-        notContenRenderer.setFont(new Font("Be Vietnam Pro", Font.PLAIN, 14));
 
-        // Căn giữa
+        // Setup renderer cho nội dung không căn giữa
+        DefaultTableCellRenderer notContentRenderer = new DefaultTableCellRenderer();
+        notContentRenderer.setHorizontalAlignment(SwingConstants.LEFT);
+        notContentRenderer.setBackground(Color.white);
+
+        // Setup renderer và thuộc tính cho từng cột
+        TableColumnModel columnModel = table.getColumnModel();
         for (int i = 0; i < table.getColumnCount(); i++) {
-            boolean isCentered = true;
+            boolean isNotCentered = false;
             for (int column : columnsNotCentered) {
                 if (i == column) {
-                    isCentered = false;
+                    isNotCentered = true;
                     break;
                 }
             }
 
-            if (isCentered) {
-                table.getColumnModel().getColumn(i).setCellRenderer(contentRenderer);
-//                table.getColumnModel().getColumn(i).setHeaderRenderer(headerRenderer);
+            TableColumn column = columnModel.getColumn(i);
+            if (isNotCentered) {
+                table.getColumnModel().getColumn(i).setCellRenderer(notCenterHeader);
+                table.getColumnModel().getColumn(i).setCellRenderer(notContentRenderer);
             } else {
-                table.getColumnModel().getColumn(i).setCellRenderer(notContenRenderer);
-//                table.getColumnModel().getColumn(i).setHeaderRenderer(notHeaderRenderer);
+                table.getColumnModel().getColumn(i).setHeaderRenderer(headerRenderer);
+                table.getColumnModel().getColumn(i).setCellRenderer(contentRenderer);
             }
+
+            // Privent size column
+            column.setResizable(false);
         }
     }
 
@@ -115,64 +118,6 @@ public class Common {
         long hours = TimeUnit.MILLISECONDS.toHours(elapsedTimeInMillis);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(elapsedTimeInMillis) % 60;
         return String.format("%02d:%02d", hours, minutes);
-    }
-
-    // Chọn ảnh từ thư mục
-    public static String chooseImageFromDirectory(JFrame frame, JButton btnImage) {
-        String imgPath = "src/restaurant/img";
-        JFileChooser fileChooser = new JFileChooser(imgPath);
-
-        int result = fileChooser.showOpenDialog(frame);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile(); // Chọn
-            String imagePath = selectedFile.getAbsolutePath(); // Lưu đường dẫn ảnh đã chọn
-            setImagePath(imagePath, btnImage);
-
-            return imagePath;
-        }
-
-        return null;
-    }
-
-    // Set imgage
-    public static void setImagePath(String path, JButton button) {
-        int width = button.getWidth();
-        int height = button.getHeight();
-
-        ImageIcon icon = new ImageIcon(path);
-        Image image = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        ImageIcon scaledIcon = new ImageIcon(image);
-        button.setIcon(scaledIcon);
-    }
-
-    // Update image
-    public static void setImage(String imagePath, JLabel labelLogo) {
-        ImageIcon icon = new ImageIcon(imagePath);
-
-        int width = labelLogo.getWidth();
-        int height = labelLogo.getHeight();
-
-        Image image = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        ImageIcon scaledIcon = new ImageIcon(image);
-        labelLogo.setIcon(scaledIcon);
-    }
-
-    // Get image 
-    public static ImageIcon getScaledImageIcon(String imageUrl, int maxWidth, int maxHeight) {
-        // Create imageIcon
-        ImageIcon icon = new ImageIcon(imageUrl);
-        Image image = icon.getImage();
-
-        // Tính tỷ lệ ảnh để vừa với kích thước cha
-        int originalWidth = icon.getIconWidth();
-        int originalHeight = icon.getIconHeight();
-        double scale = Math.min((double) maxWidth / originalWidth, (double) maxHeight / originalHeight);
-        int scaledWidth = (int) (originalWidth * scale);
-        int scaledHeight = (int) (originalHeight * scale);
-
-        // Tạo một ImageIcon đã được thu nhỏ
-        Image scaledImage = image.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
-        return new ImageIcon(scaledImage);
     }
 
     // Scroll bar
@@ -250,167 +195,6 @@ public class Common {
         return num.replaceAll(",", "");
     }
 
-    // Init 2 button "+" and "-"
-    public static void setupButtonColumn(JTable table, int columnNumber) {
-        TableColumnModel columnModel = table.getColumnModel();
-        TableColumn column = columnModel.getColumn(columnNumber);
-        column.setCellRenderer(new ButtonRenderer());
-        column.setCellEditor(new ButtonEditor());
-    }
-
-    private static class ButtonRenderer extends DefaultTableCellRenderer {
-
-        private final JPanel panel = new JPanel();
-        private final JButton minusButton = new JButton("➖");
-        private final JButton plusButton = new JButton("➕");
-        private final JTextField textField = new JTextField();
-
-        public ButtonRenderer() {
-            // Set font size for JTextField
-            Font textFont = new Font(textField.getFont().getName(), Font.PLAIN, 16);
-            textField.setFont(textFont);
-
-            panel.setLayout(new BorderLayout());
-            panel.add(minusButton, BorderLayout.WEST);
-            panel.add(textField, BorderLayout.CENTER);
-            panel.add(plusButton, BorderLayout.EAST);
-
-            // Set panel background color
-            panel.setBackground(Color.white);
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            boolean isEmpty = value == null || value.toString().isEmpty();
-            plusButton.setVisible(!isEmpty);
-            minusButton.setVisible(!isEmpty);
-
-            if (isEmpty) {
-                // Nếu ô là rỗng, không hiển thị giá trị nào
-                textField.setText("");
-                plusButton.setEnabled(false); // Vô hiệu hóa nút "+"
-                minusButton.setEnabled(false); // Vô hiệu hóa nút "-"
-            } else {
-                // Nếu không, hiển thị giá trị của ô
-                textField.setText(value.toString());
-                plusButton.setEnabled(true); // Kích hoạt nút "+"
-                minusButton.setEnabled(true); // Kích hoạt nút "-"
-            }
-
-            return panel;
-        }
-    }
-
-    private static class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
-
-        private final JPanel panel = new JPanel();
-        private final JButton minusButton = new JButton("➖");
-        private final JButton plusButton = new JButton("➕");
-        private final JTextField textField = new JTextField();
-
-        public ButtonEditor() {
-            panel.setLayout(new BorderLayout());
-
-            Font textFieldFont = new Font(textField.getFont().getName(), Font.BOLD, 17);
-            textField.setFont(textFieldFont);
-
-            plusButton.addActionListener(e -> {
-                int number = Integer.parseInt(textField.getText());
-                textField.setText(String.valueOf(number + 1));
-                fireEditingStopped();
-            });
-
-            minusButton.addActionListener(e -> {
-                int number = Integer.parseInt(textField.getText());
-
-                if (number <= 1) {
-                    // Remove row
-                    JTable table = (JTable) SwingUtilities.getAncestorOfClass(JTable.class, minusButton);
-                    DefaultTableModel model = (DefaultTableModel) table.getModel();
-                    int editingRow = table.getEditingRow();
-                    stopCellEditing();
-                    model.removeRow(editingRow);
-                } else {
-                    // Decrease by 1
-                    textField.setText(String.valueOf(number - 1));
-                }
-
-                fireEditingStopped();
-            });
-
-            panel.add(minusButton, BorderLayout.WEST);
-            panel.add(textField, BorderLayout.CENTER);
-            panel.add(plusButton, BorderLayout.EAST);
-
-            // Set panel background color
-            panel.setBackground(Color.white);
-        }
-
-        @Override
-        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            boolean isEmpty = value == null || value.toString().isEmpty();
-            plusButton.setVisible(!isEmpty);
-            minusButton.setVisible(!isEmpty);
-
-            if (isEmpty) {
-                // Nếu ô là rỗng, không hiển thị giá trị nào
-                textField.setText("");
-                plusButton.setEnabled(false); // Vô hiệu hóa nút "+"
-                minusButton.setEnabled(false); // Vô hiệu hóa nút "-"
-            } else {
-                // Nếu không, hiển thị giá trị của ô
-                textField.setText(value.toString());
-                plusButton.setEnabled(true); // Kích hoạt nút "+"
-                minusButton.setEnabled(true); // Kích hoạt nút "-"
-            }
-
-            return panel;
-        }
-
-        @Override
-        public Object getCellEditorValue() {
-            return textField.getText();
-        }
-
-        @Override
-        public boolean stopCellEditing() {
-            fireEditingStopped();
-            return super.stopCellEditing();
-        }
-    }
-
-    // Khởi tạo ComboBox cho cột với chỉ số columnIndex trong bảng table
-    public static void setupComboBoxColumn(JTable table, int columnIndex) {
-        TableColumnModel columnModel = table.getColumnModel();
-        TableColumn column = columnModel.getColumn(columnIndex);
-        column.setCellEditor(new CustomComboBoxCellEditor(createOccupationComboBox()));
-    }
-
-    public static JComboBox<String> createOccupationComboBox() {
-        // Tạo ComboBox với danh sách các mục đã được định nghĩa sẵn
-        JComboBox<String> comboBox = new JComboBox<>();
-        List<String> items = Arrays.asList("", "Cấp 0", "Cấp 1", "Cấp 2", "Cấp 3", "Cấp 4", "Cấp 5", "Cấp 6", "Cấp 7");
-        items.forEach(comboBox::addItem);
-        return comboBox;
-    }
-
-    private static class CustomComboBoxCellEditor extends DefaultCellEditor {
-        // Editor tùy chỉnh để ẩn ComboBox cho các hàng chưa có sản phẩm
-
-        public CustomComboBoxCellEditor(JComboBox comboBox) {
-            super(comboBox);
-        }
-
-        @Override
-        public java.awt.Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            JComboBox<String> comboBox = (JComboBox<String>) super.getTableCellEditorComponent(table, value, isSelected, row, column);
-
-            // Kích hoạt hoặc vô hiệu hóa ComboBox dựa trên sự hiện diện của sản phẩm
-            comboBox.setEnabled(table.getValueAt(row, 0) != null); // Kiểm tra giá trị ở cột 0, nếu không rỗng thì kích hoạt ComboBox
-            return comboBox;
-        }
-    }
-
     // Hiện border đậm khi click
     public static void setTableButtonBorder(JButton button, boolean isSelected) {
         Color borderColor = isSelected ? new Color(80, 80, 80) : new Color(255, 255, 255);
@@ -430,7 +214,7 @@ public class Common {
 
         // Style font
         button.setForeground(Color.WHITE);
-        button.setFont(new Font(button.getFont().getName(), Font.BOLD, 15));
+        button.setFont(new Font(button.getFont().getName(), Font.BOLD, 14));
 
         // Attach event
         button.addMouseListener(new java.awt.event.MouseAdapter() {

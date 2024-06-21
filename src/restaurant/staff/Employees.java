@@ -9,6 +9,7 @@ import restaurant.entity.EmployeeEntity;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.event.ListSelectionEvent;
+import restaurant.utils.ImageUtils;
 
 public class Employees extends javax.swing.JFrame {
 
@@ -63,6 +64,7 @@ public class Employees extends javax.swing.JFrame {
         btnUpdate = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
+        txtNgay = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Quản lý nhân viên");
@@ -313,6 +315,10 @@ public class Employees extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/filter1.png"))); // NOI18N
 
+        txtNgay.setToolTipText("Ngày");
+        txtNgay.setDateFormatString("dd/MM/yyyy");
+        txtNgay.setFont(new java.awt.Font("Be Vietnam Pro", 0, 17)); // NOI18N
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -402,7 +408,10 @@ public class Employees extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(CbPosition, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(textCard, javax.swing.GroupLayout.Alignment.TRAILING))))
+                            .addComponent(textCard, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(txtNgay, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addGap(12, 12, 12))
         );
         jPanel4Layout.setVerticalGroup(
@@ -433,7 +442,9 @@ public class Employees extends javax.swing.JFrame {
                             .addComponent(CbPosition, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(12, 12, 12)
-                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtNgay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(textCard, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -549,7 +560,7 @@ public class Employees extends javax.swing.JFrame {
     }//GEN-LAST:event_textCardActionPerformed
 
     private void btnAvatarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvatarActionPerformed
-        Common.chooseImageFromDirectory(this, btnAvatar);
+        ImageUtils.chooseImageFromDirectory(this, btnAvatar);
     }//GEN-LAST:event_btnAvatarActionPerformed
 
     private void btnLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastActionPerformed
@@ -643,6 +654,7 @@ public class Employees extends javax.swing.JFrame {
     private javax.swing.JTextField textPhoneNumber;
     private javax.swing.JTextField textTimKiem;
     private javax.swing.JTextField textUsername;
+    private com.toedter.calendar.JDateChooser txtNgay;
     // End of variables declaration//GEN-END:variables
 
     String imagePath;
@@ -652,7 +664,7 @@ public class Employees extends javax.swing.JFrame {
     void init() {
         this.load();
         this.updateStatus();
-        Common.customizeTable(tableListEmplyees, new int[]{});
+        Common.customizeTable(tableListEmplyees, new int[]{}, 40);
         Common.createButtonGroup(radioMale, radioFemale, radioOther);
         addSelectionListenerToTable();
 

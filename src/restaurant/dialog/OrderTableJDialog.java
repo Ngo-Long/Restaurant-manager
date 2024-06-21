@@ -6,7 +6,6 @@ import java.util.HashMap;
 
 import java.awt.Color;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
 
@@ -18,7 +17,7 @@ import restaurant.utils.Ordered;
 import restaurant.main.MainStaff;
 import restaurant.staff.Products;
 import restaurant.staff.Invoices;
-import restaurant.staff.OrderTables;
+import restaurant.staff.TableOrder;
 import restaurant.table.TableCustom;
 
 import restaurant.dao.OrderDAO;
@@ -62,7 +61,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         jScrollPane3 = new javax.swing.JScrollPane();
         tableListOrderedDishes = new javax.swing.JTable();
         labelTableId = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        textNote = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         labelTotal = new javax.swing.JLabel();
@@ -175,15 +174,19 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         jScrollPane3.setViewportView(tableListOrderedDishes);
         if (tableListOrderedDishes.getColumnModel().getColumnCount() > 0) {
             tableListOrderedDishes.getColumnModel().getColumn(0).setPreferredWidth(250);
-            tableListOrderedDishes.getColumnModel().getColumn(2).setPreferredWidth(50);
-            tableListOrderedDishes.getColumnModel().getColumn(3).setPreferredWidth(80);
+            tableListOrderedDishes.getColumnModel().getColumn(1).setPreferredWidth(66);
+            tableListOrderedDishes.getColumnModel().getColumn(2).setPreferredWidth(30);
+            tableListOrderedDishes.getColumnModel().getColumn(3).setPreferredWidth(70);
         }
 
-        labelTableId.setForeground(new java.awt.Color(242, 242, 242));
+        labelTableId.setForeground(new java.awt.Color(243, 243, 243));
         labelTableId.setText("Mã bàn");
 
-        jTextField1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jTextField1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED), "Ghi chú", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Segoe UI", 0, 16))); // NOI18N
+        textNote.setEditable(false);
+        textNote.setBackground(new java.awt.Color(255, 255, 255));
+        textNote.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        textNote.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED), "Ghi chú", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Segoe UI", 0, 16))); // NOI18N
+        textNote.setFocusable(false);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
@@ -248,7 +251,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
                                 .addComponent(btnSwitchTables, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btnSwitchTables1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(jTextField1))
+                    .addComponent(textNote))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -272,7 +275,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
                 .addGap(0, 0, 0)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(textNote, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAddOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -351,7 +354,6 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel labelStartTime;
     private javax.swing.JLabel labelTableId;
     private javax.swing.JLabel labelTableName;
@@ -359,6 +361,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
     private javax.swing.JLabel labelTenBan2;
     private javax.swing.JLabel labelTotal;
     private javax.swing.JTable tableListOrderedDishes;
+    private javax.swing.JTextField textNote;
     // End of variables declaration//GEN-END:variables
 
     int orderCount;
@@ -369,12 +372,15 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
     List<OrderDetailEntity> dataOrderDetails;
 
     void init() {
+        // Set system
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(new Color(255, 255, 255));
 
+        // Set table
         TableCustom.apply(jScrollPane3, TableCustom.TableType.MULTI_LINE);
-        Common.customizeTable(tableListOrderedDishes, new int[]{0});
+        Common.customizeTable(tableListOrderedDishes, new int[]{0}, 30);
 
+        // Set combobox
         setupComboboxTables();
     }
 
@@ -409,7 +415,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
             new OrderDAO().update(dataOrder); // update
 
             // Upload
-            mainStaff.displayStaffPanels(new OrderTables(mainStaff));
+            mainStaff.displayStaffPanels(new TableOrder(mainStaff));
             dispose();
         } catch (Exception e) {
             Dialog.error(this, "Chuyển bàn thất bại!");
@@ -435,7 +441,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
 
             // Set title
             this.setTitle("Chi tiết Order [ " + dataOrder.getOrderId() + " ]");
-            
+
             // Set start time
             String startTime = new SimpleDateFormat("HH:mm:ss").format(dataOrder.getCreatedDate());
             labelStartTime.setText(startTime);
@@ -444,8 +450,11 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
             totalConvert = addCommasToNumber(String.valueOf(dataOrder.getTotal()));
             labelTotal.setText(totalConvert + "₫");
 
+            // Set note
+            textNote.setText(dataOrder.getNote());
+
             // Create a map to store the quantity and price of each item
-            Map<String, Integer> productPriceMap = new HashMap<>();
+            Map<String, Long> productPriceMap = new HashMap<>();
             Map<String, Integer> productQuantityMap = new HashMap<>();
 
             // Init process ---> Add products into the table
@@ -455,7 +464,6 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
             this.setTitle("Chi tiết Order [ Trống ]");
             labelStartTime.setText("Trống");
             System.out.println(e);
-
         }
     }
 

@@ -35,13 +35,10 @@ import restaurant.main.MainManager;
 import restaurant.table.TableCustom;
 import restaurant.entity.ProductEntity;
 import restaurant.dialog.UpdateProductJDialog;
-import static restaurant.utils.Auth.product;
 import static restaurant.utils.Common.customizeTable;
 import static restaurant.utils.Common.addFocusBorder;
 import static restaurant.utils.Common.addPlaceholder;
 import static restaurant.utils.Common.createButtonGroup;
-import static restaurant.utils.Common.addCommasToNumber;
-import restaurant.utils.Dialog;
 import static restaurant.utils.ExportFile.exportToExcel;
 
 public final class Products extends javax.swing.JPanel {
@@ -580,7 +577,7 @@ public final class Products extends javax.swing.JPanel {
 
         // Setup table
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
-        customizeTable(tableProducts, new int[]{});
+        customizeTable(tableProducts, new int[]{}, 30);
 
         // <--- Setup main --->
         setupMultipleCombobox();
@@ -712,7 +709,7 @@ public final class Products extends javax.swing.JPanel {
 
                 // Get data and load
                 dataProducts = new ProductDAO().searchByCriteria(search, category, selectedRadio);
-                fillTable(dataProducts);
+                this.fillTable(dataProducts);
             });
         }, debounceDelay, TimeUnit.MILLISECONDS);
     }

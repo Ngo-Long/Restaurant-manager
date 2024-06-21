@@ -12,8 +12,8 @@ public class OrderDAO extends RestaurantDAO<OrderEntity, Integer> {
 
     final String INSERT_SQL = "INSERT INTO [Order] (InvoiceID, Status, Method, CreatedDate)"
             + " VALUES (?, ?, ?, GETDATE())";
+    final String UPDATE_SQL = "UPDATE [Order] SET Note=?, Method=?, Total=?, Status=?  WHERE OrderID=?";
     final String DELETE_SQL = "DELETE FROM [Order] WHERE OrderID=?";
-    final String UPDATE_SQL = "UPDATE [Order] SET Status=?, Total=?, Method=? WHERE OrderID=?";
     final String SELECT_ALL_SQL = "SELECT * FROM [Order]";
     final String SELECT_BY_ID = "SELECT * FROM [Order] WHERE OrderID = ?";
     final String SELECT_BY_TABLE_ID = "SELECT o.* FROM [Order] o"
@@ -31,11 +31,10 @@ public class OrderDAO extends RestaurantDAO<OrderEntity, Integer> {
         );
     }
 
-    public int insert(int invoiceId, String status, String method) {
-        JDBC.executeUpdate(INSERT_SQL, invoiceId, status, method);
+    public int insert(int invoiceId, String method, String status) {
+        JDBC.executeUpdate(INSERT_SQL, invoiceId, method, status);
 
         int latestID = 0;
-
         try (ResultSet rs = JDBC.executeQuery(SELECT_LATEST_ID_SQL)) {
             if (rs.next()) {
                 latestID = rs.getInt("OrderID");
@@ -51,9 +50,10 @@ public class OrderDAO extends RestaurantDAO<OrderEntity, Integer> {
     @Override
     public void update(OrderEntity model) {
         JDBC.executeUpdate(UPDATE_SQL,
-                model.getStatus(),
-                model.getTotal(),
+                model.getNote(),
                 model.getMethod(),
+                model.getTotal(),
+                model.getStatus(),
                 model.getOrderId()
         );
     }
@@ -103,9 +103,11 @@ public class OrderDAO extends RestaurantDAO<OrderEntity, Integer> {
     private OrderEntity readFromResultSet(ResultSet rs) throws SQLException {
         OrderEntity model = new OrderEntity();
         model.setOrderId(rs.getInt("OrderID"));
-        model.setStatus(rs.getString("Status"));
-        model.setTotal(rs.getLong("Total"));
+        model.setInvoiceID(rs.getInt("InvoiceID"));
+        model.setNote(rs.getString("Note"));
         model.setMethod(rs.getString("Method"));
+        model.setTotal(rs.getLong("Total"));
+        model.setStatus(rs.getString("Status"));
         model.setCreatedDate(rs.getTimestamp("CreatedDate"));
         return model;
     }

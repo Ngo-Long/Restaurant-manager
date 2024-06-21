@@ -214,6 +214,10 @@
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="CbPosition" max="32767" attributes="0"/>
                                       <Component id="textCard" alignment="1" max="32767" attributes="0"/>
+                                      <Group type="102" attributes="0">
+                                          <Component id="txtNgay" min="-2" pref="118" max="-2" attributes="0"/>
+                                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                      </Group>
                                   </Group>
                               </Group>
                           </Group>
@@ -256,7 +260,10 @@
                                       <Component id="jLabel10" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                                  <Component id="jLabel9" min="-2" pref="30" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="1" attributes="0">
+                                      <Component id="jLabel9" min="-2" pref="30" max="-2" attributes="0"/>
+                                      <Component id="txtNgay" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                                   <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="textCard" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
@@ -831,6 +838,15 @@
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                       <Image iconType="3" name="/icon/filter1.png"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="com.toedter.calendar.JDateChooser" name="txtNgay">
+                  <Properties>
+                    <Property name="toolTipText" type="java.lang.String" value="Ng&#xe0;y"/>
+                    <Property name="dateFormatString" type="java.lang.String" value="dd/MM/yyyy"/>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Be Vietnam Pro" size="17" style="0"/>
                     </Property>
                   </Properties>
                 </Component>

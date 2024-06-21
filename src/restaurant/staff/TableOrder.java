@@ -2,11 +2,17 @@ package restaurant.staff;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import restaurant.dao.*;
 import restaurant.dialog.OrderTableJDialog;
@@ -15,11 +21,11 @@ import restaurant.main.MainStaff;
 import restaurant.utils.Dialog;
 import restaurant.utils.Common;
 
-public final class OrderTables extends javax.swing.JPanel {
+public final class TableOrder extends javax.swing.JPanel {
 
     private MainStaff mainStaff;
 
-    public OrderTables(MainStaff mainStaff) {
+    public TableOrder(MainStaff mainStaff) {
         this.mainStaff = mainStaff;
         initComponents();
         this.init();
@@ -142,15 +148,15 @@ public final class OrderTables extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(comboboxArea, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboboxArea, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(textSearch, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
                         .addComponent(btnSearch2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnHistory, javax.swing.GroupLayout.Alignment.LEADING)))
+                        .addComponent(btnHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(scrollPaneTableDining, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE))
+                .addComponent(scrollPaneTableDining, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout panelBodyLayout = new javax.swing.GroupLayout(panelBody);
@@ -197,7 +203,7 @@ public final class OrderTables extends javax.swing.JPanel {
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnSearch2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearch2ActionPerformed
-
+        mainStaff.displayStaffPanels(new TableOrder(mainStaff));
     }//GEN-LAST:event_btnSearch2ActionPerformed
 
     private void btnHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistoryActionPerformed
@@ -226,23 +232,20 @@ public final class OrderTables extends javax.swing.JPanel {
     OrderEntity dataOrder;
     DiningTableEntity dataTable;
     List<DiningTableEntity> dataTables;
+
+    ScheduledFuture<?> scheduledFuture;
     ExecutorService executorService = Executors.newFixedThreadPool(3);
+    ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     void init() {
         Common.customizeScrollBar(scrollPaneTableDining);
 
-        dataTables = new DiningTableDAO().getAll();
-        loadDiningTables(dataTables);
+        // Setup combobox
+        setupMultipleCombobox();
 
-        setupComboboxTables();
-        handleClickComboboxArea();
-        comboboxArea.setSelectedIndex(0);
-    }
-
-    public void loadDiningTables(List<DiningTableEntity> dataTables) {
-        executorService.submit(() -> {
-            SwingUtilities.invokeLater(() -> displayDiningTables(dataTables));
-        });
+        // Load list by search and classify when change
+        initEventHandlers();
+        loadDataByCriteria();
     }
 
     void updateStatus(String status) {
@@ -272,6 +275,59 @@ public final class OrderTables extends javax.swing.JPanel {
             Dialog.warning(this, "Đổi trạng thái thất bại!");
         }
     }
+
+    // <--- Load data
+    void initEventHandlers() {
+        // Attach event textSearch
+        textSearch.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                loadDataByCriteria();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                loadDataByCriteria();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                loadDataByCriteria();
+            }
+        });
+
+        // Attach event comboBoxArea
+        ActionListener actionListener = (ActionEvent e) -> {
+            loadDataByCriteria();
+        };
+
+        comboboxArea.addActionListener(actionListener);
+    }
+
+    public void loadDataByCriteria() {
+        if (scheduledFuture != null && !scheduledFuture.isDone()) {
+            scheduledFuture.cancel(false);
+        }
+
+        scheduledFuture = scheduledExecutorService.schedule(() -> {
+            SwingUtilities.invokeLater(() -> {
+                // Get info criterias
+                String searchName = textSearch.getText().trim();
+                String location = comboboxArea.getSelectedItem().toString();
+
+                // Get data and load
+                dataTables = new DiningTableDAO().searchByCriteria(searchName, location, "");
+                loadDiningTables(dataTables);
+            });
+        }, 200, TimeUnit.MILLISECONDS);
+    }
+
+    public void loadDiningTables(List<DiningTableEntity> dataTables) {
+        executorService.submit(() -> {
+            SwingUtilities.invokeLater(() -> this.displayDiningTables(dataTables));
+        });
+    }
+    // end --->
 
     // <--- Display and handle event table dining
     void displayDiningTables(List<DiningTableEntity> dataTables) {
@@ -380,7 +436,7 @@ public final class OrderTables extends javax.swing.JPanel {
     // end --->
 
     // <--- Handle event search and catogory
-    void setupComboboxTables() {
+    void setupMultipleCombobox() {
         // Get all table list
         List<DiningTableEntity> dataAllTables = new DiningTableDAO().getAll();
 
