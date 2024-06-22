@@ -2,12 +2,13 @@ package restaurant.dialog;
 
 import java.awt.Color;
 import java.text.SimpleDateFormat;
-import java.util.Objects;
-import restaurant.utils.Auth;
+import restaurant.dao.ProductDAO;
+import restaurant.entity.OrderDetailEntity;
+import restaurant.entity.ProductEntity;
 
-public class DetailOrderJDialog extends javax.swing.JDialog {
+public class HistoryProductDetailJDialog extends javax.swing.JDialog {
 
-    public DetailOrderJDialog(java.awt.Frame parent, boolean modal) {
+    public HistoryProductDetailJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         init();
@@ -26,9 +27,9 @@ public class DetailOrderJDialog extends javax.swing.JDialog {
         jLabel8 = new javax.swing.JLabel();
         textNote = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        labelTotalAmount = new javax.swing.JLabel();
-        labelTimeStart = new javax.swing.JLabel();
-        labelNameTable = new javax.swing.JLabel();
+        labelQuantity = new javax.swing.JLabel();
+        labelTime = new javax.swing.JLabel();
+        labelName = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         labelStatus = new javax.swing.JLabel();
 
@@ -57,13 +58,13 @@ public class DetailOrderJDialog extends javax.swing.JDialog {
         setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel6.setText("Bàn ăn:");
+        jLabel6.setText("Món ăn:");
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Thời gian:");
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel8.setText("Tổng tiền:");
+        jLabel8.setText("Số lượng:");
 
         textNote.setEditable(false);
         textNote.setFocusable(false);
@@ -71,17 +72,17 @@ public class DetailOrderJDialog extends javax.swing.JDialog {
         textNote.setVerifyInputWhenFocusTarget(false);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel1.setText("Ghi chú:");
+        jLabel1.setText("Lý do:");
 
-        labelTotalAmount.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        labelTotalAmount.setText("Trống");
+        labelQuantity.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelQuantity.setText("Trống");
 
-        labelTimeStart.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        labelTimeStart.setText("Trống");
+        labelTime.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelTime.setText("Trống");
 
-        labelNameTable.setBackground(new java.awt.Color(255, 255, 255));
-        labelNameTable.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        labelNameTable.setText("Trống");
+        labelName.setBackground(new java.awt.Color(255, 255, 255));
+        labelName.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        labelName.setText("Trống");
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel9.setText("Trạng thái:");
@@ -106,9 +107,9 @@ public class DetailOrderJDialog extends javax.swing.JDialog {
                             .addComponent(jLabel6))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(labelNameTable)
-                            .addComponent(labelTimeStart)
-                            .addComponent(labelTotalAmount)
+                            .addComponent(labelName)
+                            .addComponent(labelTime)
+                            .addComponent(labelQuantity)
                             .addComponent(labelStatus))))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
@@ -118,15 +119,15 @@ public class DetailOrderJDialog extends javax.swing.JDialog {
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(labelNameTable))
+                    .addComponent(labelName))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(labelTimeStart))
+                    .addComponent(labelTime))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(labelTotalAmount))
+                    .addComponent(labelQuantity))
                 .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
@@ -151,11 +152,11 @@ public class DetailOrderJDialog extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DetailOrderJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(HistoryProductDetailJDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
         java.awt.EventQueue.invokeLater(() -> {
-            DetailOrderJDialog dialog = new DetailOrderJDialog(new javax.swing.JFrame(), true);
+            HistoryProductDetailJDialog dialog = new HistoryProductDetailJDialog(new javax.swing.JFrame(), true);
             dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent e) {
@@ -176,40 +177,39 @@ public class DetailOrderJDialog extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
-    private javax.swing.JLabel labelNameTable;
+    private javax.swing.JLabel labelName;
+    private javax.swing.JLabel labelQuantity;
     private javax.swing.JLabel labelStatus;
-    private javax.swing.JLabel labelTimeStart;
-    private javax.swing.JLabel labelTotalAmount;
+    private javax.swing.JLabel labelTime;
     private javax.swing.JTextField textNote;
     // End of variables declaration//GEN-END:variables
 
     private void init() {
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(new Color(248, 248, 248));
-
-        displayDetailOrder();
     }
 
-    void displayDetailOrder() {
-        int orderCount = 0;
+    public void displayDetailOrder(OrderDetailEntity data) {
+        System.out.println("Run...");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss");
 
-        if (Auth.order != null) {
-            orderCount = Auth.orderCount;
-            labelStatus.setText(Auth.order.getStatus());
-            labelTimeStart.setText(dateFormat.format(Auth.order.getCreatedDate()));
-            this.setTitle("Chi tiết Order [" + Auth.order.getOrderId() + "]");
-        } else {
-            orderCount = 0;
-            labelStatus.setText("");
-            labelTimeStart.setText("");
+        if (data == null) {
             this.setTitle("Chi tiết Order");
+            labelName.setText("Trống");
+            labelTime.setText("Trống");
+            labelQuantity.setText("Trống");
+            labelStatus.setText("Trống");
+            textNote.setText("");
+            return;
         }
 
-        if (Auth.table != null) {
-            labelNameTable.setText(Objects.toString(Auth.table.getName(), ""));
-            labelTotalAmount.setText(Auth.totalAmount + " VND" + " / " + orderCount + " đơn");
-        }
+        this.setTitle("Chi tiết Order [" + data.getOrderDetailID() + "]");
+        ProductEntity dataProduct = new ProductDAO().getById(data.getProductID());
+        labelName.setText(dataProduct.getProductName());
+        labelTime.setText(dateFormat.format(data.getEndTime()));
+        labelQuantity.setText(String.valueOf(data.getProductQuantity()));
+        labelStatus.setText(data.getProductStatus());
+        textNote.setText(data.getNote());
     }
 
 }

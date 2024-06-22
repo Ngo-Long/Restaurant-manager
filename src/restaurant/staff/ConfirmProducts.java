@@ -9,21 +9,21 @@ import java.text.SimpleDateFormat;
 
 import java.util.List;
 import java.util.Comparator;
-import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.DefaultCellEditor;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.main.MainStaff;
-import restaurant.dao.ProductDAO;
 import restaurant.table.TableCustom;
+
+import restaurant.dao.ProductDAO;
 import restaurant.dao.DiningTableDAO;
 import restaurant.dao.OrderDetailDAO;
 import restaurant.entity.ProductEntity;
@@ -50,7 +50,7 @@ public class ConfirmProducts extends javax.swing.JPanel {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
-        tablePendingDishes = new javax.swing.JTable();
+        tablePending = new javax.swing.JTable();
         btnHistory = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
         btnSearch = new javax.swing.JButton();
@@ -60,9 +60,9 @@ public class ConfirmProducts extends javax.swing.JPanel {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        tablePendingDishes.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        tablePendingDishes.setForeground(new java.awt.Color(51, 51, 51));
-        tablePendingDishes.setModel(new javax.swing.table.DefaultTableModel(
+        tablePending.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        tablePending.setForeground(new java.awt.Color(51, 51, 51));
+        tablePending.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -78,16 +78,16 @@ public class ConfirmProducts extends javax.swing.JPanel {
                 return types [columnIndex];
             }
         });
-        tablePendingDishes.setEditingColumn(1);
-        tablePendingDishes.setFillsViewportHeight(true);
-        tablePendingDishes.setFocusCycleRoot(true);
-        tablePendingDishes.setGridColor(new java.awt.Color(255, 255, 255));
-        tablePendingDishes.setRowHeight(50);
-        jScrollPane7.setViewportView(tablePendingDishes);
-        if (tablePendingDishes.getColumnModel().getColumnCount() > 0) {
-            tablePendingDishes.getColumnModel().getColumn(4).setMinWidth(0);
-            tablePendingDishes.getColumnModel().getColumn(4).setPreferredWidth(0);
-            tablePendingDishes.getColumnModel().getColumn(4).setMaxWidth(0);
+        tablePending.setEditingColumn(1);
+        tablePending.setFillsViewportHeight(true);
+        tablePending.setFocusCycleRoot(true);
+        tablePending.setGridColor(new java.awt.Color(255, 255, 255));
+        tablePending.setRowHeight(50);
+        jScrollPane7.setViewportView(tablePending);
+        if (tablePending.getColumnModel().getColumnCount() > 0) {
+            tablePending.getColumnModel().getColumn(4).setMinWidth(0);
+            tablePending.getColumnModel().getColumn(4).setPreferredWidth(0);
+            tablePending.getColumnModel().getColumn(4).setMaxWidth(0);
         }
 
         btnHistory.setBackground(new java.awt.Color(51, 204, 0));
@@ -178,7 +178,7 @@ public class ConfirmProducts extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(textSearch, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                        .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnReset, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -236,7 +236,7 @@ public class ConfirmProducts extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JLabel labelOrderTable;
-    private javax.swing.JTable tablePendingDishes;
+    private javax.swing.JTable tablePending;
     private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
@@ -248,28 +248,22 @@ public class ConfirmProducts extends javax.swing.JPanel {
     void init() {
         // Tùy chỉnh bảng
         TableCustom.apply(jScrollPane7, TableCustom.TableType.MULTI_LINE);
-        Common.customizeTable(tablePendingDishes, new int[]{}, 50);
-        setupButtonColumnConfirm(tablePendingDishes, 3);
+        Common.customizeTable(tablePending, new int[]{}, 50);
+        setupButtonColumnConfirm(tablePending, 3);
 
         dataList = new OrderDetailDAO().getPendingProducts();
-        displayProductsInTables();
+        this.fillTable(dataList);
     }
 
-    // <--- Display products by kitchen
-    void displayProductsInTables() {
+    void fillTable(List<OrderDetailEntity> dataList) {
         // Get model
-        DefaultTableModel model = (DefaultTableModel) tablePendingDishes.getModel();
+        DefaultTableModel model = (DefaultTableModel) tablePending.getModel();
         model.setRowCount(0);
 
         // Fetch pending and confirmed products
         dataList = new OrderDetailDAO().getPendingProducts();
-        tablePendingDishes.setModel(model);
+        tablePending.setModel(model);
 
-        // Load data
-        this.fillTable(model);
-    }
-
-    void fillTable(DefaultTableModel model) {
         // Sắp xếp theo thời gian bắt đầu từ gần nhất
         dataList.sort(Comparator.comparing(OrderDetailEntity::getStartTime).reversed());
 
@@ -286,14 +280,14 @@ public class ConfirmProducts extends javax.swing.JPanel {
             // Get products in ordered
             String productId = dataItem.getProductID();
             int productQuantity = dataItem.getProductQuantity();
-            String productLevel = !dataItem.getProductDesc().isEmpty() ? " (" + dataItem.getProductDesc() + ")" : "";
             String productTimeAdded = new SimpleDateFormat("HH:mm").format(dataItem.getStartTime());
+            String productDesc = dataItem.getProductDesc();
+            productDesc = (productDesc == null || productDesc.isEmpty()) ? "" : " ( " + productDesc + " )";
 
             // Get info product
             ProductEntity productEntity = new ProductDAO().getById(productId);
             String productName = productEntity.getProductName();
-            String productNameAndLevel = productName + productLevel + " x" + productQuantity;
-            String productKitchenArea = productEntity.getKitchenArea();
+            String productNameAndLevel = productName + productDesc + " x" + productQuantity;
 
             // Thêm sản phẩm vào bảng 
             model.addRow(new Object[]{
@@ -304,18 +298,17 @@ public class ConfirmProducts extends javax.swing.JPanel {
             });
         }
     }
-    // end --->    
 
     // <--- Init 2 button "Finish" and "Delete"
     void setupButtonColumnConfirm(JTable table, int columnNumber) {
         TableColumn column = table.getColumnModel().getColumn(columnNumber);
-        column.setCellRenderer((TableCellRenderer) new ButtonRenderer());
-        column.setCellEditor((TableCellEditor) new ButtonEditor(table));
+        column.setCellRenderer(new ButtonRenderer(table));
+        column.setCellEditor(new ButtonEditor(table));
     }
 
     class ButtonRenderer extends JPanel implements TableCellRenderer {
 
-        public ButtonRenderer() {
+        public ButtonRenderer(JTable table) {
             setOpaque(true);
             setBackground(Color.white);
             setLayout(new FlowLayout(FlowLayout.CENTER, 5, 2));
@@ -333,11 +326,13 @@ public class ConfirmProducts extends javax.swing.JPanel {
     class ButtonEditor extends DefaultCellEditor {
 
         private final JPanel panel;
+        private final JTable table;
         private final JButton finishButton;
         private final JButton deleteButton;
 
         public ButtonEditor(JTable table) {
             super(new JTextField());
+            this.table = table;
             setClickCountToStart(1);
             panel = new JPanel();
             panel.setBackground(Color.white);
@@ -381,12 +376,18 @@ public class ConfirmProducts extends javax.swing.JPanel {
             detailID = (int) table.getValueAt(selectedRow, DETAIL_ID_COLUMN_INDEX);
 
             // Update finish order detail item
-            OrderDetailEntity model = new OrderDetailDAO().getById(detailID);
-            model.setProductStatus("Đã hoàn thành");
-            new OrderDetailDAO().update(model);
+            OrderDetailEntity entity = new OrderDetailDAO().getById(detailID);
+            entity.setProductStatus("Đã hoàn thành");
+            new OrderDetailDAO().update(entity);
 
             // Remove selected row
-            removeSelectedRowAndUpdateSelection(table, selectedRow);
+            if (table.isEditing()) {
+                table.getCellEditor().stopCellEditing();
+            }
+            DefaultTableModel model = (DefaultTableModel) table.getModel();
+            model.removeRow(selectedRow);
+
+            // Message
             Dialog.warning(this, "In món thành công!");
         } catch (Exception e) {
             Dialog.warning(this, "Lỗi!");
@@ -404,43 +405,31 @@ public class ConfirmProducts extends javax.swing.JPanel {
         // Sau khi cửa sổ đã đóng, lấy lý do đã chọn
         ReasonDeletionJDialog reasonDialog = new ReasonDeletionJDialog(null, true);
         reasonDialog.setVisible(true);
-
         String selectedReason = reasonDialog.getSelectedReason();
-        if (selectedReason.endsWith("")) {
-            reasonDialog = new ReasonDeletionJDialog(null, true);
-            reasonDialog.setVisible(true);
-            return;
-        }
 
-        // Get id detail product and current time
-        detailID = (int) table.getValueAt(selectedRow, DETAIL_ID_COLUMN_INDEX);
+        try {
+            // Get id detail product and current time
+            detailID = (int) table.getValueAt(selectedRow, DETAIL_ID_COLUMN_INDEX);
 
-        // Update delete order detail item
-        OrderDetailEntity model = new OrderDetailDAO().getById(detailID);
-        model.setProductStatus("Đã hủy");
-        model.setNote(selectedReason);
-        new OrderDetailDAO().update(model);
+            // Update delete order detail item
+            OrderDetailEntity entity = new OrderDetailDAO().getById(detailID);
+            entity.setProductStatus("Đã hủy");
+            entity.setNote(selectedReason);
+            new OrderDetailDAO().update(entity);
 
-        // Remove selected row
-        removeSelectedRowAndUpdateSelection(table, selectedRow);
-    }
+            // Remove selected row
+            if (table.isEditing()) {
+                table.getCellEditor().stopCellEditing();
+            }
 
-    void removeSelectedRowAndUpdateSelection(JTable table, int selectedRow) {
-        // Get model and remove row
-        DefaultTableModel model = (DefaultTableModel) table.getModel();
-        int rowCount = model.getRowCount();
-
-        if (rowCount <= 0) {
-            Dialog.warning(this, "Lỗi rồi!");
-            return;
-        }
-
-        model.removeRow(selectedRow);
-
-        // Check if the table is still populated
-        if (model.getRowCount() > 0) {
-            int selectionIndex = Math.max(0, selectedRow - 1);
-            table.setRowSelectionInterval(selectionIndex, selectionIndex);
+            // Remove selected row
+            if (table.isEditing()) {
+                table.getCellEditor().stopCellEditing();
+            }
+            DefaultTableModel model = (DefaultTableModel) table.getModel();
+            model.removeRow(selectedRow);
+        } catch (Exception e) {
+            Dialog.warning(this, "Lỗi khi xóa dòng!");
         }
     }
     // end ---> 

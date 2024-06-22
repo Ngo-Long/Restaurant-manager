@@ -73,7 +73,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Component id="textSearch" alignment="0" max="32767" attributes="0"/>
-                          <Component id="btnSearch" alignment="0" pref="32" max="32767" attributes="0"/>
+                          <Component id="btnSearch" alignment="0" max="32767" attributes="0"/>
                           <Component id="btnReset" alignment="0" max="32767" attributes="0"/>
                           <Component id="btnHistory" alignment="0" max="32767" attributes="0"/>
                       </Group>
@@ -97,7 +97,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JTable" name="tablePendingDishes">
+            <Component class="javax.swing.JTable" name="tablePending">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Segoe UI" size="16" style="0"/>

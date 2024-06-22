@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.utils.Auth;
@@ -307,6 +308,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         mainStaff.displayStaffPanels(new Products(mainStaff));
         dispose();
     }//GEN-LAST:event_btnAddOrderActionPerformed
+
 
     private void btnPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPayActionPerformed
         Auth.table = dataTable;

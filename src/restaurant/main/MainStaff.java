@@ -562,15 +562,12 @@ public final class MainStaff extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPayActionPerformed
 
     private void btnOrderTakeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderTakeActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_btnOrderTakeActionPerformed
 
     private void btnClosingShiftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClosingShiftActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_btnClosingShiftActionPerformed
 
     private void btnWareHouseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWareHouseActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_btnWareHouseActionPerformed
 
     private void menuItemEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemEmployeeActionPerformed
@@ -582,7 +579,6 @@ public final class MainStaff extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemManagerActionPerformed
 
     private void btnCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCheckActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_btnCheckActionPerformed
 
     private void btnBellActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBellActionPerformed
@@ -590,7 +586,6 @@ public final class MainStaff extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBellActionPerformed
 
     private void btnMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_btnMenuActionPerformed
 
     public static void main(String args[]) {
@@ -677,28 +672,21 @@ public final class MainStaff extends javax.swing.JFrame {
         Common.setAccountMenu(menuStaff);
         Common.customizeScrollBar(scrollPaneMain);
 
-        setupTables();
-        selectButton(buttonOverview);
+        setupTables(buttonOverview);
+//        selectButton(buttonOverview);
 
         displayStaffPanels(new Overview(this));
     }
 
-    void setupTables() {
-        // Khởi tạo màu cho các nút
-        Color defaultText = new Color(11, 11, 11);
-        Color defaultBg = new Color(255, 255, 255);
-
-        Color selectedText = Color.WHITE;
-        Color selectedBg = new Color(255, 51, 51);
-
+    void setupTables(JButton initSelectedBtn) {
         // Mảng chứa các nút cần xử lý
         JButton[] buttons = {buttonOverview, btnTable, btnProduct, btnPay,
             btnOrderTake, btnClosingShift, btnWareHouse, btnBell, btnCheck, btnMenu};
 
         // Thiết lập sự kiện cho từng nút
         for (JButton button : buttons) {
-            button.setForeground(defaultText);
-            button.setBackground(defaultBg);
+            button.setForeground(new Color(11, 11, 11));
+            button.setBackground(new Color(255, 255, 255));
             button.setFont(button.getFont().deriveFont(Font.PLAIN));
 
             button.addActionListener((ActionEvent e) -> {
@@ -706,28 +694,29 @@ public final class MainStaff extends javax.swing.JFrame {
                 if (selectedButton != button) {
                     // Đặt lại màu cho nút trước đó nếu có
                     if (selectedButton != null) {
-                        selectedButton.setForeground(defaultText);
-                        selectedButton.setBackground(defaultBg);
+                        selectedButton.setForeground(new Color(11, 11, 11));
+                        selectedButton.setBackground(new Color(255, 255, 255));
                         selectedButton.setFont(selectedButton.getFont().deriveFont(Font.PLAIN));
                     }
 
                     // Thiết lập lại màu cho nút hiện tại
-                    button.setForeground(selectedText);
-                    button.setBackground(selectedBg);
+                    button.setForeground(Color.WHITE);
+                    button.setBackground(new Color(255, 51, 51));
                     button.setFont(button.getFont().deriveFont(Font.BOLD));
 
                     // Cập nhật nút được chọn hiện tại
                     selectedButton = button;
                 }
             });
-        }
-    }
 
-    void selectButton(JButton button) {
-        button.setForeground(Color.white);
-        button.setBackground(new Color(255, 51, 51));
-        button.setFont(button.getFont().deriveFont(Font.BOLD));
-        selectedButton = button;
+            // Đặt trạng thái ban đầu cho nút được chọn ban đầu
+            if (initSelectedBtn != null) {
+                initSelectedBtn.setForeground(Color.WHITE);
+                initSelectedBtn.setBackground(new Color(255, 51, 51));
+                initSelectedBtn.setFont(initSelectedBtn.getFont().deriveFont(Font.BOLD));
+                selectedButton = initSelectedBtn;
+            }
+        }
     }
 
     public void displayStaffPanels(JPanel panel) {

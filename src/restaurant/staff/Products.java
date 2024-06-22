@@ -36,6 +36,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.dao.OrderDAO;
@@ -49,7 +50,7 @@ import restaurant.utils.Auth;
 import restaurant.utils.Dialog;
 import restaurant.utils.Common;
 import restaurant.main.MainStaff;
-import restaurant.dialog.DetailOrderJDialog;
+import restaurant.dialog.OrderDetailJDialog;
 import restaurant.entity.DiningTableEntity;
 
 import restaurant.table.TableCustom;
@@ -119,8 +120,8 @@ public class Products extends javax.swing.JPanel {
             tableOrder.getColumnModel().getColumn(0).setPreferredWidth(0);
             tableOrder.getColumnModel().getColumn(0).setMaxWidth(0);
             tableOrder.getColumnModel().getColumn(1).setPreferredWidth(220);
-            tableOrder.getColumnModel().getColumn(2).setPreferredWidth(77);
-            tableOrder.getColumnModel().getColumn(3).setPreferredWidth(87);
+            tableOrder.getColumnModel().getColumn(2).setPreferredWidth(78);
+            tableOrder.getColumnModel().getColumn(3).setPreferredWidth(88);
         }
 
         btnSubmit.setBackground(new java.awt.Color(0, 153, 0));
@@ -335,10 +336,10 @@ public class Products extends javax.swing.JPanel {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(CbCategory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
                     .addComponent(textSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
-                    .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
-                    .addComponent(btnSearch2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                    .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, Short.MAX_VALUE)
+                    .addComponent(btnSearch2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, Short.MAX_VALUE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
-                    .addComponent(btnHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
+                    .addComponent(btnHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addGap(0, 0, 0))
@@ -361,7 +362,7 @@ public class Products extends javax.swing.JPanel {
                 .addContainerGap(12, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 596, Short.MAX_VALUE))
                 .addGap(12, 12, 12))
         );
 
@@ -392,7 +393,7 @@ public class Products extends javax.swing.JPanel {
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistoryActionPerformed
-        new DetailOrderJDialog(null, true).setVisible(true);
+        new OrderDetailJDialog(null, true).setVisible(true);
     }//GEN-LAST:event_btnHistoryActionPerformed
 
     private void btnSearch2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearch2ActionPerformed
@@ -459,6 +460,20 @@ public class Products extends javax.swing.JPanel {
         tableOrder.getModel().addTableModelListener((TableModelEvent e) -> {
             if (e.getColumn() == 2) {
                 calculateTotalAmount();
+            }
+        });
+
+        // Bắt sự kiện khi click vào cột số 1
+        tableOrder.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int row = tableOrder.rowAtPoint(e.getPoint());
+                int column = tableOrder.columnAtPoint(e.getPoint());
+
+                if (row >= 0 && column == 1) {
+                    Object value = tableOrder.getValueAt(row, column);
+                    System.out.println("Column 1 clicked, value: " + value);
+                }
             }
         });
 
@@ -664,7 +679,6 @@ public class Products extends javax.swing.JPanel {
     void handleClickOrderProduct(ProductEntity product) {
         // Get model
         DefaultTableModel saveOrder = (DefaultTableModel) tableOrder.getModel();
-
         String priceStr = String.valueOf(product.getPrice());
         String formattedPrice = Common.addCommasToNumber(priceStr);
 
@@ -762,7 +776,7 @@ public class Products extends javax.swing.JPanel {
             existingOrder = new OrderDAO().getByTableId(tableID);
             String note = Common.getRealText(textNote, "Tối đa 60 ký tự");
             if (note.length() > 60) {
-                Dialog.warning(this, "Vui lòng nhập tối đa 60 ký tự!");
+                Dialog.warning(this, "Nhập tối đa 60 ký tự!");
                 return;
             }
 

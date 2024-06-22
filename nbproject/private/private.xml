@@ -3,9 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/utils/Ordered.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/staff/Products.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/dialog/OrderTableJDialog.java</file>
+            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/staff/TableOrder.java</file>
         </group>
     </open-files>
 </project-private>

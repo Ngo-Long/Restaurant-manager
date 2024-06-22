@@ -72,7 +72,7 @@ public class ReasonDeletionJDialog extends javax.swing.JDialog {
         jCheckBox3.setText("Khách đổi món");
 
         jCheckBox4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jCheckBox4.setText("Khác hủy món");
+        jCheckBox4.setText("Khách hủy món");
 
         jCheckBox5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jCheckBox5.setText("Hết nguyên liệu");

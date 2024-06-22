@@ -3,6 +3,10 @@ package restaurant.staff;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.*;
 import java.util.List;
 import javax.swing.*;
@@ -11,6 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -38,13 +43,13 @@ public final class TableOrder extends javax.swing.JPanel {
         panelBody = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        comboboxArea = new javax.swing.JComboBox<>();
         scrollPaneTableDining = new javax.swing.JScrollPane();
         panelDiningTableList = new javax.swing.JPanel();
         textSearch = new javax.swing.JTextField();
         btnSearch2 = new javax.swing.JButton();
         btnHistory = new javax.swing.JButton();
         btnSearch = new javax.swing.JButton();
+        panelButtons = new javax.swing.JPanel();
 
         panelBody.setToolTipText("");
 
@@ -52,15 +57,6 @@ public final class TableOrder extends javax.swing.JPanel {
         jPanel2.setPreferredSize(new java.awt.Dimension(826, 592));
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/filter1.png"))); // NOI18N
-
-        comboboxArea.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        comboboxArea.setToolTipText("Ấn vô chọn khu vực");
-        comboboxArea.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        comboboxArea.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboboxAreaActionPerformed(evt);
-            }
-        });
 
         scrollPaneTableDining.setBorder(null);
         scrollPaneTableDining.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -123,6 +119,20 @@ public final class TableOrder extends javax.swing.JPanel {
             }
         });
 
+        panelButtons.setBackground(new java.awt.Color(255, 255, 255));
+        panelButtons.setAutoscrolls(true);
+
+        javax.swing.GroupLayout panelButtonsLayout = new javax.swing.GroupLayout(panelButtons);
+        panelButtons.setLayout(panelButtonsLayout);
+        panelButtonsLayout.setHorizontalGroup(
+            panelButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 728, Short.MAX_VALUE)
+        );
+        panelButtonsLayout.setVerticalGroup(
+            panelButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 32, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -131,7 +141,7 @@ public final class TableOrder extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(comboboxArea, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panelButtons, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -147,14 +157,13 @@ public final class TableOrder extends javax.swing.JPanel {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(comboboxArea, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(textSearch, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
-                        .addComponent(btnSearch2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(textSearch)
+                    .addComponent(btnSearch, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                    .addComponent(btnSearch2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnHistory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelButtons, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(scrollPaneTableDining, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE))
         );
@@ -190,10 +199,6 @@ public final class TableOrder extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void comboboxAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboboxAreaActionPerformed
-
-    }//GEN-LAST:event_comboboxAreaActionPerformed
-
     private void textSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSearchActionPerformed
 
     }//GEN-LAST:event_textSearchActionPerformed
@@ -214,27 +219,21 @@ public final class TableOrder extends javax.swing.JPanel {
     private javax.swing.JButton btnHistory;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnSearch2;
-    private javax.swing.JComboBox<String> comboboxArea;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel panelBody;
+    private javax.swing.JPanel panelButtons;
     private javax.swing.JPanel panelDiningTableList;
     private javax.swing.JScrollPane scrollPaneTableDining;
     private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
-    int orderCount;
-    String totalConvert;
-    String searchName = "";
-    String selectedArea = "Tầng 1";
-    JButton selectedTableButton;
-
+    JButton selectedProduct;
+    JLabel selectedLocation;
     OrderEntity dataOrder;
     DiningTableEntity dataTable;
     List<DiningTableEntity> dataTables;
-
     ScheduledFuture<?> scheduledFuture;
-    ExecutorService executorService = Executors.newFixedThreadPool(3);
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     void init() {
@@ -246,6 +245,8 @@ public final class TableOrder extends javax.swing.JPanel {
         // Load list by search and classify when change
         initEventHandlers();
         loadDataByCriteria();
+
+        System.out.println(selectedLocation.getText());
     }
 
     void updateStatus(String status) {
@@ -295,13 +296,6 @@ public final class TableOrder extends javax.swing.JPanel {
                 loadDataByCriteria();
             }
         });
-
-        // Attach event comboBoxArea
-        ActionListener actionListener = (ActionEvent e) -> {
-            loadDataByCriteria();
-        };
-
-        comboboxArea.addActionListener(actionListener);
     }
 
     public void loadDataByCriteria() {
@@ -313,19 +307,13 @@ public final class TableOrder extends javax.swing.JPanel {
             SwingUtilities.invokeLater(() -> {
                 // Get info criterias
                 String searchName = textSearch.getText().trim();
-                String location = comboboxArea.getSelectedItem().toString();
+                String location = selectedLocation.getText();
 
                 // Get data and load
                 dataTables = new DiningTableDAO().searchByCriteria(searchName, location, "");
-                loadDiningTables(dataTables);
+                this.displayDiningTables(dataTables);
             });
         }, 200, TimeUnit.MILLISECONDS);
-    }
-
-    public void loadDiningTables(List<DiningTableEntity> dataTables) {
-        executorService.submit(() -> {
-            SwingUtilities.invokeLater(() -> this.displayDiningTables(dataTables));
-        });
     }
     // end --->
 
@@ -374,20 +362,18 @@ public final class TableOrder extends javax.swing.JPanel {
     JButton createTableButton(DiningTableEntity diningTable) {
         // Create a button for a dining table with the icon
         java.net.URL imageURL = getClass().getResource("/icon/dining-room.png");
-        ImageIcon icon = new ImageIcon(imageURL);
-        JButton tableButton = new JButton(diningTable.getName(), icon);
+        JButton tableButton = new JButton(diningTable.getName(), new ImageIcon(imageURL));
 
         // Set the preferred size of the button based on the icon size
         tableButton.setForeground(new Color(30, 30, 30));
-        tableButton.setBackground(new Color(255, 255, 255));
         tableButton.setPreferredSize(new Dimension(150, 150));
+        tableButton.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         tableButton.setHorizontalTextPosition(SwingConstants.CENTER);
-        tableButton.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 16));
         tableButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         tableButton.setBorder(BorderFactory.createLineBorder(new Color(255, 255, 255), 5, true));
 
         // Set background for status table
-        setTableButtonColors(tableButton, diningTable.getStatus());
+        setColorStatusTables(tableButton, diningTable.getStatus());
 
         // Add ActionListener to Call a method to display detailed information
         tableButton.addActionListener((ActionEvent e) -> {
@@ -398,25 +384,21 @@ public final class TableOrder extends javax.swing.JPanel {
     }
 
     void handleEventClickTableBtn(JButton tableBtn, DiningTableEntity data) {
-        // Display border bode when click
-        if (selectedTableButton != null && selectedTableButton != tableBtn) {
-            Common.setTableButtonBorder(selectedTableButton, false);
+        // Set border when click
+        if (selectedProduct != null && selectedProduct != tableBtn) {
+            Common.setTableButtonBorder(selectedProduct, false);
         }
-        Common.setTableButtonBorder(selectedTableButton = tableBtn, true);
+        Common.setTableButtonBorder(selectedProduct = tableBtn, true);
 
-        // Init dialog
+        // Open dialog and Transmit data via file orderTableDialog
         OrderTableJDialog dialog = new OrderTableJDialog(null, true, mainStaff);
-
-        // Transmit data via file orderTableDialog
         dialog.displayDetailTable(data);
         dialog.displayOrderedOfTable(data.getTableID());
         dialog.setLocationRelativeTo(null);
-
-        // Open dialog
         dialog.setVisible(true);
     }
 
-    void setTableButtonColors(JButton tableButton, String status) {
+    void setColorStatusTables(JButton tableButton, String status) {
         if (status == null || tableButton == null) {
             return;
         }
@@ -438,37 +420,73 @@ public final class TableOrder extends javax.swing.JPanel {
     // <--- Handle event search and catogory
     void setupMultipleCombobox() {
         // Get all table list
-        List<DiningTableEntity> dataAllTables = new DiningTableDAO().getAll();
+        List<DiningTableEntity> dataAll = new DiningTableDAO().getAll();
 
-        // Create a DefaultComboBoxModel 
-        DefaultComboBoxModel<String> comboBoxModelArea = new DefaultComboBoxModel<>();
-
-        // Create a Set to store unique area names
-        Set<String> areaSet = new HashSet<>();
-
-        // Collect unique area names
-        for (DiningTableEntity dataTable : dataAllTables) {
-            areaSet.add(dataTable.getLocation());
+        // Create a set to store unique names
+        Set<String> dataSet = new LinkedHashSet<>();
+        for (DiningTableEntity data : dataAll) {
+            dataSet.add(data.getLocation());
         }
 
-        // Convert the Set to a sorted array
-        areaSet.stream().sorted().forEach(comboBoxModelArea::addElement);
+        // Convert the set to a sorted list
+        List<String> dataList = dataSet.stream().sorted().collect(Collectors.toList());
 
-        // Set the ComboBoxModel to the comboBox
-        comboboxArea.setModel(comboBoxModelArea);
+        // Create buttons for each and add them to panel
+        for (String dataItem : dataList) {
+            // Set button location
+            JLabel item = new JLabel(dataItem);
+            item.setBackground(Color.LIGHT_GRAY);
+            item.setForeground(new Color(120, 120, 120));
+            item.setPreferredSize(new Dimension(74, 30));
+            item.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            item.setVerticalAlignment(SwingConstants.CENTER);
+            item.setHorizontalAlignment(SwingConstants.CENTER);
+            item.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            item.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
+
+            // Handle click location
+            item.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    handleClickPanelTop(item);
+                }
+            });
+
+            // Automatically select the first item
+            if (selectedLocation == null) {
+                handleClickPanelTop(item);
+            }
+
+            // Add item location to the panel
+            panelButtons.add(item);
+        }
+
+        // Set layout for panelButtons
+        panelButtons.setLayout(new FlowLayout(FlowLayout.CENTER, 4, 4));
+
+        // Refresh the panel to display the new buttons
+        panelButtons.revalidate();
+        panelButtons.repaint();
     }
 
-    void handleClickComboboxArea() {
-        // Attach event
-        comboboxArea.addActionListener((ActionEvent e) -> {
-            // Get the selected area
-            selectedArea = (String) comboboxArea.getSelectedItem();
-            dataTables = new DiningTableDAO().searchByCriteria("", selectedArea, "");
-            this.loadDiningTables(dataTables); // load
-        });
+    void handleClickPanelTop(JLabel item) {
+        // Kiểm tra nếu nút hiện tại không phải là nút đã được chọn trước đó
+        if (selectedLocation != item) {
+            // Đặt lại màu cho nút trước đó nếu có
+            if (selectedLocation != null) {
+                selectedLocation.setForeground(new Color(120, 120, 120));
+                selectedLocation.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
+            }
 
-        // Reset default
-        comboboxArea.setSelectedIndex(0);
+            // Thiết lập lại màu cho nút hiện tại
+            item.setForeground(new Color(255, 11, 11));
+            item.setBorder(BorderFactory.createLineBorder(new Color(255, 11, 11), 2, true));
+
+            // Cập nhật nút được chọn hiện tại
+            selectedLocation = item;
+            loadDataByCriteria();
+        }
+
     }
     // end --->   
 }

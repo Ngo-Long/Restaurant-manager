@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.LayoutManager;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
 import javax.swing.SwingUtilities;
@@ -21,13 +21,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JButton;
+
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.JButton;
 import javax.swing.JTextField;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.DefaultCellEditor;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableCellRenderer;
 
 import restaurant.utils.Common;
 import restaurant.table.TableCustom;
@@ -93,7 +94,6 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         setTitle("Lịch sử chế biến ");
         setBackground(new java.awt.Color(51, 102, 255));
 
-        textSearch.setFocusable(false);
         textSearch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textSearchActionPerformed(evt);
@@ -162,14 +162,12 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         tableOrderDetail.setFillsViewportHeight(true);
         tableOrderDetail.setGridColor(new java.awt.Color(255, 255, 255));
         tableOrderDetail.setRowHeight(50);
-        tableOrderDetail.setShowGrid(false);
         jScrollPane4.setViewportView(tableOrderDetail);
         if (tableOrderDetail.getColumnModel().getColumnCount() > 0) {
             tableOrderDetail.getColumnModel().getColumn(0).setPreferredWidth(40);
             tableOrderDetail.getColumnModel().getColumn(1).setPreferredWidth(200);
             tableOrderDetail.getColumnModel().getColumn(2).setPreferredWidth(46);
             tableOrderDetail.getColumnModel().getColumn(4).setPreferredWidth(120);
-            tableOrderDetail.getColumnModel().getColumn(6).setCellEditor(null);
         }
 
         cbKitchen.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -209,7 +207,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
                     .addComponent(textStartDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(cbKitchen, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(cbStatus, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnReset, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                    .addComponent(btnReset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnSearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)
@@ -399,7 +397,8 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
             ProductEntity productEntity = new ProductDAO().getById(dataItem.getProductID());
             String productName = productEntity.getProductName();
             String productDesc = dataItem.getProductDesc();
-            String productNameDesc = productName + " ( " + productDesc + " )";
+            productDesc = (productDesc == null || productDesc.isEmpty()) ? "" : " ( " + productDesc + " )";
+            String productNameDesc = productName + productDesc;
 
             // Get name table by id table
             DiningTableEntity tableDining = new DiningTableDAO().getByOrderID(dataItem.getOrderID());
@@ -432,7 +431,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
             setOpaque(true);
             setBackground(Color.white);
             setLayout(new FlowLayout(FlowLayout.CENTER, 5, 2));
-            add(createButton("Chi tiết", new Color(0, 153, 153), new Dimension(75, 36)));
+            add(createButton("Chi tiết", new Color(0, 153, 153), new Dimension(80, 36)));
         }
 
         @Override
@@ -445,7 +444,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
     class ButtonEditor extends DefaultCellEditor {
 
         private final JPanel panel;
-        private final JButton finishButton;
+        private final JButton button;
 
         public ButtonEditor(JTable table) {
             super(new JTextField());
@@ -454,9 +453,23 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
             panel.setBackground(Color.white);
             panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 2));
 
-            finishButton = createButton("Chi tiết", new Color(0, 153, 153), new Dimension(75, 36));
-//            finishButton.addActionListener((ActionEvent e) -> handleClickFinishButton(table));
-            panel.add(finishButton);
+            button = createButton("Chi tiết", new Color(0, 153, 153), new Dimension(80, 36));
+            button.addActionListener((ActionEvent e) -> {
+                int row = table.getSelectedRow();
+                if (row == -1) {
+                    return;
+                }
+
+                // Get data detail
+                int detailID = (int) table.getValueAt(row, 0);
+                OrderDetailEntity dataDetail = new OrderDetailDAO().getById(detailID);
+
+                // Open dialog 
+                HistoryProductDetailJDialog dialog = new HistoryProductDetailJDialog(null, true);
+                dialog.displayDetailOrder(dataDetail);
+                dialog.setVisible(true);
+            });
+            panel.add(button);
         }
 
         @Override
