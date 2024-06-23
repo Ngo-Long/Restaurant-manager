@@ -1,10 +1,5 @@
 package restaurant.staff;
 
-import java.util.Set;
-import java.util.List;
-import java.util.Vector;
-import java.util.HashSet;
-
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -19,12 +14,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
-
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -36,8 +25,17 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+
+import java.util.Set;
+import java.util.List;
+import java.util.Vector;
+import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 
 import restaurant.dao.OrderDAO;
 import restaurant.dao.InvoiceDAO;
@@ -49,15 +47,14 @@ import restaurant.dao.OrderDetailDAO;
 import restaurant.utils.Auth;
 import restaurant.utils.Dialog;
 import restaurant.utils.Common;
+import restaurant.utils.ColumnTable;
 import restaurant.main.MainStaff;
-import restaurant.dialog.OrderDetailJDialog;
-import restaurant.entity.DiningTableEntity;
-
 import restaurant.table.TableCustom;
 import restaurant.entity.OrderEntity;
 import restaurant.entity.ProductEntity;
 import restaurant.entity.OrderDetailEntity;
-import restaurant.utils.ColumnTable;
+import restaurant.entity.DiningTableEntity;
+import restaurant.dialog.OrderDetailJDialog;
 import static restaurant.utils.Common.addCommasToNumber;
 import static restaurant.utils.ImageUtils.getScaledImageIcon;
 
@@ -257,7 +254,7 @@ public class Products extends javax.swing.JPanel {
         btnSearch.setBackground(new java.awt.Color(255, 51, 51));
         btnSearch.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnSearch.setForeground(new java.awt.Color(255, 255, 255));
-        btnSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/searchWhile.png"))); // NOI18N
+        btnSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/Search.png"))); // NOI18N
         btnSearch.setToolTipText("Tìm kiếm");
         btnSearch.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnSearch.addActionListener(new java.awt.event.ActionListener() {
@@ -283,12 +280,12 @@ public class Products extends javax.swing.JPanel {
 
         scrollPane.setViewportView(panelMainProducts);
 
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/filter1.png"))); // NOI18N
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/filterBlack.png"))); // NOI18N
 
         btnHistory.setBackground(new java.awt.Color(51, 204, 0));
         btnHistory.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnHistory.setForeground(new java.awt.Color(255, 255, 255));
-        btnHistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/historyWhile.png"))); // NOI18N
+        btnHistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/historyWhile.png"))); // NOI18N
         btnHistory.setToolTipText("Xem lịch sử gọi món");
         btnHistory.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnHistory.addActionListener(new java.awt.event.ActionListener() {
@@ -300,7 +297,7 @@ public class Products extends javax.swing.JPanel {
         btnSearch2.setBackground(new java.awt.Color(0, 153, 153));
         btnSearch2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnSearch2.setForeground(new java.awt.Color(255, 255, 255));
-        btnSearch2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/refreshWhile.png"))); // NOI18N
+        btnSearch2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/historyWhile.png"))); // NOI18N
         btnSearch2.setToolTipText("Reset trang (Ctrl + F5)");
         btnSearch2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnSearch2.addActionListener(new java.awt.event.ActionListener() {
@@ -334,12 +331,12 @@ public class Products extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(CbCategory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
-                    .addComponent(textSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
-                    .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, Short.MAX_VALUE)
-                    .addComponent(btnSearch2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, Short.MAX_VALUE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
-                    .addComponent(btnHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, Short.MAX_VALUE))
+                    .addComponent(btnHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                    .addComponent(btnSearch2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(textSearch, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(CbCategory, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addGap(0, 0, 0))
@@ -362,7 +359,7 @@ public class Products extends javax.swing.JPanel {
                 .addContainerGap(12, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 596, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE))
                 .addGap(12, 12, 12))
         );
 
@@ -449,11 +446,11 @@ public class Products extends javax.swing.JPanel {
         Common.customizeTable(tableOrder, new int[]{1}, 30);
         Common.customizeScrollBar(scrollPane);
         Common.addPlaceholder(textNote, "Tối đa 60 ký tự");
-        ColumnTable.setupButtonColumn(tableOrder, 2);
+        ColumnTable.setupQuantityButtonColumn(tableOrder, 2);
 
         // Setup
-        displayTableName();
-        displayOrderOfTable();
+        displayTableInfo();
+        displayOrderInfo();
         setupComboboxCategory();
 
         // Calc total amount click column 2
@@ -464,26 +461,24 @@ public class Products extends javax.swing.JPanel {
         });
 
         // Bắt sự kiện khi click vào cột số 1
-        tableOrder.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int row = tableOrder.rowAtPoint(e.getPoint());
-                int column = tableOrder.columnAtPoint(e.getPoint());
-
-                if (row >= 0 && column == 1) {
-                    Object value = tableOrder.getValueAt(row, column);
-                    System.out.println("Column 1 clicked, value: " + value);
-                }
-            }
-        });
-
+//        tableOrder.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                int row = tableOrder.rowAtPoint(e.getPoint());
+//                int column = tableOrder.columnAtPoint(e.getPoint());
+//
+//                if (row >= 0 && column == 1) {
+//                    Object value = tableOrder.getValueAt(row, column);
+//                }
+//            }
+//        });
         // Load data
         initEventHandlers();
         loadDataByCriteria();
     }
 
     // <--- Common 
-    void displayTableName() {
+    void displayTableInfo() {
         // Kiểm tra và gán giá trị 
         if (Auth.table != null && Auth.table.getTableID() != null) {
             tableID = Auth.table.getTableID();
@@ -497,7 +492,7 @@ public class Products extends javax.swing.JPanel {
         labelOrderTable.setText(tableID == null ? "ORDER [ Bàn Trống ]" : "ORDER [ " + tableName + " ]");
     }
 
-    void displayOrderOfTable() {
+    void displayOrderInfo() {
         // Get order
         existingOrder = new OrderDAO().getByTableId(tableID);
         if (existingOrder == null) {
@@ -761,7 +756,7 @@ public class Products extends javax.swing.JPanel {
                 int invoiceID = new InvoiceDAO().insert();
 
                 // Create new order
-                int orderId = new OrderDAO().insert(invoiceID, "Đang đặt hàng", "Tại nhà hàng");
+                int orderId = new OrderDAO().insert(invoiceID, "Đang chuẩn bị", "Tại nhà hàng");
 
                 // Set status table
                 dataTable = new DiningTableDAO().getById(tableID);
@@ -788,7 +783,6 @@ public class Products extends javax.swing.JPanel {
 
             // Open file table
             mainStaff.displayStaffPanels(new TableOrder(mainStaff));
-            System.out.println("Tạo đơn hàng thành công");
         } catch (Exception e) {
             Dialog.error(this, "Đã xảy ra lỗi khi xử lý đơn hàng!");
             e.printStackTrace();

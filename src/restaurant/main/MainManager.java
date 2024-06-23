@@ -141,7 +141,6 @@ public final class MainManager extends javax.swing.JFrame {
         menuSystem.setText("Hệ thống");
         menuSystem.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        menuChange.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Refresh.png"))); // NOI18N
         menuChange.setText("Đổi mật khẩu");
         menuChange.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         menuChange.addActionListener(new java.awt.event.ActionListener() {
@@ -153,7 +152,6 @@ public final class MainManager extends javax.swing.JFrame {
         menuSystem.add(jSeparator2);
 
         menuLogout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        menuLogout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Log out.png"))); // NOI18N
         menuLogout.setText("Đăng xuất");
         menuLogout.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         menuLogout.addActionListener(new java.awt.event.ActionListener() {
@@ -165,7 +163,6 @@ public final class MainManager extends javax.swing.JFrame {
         menuSystem.add(jSeparator1);
 
         menuEnd.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0));
-        menuEnd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Stop.png"))); // NOI18N
         menuEnd.setText("Kết thúc");
         menuEnd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         menuEnd.addActionListener(new java.awt.event.ActionListener() {
@@ -181,7 +178,6 @@ public final class MainManager extends javax.swing.JFrame {
         menuManager.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         menuTables.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
-        menuTables.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Discussion.png"))); // NOI18N
         menuTables.setText("Bàn ăn");
         menuTables.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         menuTables.addActionListener(new java.awt.event.ActionListener() {
@@ -192,7 +188,6 @@ public final class MainManager extends javax.swing.JFrame {
         menuManager.add(menuTables);
 
         menuDishes.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
-        menuDishes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Add to basket.png"))); // NOI18N
         menuDishes.setText("Món ăn");
         menuDishes.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         menuDishes.addActionListener(new java.awt.event.ActionListener() {
@@ -203,7 +198,6 @@ public final class MainManager extends javax.swing.JFrame {
         menuManager.add(menuDishes);
 
         menuChicken.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, 0));
-        menuChicken.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/chef.png"))); // NOI18N
         menuChicken.setText("Nhà bếp");
         menuChicken.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         menuChicken.addActionListener(new java.awt.event.ActionListener() {
@@ -214,7 +208,6 @@ public final class MainManager extends javax.swing.JFrame {
         menuManager.add(menuChicken);
 
         menuPay.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
-        menuPay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/card.png"))); // NOI18N
         menuPay.setText("Thanh toán");
         menuPay.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         menuPay.addActionListener(new java.awt.event.ActionListener() {
@@ -226,7 +219,6 @@ public final class MainManager extends javax.swing.JFrame {
         menuManager.add(jSeparator4);
 
         menuEmployeeList.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
-        menuEmployeeList.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Clien list.png"))); // NOI18N
         menuEmployeeList.setText("Nhân viên");
         menuEmployeeList.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         menuEmployeeList.addActionListener(new java.awt.event.ActionListener() {
@@ -242,7 +234,6 @@ public final class MainManager extends javax.swing.JFrame {
         menuStatistical.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         menuRevenue.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, java.awt.event.InputEvent.SHIFT_DOWN_MASK));
-        menuRevenue.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Dollar.png"))); // NOI18N
         menuRevenue.setText("Xem doanh thu cuối ngày");
         menuRevenue.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         menuRevenue.addActionListener(new java.awt.event.ActionListener() {
@@ -254,7 +245,6 @@ public final class MainManager extends javax.swing.JFrame {
         menuStatistical.add(jSeparator3);
 
         menuIngridiants.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, java.awt.event.InputEvent.SHIFT_DOWN_MASK));
-        menuIngridiants.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Label.png"))); // NOI18N
         menuIngridiants.setText("Xem nguyên liệu cuối ngày");
         menuIngridiants.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         menuIngridiants.addActionListener(new java.awt.event.ActionListener() {
@@ -266,7 +256,6 @@ public final class MainManager extends javax.swing.JFrame {
         menuStatistical.add(jSeparator8);
 
         menuClients.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, java.awt.event.InputEvent.SHIFT_DOWN_MASK));
-        menuClients.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Users.png"))); // NOI18N
         menuClients.setText("Xem khách hàng cuối ngày");
         menuClients.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         menuClients.addActionListener(new java.awt.event.ActionListener() {
@@ -278,7 +267,6 @@ public final class MainManager extends javax.swing.JFrame {
         menuStatistical.add(jSeparator9);
 
         menuProducts.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.SHIFT_DOWN_MASK));
-        menuProducts.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/history.png"))); // NOI18N
         menuProducts.setText("Xem món ăn cuối ngày");
         menuProducts.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         menuProducts.addActionListener(new java.awt.event.ActionListener() {
@@ -294,13 +282,11 @@ public final class MainManager extends javax.swing.JFrame {
         menuItemHelp.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_5, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/update.png"))); // NOI18N
         jMenuItem1.setText("Reset");
         menuItemHelp.add(jMenuItem1);
         menuItemHelp.add(jSeparator6);
 
         menuInstruct.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
-        menuInstruct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Globe.png"))); // NOI18N
         menuInstruct.setText("Hướng dẫn sử dụng");
         menuInstruct.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         menuInstruct.addActionListener(new java.awt.event.ActionListener() {
@@ -312,7 +298,6 @@ public final class MainManager extends javax.swing.JFrame {
         menuItemHelp.add(jSeparator5);
 
         menuIntroduce.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
-        menuIntroduce.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Brick house.png"))); // NOI18N
         menuIntroduce.setText("Giới thiệu sản phẩm");
         menuIntroduce.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         menuIntroduce.addActionListener(new java.awt.event.ActionListener() {

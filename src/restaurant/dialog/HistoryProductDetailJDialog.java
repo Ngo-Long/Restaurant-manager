@@ -67,12 +67,13 @@ public class HistoryProductDetailJDialog extends javax.swing.JDialog {
         jLabel8.setText("Số lượng:");
 
         textNote.setEditable(false);
+        textNote.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textNote.setFocusable(false);
         textNote.setRequestFocusEnabled(false);
         textNote.setVerifyInputWhenFocusTarget(false);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel1.setText("Lý do:");
+        jLabel1.setText("Ghi chú:");
 
         labelQuantity.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         labelQuantity.setText("Trống");
@@ -98,19 +99,19 @@ public class HistoryProductDetailJDialog extends javax.swing.JDialog {
                 .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
-                    .addComponent(textNote, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9)
                             .addComponent(jLabel8)
                             .addComponent(jLabel7)
                             .addComponent(jLabel6))
-                        .addGap(18, 18, 18)
+                        .addGap(14, 14, 14)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(labelName)
                             .addComponent(labelTime)
                             .addComponent(labelQuantity)
-                            .addComponent(labelStatus))))
+                            .addComponent(labelStatus)))
+                    .addComponent(textNote, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -120,19 +121,19 @@ public class HistoryProductDetailJDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(labelName))
-                .addGap(18, 18, 18)
+                .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(labelTime))
-                .addGap(18, 18, 18)
+                .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(labelQuantity))
-                .addGap(20, 20, 20)
+                .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(labelStatus))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(textNote, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -194,7 +195,7 @@ public class HistoryProductDetailJDialog extends javax.swing.JDialog {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss");
 
         if (data == null) {
-            this.setTitle("Chi tiết Order");
+            this.setTitle("Chi tiết chế biến");
             labelName.setText("Trống");
             labelTime.setText("Trống");
             labelQuantity.setText("Trống");
@@ -203,7 +204,7 @@ public class HistoryProductDetailJDialog extends javax.swing.JDialog {
             return;
         }
 
-        this.setTitle("Chi tiết Order [" + data.getOrderDetailID() + "]");
+        this.setTitle("Chi tiết chế biến [" + data.getOrderDetailID() + "]");
         ProductEntity dataProduct = new ProductDAO().getById(data.getProductID());
         labelName.setText(dataProduct.getProductName());
         labelTime.setText(dateFormat.format(data.getEndTime()));

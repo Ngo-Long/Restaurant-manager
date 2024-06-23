@@ -2,11 +2,6 @@ package restaurant.dialog;
 
 import java.util.List;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
 import javax.swing.SwingUtilities;
 import javax.swing.DefaultComboBoxModel;
@@ -22,15 +17,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.DefaultCellEditor;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableCellRenderer;
-
 import restaurant.utils.Common;
+import restaurant.utils.ColumnTable;
 import restaurant.table.TableCustom;
 import restaurant.dao.ProductDAO;
 import restaurant.dao.DiningTableDAO;
@@ -38,7 +26,6 @@ import restaurant.dao.OrderDetailDAO;
 import restaurant.entity.ProductEntity;
 import restaurant.entity.DiningTableEntity;
 import restaurant.entity.OrderDetailEntity;
-import static restaurant.utils.Common.createButton;
 import static restaurant.utils.Common.getRealText;
 
 public final class HistoryProductsJDialog extends javax.swing.JDialog {
@@ -139,7 +126,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
             }
         });
 
-        tableOrderDetail.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        tableOrderDetail.setFont(new java.awt.Font("SansSerif", 0, 13)); // NOI18N
         tableOrderDetail.setForeground(new java.awt.Color(51, 51, 51));
         tableOrderDetail.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -166,8 +153,8 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         if (tableOrderDetail.getColumnModel().getColumnCount() > 0) {
             tableOrderDetail.getColumnModel().getColumn(0).setPreferredWidth(40);
             tableOrderDetail.getColumnModel().getColumn(1).setPreferredWidth(200);
-            tableOrderDetail.getColumnModel().getColumn(2).setPreferredWidth(46);
-            tableOrderDetail.getColumnModel().getColumn(4).setPreferredWidth(120);
+            tableOrderDetail.getColumnModel().getColumn(2).setPreferredWidth(56);
+            tableOrderDetail.getColumnModel().getColumn(4).setPreferredWidth(130);
         }
 
         cbKitchen.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -178,7 +165,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(12, 12, 12)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane4)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -191,16 +178,16 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
                         .addComponent(cbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(cbKitchen, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(12, 12, 12))
+                .addGap(18, 18, 18))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(12, 12, 12)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(textEndDate, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(textSearch, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -210,8 +197,8 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
                     .addComponent(btnReset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnSearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)
-                .addGap(12, 12, 12))
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
+                .addGap(18, 18, 18))
         );
 
         pack();
@@ -272,6 +259,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
     private com.toedter.calendar.JDateChooser textStartDate;
     // End of variables declaration//GEN-END:variables
 
+    final String PLACEHOLDER = "Tìm theo tên";
     List<OrderDetailEntity> dataOrderDetails;
     ScheduledFuture<?> scheduledFuture;
     ExecutorService executorService = Executors.newFixedThreadPool(3);
@@ -282,18 +270,18 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(new Color(255, 255, 255));
 
+        // Set table
+        TableCustom.apply(jScrollPane4, TableCustom.TableType.MULTI_LINE);
+        Common.customizeTable(tableOrderDetail, new int[]{1}, 40);
+        Common.addPlaceholder(textSearch, PLACEHOLDER);
+
         // Set today on JDateChooser
         textEndDate.setDate(new Date());
         textStartDate.setDate(new Date());
 
-        // Set table
-        TableCustom.apply(jScrollPane4, TableCustom.TableType.MULTI_LINE);
-        Common.customizeTable(tableOrderDetail, new int[]{1}, 40);
-        Common.addPlaceholder(textSearch, "Tìm theo tên món");
-
         // Set combobox
         setupComboboxTables();
-        setupButtonColumn(tableOrderDetail, 6);
+        ColumnTable.setupDetailButtonColumn(tableOrderDetail, 6);
 
         // Load data
         loadDataByCriteria();
@@ -347,7 +335,6 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         cbKitchen.setModel(modalKitchen);
     }
 
-    // <--- Load data
     void loadDataByCriteria() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
@@ -356,7 +343,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         scheduledFuture = scheduledExecutorService.schedule(() -> {
             SwingUtilities.invokeLater(() -> {
                 // Get search text
-                String keyword = getRealText(textSearch, "Tìm theo tên món").trim();
+                String keyword = getRealText(textSearch, PLACEHOLDER).trim();
 
                 // Get category
                 String selectedStatus = (String) cbStatus.getSelectedItem();
@@ -382,7 +369,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
     }
 
     void fillTable(List<OrderDetailEntity> dataList) {
-        System.out.println("Đang load dữ liệu từ cơ sở dữ liệu...");
+        System.out.println("Đang load dữ liệu lịch sử chế biến từ cơ sở dữ liệu...");
 
         // Display table
         DefaultTableModel model = (DefaultTableModel) tableOrderDetail.getModel();
@@ -399,88 +386,23 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
             String productDesc = dataItem.getProductDesc();
             productDesc = (productDesc == null || productDesc.isEmpty()) ? "" : " ( " + productDesc + " )";
             String productNameDesc = productName + productDesc;
-
-            // Get name table by id table
-            DiningTableEntity tableDining = new DiningTableDAO().getByOrderID(dataItem.getOrderID());
-            String tableName = tableDining.getName();
-
             String productDateEnd = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(dataItem.getEndTime());
+
+            // Get table by id table
+            DiningTableEntity tableDining = new DiningTableDAO().getByOrderID(dataItem.getOrderID());
 
             model.addRow(new Object[]{
                 dataItem.getOrderDetailID(),
                 productNameDesc,
                 dataItem.getProductQuantity(),
-                tableName,
+                tableDining.getName(),
                 productDateEnd,
                 dataItem.getProductStatus()
             });
         }
+
+        // Reset table UI
+        tableOrderDetail.repaint();
+        tableOrderDetail.revalidate();
     }
-    // end --->
-
-    // <--- Create button "Chi tiết"
-    void setupButtonColumn(JTable table, int columnNumber) {
-        TableColumn column = table.getColumnModel().getColumn(columnNumber);
-        column.setCellRenderer(new ButtonRenderer());
-        column.setCellEditor(new ButtonEditor(table));
-    }
-
-    class ButtonRenderer extends JPanel implements TableCellRenderer {
-
-        public ButtonRenderer() {
-            setOpaque(true);
-            setBackground(Color.white);
-            setLayout(new FlowLayout(FlowLayout.CENTER, 5, 2));
-            add(createButton("Chi tiết", new Color(0, 153, 153), new Dimension(80, 36)));
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            setBackground(isSelected ? table.getSelectionBackground() : Color.white);
-            return this;
-        }
-    }
-
-    class ButtonEditor extends DefaultCellEditor {
-
-        private final JPanel panel;
-        private final JButton button;
-
-        public ButtonEditor(JTable table) {
-            super(new JTextField());
-            setClickCountToStart(1);
-            panel = new JPanel();
-            panel.setBackground(Color.white);
-            panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 2));
-
-            button = createButton("Chi tiết", new Color(0, 153, 153), new Dimension(80, 36));
-            button.addActionListener((ActionEvent e) -> {
-                int row = table.getSelectedRow();
-                if (row == -1) {
-                    return;
-                }
-
-                // Get data detail
-                int detailID = (int) table.getValueAt(row, 0);
-                OrderDetailEntity dataDetail = new OrderDetailDAO().getById(detailID);
-
-                // Open dialog 
-                HistoryProductDetailJDialog dialog = new HistoryProductDetailJDialog(null, true);
-                dialog.displayDetailOrder(dataDetail);
-                dialog.setVisible(true);
-            });
-            panel.add(button);
-        }
-
-        @Override
-        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            return panel;
-        }
-
-        @Override
-        public Object getCellEditorValue() {
-            return "";
-        }
-    }
-    // end --->
 }

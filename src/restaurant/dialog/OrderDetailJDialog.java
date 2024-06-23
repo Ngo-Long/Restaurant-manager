@@ -191,11 +191,9 @@ public class OrderDetailJDialog extends javax.swing.JDialog {
     }
 
     void displayDetailOrder() {
-        int orderCount = 0;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss");
 
         if (Auth.order == null || Auth.table == null) {
-            orderCount = 0;
             labelNameTable.setText("Trống");
             labelTimeStart.setText("Trống");
             labelTotalAmount.setText("Trống");
@@ -204,12 +202,10 @@ public class OrderDetailJDialog extends javax.swing.JDialog {
             return;
         }
 
-        orderCount = Auth.orderCount;
         this.setTitle("Chi tiết Order [" + Auth.order.getOrderId() + "]");
-        
         labelNameTable.setText(Objects.toString(Auth.table.getName(), ""));
         labelTimeStart.setText(dateFormat.format(Auth.order.getCreatedDate()));
-        labelTotalAmount.setText(Auth.totalAmount + " VND" + " / " + orderCount + " đơn");
+        labelTotalAmount.setText(Auth.order.getTotal() + " VND" + " / " + 1 + " đơn");
         labelStatus.setText(Auth.order.getStatus());
 
     }

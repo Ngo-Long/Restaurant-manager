@@ -13,9 +13,6 @@ public class Auth {
     /**
      * Đối tượng tĩnh
      */
-    public static int orderCount = 0;// Chứa số đơn hàng của bàn gần nhất
-    public static String totalAmount = null; // Chứa tổng tiền của bàn gần nhất
-
     public static ProductEntity product = null; // Chứa thông tin sản phẩm
     public static OrderEntity order = null; // Chứa thông tin hóa đơn
     public static DiningTableEntity table = null; // Chứa thông tin bàn 

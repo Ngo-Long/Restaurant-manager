@@ -47,8 +47,8 @@ public class Common {
             position = Auth.user.getPosition();
         }
 
-        // Chuyển đổi thành chuỗi in hoa và gán vào labelAccount
-        menu.setText(fullName.toUpperCase() + " - " + position.toUpperCase());
+        // Chuyển đổi thành chuỗi và gán vào labelAccount
+        menu.setText(fullName + " - " + position.toUpperCase());
     }
 
     // Hàm chung để tùy chỉnh bảng

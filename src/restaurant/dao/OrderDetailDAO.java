@@ -2,7 +2,6 @@ package restaurant.dao;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.sql.Timestamp;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import restaurant.entity.OrderDetailEntity;
@@ -21,7 +20,7 @@ public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
     final String SELECT_BY_ORDER_ID_SQL = "SELECT od.* FROM OrderDetail od "
             + "JOIN [Order] o ON od.OrderID = o.OrderID "
             + "JOIN Invoice i ON o.InvoiceID = i.InvoiceID "
-            + "WHERE od.ProductStatus != 'Đã xóa' AND i.Status = N'Chờ thanh toán' AND od.OrderID = ?";
+            + "WHERE od.ProductStatus != N'Đã hủy' AND i.Status = N'Chờ thanh toán' AND od.OrderID = ?";
 
     final String SELECT_ORDER_PRODUCT_BY_ORDER_ID_SQL = "SELECT p.ProductName, od.ProductDesc, "
             + "od.ProductQuantity, p.Price AS UnitPrice, (od.ProductQuantity * p.Price) AS TotalPrice "
@@ -29,14 +28,17 @@ public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
             + "JOIN Product p ON od.ProductID = p.ProductID "
             + "WHERE od.OrderID = ?";
 
-    final String SELECT_BY_CRITERIA = "SELECT od.* FROM OrderDetail od "
-            + "JOIN Product p ON od.ProductID = p.ProductID "
-            + "WHERE ProductStatus != N'Chưa xử lý' "
-            + "AND ProductStatus LIKE ? "
-            + "AND p.KitchenArea LIKE ? "
-            + "AND p.ProductName LIKE ? "
-            + "AND od.StartTime >= ? "
-            + "AND od.EndTime <= ? ";
+    final String SELECT_BY_CRITERIA = "SELECT TOP (1000) od.[OrderDetailID], od.[OrderID], od.[ProductID], "
+            + "od.[ProductQuantity], od.[ProductStatus], od.[ProductDesc], od.[Note], "
+            + "od.[StartTime], od.[EndTime] "
+            + "FROM [RestaurantManager].[dbo].[OrderDetail] od "
+            + "JOIN [RestaurantManager].[dbo].[Product] p ON od.[ProductID] = p.[ProductID] "
+            + "WHERE od.[StartTime] >= ? "
+            + "AND od.[EndTime] <= ? "
+            + "AND od.[ProductStatus] != N'Chưa xử lý' "
+            + "AND od.[ProductStatus] LIKE ? "
+            + "AND p.[KitchenArea] LIKE ? "
+            + "AND p.[ProductName] LIKE ? ";
 
     final String SELECT_PENDING_PRODUCTS_SQL = "SELECT * FROM OrderDetail WHERE ProductStatus = N'Chưa xử lý'";
 
@@ -88,7 +90,7 @@ public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
         String startDayTerm = startDate + " 00:00:00";
         String endDayTerm = endDate + " 23:59:59";
 
-        return fetchByQuery(SELECT_BY_CRITERIA, statusTerm, kitchenTerm, nameTerm, startDayTerm, endDayTerm);
+        return fetchByQuery(SELECT_BY_CRITERIA, startDayTerm, endDayTerm, statusTerm, kitchenTerm, nameTerm);
     }
 
     public List<OrderDetailEntity> getPendingProducts() {

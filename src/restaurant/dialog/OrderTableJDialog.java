@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.utils.Auth;
@@ -302,9 +301,6 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
     private void btnAddOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddOrderActionPerformed
         Auth.table = dataTable;
         Auth.order = dataOrder;
-        Auth.orderCount = orderCount;
-        Auth.totalAmount = totalConvert;
-
         mainStaff.displayStaffPanels(new Products(mainStaff));
         dispose();
     }//GEN-LAST:event_btnAddOrderActionPerformed
@@ -366,9 +362,6 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
     private javax.swing.JTextField textNote;
     // End of variables declaration//GEN-END:variables
 
-    int orderCount;
-    String totalConvert;
-
     OrderEntity dataOrder;
     DiningTableEntity dataTable;
     List<OrderDetailEntity> dataOrderDetails;
@@ -425,7 +418,26 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
 
     }
 
-    public void displayDetailTable(DiningTableEntity diningTable) {
+    void setupComboboxTables() {
+        // Get all table list
+        List<DiningTableEntity> dataAllTables = new DiningTableDAO().getAll();
+
+        // Create a DefaultComboBoxModel 
+        DefaultComboBoxModel<String> comboBoxTables = new DefaultComboBoxModel<>();
+
+        // Create a Set to store unique area names
+        comboBoxTables.addElement("Chọn bàn");
+
+        // Add table name to the ComboBoxModel
+        for (DiningTableEntity dataTable : dataAllTables) {
+            comboBoxTables.addElement(dataTable.getName());
+        }
+
+        // Set the ComboBoxModel to the comboBox
+        comboboxTables.setModel(comboBoxTables);
+    }
+
+    public void displayTableInfo(DiningTableEntity diningTable) {
         dataTable = diningTable;
         labelTableId.setText(diningTable.getTableID());
         labelTableName.setText(diningTable.getName());
@@ -449,7 +461,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
             labelStartTime.setText(startTime);
 
             // Set total 
-            totalConvert = addCommasToNumber(String.valueOf(dataOrder.getTotal()));
+            String totalConvert = addCommasToNumber(String.valueOf(dataOrder.getTotal()));
             labelTotal.setText(totalConvert + "₫");
 
             // Set note
@@ -469,22 +481,4 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         }
     }
 
-    void setupComboboxTables() {
-        // Get all table list
-        List<DiningTableEntity> dataAllTables = new DiningTableDAO().getAll();
-
-        // Create a DefaultComboBoxModel 
-        DefaultComboBoxModel<String> comboBoxTables = new DefaultComboBoxModel<>();
-
-        // Create a Set to store unique area names
-        comboBoxTables.addElement("Chọn bàn");
-
-        // Add table name to the ComboBoxModel
-        for (DiningTableEntity dataTable : dataAllTables) {
-            comboBoxTables.addElement(dataTable.getName());
-        }
-
-        // Set the ComboBoxModel to the comboBox
-        comboboxTables.setModel(comboBoxTables);
-    }
 }

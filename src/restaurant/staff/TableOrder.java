@@ -1,30 +1,43 @@
 package restaurant.staff;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.Insets;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.GridBagConstraints;
+
+import java.util.Set;
 import java.util.List;
-import javax.swing.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledExecutorService;
+
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import javax.swing.BorderFactory;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import restaurant.dao.*;
-import restaurant.dialog.OrderTableJDialog;
-import restaurant.entity.*;
 import restaurant.main.MainStaff;
 import restaurant.utils.Dialog;
 import restaurant.utils.Common;
+import restaurant.dao.OrderDAO;
+import restaurant.dao.DiningTableDAO;
+import restaurant.entity.OrderEntity;
+import restaurant.dialog.OrderTableJDialog;
+import restaurant.entity.DiningTableEntity;
 
 public final class TableOrder extends javax.swing.JPanel {
 
@@ -56,7 +69,7 @@ public final class TableOrder extends javax.swing.JPanel {
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setPreferredSize(new java.awt.Dimension(826, 592));
 
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/filter1.png"))); // NOI18N
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/filterBlack.png"))); // NOI18N
 
         scrollPaneTableDining.setBorder(null);
         scrollPaneTableDining.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -86,7 +99,7 @@ public final class TableOrder extends javax.swing.JPanel {
         btnSearch2.setBackground(new java.awt.Color(0, 153, 153));
         btnSearch2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnSearch2.setForeground(new java.awt.Color(255, 255, 255));
-        btnSearch2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/refreshWhile.png"))); // NOI18N
+        btnSearch2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/refreshWhile.png"))); // NOI18N
         btnSearch2.setToolTipText("Reset trang (Ctrl + F5)");
         btnSearch2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnSearch2.addActionListener(new java.awt.event.ActionListener() {
@@ -98,7 +111,7 @@ public final class TableOrder extends javax.swing.JPanel {
         btnHistory.setBackground(new java.awt.Color(51, 204, 0));
         btnHistory.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnHistory.setForeground(new java.awt.Color(255, 255, 255));
-        btnHistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/historyWhile.png"))); // NOI18N
+        btnHistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/historyWhile.png"))); // NOI18N
         btnHistory.setToolTipText("Xem lịch sử gọi món");
         btnHistory.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnHistory.addActionListener(new java.awt.event.ActionListener() {
@@ -110,7 +123,7 @@ public final class TableOrder extends javax.swing.JPanel {
         btnSearch.setBackground(new java.awt.Color(255, 51, 51));
         btnSearch.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnSearch.setForeground(new java.awt.Color(255, 255, 255));
-        btnSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/searchWhile.png"))); // NOI18N
+        btnSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/searchWhile.png"))); // NOI18N
         btnSearch.setToolTipText("Tìm kiếm");
         btnSearch.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnSearch.addActionListener(new java.awt.event.ActionListener() {
@@ -245,8 +258,6 @@ public final class TableOrder extends javax.swing.JPanel {
         // Load list by search and classify when change
         initEventHandlers();
         loadDataByCriteria();
-
-        System.out.println(selectedLocation.getText());
     }
 
     void updateStatus(String status) {
@@ -392,7 +403,7 @@ public final class TableOrder extends javax.swing.JPanel {
 
         // Open dialog and Transmit data via file orderTableDialog
         OrderTableJDialog dialog = new OrderTableJDialog(null, true, mainStaff);
-        dialog.displayDetailTable(data);
+        dialog.displayTableInfo(data);
         dialog.displayOrderedOfTable(data.getTableID());
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
