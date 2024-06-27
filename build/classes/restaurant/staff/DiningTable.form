@@ -72,7 +72,7 @@
                       <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                       <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="panelButtons" min="-2" max="-2" attributes="0"/>
+                      <Component id="panelMenu" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="textSearch" min="-2" pref="226" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -95,7 +95,7 @@
                           <Component id="btnSearch" alignment="0" pref="32" max="32767" attributes="0"/>
                           <Component id="btnSearch2" alignment="0" max="32767" attributes="0"/>
                           <Component id="btnHistory" alignment="0" max="32767" attributes="0"/>
-                          <Component id="panelButtons" alignment="0" max="32767" attributes="0"/>
+                          <Component id="panelMenu" alignment="0" max="32767" attributes="0"/>
                           <Component id="jLabel5" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -223,7 +223,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSearchActionPerformed"/>
               </Events>
             </Component>
-            <Container class="javax.swing.JPanel" name="panelButtons">
+            <Container class="javax.swing.JPanel" name="panelMenu">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>

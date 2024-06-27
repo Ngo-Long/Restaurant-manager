@@ -67,7 +67,9 @@ public class HistoryProductDetailJDialog extends javax.swing.JDialog {
         jLabel8.setText("Số lượng:");
 
         textNote.setEditable(false);
+        textNote.setBackground(new java.awt.Color(255, 255, 255));
         textNote.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        textNote.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         textNote.setFocusable(false);
         textNote.setRequestFocusEnabled(false);
         textNote.setVerifyInputWhenFocusTarget(false);
@@ -111,7 +113,7 @@ public class HistoryProductDetailJDialog extends javax.swing.JDialog {
                             .addComponent(labelTime)
                             .addComponent(labelQuantity)
                             .addComponent(labelStatus)))
-                    .addComponent(textNote, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(textNote, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -121,19 +123,19 @@ public class HistoryProductDetailJDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(labelName))
-                .addGap(12, 12, 12)
+                .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
                     .addComponent(labelTime))
-                .addGap(12, 12, 12)
+                .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(labelQuantity))
-                .addGap(12, 12, 12)
+                .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(labelStatus))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(textNote, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)

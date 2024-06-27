@@ -17,13 +17,20 @@ public class DiningTableDAO extends RestaurantDAO<DiningTableEntity, String> {
     final String SELECT_ALL_SQL = "SELECT * FROM DiningTable"
             + " ORDER BY TRY_CAST(SUBSTRING(Name, PATINDEX('%[0-9]%', Name), LEN(Name)) AS INT)";
     final String SELECT_BY_ID_SQL = "SELECT * FROM DiningTable WHERE TableID=?";
+
     final String SELECT_BY_ORDER_ID_SQL = "SELECT dt.* FROM [Order] o"
             + " JOIN OrderTable ot ON o.OrderID = ot.OrderID"
             + " JOIN DiningTable dt ON ot.TableID = dt.TableID"
             + " WHERE o.OrderID = ?";
 
+    final String SELECT_BY_INVOICE_ID_SQL = "SELECT dt.* FROM DiningTable dt "
+            + "INNER JOIN OrderTable ot ON dt.TableID = ot.TableID "
+            + "INNER JOIN [Order] o ON ot.OrderID = o.OrderID "
+            + "WHERE o.InvoiceID = ?";
+
     final String SELECT_BY_CRITERIA = "SELECT * FROM DiningTable WHERE Name LIKE ? "
             + "AND Location LIKE ? AND Activity LIKE ?";
+
     final String CHECK_DUPLICATED_ID_SQL = "SELECT COUNT(*) FROM DiningTable WHERE TableID=?";
     final String CHECK_DUPLICATED_NAME_SQL = "SELECT COUNT(*) FROM DiningTable WHERE Name = ?";
 
@@ -60,7 +67,11 @@ public class DiningTableDAO extends RestaurantDAO<DiningTableEntity, String> {
 
     @Override
     public List<DiningTableEntity> getAll() {
-        return fetchByQuery(SELECT_ALL_SQL);
+        return this.fetchByQuery(SELECT_ALL_SQL);
+    }
+
+    public List<DiningTableEntity> getAllByInvoiceID(int id) {
+        return this.fetchByQuery(SELECT_BY_INVOICE_ID_SQL, id);
     }
 
     @Override

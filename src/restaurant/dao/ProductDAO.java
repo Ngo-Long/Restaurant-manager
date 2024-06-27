@@ -20,6 +20,13 @@ public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
     final String SELECT_BY_ID_SQL = "SELECT * FROM Product WHERE ProductID=?";
     static final String SELECT_ID_BY_NAME_SQL = "SELECT ProductID FROM Product WHERE ProductName=?";
 
+    final String SELECT_BY_CRITERIA_SQL = "SELECT TOP 1000 ProductID, ProductName, Price, Unit, "
+            + "ImageURL, Category, KitchenArea, Description, Status FROM Product "
+            + "WHERE ProductName LIKE ? "
+            + "AND Category LIKE ? "
+            + "AND Status LIKE ? "
+            + "ORDER BY ProductName";
+
     final String CHECK_DUPLICATED_ID_SQL = "SELECT COUNT(*) FROM Product WHERE ProductID=?";
     final String CHECK_DUPLICATED_NAME_SQL = "SELECT COUNT(*) FROM Product WHERE ProductName = ?";
 
@@ -107,14 +114,11 @@ public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
     }
 
     public List<ProductEntity> searchByCriteria(String name, String category, String status) {
-        String sql = "SELECT * FROM Product WHERE ProductName LIKE ? AND Category LIKE ? AND Status LIKE ? "
-                + "ORDER BY ProductName";
-
         String nameTerm = "%" + name + "%";
         String categoryTerm = "%" + category + "%";
         String statusTerm = "%" + status + "%";
 
-        return this.fetchByQuery(sql, nameTerm, categoryTerm, statusTerm);
+        return this.fetchByQuery(SELECT_BY_CRITERIA_SQL, nameTerm, categoryTerm, statusTerm);
     }
 
     @Override

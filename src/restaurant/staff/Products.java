@@ -7,10 +7,9 @@ import java.awt.Insets;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 
@@ -21,8 +20,8 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.BorderFactory;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
@@ -31,6 +30,7 @@ import java.util.Set;
 import java.util.List;
 import java.util.Vector;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
@@ -55,6 +55,7 @@ import restaurant.entity.ProductEntity;
 import restaurant.entity.OrderDetailEntity;
 import restaurant.entity.DiningTableEntity;
 import restaurant.dialog.OrderDetailJDialog;
+import static restaurant.utils.Common.getRealText;
 import static restaurant.utils.Common.addCommasToNumber;
 import static restaurant.utils.ImageUtils.getScaledImageIcon;
 
@@ -85,19 +86,20 @@ public class Products extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         labelTotal = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        CbCategory = new javax.swing.JComboBox<>();
         textSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
         scrollPane = new javax.swing.JScrollPane();
         panelMainProducts = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
         btnHistory = new javax.swing.JButton();
         btnSearch2 = new javax.swing.JButton();
+        btnSearch3 = new javax.swing.JButton();
+        labelOrderedTable = new javax.swing.JLabel();
+        panelMenu = new javax.swing.JPanel();
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setPreferredSize(new java.awt.Dimension(420, 592));
 
-        tableOrder.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        tableOrder.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         tableOrder.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -122,7 +124,7 @@ public class Products extends javax.swing.JPanel {
         }
 
         btnSubmit.setBackground(new java.awt.Color(0, 153, 0));
-        btnSubmit.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        btnSubmit.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnSubmit.setForeground(new java.awt.Color(255, 255, 255));
         btnSubmit.setText("XÁC NHẬN");
         btnSubmit.setToolTipText("Ấn xác nhận để chuyển tới bếp");
@@ -134,7 +136,7 @@ public class Products extends javax.swing.JPanel {
         });
 
         btnCancel.setBackground(new java.awt.Color(255, 0, 51));
-        btnCancel.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        btnCancel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnCancel.setForeground(new java.awt.Color(255, 255, 255));
         btnCancel.setText("HỦY");
         btnCancel.setToolTipText("Quay về bàn ăn");
@@ -157,21 +159,21 @@ public class Products extends javax.swing.JPanel {
             }
         });
 
-        labelOrderTable.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        labelOrderTable.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
         labelOrderTable.setForeground(new java.awt.Color(255, 51, 51));
         labelOrderTable.setText("ORDER");
 
-        textNote.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        textNote.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         textNote.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED), "Ghi chú", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Segoe UI", 0, 16))); // NOI18N
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(51, 51, 51));
         jLabel1.setText("Tổng cộng");
 
-        labelTotal.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        labelTotal.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         labelTotal.setForeground(new java.awt.Color(255, 51, 51));
         labelTotal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labelTotal.setText("0₫");
@@ -235,14 +237,10 @@ public class Products extends javax.swing.JPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-
-        CbCategory.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        CbCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả" }));
-        CbCategory.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         textSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textSearch.addActionListener(new java.awt.event.ActionListener() {
@@ -280,8 +278,6 @@ public class Products extends javax.swing.JPanel {
 
         scrollPane.setViewportView(panelMainProducts);
 
-        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/filterBlack.png"))); // NOI18N
-
         btnHistory.setBackground(new java.awt.Color(51, 204, 0));
         btnHistory.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnHistory.setForeground(new java.awt.Color(255, 255, 255));
@@ -306,16 +302,45 @@ public class Products extends javax.swing.JPanel {
             }
         });
 
+        btnSearch3.setBackground(new java.awt.Color(255, 51, 51));
+        btnSearch3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnSearch3.setForeground(new java.awt.Color(255, 255, 255));
+        btnSearch3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/cart-while-24px.png"))); // NOI18N
+        btnSearch3.setToolTipText("Tìm kiếm");
+        btnSearch3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSearch3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearch3ActionPerformed(evt);
+            }
+        });
+
+        labelOrderedTable.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        labelOrderedTable.setForeground(new java.awt.Color(255, 51, 51));
+        labelOrderedTable.setText("Dịch Vụ");
+
+        panelMenu.setBackground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout panelMenuLayout = new javax.swing.GroupLayout(panelMenu);
+        panelMenu.setLayout(panelMenuLayout);
+        panelMenuLayout.setHorizontalGroup(
+            panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        panelMenuLayout.setVerticalGroup(
+            panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addComponent(jLabel5)
+                .addComponent(btnSearch3, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(CbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 294, Short.MAX_VALUE)
+                .addComponent(labelOrderedTable)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -324,22 +349,26 @@ public class Products extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12))
-            .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 826, Short.MAX_VALUE)
+            .addComponent(panelMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(btnHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
-                    .addComponent(btnSearch2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(textSearch, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(CbCategory, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(btnHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                        .addComponent(btnSearch2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(textSearch, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(labelOrderedTable, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSearch3)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
+                .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 468, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(panelMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -356,10 +385,10 @@ public class Products extends javax.swing.JPanel {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(12, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 602, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(12, 12, 12))
         );
 
@@ -400,25 +429,30 @@ public class Products extends javax.swing.JPanel {
     private void btnSearch1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearch1ActionPerformed
     }//GEN-LAST:event_btnSearch1ActionPerformed
 
+    private void btnSearch3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearch3ActionPerformed
+
+    }//GEN-LAST:event_btnSearch3ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> CbCategory;
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnHistory;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnSearch1;
     private javax.swing.JButton btnSearch2;
+    private javax.swing.JButton btnSearch3;
     private javax.swing.JButton btnSubmit;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel labelOrderTable;
+    private javax.swing.JLabel labelOrderedTable;
     private javax.swing.JLabel labelTotal;
     private javax.swing.JPanel panelMainProducts;
+    private javax.swing.JPanel panelMenu;
     private javax.swing.JScrollPane scrollPane;
     private javax.swing.JTable tableOrder;
     private javax.swing.JTextField textNote;
@@ -427,9 +461,9 @@ public class Products extends javax.swing.JPanel {
 
     String tableID;
     String tableName;
-    String imagePath;
-    String kitchenArea;
-    String selectedCategory;
+    JLabel selectedMenu;
+    final String PLACEHOLDER_NOTE = "Tối đa 60 ký tự";
+    final String PLACEHOLDER_SEARCH = "Tìm theo tên món";
 
     OrderEntity existingOrder;
     DiningTableEntity dataTable;
@@ -445,13 +479,14 @@ public class Products extends javax.swing.JPanel {
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableOrder, new int[]{1}, 30);
         Common.customizeScrollBar(scrollPane);
-        Common.addPlaceholder(textNote, "Tối đa 60 ký tự");
+        Common.addPlaceholder(textNote, PLACEHOLDER_NOTE);
+        Common.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
         ColumnTable.setupQuantityButtonColumn(tableOrder, 2);
 
         // Setup
+        setupMenu();
         displayTableInfo();
         displayOrderInfo();
-        setupComboboxCategory();
 
         // Calc total amount click column 2
         tableOrder.getModel().addTableModelListener((TableModelEvent e) -> {
@@ -460,18 +495,6 @@ public class Products extends javax.swing.JPanel {
             }
         });
 
-        // Bắt sự kiện khi click vào cột số 1
-//        tableOrder.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                int row = tableOrder.rowAtPoint(e.getPoint());
-//                int column = tableOrder.columnAtPoint(e.getPoint());
-//
-//                if (row >= 0 && column == 1) {
-//                    Object value = tableOrder.getValueAt(row, column);
-//                }
-//            }
-//        });
         // Load data
         initEventHandlers();
         loadDataByCriteria();
@@ -508,28 +531,77 @@ public class Products extends javax.swing.JPanel {
         }
     }
 
-    void setupComboboxCategory() {
+    void setupMenu() {
         // Get data all
         dataProducts = new ProductDAO().getAll();
 
-        // Create a DefaultComboBoxModel 
-        DefaultComboBoxModel<String> cbModelProducts = new DefaultComboBoxModel<>();
-        cbModelProducts.addElement("Tất cả món");
-        Set<String> categorySet = new HashSet<>();
-
-        // Collect unique kitchen area
-        for (ProductEntity dateItem : dataProducts) {
-            categorySet.add(dateItem.getCategory());
+        // Create a set to store unique names
+        Set<String> dataSet = new HashSet<>();
+        for (ProductEntity dataItem : dataProducts) {
+            dataSet.add(dataItem.getCategory());
         }
 
-        // Convert the Set to an array
-        String[] categoryList = categorySet.toArray(new String[categorySet.size()]);
-        for (String categoryItem : categoryList) {
-            cbModelProducts.addElement(categoryItem);
+        // Convert the set to a sorted list
+        List<String> dataList = dataSet.stream().sorted().collect(Collectors.toList());
+
+        // Create buttons for each and add them to panel
+        for (String dataItem : dataList) {
+            // Set button location
+            JLabel item = new JLabel(dataItem);
+            item.setBackground(Color.LIGHT_GRAY);
+            item.setForeground(new Color(120, 120, 120));
+            item.setPreferredSize(new Dimension(140, 50));
+            item.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            item.setVerticalAlignment(SwingConstants.CENTER);
+            item.setHorizontalAlignment(SwingConstants.CENTER);
+            item.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            item.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
+
+            // Handle click location
+            item.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    handleClickMenu(item);
+                }
+            });
+
+            // Automatically select the first item
+            if (selectedMenu == null) {
+                handleClickMenu(item);
+            }
+
+            // Add item location to the panel
+            panelMenu.add(item);
         }
 
-        // Set the ComboBoxModel to the comboBox
-        CbCategory.setModel(cbModelProducts);
+        // Set layout for panelButtons
+        panelMenu.setLayout(new FlowLayout(FlowLayout.LEFT, 12, 12));
+
+        // Refresh the panel to display the new buttons
+        panelMenu.revalidate();
+        panelMenu.repaint();
+    }
+
+    void handleClickMenu(JLabel item) {
+        // Kiểm tra nếu nút hiện tại không phải là nút đã được chọn trước đó
+        if (selectedMenu == item) {
+            return;
+        }
+
+        // Đặt lại màu cho nút trước đó nếu có
+        if (selectedMenu != null) {
+            selectedMenu.setForeground(new Color(120, 120, 120));
+            selectedMenu.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
+        }
+
+        // Thiết lập lại màu cho nút hiện tại
+        item.setForeground(new Color(255, 11, 11));
+        item.setBorder(BorderFactory.createLineBorder(new Color(255, 11, 11), 2, true));
+
+        // Cập nhật nút được chọn hiện tại
+        selectedMenu = item;
+        loadDataByCriteria();
+
     }
     // end --->
 
@@ -552,13 +624,6 @@ public class Products extends javax.swing.JPanel {
                 loadDataByCriteria();
             }
         });
-
-        // Attach event comboBox
-        ActionListener actionListener = (ActionEvent e) -> {
-            loadDataByCriteria();
-        };
-
-        CbCategory.addActionListener(actionListener);
     }
 
     void loadDataByCriteria() {
@@ -568,17 +633,12 @@ public class Products extends javax.swing.JPanel {
 
         scheduledFuture = scheduledExecutorService.schedule(() -> {
             SwingUtilities.invokeLater(() -> {
-                // Get category
-                selectedCategory = (String) CbCategory.getSelectedItem();
-                if (selectedCategory.equals("Tất cả món")) {
-                    selectedCategory = "";
-                }
-
-                // Get search text
-                String keyword = textSearch.getText().trim().replaceAll("\\s+", "");
+                // Get category and search text
+                String menuItem = selectedMenu.getText();
+                String keyword = getRealText(textSearch, PLACEHOLDER_SEARCH);
 
                 // Get data and display
-                dataProductsByCategory = new ProductDAO().searchByCriteria(keyword, selectedCategory, "");
+                dataProductsByCategory = new ProductDAO().searchByCriteria(keyword, menuItem, "");
                 displayProductList(dataProductsByCategory);
             });
         }, 300, TimeUnit.MILLISECONDS);
@@ -589,26 +649,34 @@ public class Products extends javax.swing.JPanel {
     void displayProductList(List<ProductEntity> dataList) {
         // Reset food list
         panelMainProducts.removeAll();
-        panelMainProducts.setLayout(new GridBagLayout());
 
-        // Init gridbag 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(0, 8, 16, 8);
-        gbc.anchor = GridBagConstraints.NORTHWEST;
+        // Set layout
+        panelMainProducts.setLayout(new FlowLayout(FlowLayout.LEFT, 8, 16));
 
-        int columnCount = 5;
-        for (int i = 0; i < dataList.size(); i++) {
-            // create panel product item
-            ProductEntity dataItem = dataList.get(i);
-            JPanel panelProduct = createPanelProduct(dataItem);
-
-            // Tính toán vị trí dựa trên số cột
-            gbc.gridx = i % columnCount;
-            gbc.gridy = i / columnCount;
-
-            panelMainProducts.add(panelProduct, gbc);
+//        panelMainProducts.setLayout(new GridBagLayout());
+//
+//        // Init gridbag 
+//        GridBagConstraints gbc = new GridBagConstraints();
+//        gbc.gridx = 0;
+//        gbc.gridy = 0;
+//        gbc.insets = new Insets(0, 8, 16, 8);
+//        gbc.anchor = GridBagConstraints.NORTHWEST;
+//
+//        int columnCount = 5;
+//        for (int i = 0; i < dataList.size(); i++) {
+//            // create panel product item
+//            ProductEntity dataItem = dataList.get(i);
+//            JPanel panelProduct = createPanelProduct(dataItem);
+//
+//            // Tính toán vị trí dựa trên số cột
+//            gbc.gridx = i % columnCount;
+//            gbc.gridy = i / columnCount;
+//
+//            panelMainProducts.add(panelProduct, gbc);
+//        }
+// Create product item
+        for (ProductEntity dataItem : dataList) {
+            panelMainProducts.add(createPanelProduct(dataItem));
         }
 
         // Refresh the panel
@@ -722,14 +790,14 @@ public class Products extends javax.swing.JPanel {
         // Nếu bàn chưa chọn món thì rời đi luôn
         DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
         if (model.getRowCount() == 0) {
-            mainStaff.displayStaffPanels(new TableOrder(mainStaff));
+            mainStaff.displayStaffPanels(new DiningTable(mainStaff));
             return;
         }
 
         // Nếu bàn đã gọi món thì hỏi trước khi thoát
         Boolean result = Dialog.confirm(this, "Nếu thoát bạn sẽ mất các món ăn đã chọn?");
         if (result) {
-            mainStaff.displayStaffPanels(new TableOrder(mainStaff));
+            mainStaff.displayStaffPanels(new DiningTable(mainStaff));
         }
     }
 
@@ -782,7 +850,7 @@ public class Products extends javax.swing.JPanel {
             addProductsToOrderd(existingOrder.getOrderId(), orderProducts);
 
             // Open file table
-            mainStaff.displayStaffPanels(new TableOrder(mainStaff));
+            mainStaff.displayStaffPanels(new DiningTable(mainStaff));
         } catch (Exception e) {
             Dialog.error(this, "Đã xảy ra lỗi khi xử lý đơn hàng!");
             e.printStackTrace();
@@ -804,6 +872,7 @@ public class Products extends javax.swing.JPanel {
                     newDetail.setOrderID(orderID);
                     newDetail.setProductID(productID);
                     newDetail.setProductQuantity(1);
+                    newDetail.setProductStatus("Chưa xử lý");
                     newDetail.setProductDesc("");
                     new OrderDetailDAO().insert(newDetail);
                 }

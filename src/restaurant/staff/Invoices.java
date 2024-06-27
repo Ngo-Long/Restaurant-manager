@@ -17,7 +17,6 @@ import net.sf.jasperreports.engine.JRException;
 import restaurant.dao.OrderDAO;
 import restaurant.dao.InvoiceDAO;
 import restaurant.dao.OrderDetailDAO;
-
 import restaurant.entity.OrderEntity;
 import restaurant.entity.InvoiceEntity;
 import restaurant.entity.OrderDetailEntity;
@@ -29,6 +28,7 @@ import restaurant.utils.Common;
 import restaurant.utils.Ordered;
 import restaurant.main.MainStaff;
 import restaurant.table.TableCustom;
+import restaurant.dialog.HistoryInvoicesJDialog;
 import static restaurant.utils.Common.addCommasToNumber;
 import static restaurant.utils.Common.removeCommasFromNumber;
 
@@ -37,7 +37,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperCompileManager;
-import restaurant.dialog.HistoryInvoicesJDialog;
 
 public class Invoices extends javax.swing.JPanel {
 
@@ -282,7 +281,7 @@ public class Invoices extends javax.swing.JPanel {
         labelCashReturn.setText("0");
 
         btnPayInvoice.setBackground(new java.awt.Color(0, 153, 0));
-        btnPayInvoice.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnPayInvoice.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btnPayInvoice.setForeground(new java.awt.Color(255, 255, 255));
         btnPayInvoice.setText("THANH TOÁN");
         btnPayInvoice.setToolTipText("Ấn để in hóa đơn");
@@ -293,10 +292,9 @@ public class Invoices extends javax.swing.JPanel {
             }
         });
 
-        btnCancel.setBackground(new java.awt.Color(225, 0, 0));
-        btnCancel.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btnCancel.setForeground(new java.awt.Color(255, 255, 255));
-        btnCancel.setText("HỦY");
+        btnCancel.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btnCancel.setForeground(new java.awt.Color(51, 51, 51));
+        btnCancel.setText("IN BILL");
         btnCancel.setToolTipText("Quay lại bàn ăn (F1)");
         btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -561,7 +559,7 @@ public class Invoices extends javax.swing.JPanel {
     }//GEN-LAST:event_btnPayInvoiceActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        mainStaff.displayStaffPanels(new TableOrder(mainStaff));
+        mainStaff.displayStaffPanels(new DiningTable(mainStaff));
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnFiftyThousandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiftyThousandActionPerformed
@@ -679,13 +677,15 @@ public class Invoices extends javax.swing.JPanel {
     OrderEntity dataOrder;
     InvoiceEntity dataInvoice;
     List<OrderDetailEntity> dataOrderDetails;
+    final String PLACEHOLDER = "Tìm tên hoặc sđt khách hàng";
     ExecutorService executorService = Executors.newFixedThreadPool(10);
 
     void init() {
         // Setup common
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
-        Common.customizeTable(tableOrdered, new int[]{0}, 30);
+        Common.customizeTable(tableOrdered, new int[]{0, 1, 2, 3}, 30);
         Common.createButtonGroup(radioCash, radioCard, radioTransfer);
+        Common.addPlaceholder(textSearch, PLACEHOLDER);
 
         // Setup main
         displayTableInfo();
@@ -844,7 +844,7 @@ public class Invoices extends javax.swing.JPanel {
             // bill();
             // Update status
             Dialog.success(this, "Thanh toán thành công!");
-            mainStaff.displayStaffPanels(new TableOrder(mainStaff));
+            mainStaff.displayStaffPanels(new DiningTable(mainStaff));
         } catch (Exception e) {
             Dialog.success(this, "Thanh toán không thành công!");
         }

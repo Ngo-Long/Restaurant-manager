@@ -82,8 +82,19 @@ public class Common {
         contentRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         contentRenderer.setBackground(Color.white);
 
-        // Setup renderer cho nội dung không căn giữa
-        DefaultTableCellRenderer notContentRenderer = new DefaultTableCellRenderer();
+        // Setup renderer cho nội dung không căn giữa và thêm padding
+        DefaultTableCellRenderer notContentRenderer = new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                // Call super method to set up the component
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                // Set padding on the left
+                setBorder(BorderFactory.createEmptyBorder(0, 12, 0, 0));
+
+                return this;
+            }
+        };
         notContentRenderer.setHorizontalAlignment(SwingConstants.LEFT);
         notContentRenderer.setBackground(Color.white);
 
@@ -110,6 +121,7 @@ public class Common {
             // Privent size column
             column.setResizable(false);
         }
+
     }
 
     // Tính toán thời gian còn lại và định dạng thành HH:mm
@@ -332,7 +344,7 @@ public class Common {
     // Lấy dữ liệu thật
     public static String getRealText(JTextField textField, String placeholder) {
         String text = textField.getText();
-        return text.equals(placeholder) ? "" : text;
+        return text.equals(placeholder) ? "" : text.trim();
     }
 
     // Sử dụng hàm để thêm focus listener và đặt viền cho mỗi JTextField trong mảng

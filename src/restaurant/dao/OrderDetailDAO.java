@@ -10,7 +10,7 @@ import restaurant.utils.JDBC;
 public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
 
     final String INSERT_SQL = "INSERT INTO OrderDetail (OrderID, ProductID, ProductQuantity, ProductStatus,"
-            + " ProductDesc, Note, StartTime) VALUES (?, ?, ?, N'Chưa xử lý', ?, N'', GETDATE())";
+            + " ProductDesc, Note, StartTime) VALUES (?, ?, ?, ?, ?, N'', GETDATE())";
     final String UPDATE_SQL = "UPDATE OrderDetail SET OrderID = ?, ProductID = ?, ProductQuantity = ?,"
             + " ProductStatus = ?, ProductDesc = ?, Note = ?, EndTime = GETDATE() WHERE OrderDetailID = ?";
     final String DELETE_SQL = "DELETE FROM OrderDetail WHERE OrderDetailID=?";
@@ -28,9 +28,9 @@ public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
             + "JOIN Product p ON od.ProductID = p.ProductID "
             + "WHERE od.OrderID = ?";
 
-    final String SELECT_BY_CRITERIA = "SELECT TOP (1000) od.[OrderDetailID], od.[OrderID], od.[ProductID], "
-            + "od.[ProductQuantity], od.[ProductStatus], od.[ProductDesc], od.[Note], "
-            + "od.[StartTime], od.[EndTime] "
+    final String SELECT_BY_CRITERIA = "SELECT TOP (1000) od.[OrderDetailID], od.[OrderID], "
+            + "od.[ProductID], od.[ProductQuantity], od.[ProductStatus], od.[ProductDesc], "
+            + "od.[Note], od.[StartTime], od.[EndTime] "
             + "FROM [RestaurantManager].[dbo].[OrderDetail] od "
             + "JOIN [RestaurantManager].[dbo].[Product] p ON od.[ProductID] = p.[ProductID] "
             + "WHERE od.[StartTime] >= ? "
@@ -48,6 +48,7 @@ public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
                 model.getOrderID(),
                 model.getProductID(),
                 model.getProductQuantity(),
+                model.getProductStatus(),
                 model.getProductDesc()
         );
     }

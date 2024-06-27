@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.utils.Auth;
@@ -17,7 +18,7 @@ import restaurant.utils.Ordered;
 import restaurant.main.MainStaff;
 import restaurant.staff.Products;
 import restaurant.staff.Invoices;
-import restaurant.staff.TableOrder;
+import restaurant.staff.DiningTable;
 import restaurant.table.TableCustom;
 
 import restaurant.dao.OrderDAO;
@@ -134,7 +135,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         });
 
         btnAddOrder.setBackground(new java.awt.Color(0, 153, 0));
-        btnAddOrder.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnAddOrder.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btnAddOrder.setForeground(new java.awt.Color(255, 255, 255));
         btnAddOrder.setText("THÊM MÓN (F2)");
         btnAddOrder.setToolTipText("Ấn F2 để chọn món ăn");
@@ -146,7 +147,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         });
 
         btnPay.setBackground(new java.awt.Color(0, 0, 204));
-        btnPay.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnPay.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btnPay.setForeground(new java.awt.Color(255, 255, 255));
         btnPay.setText("THANH TOÁN (F4)");
         btnPay.setToolTipText("Ấn F4 để thanh toán");
@@ -157,7 +158,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
             }
         });
 
-        tableListOrderedDishes.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        tableListOrderedDishes.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         tableListOrderedDishes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -184,18 +185,18 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
 
         textNote.setEditable(false);
         textNote.setBackground(new java.awt.Color(255, 255, 255));
-        textNote.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        textNote.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         textNote.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED), "Ghi chú", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Segoe UI", 0, 16))); // NOI18N
         textNote.setFocusable(false);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(51, 51, 51));
         jLabel1.setText("Tổng cộng");
 
-        labelTotal.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        labelTotal.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         labelTotal.setForeground(new java.awt.Color(255, 51, 51));
         labelTotal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labelTotal.setText("0");
@@ -298,7 +299,18 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
 
     }//GEN-LAST:event_comboboxTablesActionPerformed
 
+
     private void btnAddOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddOrderActionPerformed
+        // Set selected button product
+        JButton[] buttons = mainStaff.getHeaderButtons();
+        for (JButton button : buttons) {
+            if (button.getText().equals("Món Ăn")) {
+                mainStaff.setupHeaderButtons(button);
+                break;
+            }
+        }
+
+        // Set attach info other file
         Auth.table = dataTable;
         Auth.order = dataOrder;
         mainStaff.displayStaffPanels(new Products(mainStaff));
@@ -307,6 +319,16 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
 
 
     private void btnPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPayActionPerformed
+        // Set selected button product
+        JButton[] buttons = mainStaff.getHeaderButtons();
+        for (JButton button : buttons) {
+            if (button.getText().equals("Thanh Toán")) {
+                mainStaff.setupHeaderButtons(button);
+                break;
+            }
+        }
+
+        // Set attach info other file
         Auth.table = dataTable;
         mainStaff.displayStaffPanels(new Invoices(mainStaff));
         dispose();
@@ -410,7 +432,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
             new OrderDAO().update(dataOrder); // update
 
             // Upload
-            mainStaff.displayStaffPanels(new TableOrder(mainStaff));
+            mainStaff.displayStaffPanels(new DiningTable(mainStaff));
             dispose();
         } catch (Exception e) {
             Dialog.error(this, "Chuyển bàn thất bại!");

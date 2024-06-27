@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.GridBagConstraints;
+import java.awt.GridLayout;
 
 import java.util.Set;
 import java.util.List;
@@ -25,6 +26,8 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
@@ -39,11 +42,11 @@ import restaurant.entity.OrderEntity;
 import restaurant.dialog.OrderTableJDialog;
 import restaurant.entity.DiningTableEntity;
 
-public final class TableOrder extends javax.swing.JPanel {
+public final class DiningTable extends javax.swing.JPanel {
 
     private MainStaff mainStaff;
 
-    public TableOrder(MainStaff mainStaff) {
+    public DiningTable(MainStaff mainStaff) {
         this.mainStaff = mainStaff;
         initComponents();
         this.init();
@@ -62,7 +65,7 @@ public final class TableOrder extends javax.swing.JPanel {
         btnSearch2 = new javax.swing.JButton();
         btnHistory = new javax.swing.JButton();
         btnSearch = new javax.swing.JButton();
-        panelButtons = new javax.swing.JPanel();
+        panelMenu = new javax.swing.JPanel();
 
         panelBody.setToolTipText("");
 
@@ -132,17 +135,17 @@ public final class TableOrder extends javax.swing.JPanel {
             }
         });
 
-        panelButtons.setBackground(new java.awt.Color(255, 255, 255));
-        panelButtons.setAutoscrolls(true);
+        panelMenu.setBackground(new java.awt.Color(255, 255, 255));
+        panelMenu.setAutoscrolls(true);
 
-        javax.swing.GroupLayout panelButtonsLayout = new javax.swing.GroupLayout(panelButtons);
-        panelButtons.setLayout(panelButtonsLayout);
-        panelButtonsLayout.setHorizontalGroup(
-            panelButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout panelMenuLayout = new javax.swing.GroupLayout(panelMenu);
+        panelMenu.setLayout(panelMenuLayout);
+        panelMenuLayout.setHorizontalGroup(
+            panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 728, Short.MAX_VALUE)
         );
-        panelButtonsLayout.setVerticalGroup(
-            panelButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        panelMenuLayout.setVerticalGroup(
+            panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 32, Short.MAX_VALUE)
         );
 
@@ -154,7 +157,7 @@ public final class TableOrder extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelButtons, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panelMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -175,7 +178,7 @@ public final class TableOrder extends javax.swing.JPanel {
                     .addComponent(btnSearch, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
                     .addComponent(btnSearch2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnHistory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panelButtons, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(scrollPaneTableDining, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE))
@@ -221,7 +224,7 @@ public final class TableOrder extends javax.swing.JPanel {
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnSearch2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearch2ActionPerformed
-        mainStaff.displayStaffPanels(new TableOrder(mainStaff));
+        mainStaff.displayStaffPanels(new DiningTable(mainStaff));
     }//GEN-LAST:event_btnSearch2ActionPerformed
 
     private void btnHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistoryActionPerformed
@@ -235,14 +238,14 @@ public final class TableOrder extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel panelBody;
-    private javax.swing.JPanel panelButtons;
     private javax.swing.JPanel panelDiningTableList;
+    private javax.swing.JPanel panelMenu;
     private javax.swing.JScrollPane scrollPaneTableDining;
     private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
+    JLabel selectedMenu;
     JButton selectedProduct;
-    JLabel selectedLocation;
     OrderEntity dataOrder;
     DiningTableEntity dataTable;
     List<DiningTableEntity> dataTables;
@@ -253,7 +256,7 @@ public final class TableOrder extends javax.swing.JPanel {
         Common.customizeScrollBar(scrollPaneTableDining);
 
         // Setup combobox
-        setupMultipleCombobox();
+        setupMenu();
 
         // Load list by search and classify when change
         initEventHandlers();
@@ -318,10 +321,10 @@ public final class TableOrder extends javax.swing.JPanel {
             SwingUtilities.invokeLater(() -> {
                 // Get info criterias
                 String searchName = textSearch.getText().trim();
-                String location = selectedLocation.getText();
+                String menuItem = selectedMenu.getText();
 
                 // Get data and load
-                dataTables = new DiningTableDAO().searchByCriteria(searchName, location, "");
+                dataTables = new DiningTableDAO().searchByCriteria(searchName, menuItem, "");
                 this.displayDiningTables(dataTables);
             });
         }, 200, TimeUnit.MILLISECONDS);
@@ -329,7 +332,7 @@ public final class TableOrder extends javax.swing.JPanel {
     // end --->
 
     // <--- Display and handle event table dining
-    void displayDiningTables(List<DiningTableEntity> dataTables) {
+    void displayDiningTables(List<DiningTableEntity> dataList) {
         panelDiningTableList.removeAll(); // Reset 
 
         // Init GridBagLayout
@@ -364,7 +367,7 @@ public final class TableOrder extends javax.swing.JPanel {
 
             panelDiningTableList.add(tableButton);
         }
-
+        
         // Refresh the panel
         panelDiningTableList.revalidate();
         panelDiningTableList.repaint();
@@ -429,7 +432,7 @@ public final class TableOrder extends javax.swing.JPanel {
     // end --->
 
     // <--- Handle event search and catogory
-    void setupMultipleCombobox() {
+    void setupMenu() {
         // Get all table list
         List<DiningTableEntity> dataAll = new DiningTableDAO().getAll();
 
@@ -464,40 +467,41 @@ public final class TableOrder extends javax.swing.JPanel {
             });
 
             // Automatically select the first item
-            if (selectedLocation == null) {
+            if (selectedMenu == null) {
                 handleClickPanelTop(item);
             }
 
             // Add item location to the panel
-            panelButtons.add(item);
+            panelMenu.add(item);
         }
 
         // Set layout for panelButtons
-        panelButtons.setLayout(new FlowLayout(FlowLayout.CENTER, 4, 4));
+        panelMenu.setLayout(new FlowLayout(FlowLayout.CENTER, 4, 4));
 
         // Refresh the panel to display the new buttons
-        panelButtons.revalidate();
-        panelButtons.repaint();
+        panelMenu.revalidate();
+        panelMenu.repaint();
     }
 
     void handleClickPanelTop(JLabel item) {
         // Kiểm tra nếu nút hiện tại không phải là nút đã được chọn trước đó
-        if (selectedLocation != item) {
-            // Đặt lại màu cho nút trước đó nếu có
-            if (selectedLocation != null) {
-                selectedLocation.setForeground(new Color(120, 120, 120));
-                selectedLocation.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
-            }
-
-            // Thiết lập lại màu cho nút hiện tại
-            item.setForeground(new Color(255, 11, 11));
-            item.setBorder(BorderFactory.createLineBorder(new Color(255, 11, 11), 2, true));
-
-            // Cập nhật nút được chọn hiện tại
-            selectedLocation = item;
-            loadDataByCriteria();
+        if (selectedMenu == item) {
+            return;
         }
 
+        // Đặt lại màu cho nút trước đó nếu có
+        if (selectedMenu != null) {
+            selectedMenu.setForeground(new Color(120, 120, 120));
+            selectedMenu.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
+        }
+
+        // Thiết lập lại màu cho nút hiện tại
+        item.setForeground(new Color(255, 11, 11));
+        item.setBorder(BorderFactory.createLineBorder(new Color(255, 11, 11), 2, true));
+
+        // Cập nhật nút được chọn hiện tại
+        selectedMenu = item;
+        loadDataByCriteria();
     }
     // end --->   
 }

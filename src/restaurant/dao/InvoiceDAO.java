@@ -11,10 +11,12 @@ import restaurant.entity.InvoiceEntity;
 public class InvoiceDAO extends RestaurantDAO<InvoiceEntity, Integer> {
 
     final String INSERT_SQL = "INSERT INTO Invoice (Status) VALUES (N'Chờ thanh toán');";
-    final String UPDATE_SQL = "UPDATE Invoice SET EmployeeID=?, Tax=?, Discount=?, PaymentMethod=?, Note=?, "
-            + "TotalAmount=?, Status=?, PaymentTime=GETDATE() WHERE InvoiceID=?";
+    final String UPDATE_SQL = "UPDATE Invoice SET EmployeeID=?, Tax=?, Discount=?, PaymentMethod=?, "
+            + "Note=?, TotalAmount=?, Status=?, PaymentTime=GETDATE() WHERE InvoiceID=?";
     final String SELECT_ALL_SQL = "SELECT * FROM Invoice";
     final String SELECT_BY_ID_SQL = "SELECT * FROM [Invoice] WHERE [InvoiceID] = ?";
+    final String SELECT_LATEST_ID_SQL = "SELECT TOP 1 InvoiceID FROM Invoice ORDER BY InvoiceID DESC";
+
     final String SELECT_BY_TABLE_ID_SQL = "SELECT DISTINCT I.* FROM DiningTable DT "
             + "INNER JOIN OrderTable OT ON DT.TableID = OT.TableID "
             + "INNER JOIN [Order] O ON OT.OrderID = O.OrderID "
@@ -25,21 +27,10 @@ public class InvoiceDAO extends RestaurantDAO<InvoiceEntity, Integer> {
             + "i.[Discount], i.[PaymentMethod], i.[PaymentTime], i.[Note], i.[TotalAmount], i.[Status] "
             + "FROM [RestaurantManager].[dbo].[Invoice] i "
             + "JOIN [RestaurantManager].[dbo].[Order] o ON i.[InvoiceID] = o.[InvoiceID] "
-            + "JOIN [RestaurantManager].[dbo].[OrderTable] ot ON o.[OrderID] = ot.[OrderID] "
-            + "JOIN [RestaurantManager].[dbo].[DiningTable] dt ON ot.[TableID] = dt.[TableID] "
             + "WHERE i.[PaymentTime] >= ? "
             + "AND i.[PaymentTime] <= ? "
             + "AND i.[PaymentMethod] LIKE ? "
-            + "AND i.[Status] LIKE ? "
-            + "AND dt.[Name] LIKE ? ";
-
-    final String SELECT_TABLE_NAMES_SQL = "SELECT dt.[Name] AS TableName "
-            + "FROM DiningTable dt "
-            + "INNER JOIN OrderTable ot ON dt.TableID = ot.TableID "
-            + "INNER JOIN [Order] o ON ot.OrderID = o.OrderID "
-            + "WHERE o.InvoiceID = ?";
-
-    final String SELECT_LATEST_ID_SQL = "SELECT TOP 1 InvoiceID FROM Invoice ORDER BY InvoiceID DESC";
+            + "AND i.[Status] LIKE ? ";
 
     @Override
     public void insert(InvoiceEntity entity) {
@@ -97,32 +88,14 @@ public class InvoiceDAO extends RestaurantDAO<InvoiceEntity, Integer> {
         return fetchByQuery(SELECT_ALL_SQL);
     }
 
-    public List<InvoiceEntity> searchByCriteria(String startDate, String endDate,
-            String payMethod, String status, String tableName, String employeeName) {
+    public List<InvoiceEntity> searchByCriteria(String startDate, String endDate, String payMethod, String status) {
 
         String startDayTerm = startDate + " 00:00:00";
         String endDayTerm = endDate + " 23:59:59";
         String payMethodTerm = "%" + payMethod + "%";
         String statusTerm = "%" + status + "%";
-        String tableNameTerm = "%" + tableName + "%";
-        String employeeNameTerm = "%" + employeeName + "%";
 
-        return fetchByQuery(SELECT_BY_CRITERIA, startDayTerm, endDayTerm,
-                payMethodTerm, statusTerm, tableNameTerm);
-    }
-
-    public List<String> getTableNamesByInvoiceID(int invoiceID) {
-        List<String> tableNames = new ArrayList<>();
-        try (ResultSet rs = JDBC.executeQuery(SELECT_TABLE_NAMES_SQL, invoiceID)) {
-            while (rs.next()) {
-                tableNames.add(rs.getString("TableName"));
-            }
-        } catch (SQLException ex) {
-            Dialog.error(null, "Lỗi khi truy vấn tên bàn ăn từ mã hóa đơn!");
-            throw new RuntimeException(ex);
-        }
-
-        return tableNames;
+        return fetchByQuery(SELECT_BY_CRITERIA, startDayTerm, endDayTerm, payMethodTerm, statusTerm);
     }
 
     @Override

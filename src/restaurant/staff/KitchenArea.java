@@ -194,7 +194,7 @@ public class KitchenArea extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(12, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12))
         );
@@ -256,46 +256,50 @@ public class KitchenArea extends javax.swing.JPanel {
     }
 
     void fillTable(List<OrderDetailEntity> dataList) {
-        // Get model
-        DefaultTableModel model = (DefaultTableModel) tablePending.getModel();
-        model.setRowCount(0);
+        try {
+            // Get model
+            DefaultTableModel model = (DefaultTableModel) tablePending.getModel();
+            model.setRowCount(0);
 
-        // Fetch pending and confirmed products
-        dataList = new OrderDetailDAO().getPendingProducts();
-        tablePending.setModel(model);
+            // Fetch pending and confirmed products
+            dataList = new OrderDetailDAO().getPendingProducts();
+            tablePending.setModel(model);
 
-        // Sắp xếp theo thời gian bắt đầu từ gần nhất
-        dataList.sort(Comparator.comparing(OrderDetailEntity::getStartTime));
+            // Sắp xếp theo thời gian bắt đầu từ gần nhất
+            dataList.sort(Comparator.comparing(OrderDetailEntity::getStartTime));
 
-        // Thêm sản phẩm vào bảng tương ứng
-        for (OrderDetailEntity dataItem : dataList) {
-            // Get detail id and order id
-            int detailProductId = dataItem.getOrderDetailID();
-            int orderID = dataItem.getOrderID();
+            // Thêm sản phẩm vào bảng tương ứng
+            for (OrderDetailEntity dataItem : dataList) {
+                // Get detail id and order id
+                int detailProductId = dataItem.getOrderDetailID();
+                int orderID = dataItem.getOrderID();
 
-            // Get name table by id table
-            DiningTableEntity tableDining = new DiningTableDAO().getByOrderID(orderID);
-            String tableName = tableDining.getName();
+                // Get name table by id table
+                DiningTableEntity tableDining = new DiningTableDAO().getByOrderID(orderID);
+                String tableName = tableDining == null ? tableDining.getName() : "";
 
-            // Get products in ordered
-            String productId = dataItem.getProductID();
-            int productQuantity = dataItem.getProductQuantity();
-            String productTimeAdded = new SimpleDateFormat("HH:mm").format(dataItem.getStartTime());
-            String productDesc = dataItem.getProductDesc();
-            productDesc = (productDesc == null || productDesc.isEmpty()) ? "" : " ( " + productDesc + " )";
+                // Get products in ordered
+                String productId = dataItem.getProductID();
+                int productQuantity = dataItem.getProductQuantity();
+                String productTimeAdded = new SimpleDateFormat("HH:mm").format(dataItem.getStartTime());
+                String productDesc = dataItem.getProductDesc();
+                productDesc = (productDesc == null || productDesc.isEmpty()) ? "" : " ( " + productDesc + " )";
 
-            // Get info product
-            ProductEntity productEntity = new ProductDAO().getById(productId);
-            String productName = productEntity.getProductName();
-            String productNameAndLevel = productName + productDesc + " x" + productQuantity;
+                // Get info product
+                ProductEntity productEntity = new ProductDAO().getById(productId);
+                String productName = productEntity.getProductName();
+                String productNameAndLevel = productName + productDesc + " x" + productQuantity;
 
-            // Thêm sản phẩm vào bảng 
-            model.addRow(new Object[]{
-                productNameAndLevel,
-                tableName,
-                productTimeAdded,
-                detailProductId
-            });
+                // Thêm sản phẩm vào bảng 
+                model.addRow(new Object[]{
+                    productNameAndLevel,
+                    tableName,
+                    productTimeAdded,
+                    detailProductId
+                });
+            }
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
 

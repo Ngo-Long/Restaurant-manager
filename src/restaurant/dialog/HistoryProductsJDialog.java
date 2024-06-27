@@ -133,7 +133,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Mã CT", "Tên món", "Số lượng", "Bàn ăn", "Thời gian", "Trạng thái", "Tác vụ"
+                "Mã CT", "Thời gian", "Tên món", "Số lượng", "Bàn ăn", "Trạng thái", "Tác vụ"
             }
         ) {
             Class[] types = new Class [] {
@@ -152,9 +152,8 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         jScrollPane4.setViewportView(tableOrderDetail);
         if (tableOrderDetail.getColumnModel().getColumnCount() > 0) {
             tableOrderDetail.getColumnModel().getColumn(0).setPreferredWidth(40);
-            tableOrderDetail.getColumnModel().getColumn(1).setPreferredWidth(200);
-            tableOrderDetail.getColumnModel().getColumn(2).setPreferredWidth(56);
-            tableOrderDetail.getColumnModel().getColumn(4).setPreferredWidth(130);
+            tableOrderDetail.getColumnModel().getColumn(1).setPreferredWidth(150);
+            tableOrderDetail.getColumnModel().getColumn(2).setPreferredWidth(180);
         }
 
         cbKitchen.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -259,7 +258,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
     private com.toedter.calendar.JDateChooser textStartDate;
     // End of variables declaration//GEN-END:variables
 
-    final String PLACEHOLDER = "Tìm theo tên";
+    final String PLACEHOLDER = "Tìm theo tên món";
     List<OrderDetailEntity> dataOrderDetails;
     ScheduledFuture<?> scheduledFuture;
     ExecutorService executorService = Executors.newFixedThreadPool(3);
@@ -272,7 +271,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
 
         // Set table
         TableCustom.apply(jScrollPane4, TableCustom.TableType.MULTI_LINE);
-        Common.customizeTable(tableOrderDetail, new int[]{1}, 40);
+        Common.customizeTable(tableOrderDetail, new int[]{0, 1, 2, 3, 4, 5}, 40);
         Common.addPlaceholder(textSearch, PLACEHOLDER);
 
         // Set today on JDateChooser
@@ -343,7 +342,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         scheduledFuture = scheduledExecutorService.schedule(() -> {
             SwingUtilities.invokeLater(() -> {
                 // Get search text
-                String keyword = getRealText(textSearch, PLACEHOLDER).trim();
+                String keyword = getRealText(textSearch, PLACEHOLDER);
 
                 // Get category
                 String selectedStatus = (String) cbStatus.getSelectedItem();
@@ -369,40 +368,46 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
     }
 
     void fillTable(List<OrderDetailEntity> dataList) {
-        System.out.println("Đang load dữ liệu lịch sử chế biến từ cơ sở dữ liệu...");
+        try {
+            System.out.println("Đang load dữ liệu lịch sử chế biến từ cơ sở dữ liệu...");
 
-        // Display table
-        DefaultTableModel model = (DefaultTableModel) tableOrderDetail.getModel();
-        model.setRowCount(0);
+            // Display table
+            DefaultTableModel model = (DefaultTableModel) tableOrderDetail.getModel();
+            model.setRowCount(0);
 
-        // Sắp xếp theo thời gian kết thúc từ gần nhất
-        dataOrderDetails.sort(Comparator.comparing(OrderDetailEntity::getEndTime).reversed());
+            // Sắp xếp theo thời gian kết thúc từ gần nhất
+            dataOrderDetails.sort(Comparator.comparing(OrderDetailEntity::getEndTime).reversed());
 
-        // Load data into the table 
-        for (OrderDetailEntity dataItem : dataList) {
-            // Get info product
-            ProductEntity productEntity = new ProductDAO().getById(dataItem.getProductID());
-            String productName = productEntity.getProductName();
-            String productDesc = dataItem.getProductDesc();
-            productDesc = (productDesc == null || productDesc.isEmpty()) ? "" : " ( " + productDesc + " )";
-            String productNameDesc = productName + productDesc;
-            String productDateEnd = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(dataItem.getEndTime());
+            // Load data into the table 
+            for (OrderDetailEntity dataItem : dataList) {
+                // Get info product
+                ProductEntity productEntity = new ProductDAO().getById(dataItem.getProductID());
+                String productName = productEntity.getProductName();
+                String productDesc = dataItem.getProductDesc();
+                productDesc = (productDesc == null || productDesc.isEmpty()) ? "" : " ( " + productDesc + " )";
+                String productNameDesc = productName + productDesc;
+                String productDateEnd = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(dataItem.getEndTime());
 
-            // Get table by id table
-            DiningTableEntity tableDining = new DiningTableDAO().getByOrderID(dataItem.getOrderID());
+                // Get table by id table
+                DiningTableEntity tableDining = new DiningTableDAO().getByOrderID(dataItem.getOrderID());
+                String tableName = tableDining != null ? tableDining.getName() : "Mang về";
 
-            model.addRow(new Object[]{
-                dataItem.getOrderDetailID(),
-                productNameDesc,
-                dataItem.getProductQuantity(),
-                tableDining.getName(),
-                productDateEnd,
-                dataItem.getProductStatus()
-            });
+                model.addRow(new Object[]{
+                    dataItem.getOrderDetailID(),
+                    productDateEnd,
+                    productNameDesc,
+                    dataItem.getProductQuantity(),
+                    tableName,
+                    dataItem.getProductStatus()
+                });
+            }
+
+            // Reset table UI
+            tableOrderDetail.repaint();
+            tableOrderDetail.revalidate();
+        } catch (Exception e) {
+            System.out.println(e);
         }
-
-        // Reset table UI
-        tableOrderDetail.repaint();
-        tableOrderDetail.revalidate();
     }
+
 }

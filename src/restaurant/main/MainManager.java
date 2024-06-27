@@ -60,8 +60,9 @@ public final class MainManager extends javax.swing.JFrame {
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
         menuIntroduce = new javax.swing.JMenuItem();
         menuVaiTro = new javax.swing.JMenu();
-        menuItemEmployee = new javax.swing.JMenuItem();
         menuItemManager = new javax.swing.JMenuItem();
+        menuItemEmployee = new javax.swing.JMenuItem();
+        menuItemWayHome = new javax.swing.JMenuItem();
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -76,7 +77,6 @@ public final class MainManager extends javax.swing.JFrame {
         jPanel3.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 1, 1, 1, new java.awt.Color(204, 204, 204)));
 
         jButton3.setBackground(new java.awt.Color(238, 238, 238));
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/bell.png"))); // NOI18N
         jButton3.setBorder(null);
 
         labelHouse.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
@@ -311,14 +311,6 @@ public final class MainManager extends javax.swing.JFrame {
 
         menuVaiTro.setText("Vai trò");
 
-        menuItemEmployee.setText("Nhân viên");
-        menuItemEmployee.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemEmployeeActionPerformed(evt);
-            }
-        });
-        menuVaiTro.add(menuItemEmployee);
-
         menuItemManager.setText("Quản lý");
         menuItemManager.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -326,6 +318,22 @@ public final class MainManager extends javax.swing.JFrame {
             }
         });
         menuVaiTro.add(menuItemManager);
+
+        menuItemEmployee.setText("Bán tại bàn");
+        menuItemEmployee.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemEmployeeActionPerformed(evt);
+            }
+        });
+        menuVaiTro.add(menuItemEmployee);
+
+        menuItemWayHome.setText("Bán mang đi");
+        menuItemWayHome.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemWayHomeActionPerformed(evt);
+            }
+        });
+        menuVaiTro.add(menuItemWayHome);
 
         menuBar.add(menuVaiTro);
 
@@ -421,6 +429,10 @@ public final class MainManager extends javax.swing.JFrame {
         openFullScreenWindow(new MainStaff());
     }//GEN-LAST:event_menuItemEmployeeActionPerformed
 
+    private void menuItemWayHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemWayHomeActionPerformed
+        openFullScreenWindow(new QuickSalesMode());
+    }//GEN-LAST:event_menuItemWayHomeActionPerformed
+
     public static void main(String args[]) {
 
         try {
@@ -471,6 +483,7 @@ public final class MainManager extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuItemEmployee;
     private javax.swing.JMenu menuItemHelp;
     private javax.swing.JMenuItem menuItemManager;
+    private javax.swing.JMenuItem menuItemWayHome;
     private javax.swing.JMenuItem menuLogout;
     private javax.swing.JMenu menuManager;
     private javax.swing.JMenuItem menuPay;

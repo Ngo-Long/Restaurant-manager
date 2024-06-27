@@ -516,7 +516,7 @@ public final class DiningTables extends javax.swing.JPanel {
 
         // edit table
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
-        customizeTable(tableDiningTables, new int[]{}, 30);
+        customizeTable(tableDiningTables, new int[]{0, 1, 2, 3, 4, 5}, 30);
 
         // <--- Setup main --->
         // setup combobox

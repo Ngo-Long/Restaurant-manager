@@ -15,7 +15,7 @@ import restaurant.utils.Dialog;
 import restaurant.staff.Overview;
 import restaurant.staff.Products;
 import restaurant.staff.Invoices;
-import restaurant.staff.TableOrder;
+import restaurant.staff.DiningTable;
 import restaurant.staff.KitchenArea;
 
 public final class MainStaff extends javax.swing.JFrame {
@@ -79,8 +79,9 @@ public final class MainStaff extends javax.swing.JFrame {
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
         menuIntroduce = new javax.swing.JMenuItem();
         menuVaiTro = new javax.swing.JMenu();
-        menuItemEmployee = new javax.swing.JMenuItem();
         menuItemManager = new javax.swing.JMenuItem();
+        menuItemEmployee = new javax.swing.JMenuItem();
+        menuItemWayHome = new javax.swing.JMenuItem();
         menuStaff = new javax.swing.JMenu();
 
         jMenuItem1.setText("jMenuItem1");
@@ -425,14 +426,6 @@ public final class MainStaff extends javax.swing.JFrame {
 
         menuVaiTro.setText("Vai trò");
 
-        menuItemEmployee.setText("Nhân viên");
-        menuItemEmployee.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemEmployeeActionPerformed(evt);
-            }
-        });
-        menuVaiTro.add(menuItemEmployee);
-
         menuItemManager.setText("Quản lý");
         menuItemManager.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -440,6 +433,22 @@ public final class MainStaff extends javax.swing.JFrame {
             }
         });
         menuVaiTro.add(menuItemManager);
+
+        menuItemEmployee.setText("Bán tại bàn");
+        menuItemEmployee.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemEmployeeActionPerformed(evt);
+            }
+        });
+        menuVaiTro.add(menuItemEmployee);
+
+        menuItemWayHome.setText("Bán mang đi");
+        menuItemWayHome.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemWayHomeActionPerformed(evt);
+            }
+        });
+        menuVaiTro.add(menuItemWayHome);
 
         menuBar.add(menuVaiTro);
 
@@ -481,7 +490,7 @@ public final class MainStaff extends javax.swing.JFrame {
     }//GEN-LAST:event_menuEndActionPerformed
 
     private void menuTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTablesActionPerformed
-        displayStaffPanels(new TableOrder(this));
+        displayStaffPanels(new DiningTable(this));
     }//GEN-LAST:event_menuTablesActionPerformed
 
     private void menuDishesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDishesActionPerformed
@@ -524,7 +533,7 @@ public final class MainStaff extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonOverviewActionPerformed
 
     private void btnTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTableActionPerformed
-        displayStaffPanels(new TableOrder(this));
+        displayStaffPanels(new DiningTable(this));
     }//GEN-LAST:event_btnTableActionPerformed
 
     private void btnProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductActionPerformed
@@ -569,6 +578,10 @@ public final class MainStaff extends javax.swing.JFrame {
     private void menuChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChangeActionPerformed
 
     }//GEN-LAST:event_menuChangeActionPerformed
+
+    private void menuItemWayHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemWayHomeActionPerformed
+        openFullScreenWindow(new QuickSalesMode());
+    }//GEN-LAST:event_menuItemWayHomeActionPerformed
 
     public static void main(String args[]) {
 
@@ -631,6 +644,7 @@ public final class MainStaff extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuItemEmployee;
     private javax.swing.JMenu menuItemHelp;
     private javax.swing.JMenuItem menuItemManager;
+    private javax.swing.JMenuItem menuItemWayHome;
     private javax.swing.JMenuItem menuLogout;
     private javax.swing.JMenu menuManager;
     private javax.swing.JMenuItem menuPay;
@@ -652,19 +666,24 @@ public final class MainStaff extends javax.swing.JFrame {
         Common.setAccountMenu(menuStaff);
         Common.customizeScrollBar(scrollPaneMain);
 
-        setupTables(buttonOverview);
-//        selectButton(buttonOverview);
-
+        setupHeaderButtons(buttonOverview);
         displayStaffPanels(new Overview(this));
     }
 
-    void setupTables(JButton initSelectedBtn) {
-        // Mảng chứa các nút cần xử lý
-        JButton[] buttons = {buttonOverview, btnTable, btnProduct, btnPay,
+    public JButton[] getHeaderButtons() {
+        JButton[] headerButtons = {buttonOverview, btnTable, btnProduct, btnPay,
             btnOrderTake, btnClosingShift, btnWareHouse, btnBell, btnCheck, btnMenu};
+
+        return headerButtons;
+    }
+
+    public void setupHeaderButtons(JButton selectedBtn) {
+        // Mảng chứa các nút cần xử lý
+        JButton[] buttons = getHeaderButtons();
 
         // Thiết lập sự kiện cho từng nút
         for (JButton button : buttons) {
+            // Thiết lập nút bình thường
             button.setForeground(new Color(11, 11, 11));
             button.setBackground(new Color(255, 255, 255));
             button.setFont(button.getFont().deriveFont(Font.PLAIN));
@@ -689,12 +708,12 @@ public final class MainStaff extends javax.swing.JFrame {
                 }
             });
 
-            // Đặt trạng thái ban đầu cho nút được chọn ban đầu
-            if (initSelectedBtn != null) {
-                initSelectedBtn.setForeground(Color.WHITE);
-                initSelectedBtn.setBackground(new Color(255, 51, 51));
-                initSelectedBtn.setFont(initSelectedBtn.getFont().deriveFont(Font.BOLD));
-                selectedButton = initSelectedBtn;
+            // Đặt trạng thái ban đầu cho nút được chọn
+            if (selectedBtn != null) {
+                selectedBtn.setForeground(Color.WHITE);
+                selectedBtn.setBackground(new Color(255, 51, 51));
+                selectedBtn.setFont(selectedBtn.getFont().deriveFont(Font.BOLD));
+                selectedButton = selectedBtn;
             }
         }
     }
@@ -710,7 +729,6 @@ public final class MainStaff extends javax.swing.JFrame {
     void openFullScreenWindow(JFrame window) {
         window.setExtendedState(JFrame.MAXIMIZED_BOTH);
         window.setVisible(true);
-        window.setAlwaysOnTop(true);
         this.dispose();
     }
 }
