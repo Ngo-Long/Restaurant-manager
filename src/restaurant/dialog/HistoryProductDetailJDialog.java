@@ -207,7 +207,7 @@ public class HistoryProductDetailJDialog extends javax.swing.JDialog {
         }
 
         this.setTitle("Chi tiết chế biến [" + data.getOrderDetailID() + "]");
-        ProductEntity dataProduct = new ProductDAO().getById(data.getProductID());
+        ProductEntity dataProduct = new ProductDAO().getByID(data.getProductID());
         labelName.setText(dataProduct.getProductName());
         labelTime.setText(dateFormat.format(data.getEndTime()));
         labelQuantity.setText(String.valueOf(data.getProductQuantity()));

@@ -24,7 +24,7 @@ public class Ordered {
             String productLevel = !orderDetail.getProductDesc().isEmpty() ? " (" + orderDetail.getProductDesc() + ")" : "";
 
             // Get name and level
-            ProductEntity productEntity = new ProductDAO().getById(productId);
+            ProductEntity productEntity = new ProductDAO().getByID(productId);
             String productName = productEntity.getProductName();
             String productNameAndLevel = productName + productLevel;
 

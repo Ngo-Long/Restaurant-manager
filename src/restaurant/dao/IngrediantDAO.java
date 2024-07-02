@@ -51,7 +51,7 @@ public class IngrediantDAO extends RestaurantDAO<IngrediantEntity, String> {
     }
 
     @Override
-    public IngrediantEntity getById(String id) {
+    public IngrediantEntity getByID(String id) {
         List<IngrediantEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
     }

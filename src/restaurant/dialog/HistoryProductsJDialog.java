@@ -313,7 +313,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         Set<String> setKitchen = new HashSet<>();
         for (ProductEntity dataItem : dataProducts) {
             String productID = dataItem.getProductID();
-            ProductEntity product = new ProductDAO().getById(productID);
+            ProductEntity product = new ProductDAO().getByID(productID);
 
             setKitchen.add(product.getKitchenArea());
         }
@@ -381,7 +381,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
             // Load data into the table 
             for (OrderDetailEntity dataItem : dataList) {
                 // Get info product
-                ProductEntity productEntity = new ProductDAO().getById(dataItem.getProductID());
+                ProductEntity productEntity = new ProductDAO().getByID(dataItem.getProductID());
                 String productName = productEntity.getProductName();
                 String productDesc = dataItem.getProductDesc();
                 productDesc = (productDesc == null || productDesc.isEmpty()) ? "" : " ( " + productDesc + " )";

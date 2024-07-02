@@ -9,13 +9,34 @@ import java.util.ArrayList;
 
 public class EmployeeDAO extends RestaurantDAO<EmployeeEntity, String> {
 
-    public static final String INSERT_SQL = "INSERT INTO Employee (EmployeeID, ShiftID, FullName, Gender, Phone, DateOfBirth, IDCard, Email, Address, UrlImage, Position, Status, Salary, Description, Bank, AccountNumber, HireDate) "
+    final String INSERT_SQL = "INSERT INTO Employee (EmployeeID, ShiftID, FullName, Gender, "
+            + "Phone, DateOfBirth, IDCard, Email, Address, UrlImage, Position, Status, Salary, "
+            + "Description, Bank, AccountNumber, HireDate) "
             + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    public static final String UPDATE_SQL = "UPDATE Employee SET ShiftID=?, FullName=?, Gender=?, Phone=?, DateOfBirth=?, IDCard=?, Email=?, Address=?, UrlImage=?, Position=?, Status=?, Salary=?, Description=?, Bank=?, AccountNumber=?, HireDate=? WHERE EmployeeID=?";
-    public static final String DELETE_SQL = "DELETE FROM Employee WHERE EmployeeID =?";
-    public static final String IS_EXISTS_SQL = "SELECT COUNT(*) FROM Employee WHERE EmployeeID = ?";
-    public static final String SELECT_ALL_SQL = "SELECT * FROM Employee";
-    public static final String SELECT_BY_ID_SQL = "SELECT * FROM Employee WHERE EmployeeID=?";
+    final String UPDATE_SQL = "UPDATE Employee SET ShiftID=?, FullName=?, Gender=?, Phone=?, "
+            + "DateOfBirth=?, IDCard=?, Email=?, Address=?, UrlImage=?, Position=?, Status=?, "
+            + "Salary=?, Description=?, Bank=?, AccountNumber=?, HireDate=? WHERE EmployeeID=?";
+    final String DELETE_SQL = "DELETE FROM Employee WHERE EmployeeID =?";
+    final String IS_EXISTS_SQL = "SELECT COUNT(*) FROM Employee WHERE EmployeeID = ?";
+    final String SELECT_ALL_SQL = "SELECT * FROM Employee";
+    final String SELECT_BY_ID_SQL = "SELECT * FROM Employee WHERE EmployeeID=?";
+
+    final String SELECT_BY_CRITERIA = "SELECT TOP (1000) [EmployeeID], [ShiftID], [FullName], "
+            + "[Gender], [Phone], [DateOfBirth], [IDCard], [Email], [Address], [UrlImage], "
+            + "[Position], [Status], [Salary], [Description], [Bank], [AccountNumber], [HireDate] "
+            + "FROM [RestaurantManager].[dbo].[Employee] "
+            + "WHERE ( [EmployeeID] LIKE ? OR [FullName] LIKE ? ) "
+            + "AND [Position] LIKE ? "
+            + "AND [Status] LIKE ? ";
+
+    public List<EmployeeEntity> searchByCriteria(String id, String name, String position, String status) {
+        String idTerm = "%" + id + "%";
+        String nameTerm = "%" + name + "%";
+        String positionTerm = "%" + position + "%";
+        String statusTerm = "%" + status + "%";
+
+        return fetchByQuery(SELECT_BY_CRITERIA, idTerm, nameTerm, positionTerm, statusTerm);
+    }
 
     @Override
     public void insert(EmployeeEntity entity) {
@@ -69,7 +90,7 @@ public class EmployeeDAO extends RestaurantDAO<EmployeeEntity, String> {
     }
 
     @Override
-    public EmployeeEntity getById(String id) {
+    public EmployeeEntity getByID(String id) {
         List<EmployeeEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
     }

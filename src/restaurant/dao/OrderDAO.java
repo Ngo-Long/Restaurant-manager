@@ -68,17 +68,17 @@ public class OrderDAO extends RestaurantDAO<OrderEntity, Integer> {
         return fetchByQuery(SELECT_ALL_SQL);
     }
 
-    public List<OrderEntity> getAllByInvoiceId(Integer id) {
+    public List<OrderEntity> getByInvoiceID(Integer id) {
         return fetchByQuery(SELECT_BY_INVOICE_ID, id);
     }
 
     @Override
-    public OrderEntity getById(Integer id) {
+    public OrderEntity getByID(Integer id) {
         List<OrderEntity> orders = fetchByQuery(SELECT_BY_ID, id);
         return orders.isEmpty() ? null : orders.get(0);
     }
 
-    public OrderEntity getByTableId(String id) {
+    public OrderEntity getByTableID(String id) {
         List<OrderEntity> orders = fetchByQuery(SELECT_BY_TABLE_ID, id);
         return orders.isEmpty() ? null : orders.get(0);
     }

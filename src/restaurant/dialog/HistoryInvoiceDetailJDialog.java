@@ -3,6 +3,7 @@ package restaurant.dialog;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import javax.swing.table.DefaultTableModel;
 import restaurant.dao.DiningTableDAO;
 import restaurant.dao.EmployeeDAO;
 import restaurant.dao.OrderDAO;
@@ -13,6 +14,9 @@ import restaurant.entity.InvoiceEntity;
 import restaurant.entity.OrderDetailEntity;
 import restaurant.entity.OrderEntity;
 import restaurant.entity.ProductEntity;
+import restaurant.table.TableCustom;
+import restaurant.utils.Common;
+import restaurant.dao.OrderDetailDAO;
 
 public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
 
@@ -40,6 +44,10 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
         labelTable = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         labelStatus = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tableOrdered = new javax.swing.JTable();
+        jLabel10 = new javax.swing.JLabel();
+        labelTotal = new javax.swing.JLabel();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -66,7 +74,7 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
         setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel6.setText("Bàn ăn:");
+        jLabel6.setText("Nguồn:");
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Thu ngân:");
@@ -101,6 +109,32 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
         labelStatus.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         labelStatus.setText("Trống");
 
+        tableOrdered.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        tableOrdered.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Tên món", "Trạng thái"
+            }
+        ));
+        tableOrdered.setAlignmentX(1.0F);
+        tableOrdered.setAlignmentY(1.0F);
+        tableOrdered.setFillsViewportHeight(true);
+        tableOrdered.setGridColor(new java.awt.Color(255, 255, 255));
+        tableOrdered.setRowHeight(35);
+        jScrollPane3.setViewportView(tableOrdered);
+        if (tableOrdered.getColumnModel().getColumnCount() > 0) {
+            tableOrdered.getColumnModel().getColumn(0).setPreferredWidth(140);
+            tableOrdered.getColumnModel().getColumn(1).setPreferredWidth(20);
+        }
+
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel10.setText("Tổng tiền:");
+
+        labelTotal.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelTotal.setText("Trống");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -108,20 +142,26 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel9)
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel6))
-                        .addGap(14, 14, 14)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(labelTable)
-                            .addComponent(labelEmployee)
-                            .addComponent(labelTime)
-                            .addComponent(labelStatus)))
-                    .addComponent(textNote, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel10)
+                        .addGap(18, 18, 18)
+                        .addComponent(labelTotal))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel9)
+                                .addComponent(jLabel8)
+                                .addComponent(jLabel7)
+                                .addComponent(jLabel6))
+                            .addGap(14, 14, 14)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(labelTable)
+                                .addComponent(labelEmployee)
+                                .addComponent(labelTime)
+                                .addComponent(labelStatus)))
+                        .addComponent(jLabel1)
+                        .addComponent(textNote, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -141,12 +181,18 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
                     .addComponent(labelTime))
                 .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(labelTotal))
+                .addGap(14, 14, 14)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(labelStatus))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(textNote, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(textNote, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
         );
 
@@ -180,6 +226,7 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -187,11 +234,14 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
     private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
     private javax.swing.JLabel labelEmployee;
     private javax.swing.JLabel labelStatus;
     private javax.swing.JLabel labelTable;
     private javax.swing.JLabel labelTime;
+    private javax.swing.JLabel labelTotal;
+    private javax.swing.JTable tableOrdered;
     private javax.swing.JTextField textNote;
     // End of variables declaration//GEN-END:variables
 
@@ -200,43 +250,85 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
     private void init() {
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(new Color(248, 248, 248));
+
+        // Setup common
+        TableCustom.apply(jScrollPane3, TableCustom.TableType.MULTI_LINE);
+        Common.customizeTable(tableOrdered, new int[]{}, 30);
     }
 
-    public void displayDetailOrder(InvoiceEntity data) {
+    public void displayDetailInvoice(InvoiceEntity data) {
         System.out.println("Run...");
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss");
 
         if (data == null) {
-            this.setTitle("Chi tiết hóa đơn");
+            this.setTitle("Chi tiết đơn hàng");
             labelTable.setText("Trống");
             labelEmployee.setText("Trống");
             labelTime.setText("Trống");
+            labelTotal.setText("Trống");
             labelStatus.setText("Trống");
             textNote.setText("");
             return;
         }
 
-        this.setTitle("Chi tiết hóa đơn [" + data.getInvoiceID() + "]");
+        this.setTitle("Chi tiết đơn hàng [" + data.getInvoiceID() + "]");
 
         // Get table name list
-        List<DiningTableEntity> dataTables = new DiningTableDAO().getAllByInvoiceID(data.getInvoiceID());
+        List<DiningTableEntity> dataTables = new DiningTableDAO().getByInvoicesID(data.getInvoiceID());
         for (DiningTableEntity dateTable : dataTables) {
             tableNamesStr = String.join(" + ", dateTable.getName());
         }
+        if (tableNamesStr == null) {
+            tableNamesStr = "Mang về";
+        }
 
-        // Get order list and calculate the total number of orders
-        List<OrderEntity> dataOrders = new OrderDAO().getAllByInvoiceId(data.getInvoiceID());
-        int totalOrders = dataOrders.size();
+        // Quantity order
+        List<OrderEntity> dataOrders = new OrderDAO().getByInvoiceID(data.getInvoiceID());
+        int quantityOrders = dataOrders.size();
 
         // Set name 
-        EmployeeEntity employee = new EmployeeDAO().getById(data.getEmployeeID());
+        EmployeeEntity employee = new EmployeeDAO().getByID(data.getEmployeeID());
         String employeeName = employee.getFullName();
+        
+        // Set total
+        String total = String.valueOf(data.getTotalAmount());
+        String totalConfirm = Common.addCommasToNumber(total) + " đ";
 
-        labelTable.setText(tableNamesStr + " / " + totalOrders + " đơn");
+        labelTable.setText(tableNamesStr + " / " + quantityOrders + " đơn");
         labelEmployee.setText(employeeName);
         labelTime.setText(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(data.getPaymentTime()));
+        labelTotal.setText(totalConfirm);
         labelStatus.setText(data.getStatus());
         textNote.setText(data.getNote());
+
+        // Set table ordered
+        for (OrderEntity dataOrder : dataOrders) {
+            // Get order deatails
+            int orderID = dataOrder.getOrderId();
+            List<OrderDetailEntity> dataDetails = new OrderDetailDAO().getByOrderID(orderID);
+
+            for (OrderDetailEntity dataDetail : dataDetails) {
+                String productID = dataDetail.getProductID();
+                ProductEntity dataProduct = new ProductDAO().getByID(productID);
+
+                String productName = dataProduct.getProductName();
+
+                int productQuantity = dataDetail.getProductQuantity();
+
+                String productStatus = dataDetail.getProductStatus();
+
+                // Get model
+                DefaultTableModel table = (DefaultTableModel) tableOrdered.getModel();
+
+                // Update model
+                table.addRow(new Object[]{
+                    productName + "    x " + productQuantity,
+                    productStatus
+                });
+            }
+
+        }
+
     }
 
 }

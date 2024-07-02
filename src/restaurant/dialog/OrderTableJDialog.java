@@ -3,7 +3,6 @@ package restaurant.dialog;
 import java.util.Map;
 import java.util.List;
 import java.util.HashMap;
-
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 import javax.swing.DefaultComboBoxModel;
@@ -14,17 +13,14 @@ import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.utils.Ordered;
-
-import restaurant.main.MainStaff;
-import restaurant.staff.Products;
-import restaurant.staff.Invoices;
-import restaurant.staff.DiningTable;
+import restaurant.main.DineInMode;
+import restaurant.dinein.Products;
+import restaurant.dinein.Invoices;
+import restaurant.dinein.DiningTable;
 import restaurant.table.TableCustom;
-
 import restaurant.dao.OrderDAO;
 import restaurant.dao.DiningTableDAO;
 import restaurant.dao.OrderDetailDAO;
-
 import restaurant.entity.OrderEntity;
 import restaurant.entity.DiningTableEntity;
 import restaurant.entity.OrderDetailEntity;
@@ -32,9 +28,9 @@ import static restaurant.utils.Common.addCommasToNumber;
 
 public final class OrderTableJDialog extends javax.swing.JDialog {
 
-    MainStaff mainStaff = new MainStaff();
+    DineInMode mainStaff = new DineInMode();
 
-    public OrderTableJDialog(java.awt.Frame parent, boolean modal, MainStaff mainStaff) {
+    public OrderTableJDialog(java.awt.Frame parent, boolean modal, DineInMode mainStaff) {
         super(parent, modal);
         initComponents();
         this.init();
@@ -348,7 +344,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         }
 
         java.awt.EventQueue.invokeLater(() -> {
-            MainStaff mainStaff = new MainStaff();
+            DineInMode mainStaff = new DineInMode();
             OrderTableJDialog dialog = new OrderTableJDialog(new javax.swing.JFrame(), true, mainStaff);
             dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
@@ -395,7 +391,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
 
         // Set table
         TableCustom.apply(jScrollPane3, TableCustom.TableType.MULTI_LINE);
-        Common.customizeTable(tableListOrderedDishes, new int[]{0}, 30);
+        Common.customizeTable(tableListOrderedDishes, new int[]{}, 30);
 
         // Set combobox
         setupComboboxTables();
@@ -403,7 +399,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
 
     void switchTables() {
         // Get orderd
-        dataOrder = new OrderDAO().getByTableId(labelTableId.getText());
+        dataOrder = new OrderDAO().getByTableID(labelTableId.getText());
         if (dataOrder == null) {
             Dialog.warning(this, "Không tìm thấy đơn đặt hàng!");
             return;
@@ -418,7 +414,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
 
         // Check to see if the dining table is in use
         String newTableId = new DiningTableDAO().getIdByName(newtableName);
-        if (new OrderDAO().getByTableId(newTableId) != null) {
+        if (new OrderDAO().getByTableID(newTableId) != null) {
             Dialog.warning(this, "Bàn đang có khách dùng! \nVui lòng chọn bàn khác!");
             return;
         }
@@ -472,8 +468,8 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
 
         try {
             // Get data order and order deatails
-            dataOrder = new OrderDAO().getByTableId(tableID);
-            dataOrderDetails = new OrderDetailDAO().getByOrderId(dataOrder.getOrderId());
+            dataOrder = new OrderDAO().getByTableID(tableID);
+            dataOrderDetails = new OrderDetailDAO().getByOrderID(dataOrder.getOrderId());
 
             // Set title
             this.setTitle("Chi tiết Order [ " + dataOrder.getOrderId() + " ]");

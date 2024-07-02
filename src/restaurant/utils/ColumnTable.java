@@ -247,7 +247,7 @@ public class ColumnTable {
 
                 // Get data detail
                 int detailID = (int) table.getValueAt(row, 0);
-                OrderDetailEntity dataDetail = new OrderDetailDAO().getById(detailID);
+                OrderDetailEntity dataDetail = new OrderDetailDAO().getByID(detailID);
 
                 // Open dialog 
                 HistoryProductDetailJDialog dialog = new HistoryProductDetailJDialog(null, true);

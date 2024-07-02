@@ -49,7 +49,7 @@ public class OrderTableDAO extends RestaurantDAO<OrderTableEntity, Integer> {
     }
 
     @Override
-    public OrderTableEntity getById(Integer orderTableID) {
+    public OrderTableEntity getByID(Integer orderTableID) {
         List<OrderTableEntity> result = fetchByQuery(SELECT_BY_ID_SQL, orderTableID);
         return result.isEmpty() ? null : result.get(0);
     }

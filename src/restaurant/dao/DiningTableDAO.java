@@ -70,12 +70,12 @@ public class DiningTableDAO extends RestaurantDAO<DiningTableEntity, String> {
         return this.fetchByQuery(SELECT_ALL_SQL);
     }
 
-    public List<DiningTableEntity> getAllByInvoiceID(int id) {
+    public List<DiningTableEntity> getByInvoicesID(int id) {
         return this.fetchByQuery(SELECT_BY_INVOICE_ID_SQL, id);
     }
 
     @Override
-    public DiningTableEntity getById(String id) {
+    public DiningTableEntity getByID(String id) {
         List<DiningTableEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
     }

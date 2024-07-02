@@ -9,9 +9,9 @@ import restaurant.entity.ProductEntity;
 
 public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
 
-    final String INSERT_SQL = "INSERT INTO Product (ProductID, ProductName, Price, Unit, ImageURL, "
-            + "Category, KitchenArea, Description, Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    final String UPDATE_SQL = "UPDATE Product SET ProductName=?, Price=?, Unit=?, ImageURL=?, "
+    final String INSERT_SQL = "INSERT INTO Product (ProductID, ProductName, CostPrice, Price, Unit, ImageURL, "
+            + "Category, KitchenArea, Description, Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    final String UPDATE_SQL = "UPDATE Product SET ProductName=?, CostPrice=?, Price=?, Unit=?, ImageURL=?, "
             + "Category=?, KitchenArea=?, Description=?, Status=? WHERE ProductID=?";
     final String DELETE_SQL = "DELETE FROM Product WHERE ProductID=?";
     final String SELECT_ALL_SQL = "SELECT * FROM Product ORDER BY ProductName";
@@ -20,7 +20,7 @@ public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
     final String SELECT_BY_ID_SQL = "SELECT * FROM Product WHERE ProductID=?";
     static final String SELECT_ID_BY_NAME_SQL = "SELECT ProductID FROM Product WHERE ProductName=?";
 
-    final String SELECT_BY_CRITERIA_SQL = "SELECT TOP 1000 ProductID, ProductName, Price, Unit, "
+    final String SELECT_BY_CRITERIA_SQL = "SELECT TOP 1000 ProductID, ProductName, CostPrice, Price, Unit, "
             + "ImageURL, Category, KitchenArea, Description, Status FROM Product "
             + "WHERE ProductName LIKE ? "
             + "AND Category LIKE ? "
@@ -35,6 +35,7 @@ public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
         JDBC.executeUpdate(INSERT_SQL,
                 model.getProductID(),
                 model.getProductName(),
+                model.getCostPrice(),
                 model.getPrice(),
                 model.getUnit(),
                 model.getImageURL(),
@@ -49,6 +50,7 @@ public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
     public void update(ProductEntity model) {
         JDBC.executeUpdate(UPDATE_SQL,
                 model.getProductName(),
+                model.getCostPrice(),
                 model.getPrice(),
                 model.getUnit(),
                 model.getImageURL(),
@@ -66,7 +68,7 @@ public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
     }
 
     @Override
-    public ProductEntity getById(String id) {
+    public ProductEntity getByID(String id) {
         List<ProductEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
     }
@@ -141,6 +143,7 @@ public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
         ProductEntity model = new ProductEntity();
         model.setProductID(rs.getString("ProductID"));
         model.setProductName(rs.getString("ProductName"));
+        model.setCostPrice(rs.getLong("CostPrice"));
         model.setPrice(rs.getLong("Price"));
         model.setUnit(rs.getString("Unit"));
         model.setImageURL(rs.getString("ImageURL"));

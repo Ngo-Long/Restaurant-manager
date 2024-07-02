@@ -43,7 +43,7 @@ public class AccountDAO extends RestaurantDAO<AccountEntity, String> {
     }
 
     @Override
-    public AccountEntity getById(String id) {
+    public AccountEntity getByID(String id) {
         List<AccountEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
     }

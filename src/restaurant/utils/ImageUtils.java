@@ -2,6 +2,10 @@ package restaurant.utils;
 
 import java.io.File;
 import java.awt.Image;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import javax.swing.JLabel;
 import javax.swing.JFrame;
 import javax.swing.JButton;
@@ -31,8 +35,20 @@ public class ImageUtils {
             // Get absolute path of selected image
             String imagePath = selectedFile.getAbsolutePath();
 
-            // Set image icon for the button
-            setImageButtonIcon(imagePath, btnImage);
+            try {
+                // Định nghĩa đường dẫn tệp đích trong thư mục imgPath
+                File targetFile = new File(imgPath, selectedFile.getName());
+
+                // Sao chép tệp đã chọn vào thư mục đích
+                Files.copy(Paths.get(imagePath), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                // Set image icon for the button
+                setImageButtonIcon(targetFile.getAbsolutePath(), btnImage);
+
+                return targetFile.getAbsolutePath();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             return imagePath;
         }
@@ -68,7 +84,7 @@ public class ImageUtils {
         int width = labelLogo.getWidth();
         int height = labelLogo.getHeight();
 
-        Image image = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        Image image = icon.getImage().getScaledInstance(width, height, Image.SCALE_REPLICATE);
         ImageIcon scaledIcon = new ImageIcon(image);
         labelLogo.setIcon(scaledIcon);
     }

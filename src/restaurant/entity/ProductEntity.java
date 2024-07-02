@@ -1,11 +1,10 @@
 package restaurant.entity;
 
-import java.util.Date;
-
 public class ProductEntity {
 
     private String productID;
     private String productName;
+    private long costPrice;
     private long price;
     private String unit;
     private String imageURL;
@@ -28,6 +27,14 @@ public class ProductEntity {
 
     public void setProductName(String productName) {
         this.productName = productName;
+    }
+
+    public long getCostPrice() {
+        return costPrice;
+    }
+
+    public void setCostPrice(long costPrice) {
+        this.costPrice = costPrice;
     }
 
     public long getPrice() {

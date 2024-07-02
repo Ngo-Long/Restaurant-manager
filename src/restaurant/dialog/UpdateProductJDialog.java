@@ -22,7 +22,7 @@ import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.dao.ProductDAO;
-import restaurant.main.MainManager;
+import restaurant.main.ManagementMode;
 import restaurant.entity.ProductEntity;
 
 import static restaurant.utils.Common.getRealText;
@@ -34,7 +34,7 @@ import static restaurant.utils.ImageUtils.chooseImageFromDirectory;
 
 public final class UpdateProductJDialog extends javax.swing.JDialog {
 
-    private MainManager mainManager;
+    private ManagementMode mainManager;
 
     public UpdateProductJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -75,6 +75,8 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         jLabel14 = new javax.swing.JLabel();
         textUnit = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        textCostPrice = new javax.swing.JTextField();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -125,7 +127,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         jLabel7.setText("Tên hàng hóa:");
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel8.setText("Đơn giá:");
+        jLabel8.setText("Giá bán:");
 
         textPrice.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textPrice.setHorizontalAlignment(javax.swing.JTextField.LEFT);
@@ -273,6 +275,20 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         jLabel1.setText("Ảnh sản phẩm");
         jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel9.setText("Giá vốn:");
+
+        textCostPrice.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        textCostPrice.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        textCostPrice.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
+        textCostPrice.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        textCostPrice.setMargin(new java.awt.Insets(2, 60, 2, 6));
+        textCostPrice.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textCostPriceActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -292,7 +308,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
                             .addComponent(btnProductImage, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -306,9 +322,11 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
                                         .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                     .addComponent(jLabel10)
                                     .addComponent(jLabel11)
-                                    .addComponent(jLabel12))
+                                    .addComponent(jLabel12)
+                                    .addComponent(jLabel9))
                                 .addGap(10, 10, 10)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(textCostPrice)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(radioOn)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -335,7 +353,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(40, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(texID, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -345,25 +363,28 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
                             .addComponent(textName, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(12, 12, 12)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textCostPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(12, 12, 12)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(textPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(12, 12, 12)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(textUnit, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(12, 12, 12)
+                        .addGap(11, 11, 11)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnAddCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(cbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(btnProductImage, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(cbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(btnProductImage, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnAddChicken, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cbKitchenArea, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -375,12 +396,12 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(radioOff, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(radioOn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         pack();
@@ -437,6 +458,10 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         openSmallDialog("Thêm khu chế biến", "Khu chế biến:", cbKitchenArea);
     }//GEN-LAST:event_btnAddChickenActionPerformed
 
+    private void textCostPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textCostPriceActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_textCostPriceActionPerformed
+
     public static void main(String args[]) {
 
         try {
@@ -481,6 +506,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -488,6 +514,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
     private javax.swing.JRadioButton radioOff;
     private javax.swing.JRadioButton radioOn;
     private javax.swing.JTextField texID;
+    private javax.swing.JTextField textCostPrice;
     private javax.swing.JTextField textDesc;
     private javax.swing.JTextField textName;
     private javax.swing.JTextField textPrice;
@@ -513,7 +540,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         Common.addPlaceholder(texID, "Mã tự động");
 
         // Set text fields 
-        JTextField[] textFields = {texID, textName, textPrice, textUnit, textPrice, textDesc};
+        JTextField[] textFields = {texID, textName, textCostPrice, textPrice, textUnit, textPrice, textDesc};
         for (JTextField textField : textFields) {
             Common.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
         }
@@ -529,33 +556,35 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         textPrice.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                updateFormattedText();
+                updateFormattedText(textCostPrice);
+                updateFormattedText(textPrice);
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                updateFormattedText();
+                updateFormattedText(textCostPrice);
+                updateFormattedText(textPrice);
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                updateFormattedText();
+                updateFormattedText(textCostPrice);
+                updateFormattedText(textPrice);
             }
         });
-
     }
 
-    public void updateFormattedText() {
+    public void updateFormattedText(JTextField fieldNum) {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
 
         scheduledFuture = scheduledExecutorService.schedule(() -> {
             SwingUtilities.invokeLater(() -> {
-                String text = textPrice.getText().trim();
-                String removeCommas = removeCommasFromNumber(text);
+                String price = fieldNum.getText().trim();
+                String removeCommas = removeCommasFromNumber(price);
                 String addCommas = addCommasToNumber(removeCommas);
-                textPrice.setText(addCommas);
+                fieldNum.setText(addCommas);
             });
         }, 500, TimeUnit.MILLISECONDS);
     }
@@ -630,13 +659,14 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
     ProductEntity getModel() {
         String id = getRealText(texID, "Mã tự động");
         String name = textName.getText();
+        String costPriceText = textCostPrice.getText();
         String priceText = textPrice.getText();
         String unit = textUnit.getText();
         String category = cbCategory.getSelectedItem().toString();
         String kitchenArea = cbKitchenArea.getSelectedItem().toString();
         String desc = textDesc.getText();
 
-        if (!validateInput(name, priceText, category, kitchenArea)) {
+        if (!validateInput(name, costPriceText, priceText, category, kitchenArea)) {
             return null;
         }
 
@@ -644,6 +674,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
             ProductEntity model = new ProductEntity();
             model.setProductID(id);
             model.setProductName(name);
+            model.setCostPrice(Integer.parseInt(removeCommasFromNumber(costPriceText)));
             model.setPrice(Integer.parseInt(removeCommasFromNumber(priceText)));
             model.setUnit(unit);
             model.setCategory(category);
@@ -660,8 +691,8 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         }
     }
 
-    boolean validateInput(String name, String priceText, String category, String kitchenArea) {
-        if (name.trim().isEmpty() || priceText.trim().isEmpty()
+    boolean validateInput(String name, String costPriceText, String priceText, String category, String kitchenArea) {
+        if (name.trim().isEmpty() || costPriceText.trim().isEmpty() || priceText.trim().isEmpty()
                 || category.trim().isEmpty() || kitchenArea.trim().isEmpty()) {
             Dialog.warning(this, "Vui lòng nhập đầy đủ thông tin!");
             return false;
@@ -678,6 +709,12 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         }
 
         try {
+            int costPrice = Integer.parseInt(removeCommasFromNumber(costPriceText));
+            if (costPrice <= 0) {
+                Dialog.warning(this, "Số tiền phải lớn hơn 0!");
+                return false;
+            }
+
             int price = Integer.parseInt(removeCommasFromNumber(priceText));
             if (price <= 0) {
                 Dialog.warning(this, "Số tiền phải lớn hơn 0!");
@@ -700,10 +737,14 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         // Set text 
         texID.setText(product.getProductID());
         textName.setText(product.getProductName());
-        String price = String.valueOf(product.getPrice());
-        textPrice.setText(Common.addCommasToNumber(price));
         textUnit.setText(product.getUnit());
         textDesc.setText(product.getDescription());
+
+        String costPrice = String.valueOf(product.getCostPrice());
+        textCostPrice.setText(Common.addCommasToNumber(costPrice));
+
+        String price = String.valueOf(product.getPrice());
+        textPrice.setText(Common.addCommasToNumber(price));
 
         // Set combobox
         cbCategory.setSelectedItem(product.getCategory());

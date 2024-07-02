@@ -29,7 +29,7 @@ public class InvoiceDAO extends RestaurantDAO<InvoiceEntity, Integer> {
             + "JOIN [RestaurantManager].[dbo].[Order] o ON i.[InvoiceID] = o.[InvoiceID] "
             + "WHERE i.[PaymentTime] >= ? "
             + "AND i.[PaymentTime] <= ? "
-            + "AND i.[PaymentMethod] LIKE ? "
+            + "AND i.[InvoiceID] LIKE ? "
             + "AND i.[Status] LIKE ? ";
 
     @Override
@@ -73,7 +73,7 @@ public class InvoiceDAO extends RestaurantDAO<InvoiceEntity, Integer> {
     }
 
     @Override
-    public InvoiceEntity getById(Integer id) {
+    public InvoiceEntity getByID(Integer id) {
         List<InvoiceEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
     }
@@ -88,14 +88,13 @@ public class InvoiceDAO extends RestaurantDAO<InvoiceEntity, Integer> {
         return fetchByQuery(SELECT_ALL_SQL);
     }
 
-    public List<InvoiceEntity> searchByCriteria(String startDate, String endDate, String payMethod, String status) {
-
+    public List<InvoiceEntity> searchByCriteria(String startDate, String endDate, String id, String status) {
         String startDayTerm = startDate + " 00:00:00";
         String endDayTerm = endDate + " 23:59:59";
-        String payMethodTerm = "%" + payMethod + "%";
+        String idTerm = "%" + id + "%";
         String statusTerm = "%" + status + "%";
 
-        return fetchByQuery(SELECT_BY_CRITERIA, startDayTerm, endDayTerm, payMethodTerm, statusTerm);
+        return fetchByQuery(SELECT_BY_CRITERIA, startDayTerm, endDayTerm, idTerm, statusTerm);
     }
 
     @Override

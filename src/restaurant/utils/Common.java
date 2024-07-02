@@ -52,7 +52,7 @@ public class Common {
     }
 
     // Hàm chung để tùy chỉnh bảng
-    public static void customizeTable(JTable table, int[] columnsNotCentered, int rowHeight) {
+    public static void customizeTable(JTable table, int[] columnsCentered, int rowHeight) {
         // Setup table
         table.setRowHeight(rowHeight);         // Set row height for the table
         table.setGridColor(Color.WHITE);
@@ -65,7 +65,7 @@ public class Common {
         tableHeader.setOpaque(true);
         tableHeader.setReorderingAllowed(false);
         tableHeader.setBackground(new Color(235, 235, 235));
-        tableHeader.setFont(new Font("Be Vietnam Pro", Font.PLAIN, 15));
+        tableHeader.setFont(new Font("Be Vietnam Pro", Font.PLAIN, 14));
 
         // Setup header center
         DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer();
@@ -101,21 +101,21 @@ public class Common {
         // Setup renderer và thuộc tính cho từng cột
         TableColumnModel columnModel = table.getColumnModel();
         for (int i = 0; i < table.getColumnCount(); i++) {
-            boolean isNotCentered = false;
-            for (int column : columnsNotCentered) {
+            boolean isCentered = false;
+            for (int column : columnsCentered) {
                 if (i == column) {
-                    isNotCentered = true;
+                    isCentered = true;
                     break;
                 }
             }
 
             TableColumn column = columnModel.getColumn(i);
-            if (isNotCentered) {
-                table.getColumnModel().getColumn(i).setCellRenderer(notCenterHeader);
-                table.getColumnModel().getColumn(i).setCellRenderer(notContentRenderer);
-            } else {
+            if (isCentered) {
                 table.getColumnModel().getColumn(i).setHeaderRenderer(headerRenderer);
                 table.getColumnModel().getColumn(i).setCellRenderer(contentRenderer);
+            } else {
+                table.getColumnModel().getColumn(i).setCellRenderer(notCenterHeader);
+                table.getColumnModel().getColumn(i).setCellRenderer(notContentRenderer);
             }
 
             // Privent size column

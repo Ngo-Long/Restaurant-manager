@@ -20,13 +20,7 @@ public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
     final String SELECT_BY_ORDER_ID_SQL = "SELECT od.* FROM OrderDetail od "
             + "JOIN [Order] o ON od.OrderID = o.OrderID "
             + "JOIN Invoice i ON o.InvoiceID = i.InvoiceID "
-            + "WHERE od.ProductStatus != N'Đã hủy' AND i.Status = N'Chờ thanh toán' AND od.OrderID = ?";
-
-    final String SELECT_ORDER_PRODUCT_BY_ORDER_ID_SQL = "SELECT p.ProductName, od.ProductDesc, "
-            + "od.ProductQuantity, p.Price AS UnitPrice, (od.ProductQuantity * p.Price) AS TotalPrice "
-            + "FROM OrderDetail od "
-            + "JOIN Product p ON od.ProductID = p.ProductID "
-            + "WHERE od.OrderID = ?";
+            + "WHERE od.ProductStatus != N'Đã hủy' AND od.OrderID = ?";
 
     final String SELECT_BY_CRITERIA = "SELECT TOP (1000) od.[OrderDetailID], od.[OrderID], "
             + "od.[ProductID], od.[ProductQuantity], od.[ProductStatus], od.[ProductDesc], "
@@ -72,7 +66,7 @@ public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
     }
 
     @Override
-    public OrderDetailEntity getById(Integer id) {
+    public OrderDetailEntity getByID(Integer id) {
         List<OrderDetailEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
     }
@@ -98,12 +92,8 @@ public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
         return fetchByQuery(SELECT_PENDING_PRODUCTS_SQL);
     }
 
-    public List<OrderDetailEntity> getByOrderId(int orderId) {
-        return fetchByQuery(SELECT_BY_ORDER_ID_SQL, orderId);
-    }
-
-    public List<OrderDetailEntity> getOrderedProductsByOrderId(int orderId) {
-        return fetchByQuery(SELECT_ORDER_PRODUCT_BY_ORDER_ID_SQL, orderId);
+    public List<OrderDetailEntity> getByOrderID(int orderID) {
+        return fetchByQuery(SELECT_BY_ORDER_ID_SQL, orderID);
     }
 
     @Override

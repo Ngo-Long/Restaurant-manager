@@ -302,7 +302,7 @@ public final class Login extends javax.swing.JFrame {
         }
 
         String employeeID = account.findEmployeeIDByAccount(username, password);
-        EmployeeEntity employee = new EmployeeDAO().getById(employeeID);
+        EmployeeEntity employee = new EmployeeDAO().getByID(employeeID);
         if (employee == null) {
             Dialog.alert(this, "Không tìm thấy thông tin nhân viên!");
             return;
@@ -310,9 +310,9 @@ public final class Login extends javax.swing.JFrame {
 
         Auth.user = employee;
         if (Auth.isManager()) {
-            openFullScreenWindow(new MainManager());
+            openFullScreenWindow(new ManagementMode());
         } else {
-            openFullScreenWindow(new MainStaff());
+            openFullScreenWindow(new DineInMode());
         }
     }
 }

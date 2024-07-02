@@ -7,31 +7,32 @@
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT  
-	dbo.DiningTables.TableName, 
-	dbo.Employees.FullName, 
-	dbo.Invoices.InvoiceID, 
-	dbo.Invoices.Tax, 
-	dbo.Invoices.Discount, 
-	dbo.Invoices.PaymentTime, 
-	dbo.Invoices.TotalAmount, 
-	dbo.OrderDetails.ProductQuantity, 
-	dbo.OrderDetails.Note, 
-	dbo.Orders.CreatedDate, 
-	dbo.Products.ProductName, 
-	dbo.Products.Price, 
-	dbo.Orders.Total
-FROM      
-	dbo.Invoices 
-    LEFT JOIN dbo.Employees ON dbo.Invoices.EmployeeID = dbo.Employees.EmployeeID 
-    LEFT JOIN dbo.Orders ON dbo.Invoices.InvoiceID = dbo.Orders.InvoiceID 
-    LEFT JOIN dbo.DiningTables ON dbo.Orders.TableID = dbo.DiningTables.TableID 
-    LEFT JOIN dbo.OrderDetails ON dbo.Orders.OrderID = dbo.OrderDetails.OrderID
-    LEFT JOIN dbo.Products ON dbo.OrderDetails.ProductID = dbo.Products.ProductID
+		<![CDATA[SELECT 
+	dbo.DiningTable.Name, 
+	dbo.Employee.FullName, 
+	dbo.Invoice.InvoiceID, 
+	dbo.Invoice.Tax, 
+	dbo.Invoice.Discount, 
+	dbo.Invoice.PaymentTime, 
+	dbo.Invoice.TotalAmount, 
+	dbo.OrderDetail.ProductQuantity, 
+	dbo.OrderDetail.Note, 
+	dbo.[Order].Total, 
+	dbo.[Order].CreatedDate,
+	dbo.Product.ProductName, 
+	dbo.Product.Price
+FROM 
+	dbo.Invoice
+    	LEFT JOIN dbo.Employee ON dbo.Invoice.EmployeeID = dbo.Employee.EmployeeID 
+    	LEFT JOIN dbo.[Order] ON dbo.Invoice.InvoiceID = dbo.[Order].InvoiceID
+    	LEFT JOIN dbo.OrderDetail ON dbo.[Order].OrderID = dbo.OrderDetail.OrderID
+    	LEFT JOIN dbo.Product ON dbo.OrderDetail.ProductID = dbo.Product.ProductID 
+    	LEFT JOIN dbo.OrderTable ON dbo.[Order].OrderID = dbo.OrderTable.OrderID AND dbo.[Order].OrderID = dbo.OrderTable.OrderID 
+    	LEFT JOIN dbo.DiningTable ON dbo.OrderTable.TableID = dbo.DiningTable.TableID AND dbo.OrderTable.TableID = dbo.DiningTable.TableID
 WHERE 
-    dbo.Invoices.InvoiceID = $P{ToInvoiceID}]]>
+	dbo.Invoice.InvoiceID = $P{ToInvoiceID};]]>
 	</queryString>
-	<field name="TableName" class="java.lang.String"/>
+	<field name="Name" class="java.lang.String"/>
 	<field name="FullName" class="java.lang.String"/>
 	<field name="InvoiceID" class="java.lang.Integer"/>
 	<field name="Tax" class="java.math.BigDecimal"/>
@@ -40,17 +41,17 @@ WHERE
 	<field name="TotalAmount" class="java.math.BigDecimal"/>
 	<field name="ProductQuantity" class="java.lang.Integer"/>
 	<field name="Note" class="java.lang.String"/>
+	<field name="Total" class="java.math.BigDecimal"/>
 	<field name="CreatedDate" class="java.sql.Timestamp"/>
 	<field name="ProductName" class="java.lang.String"/>
 	<field name="Price" class="java.math.BigDecimal"/>
-	<field name="Total" class="java.math.BigDecimal"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
 		<band height="59" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="360" height="33" forecolor="#FF9999" uuid="a105381c-aac3-41e3-8d81-4fbe3aef8d29"/>
+				<reportElement x="0" y="0" width="360" height="33" forecolor="#FF3333" uuid="a105381c-aac3-41e3-8d81-4fbe3aef8d29"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="24" isBold="true"/>
 				</textElement>
@@ -109,13 +110,6 @@ WHERE
 				</textElement>
 				<textFieldExpression><![CDATA[$F{FullName}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="55" y="83" width="100" height="20" forecolor="#333333" uuid="7f3cf95b-ebd7-4149-8635-758141d6ff53"/>
-				<textElement>
-					<font fontName="Arial" size="12" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{CreatedDate}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement x="206" y="43" width="28" height="20" forecolor="#333333" uuid="b6dc4a0a-d215-4589-b125-03f37e130eb8"/>
 				<textElement>
@@ -138,13 +132,6 @@ WHERE
 				<text><![CDATA[Giờ ra:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="234" y="43" width="90" height="20" forecolor="#333333" uuid="7b110c17-f1a9-426e-89e0-e127762418bf"/>
-				<textElement>
-					<font fontName="Arial" size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{TableName}]]></textFieldExpression>
-			</textField>
-			<textField>
 				<reportElement x="249" y="83" width="100" height="20" forecolor="#333333" uuid="dcb8624c-b7dc-431b-861f-86bb9db55ebc"/>
 				<textElement>
 					<font fontName="Arial" size="12"/>
@@ -152,10 +139,10 @@ WHERE
 				<textFieldExpression><![CDATA[$F{PaymentTime}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="0" y="22" width="100" height="1" forecolor="#FF9999" uuid="782a50c3-50a6-4fb5-8b8f-dba3caba45e1"/>
+				<reportElement x="0" y="22" width="100" height="1" forecolor="#FF3333" uuid="782a50c3-50a6-4fb5-8b8f-dba3caba45e1"/>
 			</line>
 			<line>
-				<reportElement x="260" y="22" width="100" height="1" forecolor="#FF9999" uuid="9cd5c207-cf31-4e0d-bf31-75bcd8edca4b"/>
+				<reportElement x="260" y="22" width="100" height="1" forecolor="#FF3333" uuid="9cd5c207-cf31-4e0d-bf31-75bcd8edca4b"/>
 			</line>
 			<staticText>
 				<reportElement x="6" y="83" width="49" height="20" forecolor="#333333" uuid="9a49e545-6c47-4716-b67e-a8d98c37c7ae"/>
@@ -164,12 +151,26 @@ WHERE
 				</textElement>
 				<text><![CDATA[Giờ vào:]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="234" y="43" width="100" height="20" uuid="632fb231-2810-4a93-9e18-3149b3dcfb46"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="55" y="83" width="100" height="20" uuid="8b0a6c54-227e-4483-83c9-6efe16a64339"/>
+				<textElement>
+					<font fontName="Arial" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CreatedDate}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="35" splitType="Stretch">
 			<line>
-				<reportElement x="0" y="10" width="360" height="1" forecolor="#FF9999" uuid="e2a2c382-cda7-4876-b2ec-235d2fe367a6"/>
+				<reportElement x="0" y="10" width="360" height="1" forecolor="#FF3333" uuid="e2a2c382-cda7-4876-b2ec-235d2fe367a6"/>
 			</line>
 			<staticText>
 				<reportElement x="276" y="11" width="84" height="23" forecolor="#333333" uuid="284ae5f0-b9bf-4428-9693-8325251b9190"/>
@@ -200,7 +201,7 @@ WHERE
 				<text><![CDATA[Tên món]]></text>
 			</staticText>
 			<line>
-				<reportElement x="0" y="34" width="360" height="1" forecolor="#FF9999" uuid="f353198c-3c57-437c-b4c5-971b0de6ec89"/>
+				<reportElement x="0" y="34" width="360" height="1" forecolor="#FF3333" uuid="f353198c-3c57-437c-b4c5-971b0de6ec89"/>
 			</line>
 		</band>
 	</columnHeader>
@@ -288,14 +289,14 @@ WHERE
 				<textFieldExpression><![CDATA[$F{Discount}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="0" y="0" width="360" height="1" forecolor="#FF9999" uuid="1914b979-72c2-4314-b915-0ca6a5eadbde"/>
+				<reportElement x="0" y="0" width="360" height="1" forecolor="#FF3333" uuid="1914b979-72c2-4314-b915-0ca6a5eadbde"/>
 			</line>
 		</band>
 	</columnFooter>
 	<pageFooter>
 		<band height="155" splitType="Stretch">
 			<line>
-				<reportElement x="0" y="0" width="360" height="1" forecolor="#FF9999" uuid="16e22403-d2ce-41ea-968c-ec38e124444a"/>
+				<reportElement x="0" y="0" width="360" height="1" forecolor="#FF3333" uuid="16e22403-d2ce-41ea-968c-ec38e124444a"/>
 			</line>
 			<staticText>
 				<reportElement x="6" y="29" width="149" height="17" forecolor="#333333" uuid="5107e4a5-83d3-4fb7-86dd-c60037d5223d"/>
@@ -344,7 +345,7 @@ WHERE
 				<text><![CDATA[Xin cảm ơn và hẹn gặp lại quý khách lần sau!]]></text>
 			</staticText>
 			<line>
-				<reportElement x="0" y="126" width="360" height="1" forecolor="#FF9999" uuid="cadf33ba-d731-4fee-88b3-04527043bf1e"/>
+				<reportElement x="0" y="126" width="360" height="1" forecolor="#FF3333" uuid="cadf33ba-d731-4fee-88b3-04527043bf1e"/>
 			</line>
 		</band>
 	</pageFooter>

@@ -67,7 +67,6 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
         btnReset = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         tableInvoices = new javax.swing.JTable();
-        cbKitchen = new javax.swing.JComboBox<>();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -148,7 +147,7 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Mã HD", "Thời gian", "Bàn ăn", "Thu ngân", "Tổng tiền", "Trạng thái", "Tác vụ"
+                "Mã HD", "Thời gian", "Nguồn", "Thu ngân", "Tổng tiền", "Trạng thái", "Tác vụ"
             }
         ) {
             Class[] types = new Class [] {
@@ -171,9 +170,6 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
             tableInvoices.getColumnModel().getColumn(3).setPreferredWidth(110);
         }
 
-        cbKitchen.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cbKitchen.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -191,11 +187,10 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(cbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cbKitchen, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 146, Short.MAX_VALUE)))
                 .addGap(18, 18, 18))
         );
         layout.setVerticalGroup(
@@ -206,7 +201,6 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
                     .addComponent(textEndDate, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(textSearch, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(textStartDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cbKitchen, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(cbStatus, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnReset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnSearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -259,7 +253,6 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSearch;
-    private javax.swing.JComboBox<String> cbKitchen;
     private javax.swing.JComboBox<String> cbStatus;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JList<String> jList1;
@@ -274,7 +267,7 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     String tableNamesStr;
-    final String PLACEHOLDER = "Tìm theo tên bàn";
+    final String PLACEHOLDER = "Tìm theo mã hóa đơn";
     List<OrderEntity> dataOrders;
     List<InvoiceEntity> dataInvoices;
     List<DiningTableEntity> dataTables;
@@ -288,11 +281,11 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
 
         // Set table
         TableCustom.apply(jScrollPane4, TableCustom.TableType.MULTI_LINE);
-        Common.customizeTable(tableInvoices, new int[]{0, 1, 2, 3, 4, 5}, 40);
+        Common.customizeTable(tableInvoices, new int[]{}, 40);
         Common.addPlaceholder(textSearch, PLACEHOLDER);
 
         // Set combobox
-        setupComboboxTables();
+        setupCombobox();
         setupDetailButtonColumn(tableInvoices, 6);
 
         // Set today on JDateChooser
@@ -306,7 +299,7 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
         });
     }
 
-    void setupComboboxTables() {
+    void setupCombobox() {
         // Get all list
         List<InvoiceEntity> dataList = new InvoiceDAO().getAll();
 
@@ -319,12 +312,10 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
 
         // Set only 
         Set<String> setStatus = new HashSet<>();
-        Set<String> setPaymentMethod = new HashSet<>();
         for (InvoiceEntity dataItem : dataList) {
             if (!"Chờ thanh toán".equals(dataItem.getStatus())) {
                 setStatus.add(dataItem.getStatus());
             }
-            setPaymentMethod.add(dataItem.getPaymentMethod());
         }
 
         // Convert the Set to an array
@@ -333,14 +324,8 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
             modalStatus.addElement(statusItem);
         }
 
-        String[] payMethodList = setPaymentMethod.toArray(new String[0]);
-        for (String payMethodItem : payMethodList) {
-            modalPaymentMethod.addElement(payMethodItem);
-        }
-
         // Set to the comboBox
         cbStatus.setModel(modalStatus);
-        cbKitchen.setModel(modalPaymentMethod);
     }
 
     // <--- Load data
@@ -357,12 +342,7 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
                 // Get category
                 String selectedStatus = (String) cbStatus.getSelectedItem();
                 if (selectedStatus.equals("--Trạng thái--")) {
-                    selectedStatus = "";
-                }
-
-                String selectedKitchen = (String) cbKitchen.getSelectedItem();
-                if (selectedKitchen.equals("--PP thanh toán--")) {
-                    selectedKitchen = "";
+                    selectedStatus = "Đã thanh toán";
                 }
 
                 // Định dạng ngày tháng thành chuỗi "năm-tháng-ngày"
@@ -370,8 +350,10 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
                 String startDate = dateFormat.format(textStartDate.getDate());
                 String endDate = dateFormat.format(textEndDate.getDate());
 
+                System.out.println(selectedStatus);
+
                 // Get data and display
-                dataInvoices = new InvoiceDAO().searchByCriteria(startDate, endDate, selectedStatus, selectedKitchen);
+                dataInvoices = new InvoiceDAO().searchByCriteria(startDate, endDate, keyword, selectedStatus);
                 this.fillTable(dataInvoices);
             });
         }, 200, TimeUnit.MILLISECONDS);
@@ -391,15 +373,15 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
             // Load data into the table 
             for (InvoiceEntity dataItem : dataList) {
                 // Get table name list
-                dataTables = new DiningTableDAO().getAllByInvoiceID(dataItem.getInvoiceID());
-                tableNamesStr = dataTables.isEmpty() 
-                        ? "Mang về" 
+                dataTables = new DiningTableDAO().getByInvoicesID(dataItem.getInvoiceID());
+                tableNamesStr = dataTables.isEmpty()
+                        ? "Mang về"
                         : dataTables.stream()
                                 .map(DiningTableEntity::getName)
                                 .collect(Collectors.joining(" + "));
 
                 // Set name 
-                EmployeeEntity employee = new EmployeeDAO().getById(dataItem.getEmployeeID());
+                EmployeeEntity employee = new EmployeeDAO().getByID(dataItem.getEmployeeID());
                 String employeeName = employee.getFullName();
 
                 // Set total 
@@ -475,11 +457,11 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
 
                 // Get data detail
                 int invoiceID = (int) table.getValueAt(row, 0);
-                InvoiceEntity dataInvoice = new InvoiceDAO().getById(invoiceID);
+                InvoiceEntity dataInvoice = new InvoiceDAO().getByID(invoiceID);
 
                 // Open dialog 
                 HistoryInvoiceDetailJDialog dialog = new HistoryInvoiceDetailJDialog(null, true);
-                dialog.displayDetailOrder(dataInvoice);
+                dialog.displayDetailInvoice(dataInvoice);
                 dialog.setVisible(true);
             });
             panel.add(button);

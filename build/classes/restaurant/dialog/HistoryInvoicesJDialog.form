@@ -103,11 +103,10 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="cbStatus" min="-2" pref="140" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="cbKitchen" min="-2" pref="140" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="btnSearch" min="-2" pref="38" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnReset" min="-2" pref="38" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="146" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
@@ -122,7 +121,6 @@
                   <Component id="textEndDate" alignment="1" max="32767" attributes="0"/>
                   <Component id="textSearch" alignment="1" max="32767" attributes="0"/>
                   <Component id="textStartDate" alignment="0" max="32767" attributes="0"/>
-                  <Component id="cbKitchen" alignment="1" max="32767" attributes="0"/>
                   <Component id="cbStatus" alignment="1" max="32767" attributes="0"/>
                   <Component id="btnReset" alignment="0" max="32767" attributes="0"/>
                   <Component id="btnSearch" alignment="0" max="32767" attributes="0"/>
@@ -250,7 +248,7 @@
               <Table columnCount="7" rowCount="0">
                 <Column editable="true" title="M&#xe3; HD" type="java.lang.Object"/>
                 <Column editable="true" title="Th&#x1edd;i gian" type="java.lang.Object"/>
-                <Column editable="true" title="B&#xe0;n &#x103;n" type="java.lang.Object"/>
+                <Column editable="true" title="Ngu&#x1ed3;n" type="java.lang.Object"/>
                 <Column editable="true" title="Thu ng&#xe2;n" type="java.lang.Integer"/>
                 <Column editable="true" title="T&#x1ed5;ng ti&#x1ec1;n" type="java.lang.Object"/>
                 <Column editable="true" title="Tr&#x1ea1;ng th&#xe1;i" type="java.lang.Object"/>
@@ -310,23 +308,5 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JComboBox" name="cbKitchen">
-      <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="Item 1"/>
-            <StringItem index="1" value="Item 2"/>
-            <StringItem index="2" value="Item 3"/>
-            <StringItem index="3" value="Item 4"/>
-          </StringArray>
-        </Property>
-        <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-          <Color id="Hand Cursor"/>
-        </Property>
-      </Properties>
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-      </AuxValues>
-    </Component>
   </SubComponents>
 </Form>
