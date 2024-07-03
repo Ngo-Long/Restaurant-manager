@@ -27,6 +27,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.TableColumn;
 import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
 import javax.swing.table.TableCellRenderer;
 
 import restaurant.utils.Common;
@@ -277,20 +278,20 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
     void init() {
         // Set system
         this.setLocationRelativeTo(null);
-        this.getContentPane().setBackground(new Color(255, 255, 255));
+        this.getContentPane().setBackground(Color.WHITE);
 
         // Set table
         TableCustom.apply(jScrollPane4, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableInvoices, new int[]{}, 40);
         Common.addPlaceholder(textSearch, PLACEHOLDER);
 
-        // Set combobox
-        setupCombobox();
-        setupDetailButtonColumn(tableInvoices, 6);
-
         // Set today on JDateChooser
         textEndDate.setDate(new Date());
         textStartDate.setDate(new Date());
+
+        // <--- Setup main --->
+        addDataToCombobox(cbStatus);
+        setupDetailButtonColumn(tableInvoices, 6);
 
         // Load data
         loadDataByCriteria();
@@ -299,7 +300,7 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
         });
     }
 
-    void setupCombobox() {
+    void addDataToCombobox(JComboBox cbBox) {
         // Get all list
         List<InvoiceEntity> dataList = new InvoiceDAO().getAll();
 
@@ -325,7 +326,7 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
         }
 
         // Set to the comboBox
-        cbStatus.setModel(modalStatus);
+        cbBox.setModel(modalStatus);
     }
 
     // <--- Load data
@@ -349,8 +350,6 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 String startDate = dateFormat.format(textStartDate.getDate());
                 String endDate = dateFormat.format(textEndDate.getDate());
-
-                System.out.println(selectedStatus);
 
                 // Get data and display
                 dataInvoices = new InvoiceDAO().searchByCriteria(startDate, endDate, keyword, selectedStatus);

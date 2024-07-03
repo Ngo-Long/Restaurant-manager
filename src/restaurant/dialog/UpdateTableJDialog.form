@@ -66,7 +66,7 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
-    <Property name="title" type="java.lang.String" value="C&#x1ead;p nh&#x1ead;t b&#xe0;n"/>
+    <Property name="title" type="java.lang.String" value="C&#x1ead;p nh&#x1ead;t ph&#xf2;ng/b&#xe0;n"/>
     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
       <Color blue="ff" green="ff" red="ff" type="rgb"/>
     </Property>
@@ -101,21 +101,19 @@
                   <Component id="jLabel12" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="btnDelete" min="-2" pref="102" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnUpdate" min="-2" pref="102" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btnAdd" min="-2" pref="102" max="-2" attributes="0"/>
+                      <Component id="btnAdd" max="32767" attributes="0"/>
                   </Group>
-                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                      <Component id="textTableId" alignment="0" pref="319" max="32767" attributes="0"/>
-                      <Component id="textTableName" alignment="0" max="32767" attributes="0"/>
-                      <Component id="textArea" alignment="0" max="32767" attributes="0"/>
-                      <Component id="textNumberSeats" alignment="0" max="32767" attributes="0"/>
-                      <Component id="textDesc" alignment="0" max="32767" attributes="0"/>
-                  </Group>
+                  <Component id="textTableId" alignment="0" pref="320" max="32767" attributes="0"/>
+                  <Component id="textTableName" alignment="0" pref="320" max="32767" attributes="0"/>
+                  <Component id="textArea" alignment="0" pref="320" max="32767" attributes="0"/>
+                  <Component id="textNumberSeats" alignment="0" pref="320" max="32767" attributes="0"/>
+                  <Component id="textDesc" alignment="0" pref="320" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="radioOn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -132,27 +130,27 @@
               <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="textTableId" alignment="3" min="-2" pref="31" max="-2" attributes="0"/>
+                  <Component id="textTableId" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="textTableName" alignment="3" min="-2" pref="31" max="-2" attributes="0"/>
+                  <Component id="textTableName" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="textArea" alignment="3" min="-2" pref="31" max="-2" attributes="0"/>
+                  <Component id="textArea" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="textNumberSeats" alignment="3" min="-2" pref="31" max="-2" attributes="0"/>
+                  <Component id="textNumberSeats" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="textDesc" min="-2" pref="60" max="-2" attributes="0"/>
-                  <Component id="jLabel12" min="-2" pref="31" max="-2" attributes="0"/>
+                  <Component id="textDesc" min="-2" pref="70" max="-2" attributes="0"/>
+                  <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -162,13 +160,13 @@
                       <Component id="radioOn" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnAdd" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
                   <Component id="btnUpdate" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
                   <Component id="btnDelete" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -314,10 +312,8 @@
         </Property>
         <Property name="horizontalAlignment" type="int" value="2"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.MatteColorBorderInfo">
-            <MatteColorBorder bottom="1" left="0" right="0" top="0">
-              <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
-            </MatteColorBorder>
+          <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
+            <EtchetBorder/>
           </Border>
         </Property>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -338,10 +334,8 @@
         </Property>
         <Property name="horizontalAlignment" type="int" value="2"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.MatteColorBorderInfo">
-            <MatteColorBorder bottom="1" left="0" right="0" top="0">
-              <Color PropertyName="color" blue="cc" green="cc" red="cc" type="rgb"/>
-            </MatteColorBorder>
+          <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
+            <EtchetBorder/>
           </Border>
         </Property>
         <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">

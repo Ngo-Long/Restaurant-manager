@@ -189,7 +189,7 @@ public class HistoryProductDetailJDialog extends javax.swing.JDialog {
 
     private void init() {
         this.setLocationRelativeTo(null);
-        this.getContentPane().setBackground(new Color(248, 248, 248));
+        this.getContentPane().setBackground(Color.WHITE);
     }
 
     public void displayDetailOrder(OrderDetailEntity data) {

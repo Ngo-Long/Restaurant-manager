@@ -249,7 +249,7 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
 
     private void init() {
         this.setLocationRelativeTo(null);
-        this.getContentPane().setBackground(new Color(248, 248, 248));
+        this.getContentPane().setBackground(Color.WHITE);
 
         // Setup common
         TableCustom.apply(jScrollPane3, TableCustom.TableType.MULTI_LINE);
@@ -263,10 +263,10 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
         if (data == null) {
             this.setTitle("Chi tiết đơn hàng");
             labelTable.setText("Trống");
-            labelEmployee.setText("Trống");
-            labelTime.setText("Trống");
-            labelTotal.setText("Trống");
-            labelStatus.setText("Trống");
+            labelEmployee.setText("");
+            labelTime.setText("");
+            labelTotal.setText("");
+            labelStatus.setText("");
             textNote.setText("");
             return;
         }
@@ -310,11 +310,8 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
             for (OrderDetailEntity dataDetail : dataDetails) {
                 String productID = dataDetail.getProductID();
                 ProductEntity dataProduct = new ProductDAO().getByID(productID);
-
                 String productName = dataProduct.getProductName();
-
                 int productQuantity = dataDetail.getProductQuantity();
-
                 String productStatus = dataDetail.getProductStatus();
 
                 // Get model

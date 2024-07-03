@@ -66,6 +66,8 @@ public class OrderDetailJDialog extends javax.swing.JDialog {
         jLabel8.setText("Tổng tiền:");
 
         textNote.setEditable(false);
+        textNote.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        textNote.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         textNote.setFocusable(false);
         textNote.setRequestFocusEnabled(false);
         textNote.setVerifyInputWhenFocusTarget(false);
@@ -185,8 +187,7 @@ public class OrderDetailJDialog extends javax.swing.JDialog {
 
     private void init() {
         this.setLocationRelativeTo(null);
-        this.getContentPane().setBackground(new Color(248, 248, 248));
-
+        this.getContentPane().setBackground(Color.WHITE);
         displayDetailOrder();
     }
 

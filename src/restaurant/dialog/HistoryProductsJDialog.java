@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
+import javax.swing.JComboBox;
 
 import restaurant.utils.Common;
 import restaurant.utils.ColumnTable;
@@ -267,19 +268,24 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
     void init() {
         // Set system
         this.setLocationRelativeTo(null);
-        this.getContentPane().setBackground(new Color(255, 255, 255));
+        this.getContentPane().setBackground(Color.white);
 
         // Set table
         TableCustom.apply(jScrollPane4, TableCustom.TableType.MULTI_LINE);
-        Common.customizeTable(tableOrderDetail, new int[]{0, 1, 2, 3, 4, 5}, 40);
+        Common.customizeTable(tableOrderDetail, new int[]{}, 40);
+        
+        // Set text field
         Common.addPlaceholder(textSearch, PLACEHOLDER);
+        Common.setComboboxStyle(cbStatus);
+        Common.setComboboxStyle(cbKitchen);
 
         // Set today on JDateChooser
         textEndDate.setDate(new Date());
         textStartDate.setDate(new Date());
 
+        // <--- Setup main --->
         // Set combobox
-        setupComboboxTables();
+        addDataToComboboxs(cbStatus, cbKitchen);
         ColumnTable.setupDetailButtonColumn(tableOrderDetail, 6);
 
         // Load data
@@ -289,7 +295,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         });
     }
 
-    void setupComboboxTables() {
+    void addDataToComboboxs(JComboBox cbStatus, JComboBox cbKitchen) {
         // Get all list
         List<OrderDetailEntity> dataDetails = new OrderDetailDAO().getAll();
         List<ProductEntity> dataProducts = new ProductDAO().getAll();

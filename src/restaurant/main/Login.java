@@ -312,7 +312,7 @@ public final class Login extends javax.swing.JFrame {
         if (Auth.isManager()) {
             openFullScreenWindow(new ManagementMode());
         } else {
-            openFullScreenWindow(new DineInMode());
+            openFullScreenWindow(new OnSiteMode());
         }
     }
 }

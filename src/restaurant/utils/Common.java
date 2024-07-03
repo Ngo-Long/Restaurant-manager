@@ -350,7 +350,7 @@ public class Common {
     // Sử dụng hàm để thêm focus listener và đặt viền cho mỗi JTextField trong mảng
     public static void addFocusBorder(JComponent component, Color focusColor, Color unfocusColor) {
         // Định nghĩa các viền matte
-        MatteBorder focusedBorder = BorderFactory.createMatteBorder(0, 0, 3, 0, focusColor);
+        MatteBorder focusedBorder = BorderFactory.createMatteBorder(0, 0, 2, 0, focusColor);
         MatteBorder unfocusedBorder = BorderFactory.createMatteBorder(0, 0, 2, 0, unfocusColor);
         EmptyBorder paddingBorder = (EmptyBorder) BorderFactory.createEmptyBorder(0, 5, 0, 0);
 
@@ -373,5 +373,31 @@ public class Common {
                 component.setBorder(unfocusedCombinedBorder);
             }
         });
+    }
+
+    // set combobox style
+    public static void setComboboxStyle(JComboBox<?>... comboBoxes) {
+        for (JComboBox<?> cbBox : comboBoxes) {
+            cbBox.setBackground(new Color(160, 160, 160));
+            cbBox.setForeground(Color.black);
+            cbBox.setFont(new Font("Arial", Font.PLAIN, 14));
+            cbBox.setBorder(BorderFactory.createEmptyBorder());
+            cbBox.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+            cbBox.setRenderer(new DefaultListCellRenderer() {
+                @Override
+                public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                    JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                    label.setBackground(Color.white);
+                    label.setForeground(Color.black);
+                    label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+                    if (isSelected) {
+                        label.setBackground(Color.lightGray);
+                        label.setForeground(Color.black);
+                    }
+                    return label;
+                }
+            });
+        }
     }
 }

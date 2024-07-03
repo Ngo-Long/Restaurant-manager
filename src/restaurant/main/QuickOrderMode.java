@@ -721,7 +721,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemManagerActionPerformed
 
     private void menuItemDirectlyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemDirectlyActionPerformed
-        openFullScreenWindow(new DineInMode());
+        openFullScreenWindow(new OnSiteMode());
     }//GEN-LAST:event_menuItemDirectlyActionPerformed
 
     private void menuChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChangeActionPerformed

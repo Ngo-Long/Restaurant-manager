@@ -141,6 +141,7 @@ public final class Products extends javax.swing.JPanel {
         btnExport.setBackground(new java.awt.Color(0, 153, 0));
         btnExport.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnExport.setForeground(new java.awt.Color(255, 255, 255));
+        btnExport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/export-file.png"))); // NOI18N
         btnExport.setText("Export");
         btnExport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnExport.addActionListener(new java.awt.event.ActionListener() {
@@ -152,6 +153,7 @@ public final class Products extends javax.swing.JPanel {
         btnImport.setBackground(new java.awt.Color(0, 153, 0));
         btnImport.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnImport.setForeground(new java.awt.Color(255, 255, 255));
+        btnImport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/file-import.png"))); // NOI18N
         btnImport.setText("Import");
         btnImport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnImport.addActionListener(new java.awt.event.ActionListener() {
@@ -163,6 +165,7 @@ public final class Products extends javax.swing.JPanel {
         btnAdd.setBackground(new java.awt.Color(0, 153, 0));
         btnAdd.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnAdd.setForeground(new java.awt.Color(255, 255, 255));
+        btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/plusWhile.png"))); // NOI18N
         btnAdd.setText("Thêm món ăn");
         btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
@@ -592,7 +595,6 @@ public final class Products extends javax.swing.JPanel {
 
         // Init dialog
         UpdateProductJDialog dialog = new UpdateProductJDialog(null, true);
-
         dialog.setIsEditable(isEditable); // Set editable 
         dialog.setTitle(title); // Set title dialog
 
@@ -622,7 +624,7 @@ public final class Products extends javax.swing.JPanel {
                 ProductEntity product = new ProductDAO().getByID(id);
 
                 Auth.product = product;
-                openUpdateDialog("Cập nhật hàng hóa", false);
+                openUpdateDialog("Cập nhật sản phẩm", false);
             }
         });
     }

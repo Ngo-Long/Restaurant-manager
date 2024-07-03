@@ -25,6 +25,7 @@ import java.text.MessageFormat;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
@@ -34,6 +35,7 @@ import restaurant.table.TableCustom;
 import restaurant.dao.DiningTableDAO;
 import restaurant.entity.DiningTableEntity;
 import restaurant.dialog.UpdateTableJDialog;
+import restaurant.utils.Common;
 import static restaurant.utils.Common.addFocusBorder;
 import static restaurant.utils.Common.addPlaceholder;
 import static restaurant.utils.Common.customizeTable;
@@ -127,6 +129,7 @@ public final class DiningTable extends javax.swing.JPanel {
         btnExport.setBackground(new java.awt.Color(0, 153, 0));
         btnExport.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnExport.setForeground(new java.awt.Color(255, 255, 255));
+        btnExport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/export-file.png"))); // NOI18N
         btnExport.setText("Export");
         btnExport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnExport.addActionListener(new java.awt.event.ActionListener() {
@@ -138,6 +141,7 @@ public final class DiningTable extends javax.swing.JPanel {
         btnImport.setBackground(new java.awt.Color(0, 153, 0));
         btnImport.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnImport.setForeground(new java.awt.Color(255, 255, 255));
+        btnImport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/file-import.png"))); // NOI18N
         btnImport.setText("Import");
         btnImport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnImport.addActionListener(new java.awt.event.ActionListener() {
@@ -149,6 +153,7 @@ public final class DiningTable extends javax.swing.JPanel {
         btnAdd.setBackground(new java.awt.Color(0, 153, 0));
         btnAdd.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnAdd.setForeground(new java.awt.Color(255, 255, 255));
+        btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/plusWhile.png"))); // NOI18N
         btnAdd.setText("Thêm phòng/bàn");
         btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
@@ -234,10 +239,10 @@ public final class DiningTable extends javax.swing.JPanel {
                         .addComponent(btnLast, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel6))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 998, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 536, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnAdd)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -493,28 +498,27 @@ public final class DiningTable extends javax.swing.JPanel {
     void init() {
         // <--- Fuction common from file common --->
         createButtonGroup(radioOn, radioOff, radioAll);
+        Common.setComboboxStyle(comboBoxArea);
 
         // edit field text
-        addPlaceholder(textSearch, "Theo tên bàn");
-        addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
+        Common.addPlaceholder(textSearch, "Theo tên bàn");
+        Common.addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
 
         // edit table
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
         customizeTable(tableDiningTables, new int[]{}, 30);
 
         // <--- Setup main --->
-        // setup combobox
-        setupMultipleCombobox();
-
         // Load list by search and classify when change
         initEventHandlers();
         loadDataByCriteria();
 
         // handle click table
         tablesMouseClicked();
+        addDataToCombobox(comboBoxArea);
     }
 
-    public void setupMultipleCombobox() {
+    void addDataToCombobox(JComboBox cbBox) {
         // Get data list
         List<DiningTableEntity> dataTableAll = new DiningTableDAO().getAll();
 
@@ -534,7 +538,7 @@ public final class DiningTable extends javax.swing.JPanel {
 
         // Convert the Set to a sorted array --> Set to the comboBox
         areaSet.stream().sorted().forEach(comboBoxModel::addElement);
-        comboBoxArea.setModel(comboBoxModel);
+        cbBox.setModel(comboBoxModel);
     }
 
     void tablesMouseClicked() {
@@ -573,7 +577,7 @@ public final class DiningTable extends javax.swing.JPanel {
             @Override
             public void windowClosed(WindowEvent e) {
                 loadDataByCriteria();
-                setupMultipleCombobox();
+                addDataToCombobox(comboBoxArea);
             }
         });
 

@@ -14,14 +14,14 @@ public class DiningTableDAO extends RestaurantDAO<DiningTableEntity, String> {
     final String UPDATE_SQL = "UPDATE DiningTable SET Name=?, Location=?, Capacity=?, "
             + "Status=?, Description=?, Activity=? WHERE TableID=?";
     final String DELETE_SQL = "DELETE FROM DiningTable WHERE TableID = ?";
-    final String SELECT_ALL_SQL = "SELECT * FROM DiningTable"
-            + " ORDER BY TRY_CAST(SUBSTRING(Name, PATINDEX('%[0-9]%', Name), LEN(Name)) AS INT)";
-    final String SELECT_BY_ID_SQL = "SELECT * FROM DiningTable WHERE TableID=?";
+    final String SELECT_ALL_SQL = "SELECT * FROM DiningTable "
+            + "ORDER BY CAST(SUBSTRING(Name, CHARINDEX(' ', Name) + 1, LEN(Name)) AS INT) ";
+    final String SELECT_BY_ID_SQL = "SELECT * FROM DiningTable WHERE TableID=? ";
 
-    final String SELECT_BY_ORDER_ID_SQL = "SELECT dt.* FROM [Order] o"
-            + " JOIN OrderTable ot ON o.OrderID = ot.OrderID"
-            + " JOIN DiningTable dt ON ot.TableID = dt.TableID"
-            + " WHERE o.OrderID = ?";
+    final String SELECT_BY_ORDER_ID_SQL = "SELECT dt.* FROM [Order] o "
+            + "JOIN OrderTable ot ON o.OrderID = ot.OrderID "
+            + "JOIN DiningTable dt ON ot.TableID = dt.TableID "
+            + "WHERE o.OrderID = ? ";
 
     final String SELECT_BY_INVOICE_ID_SQL = "SELECT dt.* FROM DiningTable dt "
             + "INNER JOIN OrderTable ot ON dt.TableID = ot.TableID "

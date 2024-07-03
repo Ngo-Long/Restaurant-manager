@@ -1,22 +1,25 @@
 package restaurant.main;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Font;
+import java.awt.Color;
+import java.awt.BorderLayout;
+import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.JButton;
-import javax.swing.JFrame;
+
 import javax.swing.JPanel;
+import javax.swing.JFrame;
+import javax.swing.JButton;
 import javax.swing.border.LineBorder;
+
 import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.management.Overview;
-import restaurant.management.DiningTable;
 import restaurant.management.Employee;
 import restaurant.management.Products;
+import restaurant.management.DiningTable;
+
 
 public final class ManagementMode extends javax.swing.JFrame {
 
@@ -126,7 +129,7 @@ public final class ManagementMode extends javax.swing.JFrame {
         });
 
         btnProduct.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        btnProduct.setText("Món Ăn");
+        btnProduct.setText("Sản Phẩm");
         btnProduct.setBorder(null);
         btnProduct.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnProduct.addActionListener(new java.awt.event.ActionListener() {
@@ -149,6 +152,11 @@ public final class ManagementMode extends javax.swing.JFrame {
         btnEmployee.setText("Nhân Viên");
         btnEmployee.setBorder(null);
         btnEmployee.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnEmployee.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEmployeeActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -448,11 +456,11 @@ public final class ManagementMode extends javax.swing.JFrame {
     }//GEN-LAST:event_menuEndActionPerformed
 
     private void menuTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTablesActionPerformed
-        displayManagerPanels(new DiningTable(this));
+        displayManagementPanel(new DiningTable(this));
     }//GEN-LAST:event_menuTablesActionPerformed
 
     private void menuDishesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDishesActionPerformed
-        displayManagerPanels(new Products(this));
+        displayManagementPanel(new Products(this));
     }//GEN-LAST:event_menuDishesActionPerformed
 
     private void menuChickenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChickenActionPerformed
@@ -464,7 +472,7 @@ public final class ManagementMode extends javax.swing.JFrame {
     }//GEN-LAST:event_menuPayActionPerformed
 
     private void menuEmployeesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEmployeesActionPerformed
-        displayManagerPanels(new Employee(this));
+        displayManagementPanel(new Employee(this));
     }//GEN-LAST:event_menuEmployeesActionPerformed
 
     private void menuRevenueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRevenueActionPerformed
@@ -499,7 +507,7 @@ public final class ManagementMode extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemManagerActionPerformed
 
     private void menuItemEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemEmployeeActionPerformed
-        openFullScreenWindow(new DineInMode());
+        openFullScreenWindow(new OnSiteMode());
     }//GEN-LAST:event_menuItemEmployeeActionPerformed
 
     private void menuItemWayHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemWayHomeActionPerformed
@@ -507,19 +515,23 @@ public final class ManagementMode extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemWayHomeActionPerformed
 
     private void btnOverviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOverviewActionPerformed
-        displayManagerPanels(new Overview(this));
+        displayManagementPanel(new Overview(this));
     }//GEN-LAST:event_btnOverviewActionPerformed
 
     private void btnTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTableActionPerformed
-        displayManagerPanels(new DiningTable(this));
+        displayManagementPanel(new DiningTable(this));
     }//GEN-LAST:event_btnTableActionPerformed
 
     private void btnProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductActionPerformed
-        displayManagerPanels(new Products(this));
+        displayManagementPanel(new Products(this));
     }//GEN-LAST:event_btnProductActionPerformed
 
     private void btnWareHouseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWareHouseActionPerformed
     }//GEN-LAST:event_btnWareHouseActionPerformed
+
+    private void btnEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmployeeActionPerformed
+        displayManagementPanel(new Employee(this));
+    }//GEN-LAST:event_btnEmployeeActionPerformed
 
     public static void main(String args[]) {
 
@@ -596,7 +608,7 @@ public final class ManagementMode extends javax.swing.JFrame {
         Common.customizeScrollBar(scrollPaneMain);
 
         setupHeaderButtons(btnOverview);
-        displayManagerPanels(new Overview(this));
+        displayManagementPanel(new Overview(this));
     }
 
     public JButton[] getHeaderButtons() {
@@ -626,7 +638,7 @@ public final class ManagementMode extends javax.swing.JFrame {
                 }
 
                 // Thiết lập lại màu cho nút hiện tại
-                setButtonStyle(button, new Color(255, 51, 51), new Color(180, 180, 180), Font.BOLD);
+                setButtonStyle(button, new Color(255, 51, 51), Color.WHITE, Font.BOLD);
 
                 // Cập nhật nút được chọn hiện tại
                 selectedButton = button;
@@ -634,7 +646,7 @@ public final class ManagementMode extends javax.swing.JFrame {
 
             // Đặt trạng thái ban đầu cho nút được chọn
             if (selectedBtn != null) {
-                setButtonStyle(selectedBtn, new Color(255, 51, 51), new Color(180, 180, 180), Font.BOLD);
+                setButtonStyle(selectedBtn, new Color(255, 51, 51), Color.WHITE, Font.BOLD);
                 selectedButton = selectedBtn;
             }
         }
@@ -655,13 +667,13 @@ public final class ManagementMode extends javax.swing.JFrame {
 
             @Override
             public void mouseExited(MouseEvent e) {
-                button.setBackground(backgroundColor);
+                button.setBackground(Color.WHITE);
             }
         });
 
     }
 
-    public void displayManagerPanels(JPanel panel) {
+    public void displayManagementPanel(JPanel panel) {
         panelMain.removeAll();
         panelMain.setLayout(new BorderLayout());
         panelMain.add(panel, BorderLayout.CENTER);

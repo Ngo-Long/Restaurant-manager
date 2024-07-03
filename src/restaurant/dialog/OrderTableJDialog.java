@@ -4,19 +4,25 @@ import java.util.Map;
 import java.util.List;
 import java.util.HashMap;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.utils.Ordered;
-import restaurant.main.DineInMode;
-import restaurant.dinein.Products;
-import restaurant.dinein.Invoices;
-import restaurant.dinein.DiningTable;
+import restaurant.main.OnSiteMode;
+import restaurant.onsite.Products;
+import restaurant.onsite.Invoices;
 import restaurant.table.TableCustom;
 import restaurant.dao.OrderDAO;
 import restaurant.dao.DiningTableDAO;
@@ -24,17 +30,18 @@ import restaurant.dao.OrderDetailDAO;
 import restaurant.entity.OrderEntity;
 import restaurant.entity.DiningTableEntity;
 import restaurant.entity.OrderDetailEntity;
+import restaurant.onsite.DiningTable;
 import static restaurant.utils.Common.addCommasToNumber;
 
 public final class OrderTableJDialog extends javax.swing.JDialog {
 
-    DineInMode mainStaff = new DineInMode();
+    OnSiteMode onSite = new OnSiteMode();
 
-    public OrderTableJDialog(java.awt.Frame parent, boolean modal, DineInMode mainStaff) {
+    public OrderTableJDialog(java.awt.Frame parent, boolean modal, OnSiteMode onSite) {
         super(parent, modal);
         initComponents();
         this.init();
-        this.mainStaff = mainStaff;
+        this.onSite = onSite;
     }
 
     @SuppressWarnings("unchecked")
@@ -50,18 +57,17 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         labelTableName = new javax.swing.JLabel();
         labelTenBan2 = new javax.swing.JLabel();
         labelStartTime = new javax.swing.JLabel();
-        btnSwitchTables1 = new javax.swing.JButton();
-        btnSwitchTables = new javax.swing.JButton();
-        comboboxTables = new javax.swing.JComboBox<>();
+        btnSplitMerge = new javax.swing.JButton();
         btnAddOrder = new javax.swing.JButton();
         btnPay = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        tableListOrderedDishes = new javax.swing.JTable();
+        tableOrderedDishes = new javax.swing.JTable();
         labelTableId = new javax.swing.JLabel();
         textNote = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         labelTotal = new javax.swing.JLabel();
+        cbStatus = new javax.swing.JComboBox<>();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -99,34 +105,14 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
 
         labelStartTime.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        btnSwitchTables1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        btnSwitchTables1.setText("Chuyển bàn");
-        btnSwitchTables1.setToolTipText("Chọn bàn cần chuyển trước ");
-        btnSwitchTables1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnSwitchTables1.addActionListener(new java.awt.event.ActionListener() {
+        btnSplitMerge.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnSplitMerge.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/merge.png"))); // NOI18N
+        btnSplitMerge.setText("Tách nghép");
+        btnSplitMerge.setToolTipText("Chọn bàn cần chuyển trước ");
+        btnSplitMerge.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSplitMerge.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSwitchTables1ActionPerformed(evt);
-            }
-        });
-
-        btnSwitchTables.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        btnSwitchTables.setText("Chuyển bàn");
-        btnSwitchTables.setToolTipText("Chọn bàn cần chuyển trước ");
-        btnSwitchTables.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnSwitchTables.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSwitchTablesActionPerformed(evt);
-            }
-        });
-
-        comboboxTables.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        comboboxTables.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bàn 1", "Bàn 2", "Bàn 3" }));
-        comboboxTables.setToolTipText("Ấn vô chọn bàn");
-        comboboxTables.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        comboboxTables.setName(""); // NOI18N
-        comboboxTables.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboboxTablesActionPerformed(evt);
+                btnSplitMergeActionPerformed(evt);
             }
         });
 
@@ -154,8 +140,8 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
             }
         });
 
-        tableListOrderedDishes.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        tableListOrderedDishes.setModel(new javax.swing.table.DefaultTableModel(
+        tableOrderedDishes.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        tableOrderedDishes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -163,17 +149,17 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
                 "Các món ăn", "Đơn giá", "SL", "Tổng giá"
             }
         ));
-        tableListOrderedDishes.setAlignmentX(2.0F);
-        tableListOrderedDishes.setAlignmentY(2.0F);
-        tableListOrderedDishes.setFillsViewportHeight(true);
-        tableListOrderedDishes.setGridColor(new java.awt.Color(255, 255, 255));
-        tableListOrderedDishes.setRowHeight(35);
-        jScrollPane3.setViewportView(tableListOrderedDishes);
-        if (tableListOrderedDishes.getColumnModel().getColumnCount() > 0) {
-            tableListOrderedDishes.getColumnModel().getColumn(0).setPreferredWidth(250);
-            tableListOrderedDishes.getColumnModel().getColumn(1).setPreferredWidth(66);
-            tableListOrderedDishes.getColumnModel().getColumn(2).setPreferredWidth(30);
-            tableListOrderedDishes.getColumnModel().getColumn(3).setPreferredWidth(70);
+        tableOrderedDishes.setAlignmentX(2.0F);
+        tableOrderedDishes.setAlignmentY(2.0F);
+        tableOrderedDishes.setFillsViewportHeight(true);
+        tableOrderedDishes.setGridColor(new java.awt.Color(255, 255, 255));
+        tableOrderedDishes.setRowHeight(35);
+        jScrollPane3.setViewportView(tableOrderedDishes);
+        if (tableOrderedDishes.getColumnModel().getColumnCount() > 0) {
+            tableOrderedDishes.getColumnModel().getColumn(0).setPreferredWidth(200);
+            tableOrderedDishes.getColumnModel().getColumn(1).setPreferredWidth(66);
+            tableOrderedDishes.getColumnModel().getColumn(2).setPreferredWidth(28);
+            tableOrderedDishes.getColumnModel().getColumn(3).setPreferredWidth(70);
         }
 
         labelTableId.setForeground(new java.awt.Color(243, 243, 243));
@@ -205,8 +191,8 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
                 .addGap(12, 12, 12)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(labelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12))
+                .addComponent(labelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -215,58 +201,62 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
                 .addComponent(labelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        cbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Còn trống", "Đang phục vụ", "Đã đặt" }));
+        cbStatus.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        cbStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbStatusActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnAddOrder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnPay, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(comboboxTables, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(labelTenBan1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(labelTableName, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(labelTenBan2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(labelStartTime, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(labelTableId)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnSwitchTables, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnSwitchTables1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(textNote))
-                .addContainerGap(30, Short.MAX_VALUE))
+                        .addComponent(btnAddOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnPay, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(textNote, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(labelTenBan1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(labelTableName, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(cbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(18, 18, 18)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(labelTenBan2)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(labelStartTime, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(38, 38, 38)
+                                    .addComponent(labelTableId, javax.swing.GroupLayout.PREFERRED_SIZE, 5, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnSplitMerge)))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(labelStartTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(labelTenBan2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(labelTenBan1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(labelTableName, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(labelTenBan1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(labelTableName, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(labelTableId, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(10, 10, 10)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(comboboxTables, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSwitchTables, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSwitchTables1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnSplitMerge, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                    .addComponent(cbStatus, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
                 .addGap(12, 12, 12)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -275,33 +265,25 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
                 .addComponent(textNote, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAddOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnPay, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(30, Short.MAX_VALUE))
+                    .addComponent(btnAddOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPay, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnSwitchTables1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSwitchTables1ActionPerformed
+    private void btnSplitMergeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSplitMergeActionPerformed
 
-    }//GEN-LAST:event_btnSwitchTables1ActionPerformed
-
-    private void btnSwitchTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSwitchTablesActionPerformed
-        switchTables();
-    }//GEN-LAST:event_btnSwitchTablesActionPerformed
-
-    private void comboboxTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboboxTablesActionPerformed
-
-    }//GEN-LAST:event_comboboxTablesActionPerformed
+    }//GEN-LAST:event_btnSplitMergeActionPerformed
 
 
     private void btnAddOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddOrderActionPerformed
         // Set selected button product
-        JButton[] buttons = mainStaff.getHeaderButtons();
+        JButton[] buttons = onSite.getHeaderButtons();
         for (JButton button : buttons) {
             if (button.getText().equals("Món Ăn")) {
-                mainStaff.setupHeaderButtons(button);
+                onSite.setupHeaderButtons(button);
                 break;
             }
         }
@@ -309,26 +291,31 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         // Set attach info other file
         Auth.table = dataTable;
         Auth.order = dataOrder;
-        mainStaff.displayStaffPanels(new Products(mainStaff));
+        onSite.displayStaffPanels(new Products(onSite));
         dispose();
     }//GEN-LAST:event_btnAddOrderActionPerformed
 
 
     private void btnPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPayActionPerformed
         // Set selected button product
-        JButton[] buttons = mainStaff.getHeaderButtons();
+        JButton[] buttons = onSite.getHeaderButtons();
         for (JButton button : buttons) {
             if (button.getText().equals("Thanh Toán")) {
-                mainStaff.setupHeaderButtons(button);
+                onSite.setupHeaderButtons(button);
                 break;
             }
         }
 
         // Set attach info other file
         Auth.table = dataTable;
-        mainStaff.displayStaffPanels(new Invoices(mainStaff));
+        onSite.displayStaffPanels(new Invoices(onSite));
         dispose();
     }//GEN-LAST:event_btnPayActionPerformed
+
+    private void cbStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbStatusActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_cbStatusActionPerformed
 
     public static void main(String args[]) {
 
@@ -344,8 +331,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         }
 
         java.awt.EventQueue.invokeLater(() -> {
-            DineInMode mainStaff = new DineInMode();
-            OrderTableJDialog dialog = new OrderTableJDialog(new javax.swing.JFrame(), true, mainStaff);
+            OrderTableJDialog dialog = new OrderTableJDialog(new javax.swing.JFrame(), true, new OnSiteMode());
             dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent e) {
@@ -359,9 +345,8 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddOrder;
     private javax.swing.JButton btnPay;
-    private javax.swing.JButton btnSwitchTables;
-    private javax.swing.JButton btnSwitchTables1;
-    private javax.swing.JComboBox<String> comboboxTables;
+    private javax.swing.JButton btnSplitMerge;
+    private javax.swing.JComboBox<String> cbStatus;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JList<String> jList1;
@@ -376,7 +361,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
     private javax.swing.JLabel labelTenBan1;
     private javax.swing.JLabel labelTenBan2;
     private javax.swing.JLabel labelTotal;
-    private javax.swing.JTable tableListOrderedDishes;
+    private javax.swing.JTable tableOrderedDishes;
     private javax.swing.JTextField textNote;
     // End of variables declaration//GEN-END:variables
 
@@ -387,83 +372,101 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
     void init() {
         // Set system
         this.setLocationRelativeTo(null);
-        this.getContentPane().setBackground(new Color(255, 255, 255));
+        this.getContentPane().setBackground(Color.WHITE);
 
-        // Set table
+        // Set common
         TableCustom.apply(jScrollPane3, TableCustom.TableType.MULTI_LINE);
-        Common.customizeTable(tableListOrderedDishes, new int[]{}, 30);
+        Common.customizeTable(tableOrderedDishes, new int[]{}, 30);
+        Common.setComboboxStyle(cbStatus);
+        btnSplitMerge.setBackground(Color.WHITE);
 
-        // Set combobox
-        setupComboboxTables();
+        // Attach event when click combobox status
+        cbStatus.addActionListener((ActionEvent e) -> {
+            String selectedStatus = (String) cbStatus.getSelectedItem();
+            if (!selectedStatus.equals(dataTable.getStatus())) {
+                updateStatusTable(selectedStatus);
+            }
+        });
+
+        // Attach event when click button split merge
+        btnSplitMerge.addActionListener((ActionEvent e) -> {
+            handleClickBtnSplitMerge(btnSplitMerge, dataTable);
+        });
+
     }
 
-    void switchTables() {
-        // Get orderd
-        dataOrder = new OrderDAO().getByTableID(labelTableId.getText());
-        if (dataOrder == null) {
-            Dialog.warning(this, "Không tìm thấy đơn đặt hàng!");
+    void handleClickBtnSplitMerge(JButton tableBtn, DiningTableEntity dataTable) {
+        // Open dialog and Transmit data via file orderTableDialog
+        SplitMergeJDialog dialog = new SplitMergeJDialog(null, true, onSite);
+        dialog.setInfoDialog(dataTable);
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
+
+        // Reload data when the dialog is closed
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+//                loadDataByCriteria();
+            }
+        });
+    }
+
+//    void addDataToCombobox(JComboBox comboBoxMain) {
+//        if (comboBoxMain == null) {
+//            return;
+//        }
+//
+//        // Get data list
+//        List<DiningTableEntity> dataTables = new DiningTableDAO().getAll();
+//
+//        // Add table name to the set model
+//        Set<String> setMode = new TreeSet<>();
+//        for (DiningTableEntity dataTable : dataTables) {
+//            setMode.add(dataTable.getStatus());
+//        }
+//
+//        // Set only
+//        DefaultComboBoxModel<String> cbMode = new DefaultComboBoxModel<>();
+//        setMode.stream().sorted().forEach(cbMode::addElement);
+//
+//        // Add to comboBox main
+//        comboBoxMain.setModel(cbMode);
+//    }
+    void updateStatusTable(String status) {
+        String tableID = labelTableId.getText();
+        if (tableID == null) {
             return;
         }
 
-        // Chose table name in combobox
-        String newtableName = comboboxTables.getSelectedItem().toString();
-        if ("Chọn bàn".equals(newtableName)) {
-            Dialog.warning(this, "Vui lòng chọn bàn cần chuyển!");
+        if (status == null || status.equals("--Chọn bàn--")) {
             return;
         }
 
-        // Check to see if the dining table is in use
-        String newTableId = new DiningTableDAO().getIdByName(newtableName);
-        if (new OrderDAO().getByTableID(newTableId) != null) {
-            Dialog.warning(this, "Bàn đang có khách dùng! \nVui lòng chọn bàn khác!");
-            return;
-        }
-
-        if (!Dialog.confirm(this, "Xác nhận chuyển bàn!")) {
+        if (!Dialog.confirm(this, "Xác nhận đổi trạng thái thành \"" + status + "\"")) {
             return;
         }
 
         try {
-//            dataOrder.setTableId(newTableId); // setup
-            new OrderDAO().update(dataOrder); // update
-
-            // Upload
-            mainStaff.displayStaffPanels(new DiningTable(mainStaff));
+            DiningTableEntity dataTable = new DiningTableDAO().getByID(tableID);
+            dataTable.setStatus(status);
+            new DiningTableDAO().update(dataTable);
+            Dialog.success(this, "Đổi trạng thái thành công!");
             dispose();
         } catch (Exception e) {
-            Dialog.error(this, "Chuyển bàn thất bại!");
+            Dialog.warning(this, "Đổi trạng thái thất bại!");
         }
-
-    }
-
-    void setupComboboxTables() {
-        // Get all table list
-        List<DiningTableEntity> dataAllTables = new DiningTableDAO().getAll();
-
-        // Create a DefaultComboBoxModel 
-        DefaultComboBoxModel<String> comboBoxTables = new DefaultComboBoxModel<>();
-
-        // Create a Set to store unique area names
-        comboBoxTables.addElement("Chọn bàn");
-
-        // Add table name to the ComboBoxModel
-        for (DiningTableEntity dataTable : dataAllTables) {
-            comboBoxTables.addElement(dataTable.getName());
-        }
-
-        // Set the ComboBoxModel to the comboBox
-        comboboxTables.setModel(comboBoxTables);
     }
 
     public void displayTableInfo(DiningTableEntity diningTable) {
         dataTable = diningTable;
-        labelTableId.setText(diningTable.getTableID());
-        labelTableName.setText(diningTable.getName());
+        cbStatus.setSelectedItem(dataTable.getStatus());
+        labelTableId.setText(dataTable.getTableID());
+        labelTableName.setText(dataTable.getName());
     }
 
     public void displayOrderedOfTable(String tableID) {
         // Reset table
-        DefaultTableModel model = (DefaultTableModel) tableListOrderedDishes.getModel();
+        DefaultTableModel model = (DefaultTableModel) tableOrderedDishes.getModel();
         model.setRowCount(0);
 
         try {
