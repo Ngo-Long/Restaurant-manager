@@ -1,7 +1,7 @@
 package restaurant.dialog;
 
-import restaurant.dao.IngrediantDAO;
-import restaurant.entity.IngrediantEntity;
+import restaurant.dao.GoodsDAO;
+import restaurant.entity.GoodsEntity;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import javax.swing.table.DefaultTableModel;
 public class ChoseIngredient extends javax.swing.JFrame {
 
     private int currentIndex = 0;
-    private List<IngrediantEntity> ingredientList;
+    private List<GoodsEntity> ingredientList;
     private List<String> addedIngredients = new ArrayList<>();
 
     public ChoseIngredient(Map<String, String> userInfo) {
@@ -26,13 +26,13 @@ public class ChoseIngredient extends javax.swing.JFrame {
     }
 
     private void loadDataIntoTable() {
-        ingredientList = new IngrediantDAO().getAll();
+        ingredientList = new GoodsDAO().getAll();
 
         DefaultTableModel model = (DefaultTableModel) tableIngredientList.getModel();
         model.setRowCount(0);
 
         // Load data into the table
-        for (IngrediantEntity ingredientItem : ingredientList) {
+        for (GoodsEntity ingredientItem : ingredientList) {
             Object[] rowData = {
                 ingredientItem.getIngredientID(),
                 ingredientItem.getIngredientName(),
@@ -85,7 +85,7 @@ public class ChoseIngredient extends javax.swing.JFrame {
 
     private void displayIngredientDetails(int selectedRow) {
         if (selectedRow >= 0 && selectedRow < ingredientList.size()) {
-            IngrediantEntity selectedIngredient = ingredientList.get(selectedRow);
+            GoodsEntity selectedIngredient = ingredientList.get(selectedRow);
 
             textIngredientID.setText(selectedIngredient.getIngredientID());
             textIngredientName.setText(selectedIngredient.getIngredientName());

@@ -312,7 +312,7 @@ public final class DiningTable extends javax.swing.JPanel {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
         constraints.gridy = 0;
-        constraints.insets = new Insets(0, 14, 20, 14);
+        constraints.insets = new Insets(0, 14, 14, 14);
         constraints.anchor = GridBagConstraints.NORTHWEST;
 
         int maxColumns = 7; // Số lượng cột tối đa trên mỗi hàng

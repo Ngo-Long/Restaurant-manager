@@ -32,10 +32,10 @@ import restaurant.utils.Auth;
 import restaurant.main.ManagementMode;
 import restaurant.table.TableCustom;
 import restaurant.dao.DiningTableDAO;
-import restaurant.dao.EmployeeDAO;
+import restaurant.dao.GoodsDAO;
 import restaurant.entity.DiningTableEntity;
 import restaurant.dialog.UpdateTableJDialog;
-import restaurant.entity.EmployeeEntity;
+import restaurant.entity.GoodsEntity;
 import static restaurant.utils.Common.addFocusBorder;
 import static restaurant.utils.Common.addPlaceholder;
 import static restaurant.utils.Common.customizeTable;
@@ -61,14 +61,14 @@ public final class Warehouse extends javax.swing.JPanel {
         panelBody = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        comboBoxPositon = new javax.swing.JComboBox<>();
+        cbCategory = new javax.swing.JComboBox<>();
         jPanel1 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         btnExport = new javax.swing.JButton();
         btnImport = new javax.swing.JButton();
         btnAdd = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tableEmployees = new javax.swing.JTable();
+        tableGoods = new javax.swing.JTable();
         btnLast = new javax.swing.JButton();
         btnNext = new javax.swing.JButton();
         btnPrev = new javax.swing.JButton();
@@ -89,12 +89,12 @@ public final class Warehouse extends javax.swing.JPanel {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel1.setText("Chức danh");
+        jLabel1.setText("Phân loại");
 
-        comboBoxPositon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        comboBoxPositon.addActionListener(new java.awt.event.ActionListener() {
+        cbCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbCategory.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboBoxPositonActionPerformed(evt);
+                cbCategoryActionPerformed(evt);
             }
         });
 
@@ -106,7 +106,7 @@ public final class Warehouse extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
-                    .addComponent(comboBoxPositon, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -115,7 +115,7 @@ public final class Warehouse extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addComponent(comboBoxPositon, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
@@ -124,7 +124,7 @@ public final class Warehouse extends javax.swing.JPanel {
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel3.setText("Nguyên liệu");
+        jLabel3.setText("Hàng hóa");
 
         btnExport.setBackground(new java.awt.Color(0, 153, 0));
         btnExport.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -154,7 +154,7 @@ public final class Warehouse extends javax.swing.JPanel {
         btnAdd.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnAdd.setForeground(new java.awt.Color(255, 255, 255));
         btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/plusWhile.png"))); // NOI18N
-        btnAdd.setText("Thêm nguyên liệu");
+        btnAdd.setText("Thêm hàng hóa");
         btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -162,24 +162,24 @@ public final class Warehouse extends javax.swing.JPanel {
             }
         });
 
-        tableEmployees.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        tableEmployees.setModel(new javax.swing.table.DefaultTableModel(
+        tableGoods.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        tableGoods.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Mã nguyên liệu", "Tên nguyên liệu", "Số lượng ban đầu", "Số lượng tối thiểu", "Đơn giá", "Trạng thái"
+                "Mã HH", "Tên hàng hóa", "Đơn giá", "Phân loại", "SL ban đầu", "SL tối thiểu", "Trạng thái"
             }
         ));
-        tableEmployees.setGridColor(new java.awt.Color(255, 255, 255));
-        tableEmployees.setRowHeight(40);
-        jScrollPane1.setViewportView(tableEmployees);
-        if (tableEmployees.getColumnModel().getColumnCount() > 0) {
-            tableEmployees.getColumnModel().getColumn(0).setPreferredWidth(20);
-            tableEmployees.getColumnModel().getColumn(1).setPreferredWidth(120);
+        tableGoods.setGridColor(new java.awt.Color(255, 255, 255));
+        tableGoods.setRowHeight(40);
+        jScrollPane1.setViewportView(tableGoods);
+        if (tableGoods.getColumnModel().getColumnCount() > 0) {
+            tableGoods.getColumnModel().getColumn(0).setPreferredWidth(20);
+            tableGoods.getColumnModel().getColumn(1).setPreferredWidth(120);
         }
 
         btnLast.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -242,7 +242,7 @@ public final class Warehouse extends javax.swing.JPanel {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 489, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 524, Short.MAX_VALUE)
                         .addComponent(btnAdd)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -264,7 +264,7 @@ public final class Warehouse extends javax.swing.JPanel {
                             .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLast)
@@ -272,7 +272,7 @@ public final class Warehouse extends javax.swing.JPanel {
                     .addComponent(btnPrev)
                     .addComponent(btnFirst)
                     .addComponent(jLabel6))
-                .addGap(14, 14, 14))
+                .addGap(10, 10, 10))
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -315,14 +315,14 @@ public final class Warehouse extends javax.swing.JPanel {
         jLabel4.setText("Trạng thái");
 
         radioOn.setSelected(true);
-        radioOn.setText("Đang làm");
+        radioOn.setText("Còn hàng");
         radioOn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radioOnActionPerformed(evt);
             }
         });
 
-        radioOff.setText("Nghỉ việc");
+        radioOff.setText("Hết hàng");
         radioOff.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radioOffActionPerformed(evt);
@@ -406,11 +406,11 @@ public final class Warehouse extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void comboBoxPositonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxPositonActionPerformed
-    }//GEN-LAST:event_comboBoxPositonActionPerformed
+    private void cbCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbCategoryActionPerformed
+    }//GEN-LAST:event_cbCategoryActionPerformed
 
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
-        exportToExcel(tableEmployees, "Kho hàng");
+        exportToExcel(tableGoods, "Kho hàng");
     }//GEN-LAST:event_btnExportActionPerformed
 
     private void btnImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportActionPerformed
@@ -418,7 +418,7 @@ public final class Warehouse extends javax.swing.JPanel {
         MessageFormat footer = new MessageFormat("Trang {0, number, integer}");
 
         try {
-            tableEmployees.print(JTable.PrintMode.FIT_WIDTH, header, footer);
+            tableGoods.print(JTable.PrintMode.FIT_WIDTH, header, footer);
         } catch (PrinterException ex) {
             Logger.getLogger(Warehouse.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -468,7 +468,7 @@ public final class Warehouse extends javax.swing.JPanel {
     private javax.swing.JButton btnPrev;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
-    private javax.swing.JComboBox<String> comboBoxPositon;
+    private javax.swing.JComboBox<String> cbCategory;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -483,14 +483,14 @@ public final class Warehouse extends javax.swing.JPanel {
     private javax.swing.JRadioButton radioAll;
     private javax.swing.JRadioButton radioOff;
     private javax.swing.JRadioButton radioOn;
-    private javax.swing.JTable tableEmployees;
+    private javax.swing.JTable tableGoods;
     private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
     int row = -1;
     int debounceDelay = 500; // milliseconds
     final String PLACEHOLDER = "Tìm theo mã hoặc tên";
-    List<EmployeeEntity> dataEmployees;
+    List<GoodsEntity> dataGoods;
 
     ScheduledFuture<?> scheduledFuture;
     ExecutorService executorService = Executors.newFixedThreadPool(3);
@@ -506,7 +506,7 @@ public final class Warehouse extends javax.swing.JPanel {
 
         // edit table
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
-        customizeTable(tableEmployees, new int[]{}, 30);
+        customizeTable(tableGoods, new int[]{}, 30);
 
         // <--- Setup main --->
         // Load list by search and classify when change
@@ -520,7 +520,7 @@ public final class Warehouse extends javax.swing.JPanel {
 
     void addDataToCombobox() {
         // Get data list
-        List<EmployeeEntity> dataList = new EmployeeDAO().getAll();
+        List<GoodsEntity> dataList = new GoodsDAO().getAll();
 
         // Add into combobox 
         DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
@@ -529,20 +529,20 @@ public final class Warehouse extends javax.swing.JPanel {
         Set<String> areaSet = new HashSet<>();
 
         // Load data into combobox 
-        for (EmployeeEntity dataItem : dataList) {
-            areaSet.add(dataItem.getPosition());
+        for (GoodsEntity dataItem : dataList) {
+            areaSet.add(dataItem.getCategory());
         }
 
         // Add "--Tất cả--" to the beginning of the set
-        comboBoxModel.addElement("-- Tất cả --");
+        comboBoxModel.addElement("--Tất cả--");
 
         // Convert the Set to a sorted array --> Set to the comboBox
         areaSet.stream().sorted().forEach(comboBoxModel::addElement);
-        comboBoxPositon.setModel(comboBoxModel);
+        cbCategory.setModel(comboBoxModel);
     }
 
     void tablesMouseClicked() {
-        tableEmployees.addMouseListener(new MouseAdapter() {
+        tableGoods.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 JTable target = (JTable) e.getSource();
@@ -589,7 +589,7 @@ public final class Warehouse extends javax.swing.JPanel {
         // Attach event textSearch
         textSearch.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate(DocumentEvent e){
+            public void insertUpdate(DocumentEvent e) {
                 loadDataByCriteria();
             }
 
@@ -609,7 +609,7 @@ public final class Warehouse extends javax.swing.JPanel {
             loadDataByCriteria();
         };
 
-        comboBoxPositon.addActionListener(actionListener);
+        cbCategory.addActionListener(actionListener);
         radioOn.addActionListener(actionListener);
         radioOff.addActionListener(actionListener);
         radioAll.addActionListener(actionListener);
@@ -628,39 +628,38 @@ public final class Warehouse extends javax.swing.JPanel {
                     keyword = "";
                 }
 
-                String position = comboBoxPositon.getSelectedItem().toString();
-                if (position.equals("-- Tất cả --")) {
+                String position = cbCategory.getSelectedItem().toString();
+                if (position.equals("--Tất cả--")) {
                     position = "";
                 }
 
                 String selectedRadio = radioOn.isSelected() ? radioOn.getText()
                         : radioOff.isSelected() ? radioOff.getText() : "";
 
-                System.out.println(position);
-                System.out.println(selectedRadio);
-
                 // Get data and load
-                dataEmployees = new EmployeeDAO().searchByCriteria(keyword, keyword, position, selectedRadio);
-                this.fillTable(dataEmployees);
+                dataGoods = new GoodsDAO().searchByCriteria(keyword, keyword, position, selectedRadio);
+//                dataGoods = new GoodsDAO().getAll();
+                this.fillTable(dataGoods);
             });
         }, debounceDelay, TimeUnit.MILLISECONDS);
     }
 
-    public void fillTable(List<EmployeeEntity> dataList) {
+    public void fillTable(List<GoodsEntity> dataList) {
         System.out.println("Đang load dữ liệu từ cơ sở dữ liệu...");
 
         // Display table
-        DefaultTableModel model = (DefaultTableModel) tableEmployees.getModel();
+        DefaultTableModel model = (DefaultTableModel) tableGoods.getModel();
         model.setRowCount(0);
 
         // Load data into the table 
-        for (EmployeeEntity dataItem : dataList) {
+        for (GoodsEntity dataItem : dataList) {
             model.addRow(new Object[]{
-                dataItem.getEmployeeID(),
-                dataItem.getFullName(),
-                dataItem.getGender(),
-                dataItem.getPhone(),
-                dataItem.getPosition(),
+                dataItem.getGoodsID(),
+                dataItem.getGoodsName(),
+                dataItem.getUnitPrice(),
+                dataItem.getCategory(),
+                dataItem.getInitialQuantity(),
+                dataItem.getMinimumQuantity(),
                 dataItem.getStatus()
             });
         }
@@ -674,16 +673,16 @@ public final class Warehouse extends javax.swing.JPanel {
     }
 
     void selectTableRow(int rowIndex) {
-        if (rowIndex >= 0 && rowIndex < tableEmployees.getRowCount()) {
-            tableEmployees.setRowSelectionInterval(rowIndex, rowIndex);
-            tableEmployees.scrollRectToVisible(tableEmployees.getCellRect(rowIndex, 0, true));
+        if (rowIndex >= 0 && rowIndex < tableGoods.getRowCount()) {
+            tableGoods.setRowSelectionInterval(rowIndex, rowIndex);
+            tableGoods.scrollRectToVisible(tableGoods.getCellRect(rowIndex, 0, true));
         }
     }
 
     void directional() {
         boolean edit = (this.row >= 0);
         boolean first = (this.row == 0);
-        boolean last = (this.row == tableEmployees.getRowCount() - 1);
+        boolean last = (this.row == tableGoods.getRowCount() - 1);
 
         btnFirst.setEnabled(!first);
         btnPrev.setEnabled(edit && !first);
@@ -704,14 +703,14 @@ public final class Warehouse extends javax.swing.JPanel {
     }
 
     void next() {
-        if (this.row < tableEmployees.getRowCount() - 1) {
+        if (this.row < tableGoods.getRowCount() - 1) {
             this.row++;
             this.edit();
         }
     }
 
     void last() {
-        this.row = tableEmployees.getRowCount() - 1;
+        this.row = tableGoods.getRowCount() - 1;
         this.edit();
     }
     // end --->

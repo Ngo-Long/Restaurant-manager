@@ -19,7 +19,7 @@ import restaurant.management.Overview;
 import restaurant.management.Employee;
 import restaurant.management.Products;
 import restaurant.management.DiningTable;
-
+import restaurant.management.Warehouse;
 
 public final class ManagementMode extends javax.swing.JFrame {
 
@@ -36,6 +36,7 @@ public final class ManagementMode extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
+        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
         jPanel3 = new javax.swing.JPanel();
         jButton3 = new javax.swing.JButton();
         labelLogo = new javax.swing.JLabel();
@@ -43,6 +44,7 @@ public final class ManagementMode extends javax.swing.JFrame {
         btnTable = new javax.swing.JButton();
         btnProduct = new javax.swing.JButton();
         btnWareHouse = new javax.swing.JButton();
+        btnReceipt = new javax.swing.JButton();
         btnEmployee = new javax.swing.JButton();
         scrollPaneMain = new javax.swing.JScrollPane();
         panelMain = new javax.swing.JPanel();
@@ -60,6 +62,7 @@ public final class ManagementMode extends javax.swing.JFrame {
         menuPay = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
         menuEmployees = new javax.swing.JMenuItem();
+        menuEmployees1 = new javax.swing.JMenuItem();
         menuStatistical = new javax.swing.JMenu();
         menuRevenue = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
@@ -84,6 +87,9 @@ public final class ManagementMode extends javax.swing.JFrame {
 
         jMenu2.setText("Edit");
         jMenuBar1.add(jMenu2);
+
+        jCheckBoxMenuItem1.setSelected(true);
+        jCheckBoxMenuItem1.setText("jCheckBoxMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Hot Noodle");
@@ -148,6 +154,16 @@ public final class ManagementMode extends javax.swing.JFrame {
             }
         });
 
+        btnReceipt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnReceipt.setText("Giao dịch");
+        btnReceipt.setBorder(null);
+        btnReceipt.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnReceipt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReceiptActionPerformed(evt);
+            }
+        });
+
         btnEmployee.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnEmployee.setText("Nhân Viên");
         btnEmployee.setBorder(null);
@@ -165,7 +181,7 @@ public final class ManagementMode extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(labelLogo)
-                .addGap(200, 200, 200)
+                .addGap(180, 180, 180)
                 .addComponent(btnOverview, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(btnTable, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -173,6 +189,8 @@ public final class ManagementMode extends javax.swing.JFrame {
                 .addComponent(btnProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(btnWareHouse, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(btnReceipt, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(btnEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -193,9 +211,11 @@ public final class ManagementMode extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnOverview, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnTable, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnWareHouse, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnWareHouse, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnReceipt, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -307,6 +327,16 @@ public final class ManagementMode extends javax.swing.JFrame {
             }
         });
         menuManager.add(menuEmployees);
+
+        menuEmployees1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
+        menuEmployees1.setText("Kho hàng");
+        menuEmployees1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        menuEmployees1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuEmployees1ActionPerformed(evt);
+            }
+        });
+        menuManager.add(menuEmployees1);
 
         menuBar.add(menuManager);
 
@@ -527,11 +557,20 @@ public final class ManagementMode extends javax.swing.JFrame {
     }//GEN-LAST:event_btnProductActionPerformed
 
     private void btnWareHouseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWareHouseActionPerformed
+        displayManagementPanel(new Warehouse(this));
     }//GEN-LAST:event_btnWareHouseActionPerformed
+
+    private void btnReceiptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiptActionPerformed
+        displayManagementPanel(new Employee(this));
+    }//GEN-LAST:event_btnReceiptActionPerformed
 
     private void btnEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmployeeActionPerformed
         displayManagementPanel(new Employee(this));
     }//GEN-LAST:event_btnEmployeeActionPerformed
+
+    private void menuEmployees1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEmployees1ActionPerformed
+        displayManagementPanel(new Warehouse(this));
+    }//GEN-LAST:event_menuEmployees1ActionPerformed
 
     public static void main(String args[]) {
 
@@ -556,9 +595,11 @@ public final class ManagementMode extends javax.swing.JFrame {
     private javax.swing.JButton btnEmployee;
     private javax.swing.JButton btnOverview;
     private javax.swing.JButton btnProduct;
+    private javax.swing.JButton btnReceipt;
     private javax.swing.JButton btnTable;
     private javax.swing.JButton btnWareHouse;
     private javax.swing.JButton jButton3;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -580,6 +621,7 @@ public final class ManagementMode extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuClients;
     private javax.swing.JMenuItem menuDishes;
     private javax.swing.JMenuItem menuEmployees;
+    private javax.swing.JMenuItem menuEmployees1;
     private javax.swing.JMenuItem menuEnd;
     private javax.swing.JMenuItem menuIngridiants;
     private javax.swing.JMenuItem menuInstruct;
@@ -612,7 +654,8 @@ public final class ManagementMode extends javax.swing.JFrame {
     }
 
     public JButton[] getHeaderButtons() {
-        JButton[] headerButtons = {btnOverview, btnTable, btnProduct, btnWareHouse, btnEmployee, btnWareHouse};
+        JButton[] headerButtons = {btnOverview, btnTable, btnProduct, 
+            btnWareHouse, btnReceipt, btnWareHouse, btnReceipt, btnEmployee};
         return headerButtons;
     }
 
