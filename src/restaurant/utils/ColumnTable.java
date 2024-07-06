@@ -1,37 +1,37 @@
 package restaurant.utils;
 
+import java.awt.Font;
 import java.awt.Color;
-import java.awt.Component;
+import java.util.List;
 import java.awt.Cursor;
+import java.util.Arrays;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
-
-import javax.swing.table.TableColumn;
-import javax.swing.AbstractCellEditor;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
+import javax.swing.BorderFactory;
 import javax.swing.SwingUtilities;
+import javax.swing.DefaultCellEditor;
+import javax.swing.table.TableColumn;
+import javax.swing.AbstractCellEditor;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.DefaultTableCellRenderer;
+
 import restaurant.dao.OrderDetailDAO;
-import restaurant.dialog.HistoryProductDetailJDialog;
 import restaurant.entity.OrderDetailEntity;
 import static restaurant.utils.Common.createButton;
+import restaurant.dialog.HistoryProductDetailJDialog;
 
 public class ColumnTable {
 

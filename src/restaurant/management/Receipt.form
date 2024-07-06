@@ -492,9 +492,9 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="radioAll1" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="radioOff1" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="radioOn1" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="radioAll" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="radioOff" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="radioOn" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
@@ -507,11 +507,11 @@
                       <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                       <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="radioOn1" min="-2" max="-2" attributes="0"/>
+                      <Component id="radioOn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="radioOff1" min="-2" max="-2" attributes="0"/>
+                      <Component id="radioOff" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="radioAll1" min="-2" max="-2" attributes="0"/>
+                      <Component id="radioAll" min="-2" max="-2" attributes="0"/>
                       <EmptySpace pref="12" max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -529,29 +529,29 @@
                 <Property name="text" type="java.lang.String" value="Tr&#x1ea1;ng th&#xe1;i"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JRadioButton" name="radioOn1">
+            <Component class="javax.swing.JRadioButton" name="radioOn">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Phi&#x1ebf;u t&#x1ea1;m"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="radioOn1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="radioOnActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JRadioButton" name="radioOff1">
+            <Component class="javax.swing.JRadioButton" name="radioOff">
               <Properties>
                 <Property name="selected" type="boolean" value="true"/>
                 <Property name="text" type="java.lang.String" value="&#x110;&#xe3; nh&#x1ead;p h&#xe0;ng"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="radioOff1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="radioOffActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JRadioButton" name="radioAll1">
+            <Component class="javax.swing.JRadioButton" name="radioAll">
               <Properties>
                 <Property name="text" type="java.lang.String" value="&#x110;&#xe3; h&#x1ee7;y"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="radioAll1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="radioAllActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

@@ -75,9 +75,9 @@ public final class Receipt extends javax.swing.JPanel {
         textStartDate1 = new com.toedter.calendar.JDateChooser();
         jPanel5 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        radioOn1 = new javax.swing.JRadioButton();
-        radioOff1 = new javax.swing.JRadioButton();
-        radioAll1 = new javax.swing.JRadioButton();
+        radioOn = new javax.swing.JRadioButton();
+        radioOff = new javax.swing.JRadioButton();
+        radioAll = new javax.swing.JRadioButton();
 
         panelBody.setToolTipText("");
 
@@ -302,25 +302,25 @@ public final class Receipt extends javax.swing.JPanel {
         jLabel5.setForeground(new java.awt.Color(51, 51, 51));
         jLabel5.setText("Trạng thái");
 
-        radioOn1.setText("Phiếu tạm");
-        radioOn1.addActionListener(new java.awt.event.ActionListener() {
+        radioOn.setText("Phiếu tạm");
+        radioOn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioOn1ActionPerformed(evt);
+                radioOnActionPerformed(evt);
             }
         });
 
-        radioOff1.setSelected(true);
-        radioOff1.setText("Đã nhập hàng");
-        radioOff1.addActionListener(new java.awt.event.ActionListener() {
+        radioOff.setSelected(true);
+        radioOff.setText("Đã nhập hàng");
+        radioOff.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioOff1ActionPerformed(evt);
+                radioOffActionPerformed(evt);
             }
         });
 
-        radioAll1.setText("Đã hủy");
-        radioAll1.addActionListener(new java.awt.event.ActionListener() {
+        radioAll.setText("Đã hủy");
+        radioAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioAll1ActionPerformed(evt);
+                radioAllActionPerformed(evt);
             }
         });
 
@@ -331,9 +331,9 @@ public final class Receipt extends javax.swing.JPanel {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(radioAll1)
-                    .addComponent(radioOff1)
-                    .addComponent(radioOn1)
+                    .addComponent(radioAll)
+                    .addComponent(radioOff)
+                    .addComponent(radioOn)
                     .addComponent(jLabel5))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -343,11 +343,11 @@ public final class Receipt extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addComponent(jLabel5)
                 .addGap(18, 18, 18)
-                .addComponent(radioOn1)
+                .addComponent(radioOn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(radioOff1)
+                .addComponent(radioOff)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(radioAll1)
+                .addComponent(radioAll)
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
@@ -423,17 +423,17 @@ public final class Receipt extends javax.swing.JPanel {
     private void textSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSearchActionPerformed
     }//GEN-LAST:event_textSearchActionPerformed
 
-    private void radioOn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOn1ActionPerformed
+    private void radioOnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOnActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_radioOn1ActionPerformed
+    }//GEN-LAST:event_radioOnActionPerformed
 
-    private void radioOff1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOff1ActionPerformed
+    private void radioOffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOffActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_radioOff1ActionPerformed
+    }//GEN-LAST:event_radioOffActionPerformed
 
-    private void radioAll1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioAll1ActionPerformed
+    private void radioAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioAllActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_radioAll1ActionPerformed
+    }//GEN-LAST:event_radioAllActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
@@ -455,9 +455,9 @@ public final class Receipt extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panelBody;
-    private javax.swing.JRadioButton radioAll1;
-    private javax.swing.JRadioButton radioOff1;
-    private javax.swing.JRadioButton radioOn1;
+    private javax.swing.JRadioButton radioAll;
+    private javax.swing.JRadioButton radioOff;
+    private javax.swing.JRadioButton radioOn;
     private javax.swing.JTable tableEmployees;
     private javax.swing.JTextField textSearch;
     private com.toedter.calendar.JDateChooser textStartDate;

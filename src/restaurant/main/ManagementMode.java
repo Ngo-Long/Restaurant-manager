@@ -10,16 +10,21 @@ import java.awt.event.MouseAdapter;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.JButton;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.border.LineBorder;
 
 import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
+import restaurant.utils.MenuButton;
+
 import restaurant.management.Overview;
 import restaurant.management.Employee;
 import restaurant.management.Products;
-import restaurant.management.DiningTable;
+import restaurant.management.Supplier;
 import restaurant.management.Warehouse;
+import restaurant.management.DiningTable;
 
 public final class ManagementMode extends javax.swing.JFrame {
 
@@ -37,6 +42,17 @@ public final class ManagementMode extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
+        jMenuBar2 = new javax.swing.JMenuBar();
+        jMenu4 = new javax.swing.JMenu();
+        jMenu5 = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jPopupMenu2 = new javax.swing.JPopupMenu();
+        jPopupMenu3 = new javax.swing.JPopupMenu();
+        jPopupMenu4 = new javax.swing.JPopupMenu();
+        jPopupMenu5 = new javax.swing.JPopupMenu();
+        jPopupMenu6 = new javax.swing.JPopupMenu();
+        jPopupMenu7 = new javax.swing.JPopupMenu();
         jPanel3 = new javax.swing.JPanel();
         jButton3 = new javax.swing.JButton();
         labelLogo = new javax.swing.JLabel();
@@ -46,6 +62,7 @@ public final class ManagementMode extends javax.swing.JFrame {
         btnWareHouse = new javax.swing.JButton();
         btnReceipt = new javax.swing.JButton();
         btnEmployee = new javax.swing.JButton();
+        btnSuppleir = new javax.swing.JButton();
         scrollPaneMain = new javax.swing.JScrollPane();
         panelMain = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
@@ -81,6 +98,8 @@ public final class ManagementMode extends javax.swing.JFrame {
         menuItemManager = new javax.swing.JMenuItem();
         menuItemEmployee = new javax.swing.JMenuItem();
         menuItemWayHome = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        jMenu6 = new javax.swing.JMenu();
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -90,6 +109,16 @@ public final class ManagementMode extends javax.swing.JFrame {
 
         jCheckBoxMenuItem1.setSelected(true);
         jCheckBoxMenuItem1.setText("jCheckBoxMenuItem1");
+
+        jMenu4.setText("File");
+        jMenuBar2.add(jMenu4);
+
+        jMenu5.setText("Edit");
+        jMenuBar2.add(jMenu5);
+
+        jMenuItem2.setText("jMenuItem2");
+
+        jMenuItem3.setText("jMenuItem3");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Hot Noodle");
@@ -125,7 +154,7 @@ public final class ManagementMode extends javax.swing.JFrame {
         });
 
         btnTable.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        btnTable.setText("Bàn Ăn");
+        btnTable.setText("Phòng/Bàn");
         btnTable.setBorder(null);
         btnTable.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnTable.addActionListener(new java.awt.event.ActionListener() {
@@ -145,7 +174,7 @@ public final class ManagementMode extends javax.swing.JFrame {
         });
 
         btnWareHouse.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        btnWareHouse.setText("Kho Hàng");
+        btnWareHouse.setText("Hàng Hóa");
         btnWareHouse.setBorder(null);
         btnWareHouse.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnWareHouse.addActionListener(new java.awt.event.ActionListener() {
@@ -174,6 +203,16 @@ public final class ManagementMode extends javax.swing.JFrame {
             }
         });
 
+        btnSuppleir.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnSuppleir.setText("Đối Tác");
+        btnSuppleir.setBorder(null);
+        btnSuppleir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSuppleir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSuppleirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -181,7 +220,7 @@ public final class ManagementMode extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(labelLogo)
-                .addGap(180, 180, 180)
+                .addGap(124, 124, 124)
                 .addComponent(btnOverview, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(btnTable, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -191,6 +230,8 @@ public final class ManagementMode extends javax.swing.JFrame {
                 .addComponent(btnWareHouse, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(btnReceipt, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(btnSuppleir, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(btnEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -215,7 +256,8 @@ public final class ManagementMode extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnWareHouse, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnReceipt, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnSuppleir, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -447,6 +489,12 @@ public final class ManagementMode extends javax.swing.JFrame {
 
         menuBar.add(menuVaiTro);
 
+        jMenu3.setText("jMenu3");
+        menuBar.add(jMenu3);
+
+        jMenu6.setText("jMenu6");
+        menuBar.add(jMenu6);
+
         setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -572,6 +620,10 @@ public final class ManagementMode extends javax.swing.JFrame {
         displayManagementPanel(new Warehouse(this));
     }//GEN-LAST:event_menuEmployees1ActionPerformed
 
+    private void btnSuppleirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuppleirActionPerformed
+        displayManagementPanel(new Supplier(this));
+    }//GEN-LAST:event_btnSuppleirActionPerformed
+
     public static void main(String args[]) {
 
         try {
@@ -596,16 +648,30 @@ public final class ManagementMode extends javax.swing.JFrame {
     private javax.swing.JButton btnOverview;
     private javax.swing.JButton btnProduct;
     private javax.swing.JButton btnReceipt;
+    private javax.swing.JButton btnSuppleir;
     private javax.swing.JButton btnTable;
     private javax.swing.JButton btnWareHouse;
     private javax.swing.JButton jButton3;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenu jMenu5;
+    private javax.swing.JMenu jMenu6;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPopupMenu jPopupMenu1;
+    private javax.swing.JPopupMenu jPopupMenu2;
+    private javax.swing.JPopupMenu jPopupMenu3;
+    private javax.swing.JPopupMenu jPopupMenu4;
+    private javax.swing.JPopupMenu jPopupMenu5;
+    private javax.swing.JPopupMenu jPopupMenu6;
+    private javax.swing.JPopupMenu jPopupMenu7;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
@@ -644,6 +710,7 @@ public final class ManagementMode extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     JButton selectedButton = btnOverview;
+    private JPopupMenu popupMenu;
 
     void init() {
 //        Common.initClock(labelHouse);
@@ -651,11 +718,45 @@ public final class ManagementMode extends javax.swing.JFrame {
 
         setupHeaderButtons(btnOverview);
         displayManagementPanel(new Overview(this));
+
+        // Tạo dropdown menu cho btnOverview
+        popupMenu = new JPopupMenu();
+        JMenuItem menuItem1 = new JMenuItem("Dropdown Item 1");
+        JMenuItem menuItem2 = new JMenuItem("Dropdown Item 2");
+
+        // Thêm các JMenuItem vào JPopupMenu
+        popupMenu.add(menuItem1);
+        popupMenu.add(menuItem2);
+
+        // Thiết lập sự kiện khi hover vào btnOverview
+        btnOverview.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                showPopupMenu(e);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+//                hidePopupMenu();
+            }
+        });
+    }
+
+    private void showPopupMenu(MouseEvent e) {
+        if (popupMenu != null && btnOverview.isEnabled()) {
+            popupMenu.show(btnOverview, 0, btnOverview.getHeight());
+        }
+    }
+
+    private void hidePopupMenu() {
+        if (popupMenu != null) {
+            popupMenu.setVisible(false);
+        }
     }
 
     public JButton[] getHeaderButtons() {
-        JButton[] headerButtons = {btnOverview, btnTable, btnProduct, 
-            btnWareHouse, btnReceipt, btnWareHouse, btnReceipt, btnEmployee};
+        JButton[] headerButtons = {btnOverview, btnTable, btnProduct,
+            btnWareHouse, btnReceipt, btnWareHouse, btnReceipt, btnEmployee, btnSuppleir};
         return headerButtons;
     }
 

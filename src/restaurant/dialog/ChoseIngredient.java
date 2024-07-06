@@ -34,8 +34,8 @@ public class ChoseIngredient extends javax.swing.JFrame {
         // Load data into the table
         for (GoodsEntity ingredientItem : ingredientList) {
             Object[] rowData = {
-                ingredientItem.getIngredientID(),
-                ingredientItem.getIngredientName(),
+//                ingredientItem.getIngredientID(),
+//                ingredientItem.getIngredientName(),
                 ingredientItem.getUnitPrice()
             };
 
@@ -87,8 +87,8 @@ public class ChoseIngredient extends javax.swing.JFrame {
         if (selectedRow >= 0 && selectedRow < ingredientList.size()) {
             GoodsEntity selectedIngredient = ingredientList.get(selectedRow);
 
-            textIngredientID.setText(selectedIngredient.getIngredientID());
-            textIngredientName.setText(selectedIngredient.getIngredientName());
+//            textIngredientID.setText(selectedIngredient.getIngredientID());
+//            textIngredientName.setText(selectedIngredient.getIngredientName());
         }
     }
 

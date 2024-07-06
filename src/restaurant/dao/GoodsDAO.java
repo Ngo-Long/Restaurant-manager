@@ -24,15 +24,6 @@ public class GoodsDAO extends RestaurantDAO<GoodsEntity, String> {
             + "WHERE ( GoodsID LIKE ? OR [GoodsName] LIKE ? ) "
             + "AND [Category] LIKE ? AND [Status] LIKE ?";
 
-    public List<GoodsEntity> searchByCriteria(String id, String name, String category, String status) {
-        String idTerm = "%" + id + "%";
-        String nameTerm = "%" + name + "%";
-        String categoryTerm = "%" + category + "%";
-        String statusTerm = "%" + status + "%";
-
-        return fetchByQuery(SELECT_BY_CRITERIA, idTerm, nameTerm, categoryTerm, statusTerm);
-    }
-
     @Override
     public void insert(GoodsEntity entity) {
         JDBC.executeUpdate(INSERT_SQL,
@@ -73,6 +64,15 @@ public class GoodsDAO extends RestaurantDAO<GoodsEntity, String> {
     @Override
     public List<GoodsEntity> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
+    }
+
+    public List<GoodsEntity> searchByCriteria(String id, String name, String category, String status) {
+        String idTerm = "%" + id + "%";
+        String nameTerm = "%" + name + "%";
+        String categoryTerm = "%" + category + "%";
+        String statusTerm = "%" + status + "%";
+
+        return fetchByQuery(SELECT_BY_CRITERIA, idTerm, nameTerm, categoryTerm, statusTerm);
     }
 
     public boolean isIdExists(String id) {
