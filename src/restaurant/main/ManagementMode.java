@@ -1,17 +1,30 @@
 package restaurant.main;
 
+import java.awt.AWTEvent;
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.BorderLayout;
+import java.awt.Cursor;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
+import java.util.function.Consumer;
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.border.LineBorder;
 
 import restaurant.utils.Auth;
@@ -25,6 +38,7 @@ import restaurant.management.Products;
 import restaurant.management.Supplier;
 import restaurant.management.Warehouse;
 import restaurant.management.DiningTable;
+import static restaurant.utils.MenuButton.setupMenuButton;
 
 public final class ManagementMode extends javax.swing.JFrame {
 
@@ -63,6 +77,7 @@ public final class ManagementMode extends javax.swing.JFrame {
         btnReceipt = new javax.swing.JButton();
         btnEmployee = new javax.swing.JButton();
         btnSuppleir = new javax.swing.JButton();
+        btnReport = new javax.swing.JButton();
         scrollPaneMain = new javax.swing.JScrollPane();
         panelMain = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
@@ -98,8 +113,6 @@ public final class ManagementMode extends javax.swing.JFrame {
         menuItemManager = new javax.swing.JMenuItem();
         menuItemEmployee = new javax.swing.JMenuItem();
         menuItemWayHome = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
-        jMenu6 = new javax.swing.JMenu();
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -213,6 +226,16 @@ public final class ManagementMode extends javax.swing.JFrame {
             }
         });
 
+        btnReport.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnReport.setText("Báo Cáo");
+        btnReport.setBorder(null);
+        btnReport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReportActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -220,20 +243,22 @@ public final class ManagementMode extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(labelLogo)
-                .addGap(124, 124, 124)
-                .addComponent(btnOverview, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
-                .addComponent(btnTable, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
-                .addComponent(btnProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
-                .addComponent(btnWareHouse, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
-                .addComponent(btnReceipt, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
-                .addComponent(btnSuppleir, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
-                .addComponent(btnEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(115, 115, 115)
+                .addComponent(btnOverview, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(btnTable, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(btnProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(btnWareHouse, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(btnReceipt, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(btnSuppleir, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(btnEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(btnReport, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
@@ -249,15 +274,15 @@ public final class ManagementMode extends javax.swing.JFrame {
                 .addComponent(labelLogo))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnOverview, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnTable, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnOverview, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnWareHouse, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnReceipt, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnSuppleir, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnSuppleir, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnReport, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnTable, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -489,12 +514,6 @@ public final class ManagementMode extends javax.swing.JFrame {
 
         menuBar.add(menuVaiTro);
 
-        jMenu3.setText("jMenu3");
-        menuBar.add(jMenu3);
-
-        jMenu6.setText("jMenu6");
-        menuBar.add(jMenu6);
-
         setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -609,7 +628,7 @@ public final class ManagementMode extends javax.swing.JFrame {
     }//GEN-LAST:event_btnWareHouseActionPerformed
 
     private void btnReceiptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiptActionPerformed
-        displayManagementPanel(new Employee(this));
+        displayManagementPanel(new Warehouse(this));
     }//GEN-LAST:event_btnReceiptActionPerformed
 
     private void btnEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmployeeActionPerformed
@@ -623,6 +642,10 @@ public final class ManagementMode extends javax.swing.JFrame {
     private void btnSuppleirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuppleirActionPerformed
         displayManagementPanel(new Supplier(this));
     }//GEN-LAST:event_btnSuppleirActionPerformed
+
+    private void btnReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportActionPerformed
+        displayManagementPanel(new Supplier(this));
+    }//GEN-LAST:event_btnReportActionPerformed
 
     public static void main(String args[]) {
 
@@ -648,6 +671,7 @@ public final class ManagementMode extends javax.swing.JFrame {
     private javax.swing.JButton btnOverview;
     private javax.swing.JButton btnProduct;
     private javax.swing.JButton btnReceipt;
+    private javax.swing.JButton btnReport;
     private javax.swing.JButton btnSuppleir;
     private javax.swing.JButton btnTable;
     private javax.swing.JButton btnWareHouse;
@@ -655,10 +679,8 @@ public final class ManagementMode extends javax.swing.JFrame {
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
-    private javax.swing.JMenu jMenu6;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JMenuItem jMenuItem1;
@@ -710,53 +732,109 @@ public final class ManagementMode extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     JButton selectedButton = btnOverview;
-    private JPopupMenu popupMenu;
 
     void init() {
+        // Common
 //        Common.initClock(labelHouse);
         Common.customizeScrollBar(scrollPaneMain);
 
+        // Create dropdown menu when hover button
+        String[] menuItemsGoods = {"Danh mục", "Kiểm kho"};
+        setupMenuButton(btnWareHouse, menuItemsGoods, this::menuItemGoodsSelected);
+
+        String[] menuItemsReceipt = {"Hóa đơn", "Nhập hàng"};
+        setupMenuButton(btnReceipt, menuItemsReceipt, this::menuItemReceiptSelected);
+
+        String[] menuItemsPartner = {"Khách hàng", "Nhà cung cấp"};
+        setupMenuButton(btnSuppleir, menuItemsPartner, this::menuItemPartnerSelected);
+
+        String[] menuItemsEmployee = {"Nhân viên", "Lịch làm việc", "Chấm công", "Bảng tính lương"};
+        setupMenuButton(btnEmployee, menuItemsEmployee, this::menuItemEmployeeSelected);
+
+        String[] menuItemsReport = {"Cuối ngày", "Bán hàng", "Hàng hóa",
+            "Khách hàng", "Nhà cung cấp", "Nhân viên", "Tài chính"};
+        setupMenuButton(btnReport, menuItemsReport, this::menuItemReportSelected);
+
+        // Attach event hover button chose. Fisrt button is btnOverview
         setupHeaderButtons(btnOverview);
+
+        // Display UI main
         displayManagementPanel(new Overview(this));
-
-        // Tạo dropdown menu cho btnOverview
-        popupMenu = new JPopupMenu();
-        JMenuItem menuItem1 = new JMenuItem("Dropdown Item 1");
-        JMenuItem menuItem2 = new JMenuItem("Dropdown Item 2");
-
-        // Thêm các JMenuItem vào JPopupMenu
-        popupMenu.add(menuItem1);
-        popupMenu.add(menuItem2);
-
-        // Thiết lập sự kiện khi hover vào btnOverview
-        btnOverview.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                showPopupMenu(e);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-//                hidePopupMenu();
-            }
-        });
     }
 
-    private void showPopupMenu(MouseEvent e) {
-        if (popupMenu != null && btnOverview.isEnabled()) {
-            popupMenu.show(btnOverview, 0, btnOverview.getHeight());
+    // <--- Callback function to handle menu item selection
+    void menuItemGoodsSelected(int index) {
+        switch (index) {
+            case 0:
+            case 1:
+                setupHeaderButtons(btnWareHouse);
+                displayManagementPanel(new Warehouse(this));
+                break;
+            default:
+                break;
         }
     }
 
-    private void hidePopupMenu() {
-        if (popupMenu != null) {
-            popupMenu.setVisible(false);
+    void menuItemReceiptSelected(int index) {
+        switch (index) {
+            case 0:
+            case 1:
+                setupHeaderButtons(btnReceipt);
+                displayManagementPanel(new Warehouse(this));
+                break;
+            default:
+                break;
         }
     }
 
+    void menuItemPartnerSelected(int index) {
+        switch (index) {
+            case 0:
+            case 1:
+                setupHeaderButtons(btnSuppleir);
+                displayManagementPanel(new Supplier(this));
+                break;
+            default:
+                break;
+        }
+    }
+
+    void menuItemEmployeeSelected(int index) {
+        switch (index) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+                setupHeaderButtons(btnEmployee);
+                displayManagementPanel(new Employee(this));
+                break;
+            default:
+                break;
+        }
+    }
+
+    void menuItemReportSelected(int index) {
+        switch (index) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+                setupHeaderButtons(btnReport);
+                displayManagementPanel(new Employee(this));
+                break;
+            default:
+                break;
+        }
+    }
+    // end --->
+
+    // <--- Setup header button list
     public JButton[] getHeaderButtons() {
         JButton[] headerButtons = {btnOverview, btnTable, btnProduct,
-            btnWareHouse, btnReceipt, btnWareHouse, btnReceipt, btnEmployee, btnSuppleir};
+            btnWareHouse, btnReceipt, btnEmployee, btnSuppleir, btnReport};
         return headerButtons;
     }
 
@@ -793,7 +871,9 @@ public final class ManagementMode extends javax.swing.JFrame {
                 setButtonStyle(selectedBtn, new Color(255, 51, 51), Color.WHITE, Font.BOLD);
                 selectedButton = selectedBtn;
             }
+
         }
+
     }
 
     void setButtonStyle(JButton button, Color foregroundColor, Color backgroundColor, int fontWeight) {
@@ -814,8 +894,8 @@ public final class ManagementMode extends javax.swing.JFrame {
                 button.setBackground(Color.WHITE);
             }
         });
-
     }
+    // end --->
 
     public void displayManagementPanel(JPanel panel) {
         panelMain.removeAll();

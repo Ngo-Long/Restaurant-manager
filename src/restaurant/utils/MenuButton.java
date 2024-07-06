@@ -1,57 +1,76 @@
 package restaurant.utils;
 
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.util.function.Consumer;
+
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.BorderFactory;
 
-import java.awt.Dimension;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseAdapter;
+public class MenuButton {
 
-public class MenuButton extends JButton {
+    /**
+     * Sets up a popup menu for a JButton.
+     *
+     * @param button The JButton to attach the popup menu to.
+     * @param list An array of strings representing menu item labels.
+     * @param menuItemHandler A consumer function to handle menu item selection.
+     */
+    public static void setupMenuButton(JButton button, String[] list, Consumer<Integer> menuItemHandler) {
+        // Create popup menu
+        JPopupMenu popupMenu = new JPopupMenu();
+        popupMenu.setBackground(Color.WHITE);
 
-    private JPopupMenu popupMenu;
+        // Create menu items
+        for (int i = 0; i < list.length; i++) {
+            final int index = i; // Make index final for lambda expression
 
-    public MenuButton(String text) {
-        super(text);
-        setPreferredSize(new Dimension(120, 40));
+            // Create menu item and set style
+            JMenuItem menuItem = new JMenuItem(list[i]);
+            setStyleMenuItem(menuItem);
 
-        // Thiết lập sự kiện khi hover vào JButton
-        addMouseListener(new MouseAdapter() {
+            // Add ActionListener to handle menu item click
+            menuItem.addActionListener((ActionEvent e) -> {
+                menuItemHandler.accept(index); // Call the callback function
+            });
+
+            // Add menu item to popup menu
+            popupMenu.add(menuItem);
+        }
+
+        // Set preferred size
+        popupMenu.setPreferredSize(new Dimension(150, popupMenu.getPreferredSize().height));
+        popupMenu.pack(); // Ensure popup menu layout and size are updated
+
+        // Attach event when hover button
+        button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                // Hiển thị JPopupMenu khi hover vào JButton
-                showPopupMenu(e.getX(), e.getY() + getHeight());
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                // Ẩn JPopupMenu khi rời chuột ra khỏi JButton
-                hidePopupMenu();
+                // Show location bottom left
+                popupMenu.show(button, 4, button.getHeight());
             }
         });
     }
 
-    public  void showPopupMenu(int x, int y) {
-        if (popupMenu == null) {
-            popupMenu = new JPopupMenu();
-
-            // Thêm các JMenuItem vào JPopupMenu
-            JMenuItem item1 = new JMenuItem("Menu Item 1");
-            JMenuItem item2 = new JMenuItem("Menu Item 2");
-            JMenuItem item3 = new JMenuItem("Menu Item 3");
-
-            popupMenu.add(item1);
-            popupMenu.add(item2);
-            popupMenu.add(item3);
-        }
-
-        popupMenu.show(this, x, y);
+    /**
+     * Sets the style (background, foreground, font, cursor, border) for a
+     * JMenuItem.
+     *
+     * @param menuItem The JMenuItem to set the style for.
+     */
+    static void setStyleMenuItem(JMenuItem menuItem) {
+        menuItem.setBackground(Color.WHITE);
+        menuItem.setForeground(new Color(11, 11, 11));
+        menuItem.setFont(new Font("Arial", Font.PLAIN, 14));
+        menuItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        menuItem.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 80));
     }
 
-    private void hidePopupMenu() {
-        if (popupMenu != null) {
-            popupMenu.setVisible(false);
-        }
-    }
 }
