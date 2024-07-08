@@ -1,45 +1,39 @@
 package restaurant.management;
 
 import java.awt.Color;
+import java.text.MessageFormat;
 import java.awt.event.MouseEvent;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.WindowAdapter;
-import java.awt.event.ActionListener;
 import java.awt.print.PrinterException;
 
-import java.util.Set;
 import java.util.List;
-import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.swing.JTable;
-import java.text.MessageFormat;
 import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.utils.Auth;
-import restaurant.main.ManagementMode;
+import restaurant.dao.EmployeeDAO;
 import restaurant.table.TableCustom;
 import restaurant.dao.DiningTableDAO;
-import restaurant.dao.EmployeeDAO;
+import restaurant.main.ManagementMode;
+import restaurant.utils.ComboBoxUtils;
+import restaurant.utils.ComponentUtils;
+import restaurant.utils.TextFieldUtils;
+import restaurant.entity.EmployeeEntity;
 import restaurant.entity.DiningTableEntity;
 import restaurant.dialog.UpdateTableJDialog;
-import restaurant.entity.EmployeeEntity;
 import static restaurant.utils.Common.customizeTable;
 import static restaurant.utils.ExportFile.exportToExcel;
 import static restaurant.utils.Common.createButtonGroup;
-import restaurant.utils.TextFieldUtils;
 
 public final class Employee extends javax.swing.JPanel {
 
@@ -60,7 +54,7 @@ public final class Employee extends javax.swing.JPanel {
         panelBody = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        comboBoxPositon = new javax.swing.JComboBox<>();
+        cbPositon = new javax.swing.JComboBox<>();
         jPanel1 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         btnExport = new javax.swing.JButton();
@@ -90,10 +84,10 @@ public final class Employee extends javax.swing.JPanel {
         jLabel1.setForeground(new java.awt.Color(51, 51, 51));
         jLabel1.setText("Chức danh");
 
-        comboBoxPositon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        comboBoxPositon.addActionListener(new java.awt.event.ActionListener() {
+        cbPositon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbPositon.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboBoxPositonActionPerformed(evt);
+                cbPositonActionPerformed(evt);
             }
         });
 
@@ -105,7 +99,7 @@ public final class Employee extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
-                    .addComponent(comboBoxPositon, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbPositon, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -114,7 +108,7 @@ public final class Employee extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addComponent(comboBoxPositon, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cbPositon, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
@@ -257,21 +251,21 @@ public final class Employee extends javax.swing.JPanel {
                         .addContainerGap()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
+                        .addGap(10, 10, 10)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLast)
                     .addComponent(btnNext)
                     .addComponent(btnPrev)
                     .addComponent(btnFirst)
                     .addComponent(jLabel6))
-                .addGap(14, 14, 14))
+                .addGap(10, 10, 10))
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -405,8 +399,8 @@ public final class Employee extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void comboBoxPositonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxPositonActionPerformed
-    }//GEN-LAST:event_comboBoxPositonActionPerformed
+    private void cbPositonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPositonActionPerformed
+    }//GEN-LAST:event_cbPositonActionPerformed
 
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
         exportToExcel(tableEmployees, "Bàn ăn");
@@ -467,7 +461,7 @@ public final class Employee extends javax.swing.JPanel {
     private javax.swing.JButton btnPrev;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
-    private javax.swing.JComboBox<String> comboBoxPositon;
+    private javax.swing.JComboBox<String> cbPositon;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -487,12 +481,13 @@ public final class Employee extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     int row = -1;
-    int debounceDelay = 500; // milliseconds
-    final String PLACEHOLDER = "Tìm theo mã hoặc tên";
+    final int DEBOUNCE_DELAY_LOAD = 300;
+    final String PLACEHOLDER_STATUS = "--Tất cả--";
+    final String PLACEHOLDER_SEARCH = "Tìm theo mã hoặc tên";
     List<EmployeeEntity> dataEmployees;
+    List<EmployeeEntity> dataAll = new EmployeeDAO().getAll();
 
     ScheduledFuture<?> scheduledFuture;
-    ExecutorService executorService = Executors.newFixedThreadPool(3);
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     void init() {
@@ -500,7 +495,7 @@ public final class Employee extends javax.swing.JPanel {
         createButtonGroup(radioOn, radioOff, radioAll);
 
         // edit field text
-        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER);
+        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
         TextFieldUtils.addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
 
         // edit table
@@ -508,42 +503,32 @@ public final class Employee extends javax.swing.JPanel {
         customizeTable(tableEmployees, new int[]{}, 30);
 
         // <--- Setup main --->
-        // setup combobox
-        setupMultipleCombobox();
+        // handle click table show dialog
+        attachRowClickListener(
+                tableEmployees,
+                () -> openUpdateDialog("Cập nhật nhân viên", false)
+        );
 
-        // Load list by search and classify when change
-        initEventHandlers();
-        loadDataByCriteria();
+        // add data to combobox
+        ComboBoxUtils.addDataToComboBox(
+                cbPositon,
+                dataAll,
+                EmployeeEntity::getPosition,
+                PLACEHOLDER_STATUS
+        );
 
-        // handle click table
-        tablesMouseClicked();
+        // load list by search and classify when change
+        ComponentUtils.addListeners(
+                textSearch,
+                this::loadData,
+                cbPositon, radioOn, radioOff, radioAll
+        );
+        this.loadData();
     }
 
-    public void setupMultipleCombobox() {
-        // Get data list
-        List<EmployeeEntity> dataList = new EmployeeDAO().getAll();
-
-        // Add into combobox 
-        DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
-
-        // Use TreeSet to automatically sort and remove duplicate elements
-        Set<String> areaSet = new HashSet<>();
-
-        // Load data into combobox 
-        for (EmployeeEntity dataItem : dataList) {
-            areaSet.add(dataItem.getPosition());
-        }
-
-        // Add "--Tất cả--" to the beginning of the set
-        comboBoxModel.addElement("-- Tất cả --");
-
-        // Convert the Set to a sorted array --> Set to the comboBox
-        areaSet.stream().sorted().forEach(comboBoxModel::addElement);
-        comboBoxPositon.setModel(comboBoxModel);
-    }
-
-    void tablesMouseClicked() {
-        tableEmployees.addMouseListener(new MouseAdapter() {
+    // handle click row show dialog
+    void attachRowClickListener(JTable tableMain, Runnable rowClickAction) {
+        tableMain.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 JTable target = (JTable) e.getSource();
@@ -552,12 +537,15 @@ public final class Employee extends javax.swing.JPanel {
                     return;
                 }
 
-                // Lấy dữ liệu từ hàng được chọn
+                // Get data from row
                 String id = (String) target.getValueAt(row, 0);
-                DiningTableEntity table = new DiningTableDAO().getByID(id);
+                EmployeeEntity employee = new EmployeeDAO().getByID(id);
 
-                Auth.table = table;
-                openUpdateDialog("Cập nhật phòng/bàn", false);
+                // Save data to auth
+                Auth.user = employee;
+
+                // Perform the action
+                rowClickAction.run();
             }
         });
     }
@@ -577,46 +565,25 @@ public final class Employee extends javax.swing.JPanel {
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
-                loadDataByCriteria();
-                setupMultipleCombobox();
+                // Reset data
+                loadData();
+
+                // Reset combobox
+                ComboBoxUtils.addDataToComboBox(
+                        cbPositon,
+                        dataAll,
+                        EmployeeEntity::getPosition,
+                        PLACEHOLDER_STATUS
+                );
             }
         });
 
         dialog.setVisible(true);
     }
+    // end --->
 
     // <--- Load data
-    void initEventHandlers() {
-        // Attach event textSearch
-        textSearch.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-        });
-
-        // Attach event comboBoxArea, radioOn, radioOff, radioAll
-        ActionListener actionListener = (ActionEvent e) -> {
-            loadDataByCriteria();
-        };
-
-        comboBoxPositon.addActionListener(actionListener);
-        radioOn.addActionListener(actionListener);
-        radioOff.addActionListener(actionListener);
-        radioAll.addActionListener(actionListener);
-    }
-
-    public void loadDataByCriteria() {
+    void loadData() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
@@ -625,29 +592,26 @@ public final class Employee extends javax.swing.JPanel {
             SwingUtilities.invokeLater(() -> {
                 // Get info criterias
                 String keyword = textSearch.getText().trim();
-                if (keyword.equals(PLACEHOLDER)) {
+                if (keyword.equals(PLACEHOLDER_SEARCH)) {
                     keyword = "";
                 }
 
-                String position = comboBoxPositon.getSelectedItem().toString();
-                if (position.equals("-- Tất cả --")) {
+                String position = cbPositon.getSelectedItem().toString();
+                if (position.equals(PLACEHOLDER_STATUS)) {
                     position = "";
                 }
 
                 String selectedRadio = radioOn.isSelected() ? radioOn.getText()
                         : radioOff.isSelected() ? radioOff.getText() : "";
-                
-                System.out.println(position);
-                System.out.println(selectedRadio);
 
                 // Get data and load
                 dataEmployees = new EmployeeDAO().searchByCriteria(keyword, keyword, position, selectedRadio);
                 this.fillTable(dataEmployees);
             });
-        }, debounceDelay, TimeUnit.MILLISECONDS);
+        }, DEBOUNCE_DELAY_LOAD, TimeUnit.MILLISECONDS);
     }
 
-    public void fillTable(List<EmployeeEntity> dataList) {
+    void fillTable(List<EmployeeEntity> dataList) {
         System.out.println("Đang load dữ liệu từ cơ sở dữ liệu...");
 
         // Display table

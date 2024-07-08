@@ -3,29 +3,22 @@ package restaurant.management;
 import java.awt.Color;
 import java.text.MessageFormat;
 import java.awt.event.MouseEvent;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.WindowAdapter;
-import java.awt.event.ActionListener;
 import java.awt.print.PrinterException;
 
 import java.util.List;
+import restaurant.utils.Common;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.swing.JTable;
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.utils.Auth;
@@ -33,13 +26,13 @@ import restaurant.dao.SupplierDAO;
 import restaurant.table.TableCustom;
 import restaurant.dao.DiningTableDAO;
 import restaurant.main.ManagementMode;
+import restaurant.utils.ComboBoxUtils;
+import restaurant.utils.TextFieldUtils;
+import restaurant.utils.ComponentUtils;
 import restaurant.entity.SupplierEntity;
 import restaurant.entity.DiningTableEntity;
 import restaurant.dialog.UpdateTableJDialog;
-import static restaurant.utils.Common.customizeTable;
 import static restaurant.utils.ExportFile.exportToExcel;
-import static restaurant.utils.Common.createButtonGroup;
-import restaurant.utils.TextFieldUtils;
 
 public final class Supplier extends javax.swing.JPanel {
 
@@ -236,7 +229,7 @@ public final class Supplier extends javax.swing.JPanel {
                         .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnLast, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 580, Short.MAX_VALUE)
                         .addComponent(jLabel6))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -257,14 +250,14 @@ public final class Supplier extends javax.swing.JPanel {
                         .addContainerGap()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
+                        .addGap(10, 10, 10)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLast)
                     .addComponent(btnNext)
@@ -487,43 +480,52 @@ public final class Supplier extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     int row = -1;
-    int debounceDelay = 500; // milliseconds
-    final String PLACEHOLDER = "Tìm theo mã, tên, điện thoại";
-    List<SupplierEntity> dataSuppliers;
+    final int DEBOUNCE_DELAY_LOAD = 300;
+    final String PLACEHOLDER_STATUS = "--Tất cả--";
+    final String PLACEHOLDER_SEARCH = "Tìm theo mã, tên, điện thoại";
+    List<SupplierEntity> dataAll = new SupplierDAO().getAll();
 
     ScheduledFuture<?> scheduledFuture;
-    ExecutorService executorService = Executors.newFixedThreadPool(3);
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     void init() {
         // <--- Fuction common from file common --->
-        createButtonGroup(radioOn, radioOff, radioAll);
+        Common.createButtonGroup(radioOn, radioOff, radioAll);
 
         // edit field text
-        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER);
+        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
         TextFieldUtils.addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
 
         // edit table
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
-        customizeTable(tableGoods, new int[]{}, 30);
+        Common.customizeTable(tableGoods, new int[]{}, 30);
 
         // <--- Setup main --->
-        // Attach event action listen when change
-        initEventHandlers(textSearch, cbCategory);
-        this.loadDataByCriteria();
+        // handle click table show dialog
+        attachRowClickListener(
+                tableGoods,
+                () -> openUpdateDialog("Cập nhật nhà cung cấp", false)
+        );
 
-        // handle click table
-        tablesMouseClicked(tableGoods);
-        addDataToCombobox(cbCategory);
+        // add data to combobox
+        ComboBoxUtils.addDataToComboBox(
+                cbCategory,
+                dataAll,
+                SupplierEntity::getStatus,
+                PLACEHOLDER_STATUS
+        );
+
+        // load list by search and classify when change
+        ComponentUtils.addListeners(
+                textSearch,
+                this::loadData,
+                cbCategory, radioOn, radioOff, radioAll
+        );
+        this.loadData();
     }
 
-    void addDataToCombobox(JComboBox cbBoxMain) {
-        DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
-        comboBoxModel.addElement("--Tất cả--");
-        cbBoxMain.setModel(comboBoxModel);
-    }
-
-    void tablesMouseClicked(JTable tableMain) {
+    // <--- Handle click show dialog
+    void attachRowClickListener(JTable tableMain, Runnable rowClickAction) {
         tableMain.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -533,12 +535,15 @@ public final class Supplier extends javax.swing.JPanel {
                     return;
                 }
 
-                // Lấy dữ liệu từ hàng được chọn
+                // Get data from row
                 String id = (String) target.getValueAt(row, 0);
                 DiningTableEntity table = new DiningTableDAO().getByID(id);
 
+                // Save data to auth
                 Auth.table = table;
-                openUpdateDialog("Cập nhật nhà cung cấp", false);
+
+                // Perform the action
+                rowClickAction.run();
             }
         });
     }
@@ -558,46 +563,25 @@ public final class Supplier extends javax.swing.JPanel {
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
-                loadDataByCriteria();
-                addDataToCombobox(cbCategory);
+                // reset data
+                loadData();
+
+                // reset combobox
+                ComboBoxUtils.addDataToComboBox(
+                        cbCategory,
+                        dataAll,
+                        SupplierEntity::getStatus,
+                        PLACEHOLDER_STATUS
+                );
             }
         });
 
         dialog.setVisible(true);
     }
+    // end --->
 
     // <--- Load data
-    void initEventHandlers(JTextField keyword, JComboBox comboBox) {
-        // Attach event keyword
-        keyword.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-        });
-
-        // Attach event comboBoxArea, radioOn, radioOff, radioAll
-        ActionListener actionListener = (ActionEvent e) -> {
-            loadDataByCriteria();
-        };
-
-        comboBox.addActionListener(actionListener);
-        radioOn.addActionListener(actionListener);
-        radioOff.addActionListener(actionListener);
-        radioAll.addActionListener(actionListener);
-    }
-
-    public void loadDataByCriteria() {
+    void loadData() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
@@ -606,12 +590,12 @@ public final class Supplier extends javax.swing.JPanel {
             SwingUtilities.invokeLater(() -> {
                 // Get info criterias
                 String keyword = textSearch.getText().trim();
-                if (keyword.equals(PLACEHOLDER)) {
+                if (keyword.equals(PLACEHOLDER_SEARCH)) {
                     keyword = "";
                 }
 
                 String position = cbCategory.getSelectedItem().toString();
-                if (position.equals("--Tất cả--")) {
+                if (position.equals(PLACEHOLDER_STATUS)) {
                     position = "";
                 }
 
@@ -619,14 +603,15 @@ public final class Supplier extends javax.swing.JPanel {
                         : radioOff.isSelected() ? radioOff.getText() : "";
 
                 // Get data and load
-                dataSuppliers  = new SupplierDAO().searchByCriteria(keyword, keyword, keyword, selectedRadio);
-                this.fillTable(dataSuppliers);
+                List<SupplierEntity> dataList
+                        = new SupplierDAO().searchByCriteria(keyword, keyword, keyword, selectedRadio);
+                this.fillTable(dataList);
             });
-        }, debounceDelay, TimeUnit.MILLISECONDS);
+        }, DEBOUNCE_DELAY_LOAD, TimeUnit.MILLISECONDS);
     }
 
-    public void fillTable(List<SupplierEntity> dataList) {
-        System.out.println("Đang load dữ liệu từ cơ sở dữ liệu...");
+    void fillTable(List<SupplierEntity> dataList) {
+        System.out.println("Đang load dữ liệu nhà cung cấp từ cơ sở dữ liệu...");
 
         // Display table
         DefaultTableModel model = (DefaultTableModel) tableGoods.getModel();

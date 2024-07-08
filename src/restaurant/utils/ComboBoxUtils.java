@@ -22,20 +22,22 @@ public class ComboBoxUtils {
      * Populates the specified JComboBox with data extracted from the provided
      * list using the given property extractor.
      *
+     * @param <T> the type of objects in the dataList
      * @param comboBox the JComboBox to populate
-     * @param dataList the list of ProductEntity objects
-     * @param propertyExtractor a function to extract the property value from a
-     * ProductEntity
+     * @param dataList the list of objects to extract data from
+     * @param propertyExtractor a function to extract the property value from
+     * each object
      * @param placeholder the placeholder text to add as the first item in the
      * combo box
      */
-    public static void addDataToComboBox(JComboBox comboBox, List<ProductEntity> dataList, Function<ProductEntity, String> propertyExtractor, String placeholder) {
+    public static <T> void addDataToComboBox(JComboBox comboBox, List<T> dataList,
+            Function<T, String> propertyExtractor, String placeholder) {
         // Add into combobox 
         DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
         Set<String> uniqueValues = new HashSet<>();
 
         // Extract and collect unique property values
-        for (ProductEntity dataItem : dataList) {
+        for (T dataItem : dataList) {
             uniqueValues.add(propertyExtractor.apply(dataItem));
         }
 

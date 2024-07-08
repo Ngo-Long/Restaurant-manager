@@ -1,43 +1,36 @@
 package restaurant.management;
 
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import java.util.Set;
 import java.util.List;
-import java.util.HashSet;
+import java.util.Date;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
 
+import java.awt.Color;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.stream.Collectors;
 import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
-import restaurant.main.ManagementMode;
-import restaurant.table.TableCustom;
-import restaurant.dao.DiningTableDAO;
-import restaurant.dao.EmployeeDAO;
-import restaurant.dao.InvoiceDAO;
-import restaurant.dialog.HistoryInvoiceDetailJDialog;
-import restaurant.entity.DiningTableEntity;
-import restaurant.entity.EmployeeEntity;
-import restaurant.entity.InvoiceEntity;
-import restaurant.utils.ColumnTable;
 import restaurant.utils.Common;
-import static restaurant.utils.ExportFile.exportToExcel;
+import restaurant.utils.ColumnTable;
+import restaurant.utils.ComboBoxUtils;
+import restaurant.utils.ComponentUtils;
 import restaurant.utils.TextFieldUtils;
+
+import restaurant.dao.InvoiceDAO;
+import restaurant.dao.EmployeeDAO;
+import restaurant.dao.DiningTableDAO;
+import restaurant.entity.InvoiceEntity;
+import restaurant.entity.EmployeeEntity;
+import restaurant.entity.DiningTableEntity;
+
+import restaurant.table.TableCustom;
+import restaurant.main.ManagementMode;
+import restaurant.dialog.HistoryInvoiceDetailJDialog;
+import static restaurant.utils.ExportFile.exportToExcel;
 
 public final class Invoice extends javax.swing.JPanel {
 
@@ -91,7 +84,7 @@ public final class Invoice extends javax.swing.JPanel {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel1.setText("Thu ngân");
+        jLabel1.setText("Trạng thái");
 
         cbEmployees.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cbEmployees.addActionListener(new java.awt.event.ActionListener() {
@@ -543,8 +536,11 @@ public final class Invoice extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     int row = -1;
-    final String PLACEHOLDER = "Tìm theo mã hóa đơn";
-    List<InvoiceEntity> dataInvoices;
+    final int DEBOUNCE_DELAY_LOAD = 300; // milliseconds
+    final String PLACEHOLDER_STATUS = "--Trạng thái--";
+    final String PLACEHOLDER_SEARCH = "Tìm theo mã hóa đơn";
+    List<InvoiceEntity> dataAll = new InvoiceDAO().getAll();
+
     ScheduledFuture<?> scheduledFuture;
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
@@ -553,25 +549,45 @@ public final class Invoice extends javax.swing.JPanel {
         Common.createButtonGroup(radioOn, radioOff, radioAll);
 
         // edit field text
-        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER);
+        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
         TextFieldUtils.addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
 
         // edit table
         TableCustom.apply(jScrollPane4, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableInvoices, new int[]{}, 40);
-        ColumnTable.addDetailButtonColumn(tableInvoices, 6, this::handleInvoiceClickButton);
 
         // <--- Setup main --->
-        // add data to combobox
-        List<InvoiceEntity> dataList = new InvoiceDAO().getAll();
-        addDataToCombobox(cbEmployees, dataList);
-
-        // Set today on JDateChooser
+        // set today on JDateChooser
         textEndDate.setDate(new Date());
         textStartDate.setDate(new Date());
 
-        // Load list by search and classify when change
-        initEventHandlers();
+        // add button cell column table
+        ColumnTable.addDetailButtonColumn(
+                tableInvoices,
+                6,
+                this::handleInvoiceClickButton
+        );
+
+        // add data to combobox
+        ComboBoxUtils.addDataToComboBox(
+                cbEmployees,
+                dataAll,
+                InvoiceEntity::getStatus,
+                PLACEHOLDER_STATUS
+        );
+
+        // load list by search and classify when change
+        ComponentUtils.addListeners(
+                textSearch,
+                this::loadData,
+                cbEmployees, radioOn, radioOff, radioAll
+        );
+        ComponentUtils.addDateListeners(
+                textStartDate,
+                textEndDate,
+                this::loadData
+        );
+
         this.loadData();
     }
 
@@ -592,72 +608,6 @@ public final class Invoice extends javax.swing.JPanel {
     }
 
     // <--- Load data
-    void addDataToCombobox(JComboBox cbBox, List<InvoiceEntity> dataList) {
-        // Create a modal 
-        DefaultComboBoxModel<String> modalStatus = new DefaultComboBoxModel<>();
-        modalStatus.addElement("--Trạng thái--");
-
-        DefaultComboBoxModel<String> modalPaymentMethod = new DefaultComboBoxModel<>();
-        modalPaymentMethod.addElement("--PP thanh toán--");
-
-        // Set only 
-        Set<String> setStatus = new HashSet<>();
-        for (InvoiceEntity dataItem : dataList) {
-            if (!"Chờ thanh toán".equals(dataItem.getStatus())) {
-                setStatus.add(dataItem.getStatus());
-            }
-        }
-
-        // Convert the Set to an array
-        String[] statusList = setStatus.toArray(new String[0]);
-        for (String statusItem : statusList) {
-            modalStatus.addElement(statusItem);
-        }
-
-        // Set to the comboBox
-        cbBox.setModel(modalStatus);
-    }
-
-    void initEventHandlers() {
-        // Attach event textSearch
-        textSearch.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                loadData();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                loadData();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                loadData();
-            }
-        });
-
-        // Attach event cbEmployees, radioOn, radioOff, radioAll
-        ActionListener actionListener = (ActionEvent e) -> {
-            loadData();
-        };
-
-        cbEmployees.addActionListener(actionListener);
-        radioOn.addActionListener(actionListener);
-        radioOff.addActionListener(actionListener);
-        radioAll.addActionListener(actionListener);
-
-        // Use PropertyChangeListener for JDateChooser
-        PropertyChangeListener dateChangeListener = (PropertyChangeEvent evt) -> {
-            if ("date".equals(evt.getPropertyName())) {
-                loadData();
-            }
-        };
-
-        textStartDate.getDateEditor().addPropertyChangeListener(dateChangeListener);
-        textEndDate.getDateEditor().addPropertyChangeListener(dateChangeListener);
-    }
-
     void loadData() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
@@ -666,11 +616,11 @@ public final class Invoice extends javax.swing.JPanel {
         scheduledFuture = scheduledExecutorService.schedule(() -> {
             SwingUtilities.invokeLater(() -> {
                 // Get search text
-                String keyword = TextFieldUtils.getRealText(textSearch, PLACEHOLDER).trim();
+                String keyword = TextFieldUtils.getRealText(textSearch, PLACEHOLDER_SEARCH).trim();
 
                 // Get category
                 String selectedEmployee = (String) cbEmployees.getSelectedItem();
-                if (selectedEmployee.equals("--Trạng thái--")) {
+                if (selectedEmployee.equals(PLACEHOLDER_STATUS)) {
                     selectedEmployee = "";
                 }
 
@@ -684,10 +634,11 @@ public final class Invoice extends javax.swing.JPanel {
                         : radioOff.isSelected() ? radioOff.getText() : "";
 
                 // Get data and display
-                dataInvoices = new InvoiceDAO().searchByCriteria(startDate, endDate, keyword, selectedStatus);
-                this.fillTable(dataInvoices);
+                List<InvoiceEntity> dataList
+                        = new InvoiceDAO().searchByCriteria(startDate, endDate, keyword, selectedStatus);
+                this.fillTable(dataList);
             });
-        }, 200, TimeUnit.MILLISECONDS);
+        }, DEBOUNCE_DELAY_LOAD, TimeUnit.MILLISECONDS);
     }
 
     void fillTable(List<InvoiceEntity> dataList) {
@@ -699,7 +650,7 @@ public final class Invoice extends javax.swing.JPanel {
             model.setRowCount(0);
 
             // Sắp xếp theo thời gian kết thúc từ gần nhất
-            dataInvoices.sort(Comparator.comparing(InvoiceEntity::getPaymentTime).reversed());
+            dataList.sort(Comparator.comparing(InvoiceEntity::getPaymentTime).reversed());
 
             String tableNamesStr;
 

@@ -1,16 +1,20 @@
 package restaurant.management;
 
 import java.awt.Color;
+import java.text.MessageFormat;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.ActionListener;
+import java.awt.print.PrinterException;
 
 import java.util.Set;
 import java.util.List;
 import java.util.HashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
@@ -18,6 +22,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.swing.JTable;
+import javax.swing.JComboBox;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.DefaultComboBoxModel;
@@ -25,17 +30,16 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.utils.Auth;
-import restaurant.main.ManagementMode;
+import restaurant.utils.Common;
+import restaurant.dao.ProductDAO;
 import restaurant.table.TableCustom;
-import restaurant.dao.DiningTableDAO;
-import restaurant.dao.EmployeeDAO;
-import restaurant.entity.DiningTableEntity;
-import restaurant.dialog.UpdateTableJDialog;
-import restaurant.entity.EmployeeEntity;
-import static restaurant.utils.Common.customizeTable;
-import static restaurant.utils.ExportFile.exportToExcel;
-import static restaurant.utils.Common.createButtonGroup;
+import restaurant.main.ManagementMode;
 import restaurant.utils.TextFieldUtils;
+import restaurant.entity.ProductEntity;
+import restaurant.dialog.UpdateProductJDialog;
+import static restaurant.utils.Common.customizeTable;
+import static restaurant.utils.Common.createButtonGroup;
+import static restaurant.utils.ExportFile.exportToExcel;
 
 public final class Receipt extends javax.swing.JPanel {
 
@@ -204,20 +208,20 @@ public final class Receipt extends javax.swing.JPanel {
                         .addContainerGap()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
+                        .addGap(10, 10, 10)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLast)
                     .addComponent(btnNext)
                     .addComponent(btnPrev)
                     .addComponent(btnFirst)
                     .addComponent(jLabel6))
-                .addGap(14, 14, 14))
+                .addGap(10, 10, 10))
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -464,9 +468,10 @@ public final class Receipt extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     int row = -1;
-    int debounceDelay = 500; // milliseconds
-    final String PLACEHOLDER = "Tìm theo mã hoặc tên";
-    List<EmployeeEntity> dataEmployees;
+    final int DEBOUNCE_DELAY_LOAD = 300; // milliseconds
+    final String PLACEHOLDER_STATUS = "--Trạng thái--";
+    final String PLACEHOLDER_SEARCH = "Tìm theo mã hóa đơn";
+    List<InvoiceEntity> dataAll = new InvoiceDAO().getAll();
 
     ScheduledFuture<?> scheduledFuture;
     ExecutorService executorService = Executors.newFixedThreadPool(3);
@@ -477,7 +482,7 @@ public final class Receipt extends javax.swing.JPanel {
         createButtonGroup(radioOn, radioOff, radioAll);
 
         // edit field text
-        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER);
+        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
         TextFieldUtils.addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
 
         // edit table
@@ -492,28 +497,6 @@ public final class Receipt extends javax.swing.JPanel {
         // handle click table
         tablesMouseClicked();
         addDataToCombobox();
-    }
-
-    void addDataToCombobox() {
-        // Get data list
-        List<EmployeeEntity> dataList = new EmployeeDAO().getAll();
-
-        // Add into combobox 
-        DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
-
-        // Use TreeSet to automatically sort and remove duplicate elements
-        Set<String> areaSet = new HashSet<>();
-
-        // Load data into combobox 
-        for (EmployeeEntity dataItem : dataList) {
-            areaSet.add(dataItem.getPosition());
-        }
-
-        // Add "--Tất cả--" to the beginning of the set
-        comboBoxModel.addElement("-- Tất cả --");
-
-        // Convert the Set to a sorted array --> Set to the comboBox
-        areaSet.stream().sorted().forEach(comboBoxModel::addElement);
     }
 
     void tablesMouseClicked() {
@@ -560,36 +543,7 @@ public final class Receipt extends javax.swing.JPanel {
     }
 
     // <--- Load data
-    void initEventHandlers() {
-        // Attach event textSearch
-        textSearch.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-        });
-
-        // Attach event comboBoxArea, radioOn, radioOff, radioAll
-        ActionListener actionListener = (ActionEvent e) -> {
-            loadDataByCriteria();
-        };
-
-        radioOn.addActionListener(actionListener);
-        radioOff.addActionListener(actionListener);
-        radioAll.addActionListener(actionListener);
-    }
-
-    public void loadDataByCriteria() {
+    void loadDataByCriteria() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
@@ -598,19 +552,18 @@ public final class Receipt extends javax.swing.JPanel {
             SwingUtilities.invokeLater(() -> {
                 // Get info criterias
                 String keyword = textSearch.getText().trim();
-                if (keyword.equals(PLACEHOLDER)) {
+                if (keyword.equals(PLACEHOLDER_STATUS)) {
                     keyword = "";
                 }
 
                 String selectedRadio = radioOn.isSelected() ? radioOn.getText()
                         : radioOff.isSelected() ? radioOff.getText() : "";
 
-
                 // Get data and load
-//                dataEmployees = new EmployeeDAO().searchByCriteria(keyword, keyword, position, selectedRadio);
+                dataEmployees = new EmployeeDAO().searchByCriteria(keyword, keyword, position, selectedRadio);
                 this.fillTable(dataEmployees);
             });
-        }, debounceDelay, TimeUnit.MILLISECONDS);
+        }, DEBOUNCE_DELAY_LOAD, TimeUnit.MILLISECONDS);
     }
 
     public void fillTable(List<EmployeeEntity> dataList) {

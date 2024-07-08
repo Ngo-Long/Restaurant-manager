@@ -384,7 +384,8 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         }
 
         // Setup model
-        setModel();
+        DiningTableEntity table = Auth.table;
+        setModel(table);
     }
 
     public void setIsEditable(boolean editable) {
@@ -438,8 +439,7 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         }
     }
 
-    void setModel() {
-        DiningTableEntity table = Auth.table;
+    void setModel(DiningTableEntity table) {
         if (table == null) {
             return;
         }

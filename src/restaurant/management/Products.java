@@ -1,18 +1,14 @@
 package restaurant.management;
 
-import java.text.MessageFormat;
 import java.awt.Color;
+import java.text.MessageFormat;
 import java.awt.event.MouseEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.print.PrinterException;
 
-import java.util.Set;
 import java.util.List;
-import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.concurrent.TimeUnit;
@@ -22,24 +18,20 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.swing.JTable;
-import javax.swing.event.DocumentEvent;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.dao.ProductDAO;
-import restaurant.main.ManagementMode;
 import restaurant.table.TableCustom;
-import restaurant.entity.ProductEntity;
-import restaurant.dialog.UpdateProductJDialog;
-import static restaurant.utils.Common.customizeTable;
-import static restaurant.utils.Common.createButtonGroup;
-import static restaurant.utils.ExportFile.exportToExcel;
+import restaurant.main.ManagementMode;
+import restaurant.utils.ComboBoxUtils;
 import restaurant.utils.TextFieldUtils;
+import restaurant.entity.ProductEntity;
+import restaurant.utils.ComponentUtils;
+import restaurant.dialog.UpdateProductJDialog;
+import static restaurant.utils.ExportFile.exportToExcel;
 
 public final class Products extends javax.swing.JPanel {
 
@@ -59,11 +51,6 @@ public final class Products extends javax.swing.JPanel {
         buttonGroup2 = new javax.swing.ButtonGroup();
         scrollPaneProdcut = new javax.swing.JScrollPane();
         panelBody = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jCheckBox2 = new javax.swing.JCheckBox();
-        jCheckBox4 = new javax.swing.JCheckBox();
         jPanel1 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         btnExport = new javax.swing.JButton();
@@ -91,45 +78,6 @@ public final class Products extends javax.swing.JPanel {
         scrollPaneProdcut.setBorder(null);
 
         panelBody.setToolTipText("");
-
-        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel1.setText("Loại thực đơn");
-
-        jCheckBox1.setText("Đồ ăn");
-
-        jCheckBox2.setText("Đồ uống");
-
-        jCheckBox4.setText("Khác");
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBox4)
-                    .addComponent(jCheckBox2)
-                    .addComponent(jCheckBox1)
-                    .addComponent(jLabel1))
-                .addContainerGap(81, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(jCheckBox1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBox2)
-                .addGap(6, 6, 6)
-                .addComponent(jCheckBox4)
-                .addContainerGap(12, Short.MAX_VALUE))
-        );
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(926, 0));
@@ -267,21 +215,21 @@ public final class Products extends javax.swing.JPanel {
                         .addContainerGap()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
+                        .addGap(10, 10, 10)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
-                .addGap(17, 17, 17)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnFirst)
                     .addComponent(btnPrev)
                     .addComponent(btnNext)
                     .addComponent(btnLast)
                     .addComponent(jLabel6))
-                .addGap(12, 12, 12))
+                .addGap(10, 10, 10))
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -356,7 +304,7 @@ public final class Products extends javax.swing.JPanel {
                     .addComponent(radioOff)
                     .addComponent(radioOn)
                     .addComponent(jLabel4))
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -410,13 +358,12 @@ public final class Products extends javax.swing.JPanel {
             .addGroup(panelBodyLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(12, 12, 12)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1022, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
         panelBodyLayout.setVerticalGroup(
             panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -426,9 +373,7 @@ public final class Products extends javax.swing.JPanel {
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 584, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(panelBodyLayout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12)
+                        .addGap(18, 18, 18)
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -509,10 +454,6 @@ public final class Products extends javax.swing.JPanel {
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JComboBox<String> cbCategory;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JCheckBox jCheckBox4;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -521,7 +462,6 @@ public final class Products extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panelBody;
@@ -534,8 +474,10 @@ public final class Products extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     int row = -1;
-    List<ProductEntity> dataProducts;
-    final String PLACEHOLDER = "Tìm theo tên sản phẩm";
+    final int DEBOUNCE_DELAY_LOAD = 300;
+    final String PLACEHOLDER_STATUS = "--Tất cả--";
+    final String PLACEHOLDER_SEARCH = "Tìm theo tên sản phẩm";
+    List<ProductEntity> dataAll = new ProductDAO().getAll();
 
     ScheduledFuture<?> scheduledFuture;
     ExecutorService executorService = Executors.newFixedThreadPool(3);
@@ -544,30 +486,64 @@ public final class Products extends javax.swing.JPanel {
     void init() {
         // <--- Setup common --->
         Common.customizeScrollBar(scrollPaneProdcut);
-        createButtonGroup(radioOn, radioOff, radioAll);
+        Common.createButtonGroup(radioOn, radioOff, radioAll);
 
         // Setup field text
-        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER);
+        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
         TextFieldUtils.addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
 
         // Setup table
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
-        customizeTable(tableProducts, new int[]{}, 30);
+        Common.customizeTable(tableProducts, new int[]{}, 30);
 
         // <--- Setup main --->
-        // add data to comboxbox
-        List<ProductEntity> dataList = new ProductDAO().getAll();
-        addDataToCombobox(cbCategory, dataList);
+        // handle click table show dialog
+        attachRowClickListener(
+                tableProducts,
+                () -> openUpdateDialog("Cập nhật sản phẩm", false)
+        );
 
-        // attach event click table
-        tablesMouseClicked(tableProducts);
+        // add data to combobox
+        ComboBoxUtils.addDataToComboBox(
+                cbCategory,
+                dataAll,
+                ProductEntity::getCategory,
+                PLACEHOLDER_STATUS
+        );
 
-        // Load data
-        initEventHandlers();
-        loadDataByCriteria();
+        // load list by search and classify when change
+        ComponentUtils.addListeners(
+                textSearch,
+                this::loadData,
+                cbCategory, radioOn, radioOff, radioAll
+        );
+        this.loadData();
     }
 
-    // <--- Common 
+    // <--- Handle click row show dialog 
+    void attachRowClickListener(JTable tableMain, Runnable rowClickAction) {
+        tableMain.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JTable target = (JTable) e.getSource();
+                int row = target.getSelectedRow();
+                if (row == -1) {
+                    return;
+                }
+
+                // Get data from row
+                String id = (String) target.getValueAt(row, 0);
+                ProductEntity product = new ProductDAO().getByID(id);
+
+                // Save data to auth
+                Auth.product = product;
+
+                // Perform the action
+                rowClickAction.run();
+            }
+        });
+    }
+
     void openUpdateDialog(String title, boolean isEditable) {
         if (title == null || title.equals("")) {
             return;
@@ -582,86 +558,25 @@ public final class Products extends javax.swing.JPanel {
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
-                loadDataByCriteria();
+                // reset data
+                loadData();
+
+                // reset combobox
+                ComboBoxUtils.addDataToComboBox(
+                        cbCategory,
+                        dataAll,
+                        ProductEntity::getCategory,
+                        PLACEHOLDER_STATUS
+                );
             }
         });
 
         dialog.setVisible(true); // Open dialog
     }
-
-    void tablesMouseClicked(JTable tableMain) {
-        tableMain.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                JTable target = (JTable) e.getSource();
-                int row = target.getSelectedRow();
-                if (row == -1) {
-                    return;
-                }
-
-                // Lấy dữ liệu từ hàng được chọn
-                String id = (String) target.getValueAt(row, 0);
-                ProductEntity product = new ProductDAO().getByID(id);
-
-                Auth.product = product;
-                openUpdateDialog("Cập nhật sản phẩm", false);
-            }
-        });
-    }
     // end --->
 
     // <--- Load data
-    void addDataToCombobox(JComboBox cbBox, List<ProductEntity> dataList) {
-        // Add into combobox 
-        DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
-
-        // Use TreeSet to automatically sort and remove duplicate elements
-        Set<String> areaSet = new HashSet<>();
-
-        // Load data into combobox 
-        for (ProductEntity dataItem : dataList) {
-            areaSet.add(dataItem.getCategory());
-        }
-
-        // Add "--Tất cả--" to the beginning of the set
-        comboBoxModel.addElement("--Tất cả--");
-
-        // Convert the Set to a sorted array --> Set to the comboBox
-        areaSet.stream().sorted().forEach(comboBoxModel::addElement);
-        cbBox.setModel(comboBoxModel);
-    }
-
-    void initEventHandlers() {
-        // Attach event textSearch
-        textSearch.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-        });
-
-        // Attach event comboBoxArea, radioOn, radioOff, radioAll
-        ActionListener actionListener = (ActionEvent e) -> {
-            loadDataByCriteria();
-        };
-
-        cbCategory.addActionListener(actionListener);
-        radioOn.addActionListener(actionListener);
-        radioOff.addActionListener(actionListener);
-        radioAll.addActionListener(actionListener);
-    }
-
-    void loadDataByCriteria() {
+    void loadData() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
@@ -670,12 +585,12 @@ public final class Products extends javax.swing.JPanel {
             SwingUtilities.invokeLater(() -> {
                 // Get info criterias
                 String search = textSearch.getText().trim();
-                if (search.equals(PLACEHOLDER)) {
+                if (search.equals(PLACEHOLDER_SEARCH)) {
                     search = "";
                 }
 
                 String category = cbCategory.getSelectedItem().toString();
-                if (category.equals("--Tất cả--")) {
+                if (category.equals(PLACEHOLDER_STATUS)) {
                     category = "";
                 }
 
@@ -683,10 +598,11 @@ public final class Products extends javax.swing.JPanel {
                         : radioOff.isSelected() ? radioOff.getText() : "";
 
                 // Get data and load
-                dataProducts = new ProductDAO().searchByCriteria(search, category, selectedRadio);
-                this.fillTable(dataProducts);
+                List<ProductEntity> dataList
+                        = new ProductDAO().searchByCriteria(search, category, selectedRadio);
+                this.fillTable(dataList);
             });
-        }, 300, TimeUnit.MILLISECONDS);
+        }, DEBOUNCE_DELAY_LOAD, TimeUnit.MILLISECONDS);
     }
 
     void fillTable(List<ProductEntity> dataProducts) {

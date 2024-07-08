@@ -2,16 +2,12 @@ package restaurant.management;
 
 import java.awt.Color;
 import java.awt.event.MouseEvent;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.WindowAdapter;
-import java.awt.event.ActionListener;
 import java.awt.print.PrinterException;
 
-import java.util.Set;
 import java.util.List;
-import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.concurrent.TimeUnit;
@@ -23,23 +19,22 @@ import java.util.concurrent.ScheduledExecutorService;
 import javax.swing.JTable;
 import java.text.MessageFormat;
 import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.utils.Auth;
-import restaurant.main.ManagementMode;
+import restaurant.dao.GoodsDAO;
 import restaurant.table.TableCustom;
 import restaurant.dao.DiningTableDAO;
-import restaurant.dao.GoodsDAO;
+import restaurant.entity.GoodsEntity;
+import restaurant.main.ManagementMode;
+import restaurant.utils.ComboBoxUtils;
+import restaurant.utils.ComponentUtils;
+import restaurant.utils.TextFieldUtils;
 import restaurant.entity.DiningTableEntity;
 import restaurant.dialog.UpdateTableJDialog;
-import restaurant.entity.GoodsEntity;
 import static restaurant.utils.Common.customizeTable;
 import static restaurant.utils.ExportFile.exportToExcel;
 import static restaurant.utils.Common.createButtonGroup;
-import restaurant.utils.TextFieldUtils;
 
 public final class Goods extends javax.swing.JPanel {
 
@@ -257,14 +252,14 @@ public final class Goods extends javax.swing.JPanel {
                         .addContainerGap()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
+                        .addGap(10, 10, 10)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnImport, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 475, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLast)
                     .addComponent(btnNext)
@@ -487,8 +482,10 @@ public final class Goods extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     int row = -1;
-    final String PLACEHOLDER = "Tìm theo mã hoặc tên";
-    List<GoodsEntity> dataGoods;
+    final int DEBOUNCE_DELAY_LOAD = 300; // milliseconds
+    final String PLACEHOLDER_STATUS = "--Tất cả--";
+    final String PLACEHOLDER_SEARCH = "Tìm theo mã hoặc tên";
+    List<GoodsEntity> dataAll = new GoodsDAO().getAll();
 
     ScheduledFuture<?> scheduledFuture;
     ExecutorService executorService = Executors.newFixedThreadPool(3);
@@ -499,7 +496,7 @@ public final class Goods extends javax.swing.JPanel {
         createButtonGroup(radioOn, radioOff, radioAll);
 
         // edit field text
-        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER);
+        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
         TextFieldUtils.addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
 
         // edit table
@@ -507,40 +504,32 @@ public final class Goods extends javax.swing.JPanel {
         customizeTable(tableGoods, new int[]{}, 30);
 
         // <--- Setup main --->
-        // Load list by search and classify when change
-        initEventHandlers();
-        loadDataByCriteria();
+        // handle click table show dialog
+        attachRowClickListener(
+                tableGoods,
+                () -> openUpdateDialog("Cập nhật nguyên liệu", false)
+        );
 
-        // handle click table
-        tablesMouseClicked();
-        addDataToCombobox();
+        // add data to combobox
+        ComboBoxUtils.addDataToComboBox(
+                cbCategory,
+                dataAll,
+                GoodsEntity::getCategory,
+                PLACEHOLDER_STATUS
+        );
+
+        // load list by search and classify when change
+        ComponentUtils.addListeners(
+                textSearch,
+                this::loadData,
+                cbCategory, radioOn, radioOff, radioAll
+        );
+        this.loadData();
     }
 
-    void addDataToCombobox() {
-        // Get data list
-        List<GoodsEntity> dataList = new GoodsDAO().getAll();
-
-        // Add into combobox 
-        DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
-
-        // Use TreeSet to automatically sort and remove duplicate elements
-        Set<String> areaSet = new HashSet<>();
-
-        // Load data into combobox 
-        for (GoodsEntity dataItem : dataList) {
-            areaSet.add(dataItem.getCategory());
-        }
-
-        // Add "--Tất cả--" to the beginning of the set
-        comboBoxModel.addElement("--Tất cả--");
-
-        // Convert the Set to a sorted array --> Set to the comboBox
-        areaSet.stream().sorted().forEach(comboBoxModel::addElement);
-        cbCategory.setModel(comboBoxModel);
-    }
-
-    void tablesMouseClicked() {
-        tableGoods.addMouseListener(new MouseAdapter() {
+    // <--- Handle click row show dialog
+    void attachRowClickListener(JTable tableMain, Runnable rowClickAction) {
+        tableMain.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 JTable target = (JTable) e.getSource();
@@ -551,10 +540,13 @@ public final class Goods extends javax.swing.JPanel {
 
                 // Lấy dữ liệu từ hàng được chọn
                 String id = (String) target.getValueAt(row, 0);
-                DiningTableEntity table = new DiningTableDAO().getByID(id);
+                GoodsEntity goods = new GoodsDAO().getByID(id);
 
-                Auth.table = table;
-                openUpdateDialog("Cập nhật nguyên liệu", false);
+                // Save data to auth
+                Auth.goods = goods;
+
+                // Perform the action
+                rowClickAction.run();
             }
         });
     }
@@ -574,46 +566,25 @@ public final class Goods extends javax.swing.JPanel {
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
-                loadDataByCriteria();
-                addDataToCombobox();
+                // Reset data
+                loadData();
+
+                // Reset combobox
+                ComboBoxUtils.addDataToComboBox(
+                        cbCategory,
+                        dataAll,
+                        GoodsEntity::getCategory,
+                        PLACEHOLDER_STATUS
+                );
             }
         });
 
         dialog.setVisible(true);
     }
+    // end --->
 
     // <--- Load data
-    void initEventHandlers() {
-        // Attach event textSearch
-        textSearch.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-        });
-
-        // Attach event comboBoxArea, radioOn, radioOff, radioAll
-        ActionListener actionListener = (ActionEvent e) -> {
-            loadDataByCriteria();
-        };
-
-        cbCategory.addActionListener(actionListener);
-        radioOn.addActionListener(actionListener);
-        radioOff.addActionListener(actionListener);
-        radioAll.addActionListener(actionListener);
-    }
-
-    public void loadDataByCriteria() {
+    void loadData() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
@@ -622,12 +593,12 @@ public final class Goods extends javax.swing.JPanel {
             SwingUtilities.invokeLater(() -> {
                 // Get info criterias
                 String keyword = textSearch.getText().trim();
-                if (keyword.equals(PLACEHOLDER)) {
+                if (keyword.equals(PLACEHOLDER_SEARCH)) {
                     keyword = "";
                 }
 
                 String position = cbCategory.getSelectedItem().toString();
-                if (position.equals("--Tất cả--")) {
+                if (position.equals(PLACEHOLDER_STATUS)) {
                     position = "";
                 }
 
@@ -635,13 +606,14 @@ public final class Goods extends javax.swing.JPanel {
                         : radioOff.isSelected() ? radioOff.getText() : "";
 
                 // Get data and load
-                dataGoods = new GoodsDAO().searchByCriteria(keyword, keyword, position, selectedRadio);
-                this.fillTable(dataGoods);
+                List<GoodsEntity> dataList
+                        = new GoodsDAO().searchByCriteria(keyword, keyword, position, selectedRadio);
+                this.fillTable(dataList);
             });
-        }, 300, TimeUnit.MILLISECONDS);
+        }, DEBOUNCE_DELAY_LOAD, TimeUnit.MILLISECONDS);
     }
 
-    public void fillTable(List<GoodsEntity> dataList) {
+    void fillTable(List<GoodsEntity> dataList) {
         System.out.println("Đang load dữ liệu từ cơ sở dữ liệu...");
 
         // Display table
