@@ -9,6 +9,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.util.function.Consumer;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -203,16 +204,18 @@ public class ColumnTable {
      * @param table the table to which the detail button column is added
      * @param columnNumber the column number to which the detail button column
      * is added
+     * @param handleEventClickButton a Consumer that defines the action to be
+     * performed when the detail button is clicked
      */
-    public static void setupDetailButtonColumn(JTable table, int columnNumber) {
+    public static void addDetailButtonColumn(JTable table, int columnNumber, Consumer<Integer> handleEventClickButton) {
         TableColumn column = table.getColumnModel().getColumn(columnNumber);
-        column.setCellRenderer(new DetailButtonRenderer());
-        column.setCellEditor(new DetailButtonEditor(table));
+        column.setCellRenderer(new DetailButtonCellRenderer());
+        column.setCellEditor(new DetailButtonCellEditor(table, handleEventClickButton));
     }
 
-    private static class DetailButtonRenderer extends JPanel implements TableCellRenderer {
+    private static class DetailButtonCellRenderer extends JPanel implements TableCellRenderer {
 
-        public DetailButtonRenderer() {
+        public DetailButtonCellRenderer() {
             setOpaque(true);
             setBackground(Color.white);
             setLayout(new FlowLayout(FlowLayout.CENTER, 5, 2));
@@ -226,33 +229,27 @@ public class ColumnTable {
         }
     }
 
-    private static class DetailButtonEditor extends DefaultCellEditor {
+    private static class DetailButtonCellEditor extends DefaultCellEditor {
 
         private final JPanel panel;
         private final JButton button;
 
-        public DetailButtonEditor(JTable table) {
+        public DetailButtonCellEditor(JTable table, Consumer<Integer> handleEventClickButton) {
             super(new JTextField());
             setClickCountToStart(1);
             panel = new JPanel();
             panel.setBackground(Color.white);
             panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 2));
 
+            // Create button detail
             button = createButton("Chi tiết", new Color(0, 153, 153), new Dimension(80, 36));
+
+            // Attach event click button
             button.addActionListener((ActionEvent e) -> {
-                int row = table.getSelectedRow();
-                if (row == -1) {
-                    return;
-                }
+                int row = table.convertRowIndexToModel(table.getEditingRow());
+                handleEventClickButton.accept(row); // Call the callback function
+                fireEditingStopped();
 
-                // Get data detail
-                int detailID = (int) table.getValueAt(row, 0);
-                OrderDetailEntity dataDetail = new OrderDetailDAO().getByID(detailID);
-
-                // Open dialog 
-                HistoryProductDetailJDialog dialog = new HistoryProductDetailJDialog(null, true);
-                dialog.displayDetailOrder(dataDetail);
-                dialog.setVisible(true);
             });
             panel.add(button);
         }

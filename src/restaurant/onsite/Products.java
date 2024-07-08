@@ -55,9 +55,10 @@ import restaurant.entity.ProductEntity;
 import restaurant.entity.OrderDetailEntity;
 import restaurant.entity.DiningTableEntity;
 import restaurant.dialog.OrderDetailJDialog;
-import static restaurant.utils.Common.getRealText;
-import static restaurant.utils.Common.addCommasToNumber;
+import static restaurant.utils.TextFieldUtils.getRealText;
+import static restaurant.utils.TextFieldUtils.addCommasToNumber;
 import static restaurant.utils.ImageUtils.getScaledImageIcon;
+import restaurant.utils.TextFieldUtils;
 
 public class Products extends javax.swing.JPanel {
 
@@ -479,8 +480,8 @@ public class Products extends javax.swing.JPanel {
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableOrder, new int[]{3}, 30);
         Common.customizeScrollBar(scrollPane);
-        Common.addPlaceholder(textNote, PLACEHOLDER_NOTE);
-        Common.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
+        TextFieldUtils.addPlaceholder(textNote, PLACEHOLDER_NOTE);
+        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
         ColumnTable.setupQuantityButtonColumn(tableOrder, 2);
 
         // Setup
@@ -525,7 +526,7 @@ public class Products extends javax.swing.JPanel {
         // Set text note
         String note = existingOrder.getNote();
         if (note.equals("")) {
-            Common.addPlaceholder(textNote, "Tối đa 60 ký tự");
+            TextFieldUtils.addPlaceholder(textNote, "Tối đa 60 ký tự");
         } else {
             textNote.setText(note);
         }
@@ -689,7 +690,7 @@ public class Products extends javax.swing.JPanel {
 
         // Create a JLabel price
         String price = String.valueOf(product.getPrice());
-        String formattedPrice = Common.addCommasToNumber(price);
+        String formattedPrice = TextFieldUtils.addCommasToNumber(price);
         JLabel priceLabel = new JLabel(formattedPrice + "đ");
 
         // Set alignment, font, and color
@@ -739,7 +740,7 @@ public class Products extends javax.swing.JPanel {
         // Get model
         DefaultTableModel saveOrder = (DefaultTableModel) tableOrder.getModel();
         String priceStr = String.valueOf(product.getPrice());
-        String formattedPrice = Common.addCommasToNumber(priceStr);
+        String formattedPrice = TextFieldUtils.addCommasToNumber(priceStr);
 
         // Update model
         saveOrder.addRow(new Object[]{
@@ -833,7 +834,7 @@ public class Products extends javax.swing.JPanel {
 
             // Get newly created order information and update note
             existingOrder = new OrderDAO().getByTableID(tableID);
-            String note = Common.getRealText(textNote, "Tối đa 60 ký tự");
+            String note = TextFieldUtils.getRealText(textNote, "Tối đa 60 ký tự");
             if (note.length() > 60) {
                 Dialog.warning(this, "Nhập tối đa 60 ký tự!");
                 return;

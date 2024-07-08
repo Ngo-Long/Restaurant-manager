@@ -36,11 +36,10 @@ import restaurant.main.ManagementMode;
 import restaurant.entity.SupplierEntity;
 import restaurant.entity.DiningTableEntity;
 import restaurant.dialog.UpdateTableJDialog;
-import static restaurant.utils.Common.addFocusBorder;
-import static restaurant.utils.Common.addPlaceholder;
 import static restaurant.utils.Common.customizeTable;
 import static restaurant.utils.ExportFile.exportToExcel;
 import static restaurant.utils.Common.createButtonGroup;
+import restaurant.utils.TextFieldUtils;
 
 public final class Supplier extends javax.swing.JPanel {
 
@@ -501,8 +500,8 @@ public final class Supplier extends javax.swing.JPanel {
         createButtonGroup(radioOn, radioOff, radioAll);
 
         // edit field text
-        addPlaceholder(textSearch, PLACEHOLDER);
-        addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
+        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER);
+        TextFieldUtils.addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
 
         // edit table
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);

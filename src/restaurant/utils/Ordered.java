@@ -57,11 +57,11 @@ public class Ordered {
 
             // Get unit price and quantity it for display -> ex: 50.000₫ x 3
             long unitPrice = productPriceMap.get(productNameAndLevel);
-            String convertUnitPrice = Common.addCommasToNumber(String.valueOf(unitPrice));
+            String convertUnitPrice = TextFieldUtils.addCommasToNumber(String.valueOf(unitPrice));
 
             // Calculate and format the total price for the quantit -> ex: 50.000 x 3 = 150.000
             long totalPrice = unitPrice * totalQuantity;
-            String convertTotalPrice = Common.addCommasToNumber(String.valueOf(totalPrice));
+            String convertTotalPrice = TextFieldUtils.addCommasToNumber(String.valueOf(totalPrice));
 
             // Add a new row to the table model with product details
             model.addRow(new Object[]{

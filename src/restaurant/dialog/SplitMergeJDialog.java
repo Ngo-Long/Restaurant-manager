@@ -1,22 +1,17 @@
 package restaurant.dialog;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.JTabbedPane;
 import restaurant.dao.DiningTableDAO;
 import restaurant.dao.OrderDAO;
 import restaurant.entity.DiningTableEntity;
 import restaurant.entity.OrderEntity;
 import restaurant.main.OnSiteMode;
-import restaurant.onsite.DiningTable;
 import restaurant.table.TableCustom;
+import restaurant.utils.ComboBoxUtils;
 import restaurant.utils.Common;
-import restaurant.utils.Dialog;
 
 public class SplitMergeJDialog extends javax.swing.JDialog {
 
@@ -277,7 +272,7 @@ public class SplitMergeJDialog extends javax.swing.JDialog {
         TableCustom.apply(jScrollPane2, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableSplit, new int[]{}, 25);
         Common.customizeTable(tableMerge, new int[]{}, 25);
-        Common.setComboboxStyle(cbOrderPairing, cbSplitOrder, cbSplitTable);
+        ComboBoxUtils.setComboboxStyle(cbOrderPairing, cbSplitOrder, cbSplitTable);
 
         // Set combobox
         addDataToComboboxs();

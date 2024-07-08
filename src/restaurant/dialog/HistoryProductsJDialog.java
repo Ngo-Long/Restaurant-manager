@@ -27,7 +27,8 @@ import restaurant.dao.OrderDetailDAO;
 import restaurant.entity.ProductEntity;
 import restaurant.entity.DiningTableEntity;
 import restaurant.entity.OrderDetailEntity;
-import static restaurant.utils.Common.getRealText;
+import restaurant.utils.ComboBoxUtils;
+import restaurant.utils.TextFieldUtils;
 
 public final class HistoryProductsJDialog extends javax.swing.JDialog {
 
@@ -273,11 +274,11 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         // Set table
         TableCustom.apply(jScrollPane4, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableOrderDetail, new int[]{}, 40);
-        
+
         // Set text field
-        Common.addPlaceholder(textSearch, PLACEHOLDER);
-        Common.setComboboxStyle(cbStatus);
-        Common.setComboboxStyle(cbKitchen);
+        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER);
+        ComboBoxUtils.setComboboxStyle(cbStatus);
+        ComboBoxUtils.setComboboxStyle(cbKitchen);
 
         // Set today on JDateChooser
         textEndDate.setDate(new Date());
@@ -286,13 +287,28 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         // <--- Setup main --->
         // Set combobox
         addDataToComboboxs(cbStatus, cbKitchen);
-        ColumnTable.setupDetailButtonColumn(tableOrderDetail, 6);
+        ColumnTable.addDetailButtonColumn(tableOrderDetail, 6, this::handleOrderDetailClickButton);
 
         // Load data
         loadDataByCriteria();
         btnSearch.addActionListener((java.awt.event.ActionEvent evt1) -> {
             loadDataByCriteria();
         });
+    }
+
+    void handleOrderDetailClickButton(int row) {
+        if (row == -1) {
+            return;
+        }
+
+        // Get data detail
+        int detailID = (int) tableOrderDetail.getValueAt(row, 0);
+        OrderDetailEntity dataDetail = new OrderDetailDAO().getByID(detailID);
+
+        // Open dialog 
+        HistoryProductDetailJDialog dialog = new HistoryProductDetailJDialog(null, true);
+        dialog.displayDetailOrder(dataDetail);
+        dialog.setVisible(true);
     }
 
     void addDataToComboboxs(JComboBox cbStatus, JComboBox cbKitchen) {
@@ -348,7 +364,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         scheduledFuture = scheduledExecutorService.schedule(() -> {
             SwingUtilities.invokeLater(() -> {
                 // Get search text
-                String keyword = getRealText(textSearch, PLACEHOLDER);
+                String keyword = TextFieldUtils.getRealText(textSearch, PLACEHOLDER);
 
                 // Get category
                 String selectedStatus = (String) cbStatus.getSelectedItem();

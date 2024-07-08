@@ -7,9 +7,7 @@ import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.dao.DiningTableDAO;
 import restaurant.entity.DiningTableEntity;
-import static restaurant.utils.Common.getRealText;
-import static restaurant.utils.Common.addPlaceholder;
-import static restaurant.utils.Common.createButtonGroup;
+import restaurant.utils.TextFieldUtils;
 
 public final class UpdateTableJDialog extends javax.swing.JDialog {
 
@@ -377,12 +375,12 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         textTableName.requestFocus();
         textTableId.setEditable(isEditable);
         Common.createButtonGroup(radioOn, radioOff);
-        Common.addPlaceholder(textTableId, "Mã tự động");
+        TextFieldUtils.addPlaceholder(textTableId, "Mã tự động");
 
         // Setup text fields 
         JTextField[] textFields = {textTableId, textTableName, textArea, textNumberSeats, textArea};
         for (JTextField textField : textFields) {
-            Common.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
+            TextFieldUtils.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
         }
 
         // Setup model
@@ -415,7 +413,7 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
     }
 
     DiningTableEntity getModel() {
-        String tableId = getRealText(textTableId, "Mã tự động");
+        String tableId = TextFieldUtils.getRealText(textTableId, "Mã tự động");
         String name = textTableName.getText();
         String area = textArea.getText();
         String numberSeats = textNumberSeats.getText();

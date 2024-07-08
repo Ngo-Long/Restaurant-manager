@@ -1,28 +1,16 @@
 package restaurant.dialog;
 
-import java.util.Set;
 import java.util.List;
-import java.util.HashSet;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
-import javax.swing.BorderFactory;
 
 import javax.swing.Timer;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.event.DocumentListener;
 
 import restaurant.utils.Auth;
 import restaurant.utils.Common;
@@ -30,14 +18,16 @@ import restaurant.utils.Dialog;
 import restaurant.dao.ProductDAO;
 import restaurant.main.ManagementMode;
 import restaurant.entity.ProductEntity;
+import restaurant.utils.ComboBoxUtils;
+import static restaurant.utils.ComboBoxUtils.addDataToComboBox;
 
-import static restaurant.utils.Common.getRealText;
-import static restaurant.utils.Common.createButtonGroup;
-import static restaurant.utils.Common.addCommasToNumber;
-import static restaurant.utils.Common.removeCommasFromNumber;
+import static restaurant.utils.TextFieldUtils.getRealText;
+import static restaurant.utils.TextFieldUtils.addCommasToNumber;
+import static restaurant.utils.TextFieldUtils.removeCommasFromNumber;
 import restaurant.utils.ImageUtils;
 import static restaurant.utils.ImageUtils.setImageButtonIcon;
 import static restaurant.utils.ImageUtils.chooseImageFromDirectory;
+import restaurant.utils.TextFieldUtils;
 
 public final class UpdateProductJDialog extends javax.swing.JDialog {
 
@@ -154,10 +144,11 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         jLabel11.setText("Mô tả:");
 
         btnAdd.setBackground(new java.awt.Color(0, 153, 0));
-        btnAdd.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnAdd.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btnAdd.setForeground(new java.awt.Color(255, 255, 255));
         btnAdd.setText("THÊM");
         btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAdd.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddActionPerformed(evt);
@@ -176,10 +167,11 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         });
 
         btnUpdate.setBackground(new java.awt.Color(0, 0, 255));
-        btnUpdate.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnUpdate.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btnUpdate.setForeground(new java.awt.Color(255, 255, 255));
         btnUpdate.setText("SỬA");
         btnUpdate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnUpdate.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnUpdateActionPerformed(evt);
@@ -187,10 +179,11 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         });
 
         btnDelete.setBackground(new java.awt.Color(255, 0, 0));
-        btnDelete.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnDelete.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         btnDelete.setForeground(new java.awt.Color(255, 255, 255));
         btnDelete.setText("XÓA");
         btnDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDelete.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeleteActionPerformed(evt);
@@ -270,6 +263,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(102, 102, 102));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Ảnh sản phẩm");
         jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -532,94 +526,37 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         // Set text fields 
         JTextField[] textFields = {texID, textName, textCostPrice, textPrice, textUnit, textPrice};
         for (JTextField textField : textFields) {
-            Common.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
+            TextFieldUtils.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
         }
 
         // Set focus field text
         textName.requestFocus();
-        Common.addPlaceholder(texID, "Mã tự động");
-        Common.setComboboxStyle(cbCategory, cbKitchenArea);
+        TextFieldUtils.addPlaceholder(texID, "Mã tự động");
         Common.createButtonGroup(radioOn, radioOff);
+        ComboBoxUtils.setComboboxStyle(cbCategory, cbKitchenArea);
         ImageUtils.setImageButtonIcon("src/restaurant/img/background.jpg", btnImage);
 
         // <--- Setup main --->
-        initEventHandle();
-        addDataToComboBoxs();
-        setModel();
+        // Attach event formatted price
+        TextFieldUtils.addPriceDocumentListener(textPrice);
+        TextFieldUtils.addPriceDocumentListener(textCostPrice);
+
+        // Setup combobox
+        String placeholder = "--Lựa chọn--";
+        List<ProductEntity> dataList = new ProductDAO().getAll();
+        addDataToComboBox(cbCategory, dataList, ProductEntity::getCategory, placeholder);
+        addDataToComboBox(cbKitchenArea, dataList, ProductEntity::getKitchenArea, placeholder);
+
+        // Set model
+        ProductEntity product = Auth.product;
+        this.setModel(product);
     }
 
-    void initEventHandle() {
-        // Attach event textSearch
-        textPrice.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                updateFormattedText(textCostPrice);
-                updateFormattedText(textPrice);
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                updateFormattedText(textCostPrice);
-                updateFormattedText(textPrice);
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                updateFormattedText(textCostPrice);
-                updateFormattedText(textPrice);
-            }
-        });
-    }
-
-    public void updateFormattedText(JTextField fieldNum) {
-        if (scheduledFuture != null && !scheduledFuture.isDone()) {
-            scheduledFuture.cancel(false);
-        }
-
-        scheduledFuture = scheduledExecutorService.schedule(() -> {
-            SwingUtilities.invokeLater(() -> {
-                String price = fieldNum.getText().trim();
-                String removeCommas = removeCommasFromNumber(price);
-                String addCommas = addCommasToNumber(removeCommas);
-                fieldNum.setText(addCommas);
-            });
-        }, 500, TimeUnit.MILLISECONDS);
-    }
+    
 
     public void setIsEditable(boolean editable) {
         this.isEditable = editable;
         texID.setEditable(editable);
-    }
-
-    void addDataToComboBoxs() {
-        // Get data list
-        List<ProductEntity> dataList = new ProductDAO().getAll();
-
-        // Add into combobox 
-        DefaultComboBoxModel<String> cbModelKitchen = new DefaultComboBoxModel<>();
-        DefaultComboBoxModel<String> cbModelCategory = new DefaultComboBoxModel<>();
-
-        // Use TreeSet to automatically sort and remove duplicate elements
-        Set<String> setKitchen = new HashSet<>();
-        Set<String> setCategory = new HashSet<>();
-
-        // Load data into combobox 
-        for (ProductEntity dataItem : dataList) {
-            setKitchen.add(dataItem.getKitchenArea());
-            setCategory.add(dataItem.getCategory());
-        }
-
-        // Add "--Tất cả--" to the beginning of the set
-        cbModelKitchen.addElement("--Lựa chọn--");
-        cbModelCategory.addElement("--Lựa chọn--");
-
-        // Convert the Set to a sorted array --> Set to the comboBox
-        setKitchen.stream().sorted().forEach(cbModelKitchen::addElement);
-        setCategory.stream().sorted().forEach(cbModelCategory::addElement);
-
-        // Into combobox
-        cbKitchenArea.setModel(cbModelKitchen);
-        cbCategory.setModel(cbModelCategory);
     }
 
     // <--- Dialog small
@@ -727,8 +664,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         return true;
     }
 
-    void setModel() {
-        ProductEntity product = Auth.product;
+    void setModel(ProductEntity product) {
         if (product == null) {
             return;
         }
@@ -740,10 +676,10 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         textDesc.setText(product.getDescription());
 
         String costPrice = String.valueOf(product.getCostPrice());
-        textCostPrice.setText(Common.addCommasToNumber(costPrice));
+        textCostPrice.setText(addCommasToNumber(costPrice));
 
         String price = String.valueOf(product.getPrice());
-        textPrice.setText(Common.addCommasToNumber(price));
+        textPrice.setText(addCommasToNumber(price));
 
         // Set combobox
         cbCategory.setSelectedItem(product.getCategory());

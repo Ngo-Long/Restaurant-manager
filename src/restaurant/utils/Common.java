@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.*;
@@ -173,40 +174,6 @@ public class Common {
         scrollPane.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 0));
     }
 
-    // Add commas to number after 3 number
-    public static String addCommasToNumber(String num) {
-        // Remove leading and trailing spaces
-        num = num.trim();
-        if (num.isEmpty()) {
-            return num;
-        }
-
-        StringBuilder result = new StringBuilder();
-        String[] parts = num.split("\\.");
-
-        // Handle integer part
-        String integerPart = parts[0];
-        String formattedIntegerPart = integerPart.replaceAll("(\\d)(?=(\\d{3})+$)", "$1,");
-        result.append(formattedIntegerPart);
-
-        // Handle decimal part if exists
-        if (parts.length > 1) {
-            result.append(".").append(parts[1]);
-        }
-
-        return result.toString();
-    }
-
-    // Remove commas from number
-    public static String removeCommasFromNumber(String num) {
-        num = num.trim();
-        if (num.isEmpty()) {
-            return num;
-        }
-
-        return num.replaceAll(",", "");
-    }
-
     // Hiện border đậm khi click
     public static void setTableButtonBorder(JButton button, boolean isSelected) {
         Color borderColor = isSelected ? new Color(80, 80, 80) : new Color(255, 255, 255);
@@ -315,89 +282,5 @@ public class Common {
             buttonGroup.add(button);
         }
         return buttonGroup;
-    }
-
-    // Thêm chú thích input khi không nhập gì hết
-    public static void addPlaceholder(JTextField textField, String placeholder) {
-        textField.setText(placeholder);
-        textField.setForeground(Color.GRAY);
-
-        textField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (textField.getText().equals(placeholder)) {
-                    textField.setText("");
-                    textField.setForeground(Color.BLACK);
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (textField.getText().isEmpty()) {
-                    textField.setText(placeholder);
-                    textField.setForeground(Color.GRAY);
-                }
-            }
-        });
-    }
-
-    // Lấy dữ liệu thật
-    public static String getRealText(JTextField textField, String placeholder) {
-        String text = textField.getText();
-        return text.equals(placeholder) ? "" : text.trim();
-    }
-
-    // Sử dụng hàm để thêm focus listener và đặt viền cho mỗi JTextField trong mảng
-    public static void addFocusBorder(JComponent component, Color focusColor, Color unfocusColor) {
-        // Định nghĩa các viền matte
-        MatteBorder focusedBorder = BorderFactory.createMatteBorder(0, 0, 2, 0, focusColor);
-        MatteBorder unfocusedBorder = BorderFactory.createMatteBorder(0, 0, 2, 0, unfocusColor);
-        EmptyBorder paddingBorder = (EmptyBorder) BorderFactory.createEmptyBorder(0, 5, 0, 0);
-
-        // Tạo viền kết hợp với khoảng trống
-        Border focusedCombinedBorder = BorderFactory.createCompoundBorder(focusedBorder, paddingBorder);
-        Border unfocusedCombinedBorder = BorderFactory.createCompoundBorder(unfocusedBorder, paddingBorder);
-
-        // Đặt viền ban đầu
-        component.setBorder(unfocusedCombinedBorder);
-
-        // Thêm focus listener để thay đổi viền khi focus hoặc unfocus
-        component.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                component.setBorder(focusedCombinedBorder);
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                component.setBorder(unfocusedCombinedBorder);
-            }
-        });
-    }
-
-    // set combobox style
-    public static void setComboboxStyle(JComboBox<?>... comboBoxes) {
-        for (JComboBox<?> cbBox : comboBoxes) {
-            cbBox.setBackground(new Color(160, 160, 160));
-            cbBox.setForeground(Color.black);
-            cbBox.setFont(new Font("Arial", Font.PLAIN, 14));
-            cbBox.setBorder(BorderFactory.createEmptyBorder());
-            cbBox.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-            cbBox.setRenderer(new DefaultListCellRenderer() {
-                @Override
-                public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                    JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                    label.setBackground(Color.white);
-                    label.setForeground(Color.black);
-                    label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-                    if (isSelected) {
-                        label.setBackground(Color.lightGray);
-                        label.setForeground(Color.black);
-                    }
-                    return label;
-                }
-            });
-        }
     }
 }

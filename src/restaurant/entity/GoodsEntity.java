@@ -5,10 +5,13 @@ public class GoodsEntity {
     private String goodsID;
     private String goodsName;
     private long unitPrice;
+    private String imageUrl;
     private String category;
     private int initialQuantity;
     private int minimumQuantity;
     private String status;
+    private String note;
+    private String activity;
 
     public String getGoodsID() {
         return goodsID;
@@ -32,6 +35,14 @@ public class GoodsEntity {
 
     public void setUnitPrice(long unitPrice) {
         this.unitPrice = unitPrice;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getCategory() {
@@ -64,5 +75,21 @@ public class GoodsEntity {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getActivity() {
+        return activity;
+    }
+
+    public void setActivity(String activity) {
+        this.activity = activity;
     }
 }

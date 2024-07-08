@@ -6,6 +6,7 @@ import restaurant.entity.InvoiceEntity;
 import restaurant.entity.OrderDetailEntity;
 import restaurant.entity.OrderEntity;
 import restaurant.entity.DiningTableEntity;
+import restaurant.entity.GoodsEntity;
 import restaurant.entity.ProductEntity;
 
 public class Auth {
@@ -13,6 +14,7 @@ public class Auth {
     /**
      * Đối tượng tĩnh
      */
+    public static GoodsEntity goods = null; // Chứa thông tin hàng hóa
     public static ProductEntity product = null; // Chứa thông tin sản phẩm
     public static OrderEntity order = null; // Chứa thông tin hóa đơn
     public static DiningTableEntity table = null; // Chứa thông tin bàn 

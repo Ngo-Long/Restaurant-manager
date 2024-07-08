@@ -1,49 +1,36 @@
 package restaurant.main;
 
-import java.awt.AWTEvent;
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
-import java.util.function.Consumer;
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.JButton;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
-import javax.swing.Timer;
 import javax.swing.border.LineBorder;
 
 import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
-import restaurant.utils.MenuButton;
 
 import restaurant.management.Overview;
 import restaurant.management.Employee;
 import restaurant.management.Products;
 import restaurant.management.Supplier;
-import restaurant.management.Warehouse;
+import restaurant.management.Goods;
 import restaurant.management.DiningTable;
+import restaurant.management.Invoice;
 import static restaurant.utils.MenuButton.setupMenuButton;
 
-public final class ManagementMode extends javax.swing.JFrame {
+public class ManagementMode extends javax.swing.JFrame {
 
     public ManagementMode() {
         initComponents();
+        svgHouse.setSvgImage("src/restaurant/icon/house.svg", 15, 15);
+        
         this.init();
     }
 
@@ -78,6 +65,7 @@ public final class ManagementMode extends javax.swing.JFrame {
         btnEmployee = new javax.swing.JButton();
         btnSuppleir = new javax.swing.JButton();
         btnReport = new javax.swing.JButton();
+        svgHouse = new restaurant.utils.SVGImage();
         scrollPaneMain = new javax.swing.JScrollPane();
         panelMain = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
@@ -243,7 +231,9 @@ public final class ManagementMode extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(labelLogo)
-                .addGap(115, 115, 115)
+                .addGap(82, 82, 82)
+                .addComponent(svgHouse, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnOverview, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(8, 8, 8)
                 .addComponent(btnTable, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -259,16 +249,12 @@ public final class ManagementMode extends javax.swing.JFrame {
                 .addComponent(btnEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(8, 8, 8)
                 .addComponent(btnReport, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 117, Short.MAX_VALUE)
                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(labelLogo))
@@ -284,6 +270,14 @@ public final class ManagementMode extends javax.swing.JFrame {
                         .addComponent(btnProduct, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnTable, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(svgHouse, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         scrollPaneMain.setBorder(null);
@@ -624,11 +618,11 @@ public final class ManagementMode extends javax.swing.JFrame {
     }//GEN-LAST:event_btnProductActionPerformed
 
     private void btnWareHouseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWareHouseActionPerformed
-        displayManagementPanel(new Warehouse(this));
+        displayManagementPanel(new Goods(this));
     }//GEN-LAST:event_btnWareHouseActionPerformed
 
     private void btnReceiptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiptActionPerformed
-        displayManagementPanel(new Warehouse(this));
+        displayManagementPanel(new Invoice(this));
     }//GEN-LAST:event_btnReceiptActionPerformed
 
     private void btnEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmployeeActionPerformed
@@ -636,7 +630,7 @@ public final class ManagementMode extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEmployeeActionPerformed
 
     private void menuEmployees1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEmployees1ActionPerformed
-        displayManagementPanel(new Warehouse(this));
+        displayManagementPanel(new Goods(this));
     }//GEN-LAST:event_menuEmployees1ActionPerformed
 
     private void btnSuppleirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuppleirActionPerformed
@@ -664,6 +658,7 @@ public final class ManagementMode extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> {
             new ManagementMode().setVisible(true);
         });
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -729,6 +724,7 @@ public final class ManagementMode extends javax.swing.JFrame {
     private javax.swing.JMenu menuVaiTro;
     private javax.swing.JPanel panelMain;
     private javax.swing.JScrollPane scrollPaneMain;
+    private restaurant.utils.SVGImage svgHouse;
     // End of variables declaration//GEN-END:variables
 
     JButton selectedButton = btnOverview;
@@ -768,7 +764,7 @@ public final class ManagementMode extends javax.swing.JFrame {
             case 0:
             case 1:
                 setupHeaderButtons(btnWareHouse);
-                displayManagementPanel(new Warehouse(this));
+                displayManagementPanel(new Goods(this));
                 break;
             default:
                 break;
@@ -780,7 +776,7 @@ public final class ManagementMode extends javax.swing.JFrame {
             case 0:
             case 1:
                 setupHeaderButtons(btnReceipt);
-                displayManagementPanel(new Warehouse(this));
+                displayManagementPanel(new Invoice(this));
                 break;
             default:
                 break;

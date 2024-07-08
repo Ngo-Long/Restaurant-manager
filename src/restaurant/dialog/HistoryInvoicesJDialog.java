@@ -1,9 +1,6 @@
 package restaurant.dialog;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
 import javax.swing.SwingUtilities;
@@ -15,22 +12,15 @@ import java.util.List;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Comparator;
+import java.util.stream.Collectors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.stream.Collectors;
 
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.TableColumn;
-import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
-import javax.swing.table.TableCellRenderer;
-
 import restaurant.utils.Common;
+import restaurant.utils.ColumnTable;
 import restaurant.dao.InvoiceDAO;
 import restaurant.dao.EmployeeDAO;
 import restaurant.table.TableCustom;
@@ -39,9 +29,7 @@ import restaurant.entity.OrderEntity;
 import restaurant.entity.InvoiceEntity;
 import restaurant.entity.EmployeeEntity;
 import restaurant.entity.DiningTableEntity;
-import static restaurant.utils.Common.getRealText;
-import static restaurant.utils.Common.createButton;
-import static restaurant.utils.Common.addCommasToNumber;
+import restaurant.utils.TextFieldUtils;
 
 public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
 
@@ -283,27 +271,42 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
         // Set table
         TableCustom.apply(jScrollPane4, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableInvoices, new int[]{}, 40);
-        Common.addPlaceholder(textSearch, PLACEHOLDER);
+        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER);
+        ColumnTable.addDetailButtonColumn(tableInvoices, 6, this::handleInvoiceClickButton);
 
         // Set today on JDateChooser
         textEndDate.setDate(new Date());
         textStartDate.setDate(new Date());
 
         // <--- Setup main --->
-        addDataToCombobox(cbStatus);
-        setupDetailButtonColumn(tableInvoices, 6);
+        List<InvoiceEntity> dataList = new InvoiceDAO().getAll();
+        addDataToCombobox(cbStatus, dataList);
 
         // Load data
-        loadDataByCriteria();
-        btnSearch.addActionListener((java.awt.event.ActionEvent evt1) -> {
-            loadDataByCriteria();
+        this.loadData();
+        btnSearch.addActionListener((ActionEvent e) -> {
+            this.loadData();
         });
     }
 
-    void addDataToCombobox(JComboBox cbBox) {
-        // Get all list
-        List<InvoiceEntity> dataList = new InvoiceDAO().getAll();
+    // When click button show dialog detail invoice
+    void handleInvoiceClickButton(int row) {
+        if (row == -1) {
+            return;
+        }
 
+        // Get data detail
+        int invoiceID = (int) tableInvoices.getValueAt(row, 0);
+        InvoiceEntity dataInvoice = new InvoiceDAO().getByID(invoiceID);
+
+        // Open dialog 
+        HistoryInvoiceDetailJDialog dialog = new HistoryInvoiceDetailJDialog(null, true);
+        dialog.displayDetailInvoice(dataInvoice);
+        dialog.setVisible(true);
+    }
+
+    // <--- Load data
+    void addDataToCombobox(JComboBox cbBox, List<InvoiceEntity> dataList) {
         // Create a modal 
         DefaultComboBoxModel<String> modalStatus = new DefaultComboBoxModel<>();
         modalStatus.addElement("--Trạng thái--");
@@ -329,8 +332,7 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
         cbBox.setModel(modalStatus);
     }
 
-    // <--- Load data
-    void loadDataByCriteria() {
+    void loadData() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
@@ -338,7 +340,7 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
         scheduledFuture = scheduledExecutorService.schedule(() -> {
             SwingUtilities.invokeLater(() -> {
                 // Get search text
-                String keyword = getRealText(textSearch, PLACEHOLDER).trim();
+                String keyword = TextFieldUtils.getRealText(textSearch, PLACEHOLDER).trim();
 
                 // Get category
                 String selectedStatus = (String) cbStatus.getSelectedItem();
@@ -384,7 +386,8 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
                 String employeeName = employee.getFullName();
 
                 // Set total 
-                String totalConvert = addCommasToNumber(String.valueOf(dataItem.getTotalAmount())) + "đ";
+                long totalAmount = dataItem.getTotalAmount();
+                String totalConvert = TextFieldUtils.addCommasToNumber(String.valueOf(totalAmount)) + "đ";
 
                 // Add to the table
                 model.addRow(new Object[]{
@@ -402,78 +405,6 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
             tableInvoices.revalidate();
         } catch (Exception e) {
             System.out.println(e);
-        }
-    }
-    // end --->
-
-    /**
-     * Adds a column with "Chi tiết" buttons to the table.
-     *
-     * @param table the table to which the detail button column is added
-     * @param columnNumber the column number to which the detail button column
-     * is added
-     */
-    public static void setupDetailButtonColumn(JTable table, int columnNumber) {
-        TableColumn column = table.getColumnModel().getColumn(columnNumber);
-        column.setCellRenderer(new DetailButtonRenderer());
-        column.setCellEditor(new DetailButtonEditor(table));
-    }
-
-    private static class DetailButtonRenderer extends JPanel implements TableCellRenderer {
-
-        public DetailButtonRenderer() {
-            setOpaque(true);
-            setBackground(Color.white);
-            setLayout(new FlowLayout(FlowLayout.CENTER, 5, 2));
-            add(createButton("Chi tiết", new Color(0, 153, 153), new Dimension(80, 36)));
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            setBackground(isSelected ? table.getSelectionBackground() : Color.white);
-            return this;
-        }
-    }
-
-    private static class DetailButtonEditor extends DefaultCellEditor {
-
-        private final JPanel panel;
-        private final JButton button;
-
-        public DetailButtonEditor(JTable table) {
-            super(new JTextField());
-            setClickCountToStart(1);
-            panel = new JPanel();
-            panel.setBackground(Color.white);
-            panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 2));
-
-            button = createButton("Chi tiết", new Color(0, 153, 153), new Dimension(80, 36));
-            button.addActionListener((ActionEvent e) -> {
-                int row = table.getSelectedRow();
-                if (row == -1) {
-                    return;
-                }
-
-                // Get data detail
-                int invoiceID = (int) table.getValueAt(row, 0);
-                InvoiceEntity dataInvoice = new InvoiceDAO().getByID(invoiceID);
-
-                // Open dialog 
-                HistoryInvoiceDetailJDialog dialog = new HistoryInvoiceDetailJDialog(null, true);
-                dialog.displayDetailInvoice(dataInvoice);
-                dialog.setVisible(true);
-            });
-            panel.add(button);
-        }
-
-        @Override
-        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            return panel;
-        }
-
-        @Override
-        public Object getCellEditorValue() {
-            return "";
         }
     }
     // end --->

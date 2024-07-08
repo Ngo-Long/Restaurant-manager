@@ -29,14 +29,15 @@ import restaurant.utils.Ordered;
 import restaurant.main.OnSiteMode;
 import restaurant.table.TableCustom;
 import restaurant.dialog.HistoryInvoicesJDialog;
-import static restaurant.utils.Common.addCommasToNumber;
-import static restaurant.utils.Common.removeCommasFromNumber;
+import static restaurant.utils.TextFieldUtils.addCommasToNumber;
+import static restaurant.utils.TextFieldUtils.removeCommasFromNumber;
 
 import net.sf.jasperreports.view.JasperViewer;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperCompileManager;
+import restaurant.utils.TextFieldUtils;
 
 public class Invoices extends javax.swing.JPanel {
 
@@ -685,7 +686,7 @@ public class Invoices extends javax.swing.JPanel {
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableOrdered, new int[]{}, 30);
         Common.createButtonGroup(radioCash, radioCard, radioTransfer);
-        Common.addPlaceholder(textSearch, PLACEHOLDER);
+        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER);
 
         // Setup main
         displayTableInfo();

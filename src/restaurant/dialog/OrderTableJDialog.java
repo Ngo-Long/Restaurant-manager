@@ -8,12 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.utils.Auth;
@@ -30,8 +25,8 @@ import restaurant.dao.OrderDetailDAO;
 import restaurant.entity.OrderEntity;
 import restaurant.entity.DiningTableEntity;
 import restaurant.entity.OrderDetailEntity;
-import restaurant.onsite.DiningTable;
-import static restaurant.utils.Common.addCommasToNumber;
+import restaurant.utils.ComboBoxUtils;
+import restaurant.utils.TextFieldUtils;
 
 public final class OrderTableJDialog extends javax.swing.JDialog {
 
@@ -377,7 +372,7 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
         // Set common
         TableCustom.apply(jScrollPane3, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableOrderedDishes, new int[]{}, 30);
-        Common.setComboboxStyle(cbStatus);
+        ComboBoxUtils.setComboboxStyle(cbStatus);
         btnSplitMerge.setBackground(Color.WHITE);
 
         // Attach event when click combobox status
@@ -482,7 +477,8 @@ public final class OrderTableJDialog extends javax.swing.JDialog {
             labelStartTime.setText(startTime);
 
             // Set total 
-            String totalConvert = addCommasToNumber(String.valueOf(dataOrder.getTotal()));
+            long total = dataOrder.getTotal();
+            String totalConvert = TextFieldUtils.addCommasToNumber(String.valueOf(total));
             labelTotal.setText(totalConvert + "₫");
 
             // Set note

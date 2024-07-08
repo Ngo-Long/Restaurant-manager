@@ -55,11 +55,12 @@ import restaurant.utils.Dialog;
 import restaurant.utils.Common;
 import restaurant.table.TableCustom;
 import restaurant.utils.ColumnTable;
-import static restaurant.utils.Common.getRealText;
-import static restaurant.utils.Common.addCommasToNumber;
-import static restaurant.utils.Common.removeCommasFromNumber;
+import static restaurant.utils.TextFieldUtils.getRealText;
+import static restaurant.utils.TextFieldUtils.addCommasToNumber;
+import static restaurant.utils.TextFieldUtils.removeCommasFromNumber;
 import restaurant.utils.ImageUtils;
 import static restaurant.utils.ImageUtils.getScaledImageIcon;
+import restaurant.utils.TextFieldUtils;
 
 public final class QuickOrderMode extends javax.swing.JFrame {
 
@@ -875,8 +876,8 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableOrder, new int[]{3}, 30);
         Common.customizeScrollBar(scrollPane);
-        Common.addPlaceholder(textNote, PLACEHOLDER_NOTE);
-        Common.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
+        TextFieldUtils.addPlaceholder(textNote, PLACEHOLDER_NOTE);
+        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
         ColumnTable.setupQuantityButtonColumn(tableOrder, 2);
 
         // Setup
@@ -1073,7 +1074,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
 
         // Create a JLabel price
         String price = String.valueOf(product.getPrice());
-        String formattedPrice = Common.addCommasToNumber(price);
+        String formattedPrice = addCommasToNumber(price);
         JLabel priceLabel = new JLabel(formattedPrice + "đ");
 
         // Set alignment, font, and color
@@ -1123,7 +1124,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         // Get model
         DefaultTableModel saveOrder = (DefaultTableModel) tableOrder.getModel();
         String priceStr = String.valueOf(product.getPrice());
-        String formattedPrice = Common.addCommasToNumber(priceStr);
+        String formattedPrice = addCommasToNumber(priceStr);
 
         // Check if the product already exists in the table
         boolean productExists = false;
@@ -1215,7 +1216,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
             addProductsToOrderd(orderId, orderProducts);
 
             // Set note for invoice
-            String note = Common.getRealText(textNote, "Tối đa 60 ký tự");
+            String note = getRealText(textNote, "Tối đa 60 ký tự");
             if (note.length() > 60) {
                 Dialog.warning(this, "Nhập tối đa 60 ký tự!");
                 return;

@@ -9,17 +9,17 @@ import java.util.ArrayList;
 
 public class GoodsDAO extends RestaurantDAO<GoodsEntity, String> {
 
-    public static final String INSERT_SQL = "INSERT INTO Goods (GoodsID, GoodsName, UnitPrice, "
-            + "Category, InitialQuantity, MinimumQuantity, Status) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    public static final String UPDATE_SQL = "UPDATE Goods SET GoodsName=?, UnitPrice=?, Category=?, "
-            + "InitialQuantity=?, MinimumQuantity=?, Status=? WHERE GoodsID=?";
-    public static final String DELETE_SQL = "DELETE FROM Goods WHERE GoodsID =?";
-    public static final String IS_EXISTS_SQL = "SELECT COUNT(*) FROM Goods WHERE GoodsID = ?";
-    public static final String SELECT_ALL_SQL = "SELECT * FROM Goods";
-    public static final String SELECT_BY_ID_SQL = "SELECT * FROM Goods WHERE GoodsID=?";
-
-    final String SELECT_BY_CRITERIA = "SELECT TOP (1000) [GoodsID], [GoodsName], "
-            + "[UnitPrice], [Category], [InitialQuantity], [MinimumQuantity], [Status] "
+    final String INSERT_SQL = "INSERT INTO Goods (GoodsID, GoodsName, UnitPrice, "
+            + "ImageURL,Category, InitialQuantity, MinimumQuantity, Status, Note, Activity) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    final String UPDATE_SQL = "UPDATE Goods SET GoodsName=?, UnitPrice=?, ImageURL=?, Category=?, "
+            + "InitialQuantity=?, MinimumQuantity=?, Status=?, Note=?, Activity=? WHERE GoodsID=?";
+    final String DELETE_SQL = "DELETE FROM Goods WHERE GoodsID =?";
+    final String IS_EXISTS_SQL = "SELECT COUNT(*) FROM Goods WHERE GoodsID = ?";
+    final String SELECT_ALL_SQL = "SELECT * FROM Goods";
+    final String SELECT_BY_ID_SQL = "SELECT * FROM Goods WHERE GoodsID=?";
+    final String SELECT_BY_CRITERIA = "SELECT TOP (1000) [GoodsID], [GoodsName], [UnitPrice], "
+            + "[ImageURL], [Category], [InitialQuantity], [MinimumQuantity], [Status], [Note], [Activity] "
             + "FROM [RestaurantManager].[dbo].[Goods] "
             + "WHERE ( GoodsID LIKE ? OR [GoodsName] LIKE ? ) "
             + "AND [Category] LIKE ? AND [Status] LIKE ?";
@@ -30,10 +30,13 @@ public class GoodsDAO extends RestaurantDAO<GoodsEntity, String> {
                 entity.getGoodsID(),
                 entity.getGoodsName(),
                 entity.getUnitPrice(),
+                entity.getImageUrl(),
                 entity.getCategory(),
                 entity.getInitialQuantity(),
                 entity.getMinimumQuantity(),
-                entity.getStatus()
+                entity.getStatus(),
+                entity.getNote(),
+                entity.getActivity()
         );
     }
 
@@ -42,10 +45,13 @@ public class GoodsDAO extends RestaurantDAO<GoodsEntity, String> {
         JDBC.executeUpdate(UPDATE_SQL,
                 entity.getGoodsName(),
                 entity.getUnitPrice(),
+                entity.getImageUrl(),
                 entity.getCategory(),
                 entity.getInitialQuantity(),
                 entity.getMinimumQuantity(),
                 entity.getStatus(),
+                entity.getNote(),
+                entity.getActivity(),
                 entity.getGoodsID()
         );
     }
@@ -107,10 +113,13 @@ public class GoodsDAO extends RestaurantDAO<GoodsEntity, String> {
         model.setGoodsID(rs.getString("GoodsID"));
         model.setGoodsName(rs.getString("GoodsName"));
         model.setUnitPrice(rs.getLong("UnitPrice"));
+        model.setCategory(rs.getString("ImageURL"));
         model.setCategory(rs.getString("Category"));
         model.setInitialQuantity(rs.getInt("InitialQuantity"));
         model.setMinimumQuantity(rs.getInt("MinimumQuantity"));
         model.setStatus(rs.getString("Status"));
+        model.setNote(rs.getString("Note"));
+        model.setActivity(rs.getString("Activity"));
         return model;
     }
 }

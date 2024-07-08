@@ -17,6 +17,7 @@ import restaurant.entity.ProductEntity;
 import restaurant.table.TableCustom;
 import restaurant.utils.Common;
 import restaurant.dao.OrderDetailDAO;
+import restaurant.utils.TextFieldUtils;
 
 public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
 
@@ -292,7 +293,7 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
         
         // Set total
         String total = String.valueOf(data.getTotalAmount());
-        String totalConfirm = Common.addCommasToNumber(total) + " đ";
+        String totalConfirm = TextFieldUtils.addCommasToNumber(total) + " đ";
 
         labelTable.setText(tableNamesStr + " / " + quantityOrders + " đơn");
         labelEmployee.setText(employeeName);

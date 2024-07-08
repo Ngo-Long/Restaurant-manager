@@ -24,6 +24,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import javax.swing.JTable;
 import javax.swing.event.DocumentEvent;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
@@ -36,10 +37,9 @@ import restaurant.table.TableCustom;
 import restaurant.entity.ProductEntity;
 import restaurant.dialog.UpdateProductJDialog;
 import static restaurant.utils.Common.customizeTable;
-import static restaurant.utils.Common.addFocusBorder;
-import static restaurant.utils.Common.addPlaceholder;
 import static restaurant.utils.Common.createButtonGroup;
 import static restaurant.utils.ExportFile.exportToExcel;
+import restaurant.utils.TextFieldUtils;
 
 public final class Products extends javax.swing.JPanel {
 
@@ -534,7 +534,6 @@ public final class Products extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     int row = -1;
-    int debounceDelay = 500;
     List<ProductEntity> dataProducts;
     final String PLACEHOLDER = "Tìm theo tên sản phẩm";
 
@@ -548,16 +547,20 @@ public final class Products extends javax.swing.JPanel {
         createButtonGroup(radioOn, radioOff, radioAll);
 
         // Setup field text
-        addPlaceholder(textSearch, PLACEHOLDER);
-        addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
+        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER);
+        TextFieldUtils.addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
 
         // Setup table
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
         customizeTable(tableProducts, new int[]{}, 30);
 
         // <--- Setup main --->
-        setupMultipleCombobox();
-        tablesMouseClicked();
+        // add data to comboxbox
+        List<ProductEntity> dataList = new ProductDAO().getAll();
+        addDataToCombobox(cbCategory, dataList);
+
+        // attach event click table
+        tablesMouseClicked(tableProducts);
 
         // Load data
         initEventHandlers();
@@ -565,29 +568,6 @@ public final class Products extends javax.swing.JPanel {
     }
 
     // <--- Common 
-    public void setupMultipleCombobox() {
-        // Get data list
-        List<ProductEntity> dataList = new ProductDAO().getAll();
-
-        // Add into combobox 
-        DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
-
-        // Use TreeSet to automatically sort and remove duplicate elements
-        Set<String> areaSet = new HashSet<>();
-
-        // Load data into combobox 
-        for (ProductEntity dataItem : dataList) {
-            areaSet.add(dataItem.getCategory());
-        }
-
-        // Add "--Tất cả--" to the beginning of the set
-        comboBoxModel.addElement("-- Tất cả --");
-
-        // Convert the Set to a sorted array --> Set to the comboBox
-        areaSet.stream().sorted().forEach(comboBoxModel::addElement);
-        cbCategory.setModel(comboBoxModel);
-    }
-
     void openUpdateDialog(String title, boolean isEditable) {
         if (title == null || title.equals("")) {
             return;
@@ -609,8 +589,8 @@ public final class Products extends javax.swing.JPanel {
         dialog.setVisible(true); // Open dialog
     }
 
-    void tablesMouseClicked() {
-        tableProducts.addMouseListener(new MouseAdapter() {
+    void tablesMouseClicked(JTable tableMain) {
+        tableMain.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 JTable target = (JTable) e.getSource();
@@ -631,6 +611,26 @@ public final class Products extends javax.swing.JPanel {
     // end --->
 
     // <--- Load data
+    void addDataToCombobox(JComboBox cbBox, List<ProductEntity> dataList) {
+        // Add into combobox 
+        DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
+
+        // Use TreeSet to automatically sort and remove duplicate elements
+        Set<String> areaSet = new HashSet<>();
+
+        // Load data into combobox 
+        for (ProductEntity dataItem : dataList) {
+            areaSet.add(dataItem.getCategory());
+        }
+
+        // Add "--Tất cả--" to the beginning of the set
+        comboBoxModel.addElement("--Tất cả--");
+
+        // Convert the Set to a sorted array --> Set to the comboBox
+        areaSet.stream().sorted().forEach(comboBoxModel::addElement);
+        cbBox.setModel(comboBoxModel);
+    }
+
     void initEventHandlers() {
         // Attach event textSearch
         textSearch.getDocument().addDocumentListener(new DocumentListener() {
@@ -661,7 +661,7 @@ public final class Products extends javax.swing.JPanel {
         radioAll.addActionListener(actionListener);
     }
 
-    public void loadDataByCriteria() {
+    void loadDataByCriteria() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
@@ -675,7 +675,7 @@ public final class Products extends javax.swing.JPanel {
                 }
 
                 String category = cbCategory.getSelectedItem().toString();
-                if (category.equals("-- Tất cả --")) {
+                if (category.equals("--Tất cả--")) {
                     category = "";
                 }
 
@@ -686,7 +686,7 @@ public final class Products extends javax.swing.JPanel {
                 dataProducts = new ProductDAO().searchByCriteria(search, category, selectedRadio);
                 this.fillTable(dataProducts);
             });
-        }, debounceDelay, TimeUnit.MILLISECONDS);
+        }, 300, TimeUnit.MILLISECONDS);
     }
 
     void fillTable(List<ProductEntity> dataProducts) {
@@ -699,10 +699,10 @@ public final class Products extends javax.swing.JPanel {
         // Load data into the table 
         for (ProductEntity dataProduct : dataProducts) {
             String price = String.valueOf(dataProduct.getPrice());
-            String formattedPrice = Common.addCommasToNumber(price) + "đ";
+            String formattedPrice = TextFieldUtils.addCommasToNumber(price) + "đ";
 
             String costPrice = String.valueOf(dataProduct.getCostPrice());
-            String formattedCostPrice = Common.addCommasToNumber(costPrice) + "đ";
+            String formattedCostPrice = TextFieldUtils.addCommasToNumber(costPrice) + "đ";
 
             model.addRow(new Object[]{
                 dataProduct.getProductID(),
