@@ -28,11 +28,7 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
-
-import restaurant.dao.OrderDetailDAO;
-import restaurant.entity.OrderDetailEntity;
 import static restaurant.utils.Common.createButton;
-import restaurant.dialog.HistoryProductDetailJDialog;
 
 public class ColumnTable {
 
@@ -43,7 +39,7 @@ public class ColumnTable {
      * @param columnNumber the column number to which the quantity button column
      * is added
      */
-    public static void setupQuantityButtonColumn(JTable table, int columnNumber) {
+    public static void addQuantityButtonsColumn(JTable table, int columnNumber) {
         TableColumnModel columnModel = table.getColumnModel();
         TableColumn column = columnModel.getColumn(columnNumber);
         column.setCellRenderer(new QuantityButtonRenderer());

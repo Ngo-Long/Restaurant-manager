@@ -4,15 +4,9 @@ import java.util.Map;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
-
 import java.sql.SQLException;
-import javax.swing.Timer;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import net.sf.jasperreports.engine.JRException;
 
 import restaurant.dao.OrderDAO;
 import restaurant.dao.InvoiceDAO;
@@ -26,27 +20,31 @@ import restaurant.utils.Auth;
 import restaurant.utils.Dialog;
 import restaurant.utils.Common;
 import restaurant.utils.Ordered;
+import restaurant.utils.TextFieldUtils;
+
 import restaurant.main.OnSiteMode;
 import restaurant.table.TableCustom;
+import restaurant.utils.RunnableUtils;
+import restaurant.entity.DiningTableEntity;
 import restaurant.dialog.HistoryInvoicesJDialog;
 import static restaurant.utils.TextFieldUtils.addCommasToNumber;
 import static restaurant.utils.TextFieldUtils.removeCommasFromNumber;
 
 import net.sf.jasperreports.view.JasperViewer;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperCompileManager;
-import restaurant.utils.TextFieldUtils;
 
 public class Invoices extends javax.swing.JPanel {
 
-    private OnSiteMode mainStaff;
+    private OnSiteMode onSite;
 
-    public Invoices(OnSiteMode mainStaff) {
+    public Invoices(OnSiteMode onSite) {
         initComponents();
         this.init();
-        this.mainStaff = mainStaff;
+        this.onSite = onSite;
     }
 
     @SuppressWarnings("unchecked")
@@ -560,7 +558,7 @@ public class Invoices extends javax.swing.JPanel {
     }//GEN-LAST:event_btnPayInvoiceActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        mainStaff.displayStaffPanels(new DiningTable(mainStaff));
+        onSite.displayOnSitePanel(new DiningTable(onSite));
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnFiftyThousandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiftyThousandActionPerformed
@@ -616,7 +614,7 @@ public class Invoices extends javax.swing.JPanel {
     }//GEN-LAST:event_btnHistoryActionPerformed
 
     private void btnSearch3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearch3ActionPerformed
-        mainStaff.displayStaffPanels(new Invoices(mainStaff));
+        onSite.displayOnSitePanel(new Invoices(onSite));
     }//GEN-LAST:event_btnSearch3ActionPerformed
 
     private void textSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSearchActionPerformed
@@ -669,42 +667,35 @@ public class Invoices extends javax.swing.JPanel {
     private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
-    Timer timer;
-    int index = 0;
-    int invoiceID;
-    String tableID;
-    String tableName;
-    String methodPay;
-    OrderEntity dataOrder;
-    InvoiceEntity dataInvoice;
-    List<OrderDetailEntity> dataOrderDetails;
-    final String PLACEHOLDER = "Tìm tên hoặc sđt khách hàng";
-    ExecutorService executorService = Executors.newFixedThreadPool(10);
+    final String PLACEHOLDER_SEARCH = "Tìm tên hoặc sđt khách hàng";
 
     void init() {
-        // Setup common
+        // <--- Setup common --->
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableOrdered, new int[]{}, 30);
         Common.createButtonGroup(radioCash, radioCard, radioTransfer);
-        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER);
+        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
 
-        // Setup main
-        displayTableInfo();
-        displayInvoiceInfo();
+        // <--- Setup main --->
+        // set info
+        displayTableInfo(Auth.table);
+        displayInvoiceInfo(Auth.invoice);
 
-        initEventCashReturn();
-        displayOrderedOfTable(tableID);
+        // calc return cash
+        RunnableUtils.addTextFieldListeners(textGiveMoney, this::calculateCashReturn);
+
+        // display dishes to table
+        displayOrderedOfTable(Auth.table, tableOrdered);
     }
 
-    void displayTableInfo() {
-        // Kiểm tra và gán giá trị 
-        if (Auth.table != null && Auth.table.getTableID() != null) {
-            tableID = Auth.table.getTableID();
+    void displayTableInfo(DiningTableEntity table) {
+        if (table == null) {
+            return;
         }
 
-        if (Auth.table != null && Auth.table.getName() != null) {
-            tableName = Auth.table.getName();
-        }
+        // Kiểm tra và gán giá trị 
+        String tableID = table.getTableID();
+        String tableName = table.getName();
 
         // Set label
         labelOrderedTable.setText(tableID == null
@@ -712,47 +703,23 @@ public class Invoices extends javax.swing.JPanel {
                 : "Các món đã gọi [ " + tableName + " ]");
     }
 
-    void displayInvoiceInfo() {
-        try {
-            // Get data invoice 
-            dataInvoice = new InvoiceDAO().getByTableID(tableID);
-
-            // Get invoice id
-            invoiceID = dataInvoice.getInvoiceID();
-
-            // Set label
-            labelInvoiceID.setText(String.valueOf(invoiceID).equals("")
-                    ? "Hóa đơn [ Trống ]"
-                    : "Hóa đơn [ " + invoiceID + " ]");
-        } catch (Exception e) {
-            System.out.println(e);
+    void displayInvoiceInfo(InvoiceEntity invoice) {
+        if (invoice == null) {
+            return;
         }
-    }
 
-    void initEventCashReturn() {
-        // Attach event textSearch
-        textGiveMoney.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                calculateCashReturn();
-            }
+        // Get invoice id
+        int invoiceID = invoice.getInvoiceID();
 
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                calculateCashReturn();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                calculateCashReturn();
-            }
-        });
+        // Set label
+        labelInvoiceID.setText(String.valueOf(invoiceID).equals("")
+                ? "Hóa đơn [ Trống ]"
+                : "Hóa đơn [ " + invoiceID + " ]");
     }
 
     void calculateCashReturn() {
         String giveMoneyText = removeCommasFromNumber(textGiveMoney.getText());
         String totalAmountText = removeCommasFromNumber(labelTotalAmount.getText());
-
         if (giveMoneyText.isEmpty() || totalAmountText.isEmpty()) {
             return;
         }
@@ -769,18 +736,27 @@ public class Invoices extends javax.swing.JPanel {
         }
     }
 
-    public void displayOrderedOfTable(String tableID) {
+    public void displayOrderedOfTable(DiningTableEntity dataTable, JTable table) {
+        if (dataTable == null || table == null) {
+            return;
+        }
+
         // Reset table
-        DefaultTableModel model = (DefaultTableModel) tableOrdered.getModel();
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0);
 
         try {
-            // Get data order and order deatails
-            dataOrder = new OrderDAO().getByTableID(tableID);
-            dataOrderDetails = new OrderDetailDAO().getByOrderID(dataOrder.getOrderId());
+            // Get data order
+            String tableID = dataTable.getTableID();
+            OrderEntity dataOrder = new OrderDAO().getByTableID(tableID);
+
+            // Get order deatails
+            List<OrderDetailEntity> dataOrderDetails
+                    = new OrderDetailDAO().getByOrderID(dataOrder.getOrderId());
 
             // Set total 
-            String totalConvert = addCommasToNumber(String.valueOf(dataOrder.getTotal()));
+            long totalAmount = dataOrder.getTotal();
+            String totalConvert = addCommasToNumber(String.valueOf(totalAmount));
             labelTotalPrice.setText(totalConvert);
             labelTotalAmount.setText(totalConvert);
 
@@ -797,18 +773,21 @@ public class Invoices extends javax.swing.JPanel {
     }
 
     InvoiceEntity getModel() {
+        // get info
         int tax = Integer.parseInt(removeCommasFromNumber(labelTax.getText()));
         int discount = Integer.parseInt(removeCommasFromNumber(labelDiscount.getText()));
-        methodPay = radioCash.isSelected() ? "Tiền mặt" : radioCard.isSelected() ? "Thẻ" : "Chuyển khoản";
+        String methodPay = radioCash.isSelected()
+                ? "Tiền mặt" : radioCard.isSelected()
+                ? "Thẻ" : "Chuyển khoản";
         int total = Integer.parseInt(removeCommasFromNumber(labelTotalAmount.getText()));
         int totalAmount = total + tax - discount;
 
-        if (invoiceID == 0) {
+        if (Auth.invoice == null) {
             Dialog.warning(this, "Vui lòng chọn bàn đã gọi món!");
             return null;
         }
 
-        if (!Auth.isManager()) {
+        if (!Auth.isManager() || Auth.user == null) {
             Dialog.warning(this, "Bạn không có quyền thanh toán!");
             return null;
         }
@@ -819,7 +798,7 @@ public class Invoices extends javax.swing.JPanel {
         }
 
         InvoiceEntity model = new InvoiceEntity();
-        model.setInvoiceID(invoiceID);
+        model.setInvoiceID(Auth.invoice.getInvoiceID());
         model.setEmployeeID(Auth.user.getEmployeeID());
         model.setTax(tax);
         model.setDiscount(discount);
@@ -841,21 +820,23 @@ public class Invoices extends javax.swing.JPanel {
             // Update status invoice pay
             new InvoiceDAO().update(getModel());
 
-            // Open bill
-//            bill();
-
             // Update invoice successfully
-            mainStaff.displayStaffPanels(new DiningTable(mainStaff));
+            onSite.displayOnSitePanel(new DiningTable(onSite));
         } catch (Exception e) {
             Dialog.success(this, "Thanh toán không thành công!");
         }
     }
 
     void bill() {
+        if (Auth.invoice == null) {
+            Dialog.warning(this, "Vui lòng chọn bàn đã gọi món!");
+            return;
+        }
+
         try {
             // Create map contains the parameters and values ​​of the report
             Hashtable<String, Object> map = new Hashtable<>();
-            map.put("ToInvoiceID", invoiceID);
+            map.put("ToInvoiceID", Auth.invoice.getInvoiceID());
 
             // Compile files report
             JasperReport report = JasperCompileManager.compileReport("src/restaurant/report/reportInvoice.jrxml");

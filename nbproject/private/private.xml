@@ -3,28 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/utils/Ordered.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/main/QuickOrderMode.java</file>
             <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/utils/Common.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/management/Goods.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/management/Supplier.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/utils/ComboBoxUtils.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/management/Products.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/dialog/OrderTableJDialog.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/management/Receipt.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/onsite/Invoices.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/utils/TextFieldUtils.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/dialog/HistoryProductsJDialog.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/dialog/HistoryInvoicesJDialog.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/dialog/UpdateProductJDialog.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/onsite/Products.java</file>
             <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/management/Invoice.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/management/DiningTable.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/dialog/SmallJDialog.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/management/Employee.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/dialog/UpdateGoodsJDialog.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/dialog/UpdateTableJDialog.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/dialog/HistoryInvoiceDetailJDialog.java</file>
+            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/management/CreateReceipt.java</file>
+            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/management/Receipt.java</file>
         </group>
     </open-files>
 </project-private>

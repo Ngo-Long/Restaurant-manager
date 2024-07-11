@@ -5,7 +5,8 @@ public class GoodsEntity {
     private String goodsID;
     private String goodsName;
     private long unitPrice;
-    private String imageUrl;
+    private String imageURL;
+    private String unit;
     private String category;
     private int initialQuantity;
     private int minimumQuantity;
@@ -37,12 +38,20 @@ public class GoodsEntity {
         this.unitPrice = unitPrice;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getUnit() {
+        return unit;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
     public String getCategory() {

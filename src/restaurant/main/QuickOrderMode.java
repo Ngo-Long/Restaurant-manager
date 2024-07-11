@@ -11,7 +11,6 @@ import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseEvent;
 import java.awt.GridBagConstraints;
-import java.awt.Image;
 import java.awt.event.MouseAdapter;
 
 import java.util.Set;
@@ -19,48 +18,44 @@ import java.util.List;
 import java.util.Vector;
 import java.util.HashSet;
 import java.util.stream.Collectors;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledExecutorService;
 
 import javax.swing.Box;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.JFrame;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.BorderFactory;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
 import javax.swing.event.TableModelEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.dao.OrderDAO;
 import restaurant.dao.InvoiceDAO;
 import restaurant.dao.ProductDAO;
 import restaurant.dao.OrderDetailDAO;
-import restaurant.dialog.HistoryInvoicesJDialog;
-import restaurant.entity.OrderEntity;
 import restaurant.entity.InvoiceEntity;
 import restaurant.entity.ProductEntity;
-import restaurant.entity.DiningTableEntity;
 import restaurant.entity.OrderDetailEntity;
+import restaurant.dialog.HistoryInvoicesJDialog;
 
 import restaurant.utils.Auth;
 import restaurant.utils.Dialog;
 import restaurant.utils.Common;
 import restaurant.table.TableCustom;
 import restaurant.utils.ColumnTable;
+import restaurant.utils.RunnableUtils;
+import restaurant.utils.TextFieldUtils;
 import static restaurant.utils.TextFieldUtils.getRealText;
+import static restaurant.utils.ImageUtils.getScaledImageIcon;
 import static restaurant.utils.TextFieldUtils.addCommasToNumber;
 import static restaurant.utils.TextFieldUtils.removeCommasFromNumber;
-import restaurant.utils.ImageUtils;
-import static restaurant.utils.ImageUtils.getScaledImageIcon;
-import restaurant.utils.TextFieldUtils;
 
 public final class QuickOrderMode extends javax.swing.JFrame {
 
@@ -89,7 +84,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         textSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
         scrollPane = new javax.swing.JScrollPane();
-        panelMainProducts = new javax.swing.JPanel();
+        panelProducts = new javax.swing.JPanel();
         btnHistory = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
         labelOrderedTable = new javax.swing.JLabel();
@@ -108,7 +103,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        labelTotal = new javax.swing.JLabel();
+        labelVoucher = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         menuSystem = new javax.swing.JMenu();
         menuChange = new javax.swing.JMenuItem();
@@ -187,20 +182,20 @@ public final class QuickOrderMode extends javax.swing.JFrame {
 
         scrollPane.setBorder(null);
 
-        panelMainProducts.setBackground(new java.awt.Color(255, 255, 255));
+        panelProducts.setBackground(new java.awt.Color(255, 255, 255));
 
-        javax.swing.GroupLayout panelMainProductsLayout = new javax.swing.GroupLayout(panelMainProducts);
-        panelMainProducts.setLayout(panelMainProductsLayout);
-        panelMainProductsLayout.setHorizontalGroup(
-            panelMainProductsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout panelProductsLayout = new javax.swing.GroupLayout(panelProducts);
+        panelProducts.setLayout(panelProductsLayout);
+        panelProductsLayout.setHorizontalGroup(
+            panelProductsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 1214, Short.MAX_VALUE)
         );
-        panelMainProductsLayout.setVerticalGroup(
-            panelMainProductsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        panelProductsLayout.setVerticalGroup(
+            panelProductsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 690, Short.MAX_VALUE)
         );
 
-        scrollPane.setViewportView(panelMainProducts);
+        scrollPane.setViewportView(panelProducts);
 
         btnHistory.setBackground(new java.awt.Color(51, 204, 0));
         btnHistory.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -357,7 +352,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel1.setText("Tổng cộng:");
+        jLabel1.setText("Voucher:");
 
         labelTotalAmount.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         labelTotalAmount.setForeground(new java.awt.Color(255, 51, 51));
@@ -377,10 +372,10 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         jLabel4.setForeground(new java.awt.Color(51, 51, 51));
         jLabel4.setText("Thanh toán:");
 
-        labelTotal.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
-        labelTotal.setForeground(new java.awt.Color(51, 51, 51));
-        labelTotal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        labelTotal.setText("0");
+        labelVoucher.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        labelVoucher.setForeground(new java.awt.Color(51, 51, 51));
+        labelVoucher.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labelVoucher.setText("0");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -421,7 +416,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
                                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(144, 144, 144)
                                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(labelTotal, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
+                                            .addComponent(labelVoucher, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
                                             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                     .addComponent(jLabel1))))
                         .addContainerGap(20, Short.MAX_VALUE))))
@@ -439,7 +434,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
                 .addComponent(textNote, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelVoucher, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, 0)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -823,8 +818,8 @@ public final class QuickOrderMode extends javax.swing.JFrame {
     private javax.swing.JLabel labelIcon1;
     private javax.swing.JLabel labelOrderTable;
     private javax.swing.JLabel labelOrderedTable;
-    private javax.swing.JLabel labelTotal;
     private javax.swing.JLabel labelTotalAmount;
+    private javax.swing.JLabel labelVoucher;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem menuChange;
     private javax.swing.JMenuItem menuChicken;
@@ -848,57 +843,50 @@ public final class QuickOrderMode extends javax.swing.JFrame {
     private javax.swing.JMenu menuSystem;
     private javax.swing.JMenuItem menuTables;
     private javax.swing.JMenu menuVaiTro;
-    private javax.swing.JPanel panelMainProducts;
     private javax.swing.JPanel panelMenu;
+    private javax.swing.JPanel panelProducts;
     private javax.swing.JScrollPane scrollPane;
     private javax.swing.JTable tableOrder;
     private javax.swing.JTextField textNote;
     private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
-    String tableID;
-    String tableName;
     JLabel selectedMenu;
+    final int COLUMN_CELL = 2;
     final String PLACEHOLDER_NOTE = "Tối đa 60 ký tự";
     final String PLACEHOLDER_SEARCH = "Tìm theo tên món";
-
-    OrderEntity existingOrder;
-    DiningTableEntity dataTable;
-    List<ProductEntity> dataProducts;
-    List<ProductEntity> dataProductsByCategory;
-
     ScheduledFuture<?> scheduledFuture;
-    ExecutorService executorService = Executors.newFixedThreadPool(3);
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     void init() {
-        // Setup common
+        // <--- Setup common --->
+        // set table
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableOrder, new int[]{3}, 30);
         Common.customizeScrollBar(scrollPane);
+
+        // set text field
         TextFieldUtils.addPlaceholder(textNote, PLACEHOLDER_NOTE);
         TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
-        ColumnTable.setupQuantityButtonColumn(tableOrder, 2);
 
-        // Setup
-        setupMenu();
+        // <--- Setup main --->
+        // Get data all
+        List<ProductEntity> dataProducts = new ProductDAO().getAll();
+        setupMenuCategory(dataProducts, panelMenu);
 
-        // Calc total amount click column 2
+        // Add button change quantity "+" and "-"
+        ColumnTable.addQuantityButtonsColumn(tableOrder, COLUMN_CELL);
+
+        // Calc total amount click column 
         tableOrder.getModel().addTableModelListener((TableModelEvent e) -> {
-            if (e.getColumn() == 2) {
-                calculateTotalAmount();
+            if (e.getColumn() == COLUMN_CELL) {
+                calculateTotalAmount(tableOrder, labelTotalAmount);
             }
         });
 
         // Load data
-        initEventHandlers();
-        loadDataByCriteria();
-    }
-
-    static ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
-        Image img = icon.getImage();
-        Image resizedImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        return new ImageIcon(resizedImg);
+        RunnableUtils.addTextFieldListeners(textSearch, this::loadData);
+        this.loadData();
     }
 
     // <--- Common 
@@ -908,60 +896,56 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         this.dispose();
     }
 
-    void setupMenu() {
-        // Get data all
-        dataProducts = new ProductDAO().getAll();
-
+    // <--- setup menu
+    void setupMenuCategory(List<ProductEntity> dataList, JPanel panelMenu) {
         // Create a set to store unique names
         Set<String> dataSet = new HashSet<>();
-        for (ProductEntity dataItem : dataProducts) {
+        for (ProductEntity dataItem : dataList) {
             dataSet.add(dataItem.getCategory());
         }
 
         // Convert the set to a sorted list
-        List<String> dataList = dataSet.stream().sorted().collect(Collectors.toList());
+        List<String> dataCategoryList = dataSet.stream().sorted().collect(Collectors.toList());
 
         // Create buttons for each and add them to panel
-        for (String dataItem : dataList) {
-            // Set button location
-            JLabel item = new JLabel(dataItem);
-            item.setBackground(Color.LIGHT_GRAY);
-            item.setForeground(new Color(120, 120, 120));
-            item.setPreferredSize(new Dimension(140, 50));
-            item.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            item.setVerticalAlignment(SwingConstants.CENTER);
-            item.setHorizontalAlignment(SwingConstants.CENTER);
-            item.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            item.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
+        for (String dataCategoryItem : dataCategoryList) {
+            // Create label category
+            JLabel labelItem = new JLabel(dataCategoryItem);
+            labelItem.setBackground(Color.LIGHT_GRAY);
+            labelItem.setForeground(new Color(120, 120, 120));
+            labelItem.setPreferredSize(new Dimension(140, 50));
+            labelItem.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            labelItem.setVerticalAlignment(SwingConstants.CENTER);
+            labelItem.setHorizontalAlignment(SwingConstants.CENTER);
+            labelItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            labelItem.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
 
             // Handle click location
-            item.addMouseListener(new MouseAdapter() {
+            labelItem.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    handleClickMenu(item);
+                    handleClickMenu(labelItem);
                 }
             });
 
             // Automatically select the first item
             if (selectedMenu == null) {
-                handleClickMenu(item);
+                handleClickMenu(labelItem);
             }
 
             // Add item location to the panel
-            panelMenu.add(item);
+            panelMenu.add(labelItem);
         }
 
         // Set layout for panelButtons
         panelMenu.setLayout(new FlowLayout(FlowLayout.LEFT, 12, 12));
-
-        // Refresh the panel to display the new buttons
         panelMenu.revalidate();
         panelMenu.repaint();
     }
 
-    void handleClickMenu(JLabel item) {
+    void handleClickMenu(JLabel labelItem) {
         // Kiểm tra nếu nút hiện tại không phải là nút đã được chọn trước đó
-        if (selectedMenu == item) {
+        if (selectedMenu == labelItem) {
             return;
         }
 
@@ -972,38 +956,17 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         }
 
         // Thiết lập lại màu cho nút hiện tại
-        item.setForeground(new Color(255, 11, 11));
-        item.setBorder(BorderFactory.createLineBorder(new Color(255, 11, 11), 2, true));
+        labelItem.setForeground(new Color(255, 11, 11));
+        labelItem.setBorder(BorderFactory.createLineBorder(new Color(255, 11, 11), 2, true));
 
         // Cập nhật nút được chọn hiện tại
-        selectedMenu = item;
-        loadDataByCriteria();
-
+        selectedMenu = labelItem;
+        loadData();
     }
     // end --->
 
-    // <--- Load data
-    void initEventHandlers() {
-        // Attach event textSearch
-        textSearch.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-        });
-    }
-
-    void loadDataByCriteria() {
+    // Load data
+    void loadData() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
@@ -1015,21 +978,29 @@ public final class QuickOrderMode extends javax.swing.JFrame {
                 String keyword = getRealText(textSearch, PLACEHOLDER_SEARCH);
 
                 // Get data and display
-                dataProductsByCategory = new ProductDAO().searchByCriteria(keyword, menuItem, "");
-                displayProductList(dataProductsByCategory);
+                List<ProductEntity> dataList
+                        = new ProductDAO().searchByCriteria(keyword, menuItem, "");
+
+                // Display product list on panel
+                displayProductList(
+                        dataList,
+                        panelProducts,
+                        tableOrder,
+                        labelTotalAmount
+                );
             });
         }, 300, TimeUnit.MILLISECONDS);
+
     }
-    // end --->
 
     // <--- Display and handle events products
-    void displayProductList(List<ProductEntity> dataList) {
+    public static void displayProductList(List<ProductEntity> dataList, JPanel panelMain, JTable tableOrder, JLabel labelTotal) {
         // Reset food list
-        panelMainProducts.removeAll();
+        panelMain.removeAll();
 
         // Init GridBagLayout
         GridBagLayout gridBagLayout = new GridBagLayout();
-        panelMainProducts.setLayout(gridBagLayout);
+        panelMain.setLayout(gridBagLayout);
 
         // Init gridbag 
         GridBagConstraints constraints = new GridBagConstraints();
@@ -1044,11 +1015,11 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         // Iterate through the dining table list for the selected area
         for (ProductEntity dataItem : dataList) {
             // Create and set colors based on status
-            JPanel productItem = createPanelProduct(dataItem);
+            JPanel productItem = createPanelProduct(dataItem, tableOrder, labelTotal);
 
             // Add product to the panel main
             gridBagLayout.setConstraints(productItem, constraints);
-            panelMainProducts.add(productItem);
+            panelMain.add(productItem);
 
             // Tăng đếm số cột
             if (++columnCount == maxColumns) {
@@ -1061,19 +1032,19 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         }
 
         // Refresh the panel
-        panelMainProducts.repaint();
-        panelMainProducts.revalidate();
+        panelMain.repaint();
+        panelMain.revalidate();
     }
 
-    JPanel createPanelProduct(ProductEntity product) {
+    public static JPanel createPanelProduct(ProductEntity dataProduct, JTable tableOrder, JLabel labelTotal) {
         // Create a JLabel name
-        JLabel textLabel = new JLabel(product.getProductName());
+        JLabel textLabel = new JLabel(dataProduct.getProductName());
         textLabel.setForeground(new Color(30, 30, 30));
         textLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         textLabel.setFont(new Font(textLabel.getFont().getName(), Font.PLAIN, 14));
 
         // Create a JLabel price
-        String price = String.valueOf(product.getPrice());
+        String price = String.valueOf(dataProduct.getPrice());
         String formattedPrice = addCommasToNumber(price);
         JLabel priceLabel = new JLabel(formattedPrice + "đ");
 
@@ -1083,7 +1054,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         priceLabel.setFont(new Font(priceLabel.getFont().getName(), Font.BOLD, 16));
 
         // Create label top contains (scaledIcon) 
-        ImageIcon scaledIcon = getScaledImageIcon(product.getImageURL(), 170, 200);
+        ImageIcon scaledIcon = getScaledImageIcon(dataProduct.getImageURL(), 170, 200);
         JLabel labelTop = new JLabel(scaledIcon);
 
         // Create panel bottom contains (name, price, border, button)
@@ -1110,26 +1081,26 @@ public final class QuickOrderMode extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 // Add products to the table
-                handleClickOrderProduct(product);
+                handleClickOrderProduct(dataProduct, tableOrder);
 
                 // Calculate and display total amount
-                calculateTotalAmount();
+                calculateTotalAmount(tableOrder, labelTotal);
             }
         });
 
         return mainPanel;
     }
 
-    void handleClickOrderProduct(ProductEntity product) {
+    public static void handleClickOrderProduct(ProductEntity dataProduct, JTable tableOrder) {
         // Get model
         DefaultTableModel saveOrder = (DefaultTableModel) tableOrder.getModel();
-        String priceStr = String.valueOf(product.getPrice());
+        String priceStr = String.valueOf(dataProduct.getPrice());
         String formattedPrice = addCommasToNumber(priceStr);
 
         // Check if the product already exists in the table
         boolean productExists = false;
         for (int i = 0; i < saveOrder.getRowCount(); i++) {
-            if (saveOrder.getValueAt(i, 0).equals(product.getProductID())) {
+            if (saveOrder.getValueAt(i, 0).equals(dataProduct.getProductID())) {
                 // Product exists, increase quantity by 1
                 int quantity = (int) saveOrder.getValueAt(i, 2);
                 saveOrder.setValueAt(quantity + 1, i, 2);
@@ -1141,15 +1112,15 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         // If the product does not exist, add a new row
         if (!productExists) {
             saveOrder.addRow(new Object[]{
-                product.getProductID(),
-                product.getProductName(),
+                dataProduct.getProductID(),
+                dataProduct.getProductName(),
                 1,
                 formattedPrice
             });
         }
     }
 
-    void calculateTotalAmount() {
+    public static void calculateTotalAmount(JTable tableOrder, JLabel labelTotal) {
         long totalAmount = 0;
         DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
 
@@ -1177,20 +1148,24 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         // Format totalAmount to display
         String formattedTotal = addCommasToNumber(String.valueOf(totalAmount));
         labelTotal.setText(formattedTotal);
-        labelTotalAmount.setText(formattedTotal);
     }
+    // end --->
 
     // <--- Handle click button submit and cancel
     void cancel() {
-
         DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
         model.setRowCount(0);
 
-        labelTotal.setText("0");
+        labelVoucher.setText("0");
         labelTotalAmount.setText("0");
     }
 
     void submit() {
+        if (Auth.user == null) {
+            Dialog.warning(this, "Vui lòng đăng nhập!");
+            return;
+        }
+
         if (tableOrder != null && tableOrder.getRowCount() == 0) {
             Dialog.warning(this, "Vui lòng chọn món ăn!");
             return;
@@ -1229,8 +1204,6 @@ public final class QuickOrderMode extends javax.swing.JFrame {
             InvoiceEntity invoiceModel = new InvoiceDAO().getByID(invoiceID);
             invoiceModel.setInvoiceID(invoiceID);
             invoiceModel.setEmployeeID(Auth.user.getEmployeeID());
-            invoiceModel.setTax(0);
-            invoiceModel.setDiscount(0);
             invoiceModel.setPaymentMethod("Tiền mặt");
             invoiceModel.setNote(note);
             invoiceModel.setTotalAmount(totalAmount);

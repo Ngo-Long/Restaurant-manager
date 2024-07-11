@@ -193,9 +193,6 @@ public class HistoryProductDetailJDialog extends javax.swing.JDialog {
     }
 
     public void displayDetailOrder(OrderDetailEntity data) {
-        System.out.println("Run...");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss");
-
         if (data == null) {
             this.setTitle("Chi tiết chế biến");
             labelName.setText("Trống");
@@ -205,6 +202,8 @@ public class HistoryProductDetailJDialog extends javax.swing.JDialog {
             textNote.setText("");
             return;
         }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss");
 
         this.setTitle("Chi tiết chế biến [" + data.getOrderDetailID() + "]");
         ProductEntity dataProduct = new ProductDAO().getByID(data.getProductID());

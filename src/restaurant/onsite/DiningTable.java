@@ -27,6 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import javax.swing.BorderFactory;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
@@ -36,8 +37,9 @@ import restaurant.main.OnSiteMode;
 import restaurant.utils.Common;
 import restaurant.dao.DiningTableDAO;
 import restaurant.entity.OrderEntity;
-import restaurant.dialog.OrderTableJDialog;
+import restaurant.dialog.TableOrderJDialog;
 import restaurant.entity.DiningTableEntity;
+import restaurant.utils.RunnableUtils;
 
 public final class DiningTable extends javax.swing.JPanel {
 
@@ -221,7 +223,7 @@ public final class DiningTable extends javax.swing.JPanel {
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnSearch2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearch2ActionPerformed
-        onSite.displayStaffPanels(new DiningTable(onSite));
+        onSite.displayOnSitePanel(new DiningTable(onSite));
     }//GEN-LAST:event_btnSearch2ActionPerformed
 
     private void btnHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistoryActionPerformed
@@ -243,45 +245,25 @@ public final class DiningTable extends javax.swing.JPanel {
 
     JLabel selectedMenu;
     JButton selectedProduct;
-    OrderEntity dataOrder;
-    DiningTableEntity dataTable;
-    List<DiningTableEntity> dataTables;
+    final int DEBOUNCE_DELAY_LOAD = 300;
+    List<DiningTableEntity> dataAll = new DiningTableDAO().getAll();
     ScheduledFuture<?> scheduledFuture;
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     void init() {
+        // Setup common
         Common.customizeScrollBar(scrollPaneTableDining);
 
-        // Setup combobox
-        setupMenu();
+        // Setup menu
+        setupPanelMenu(panelMenu, dataAll);
 
-        // Load list by search and classify when change
-        initEventHandlers();
-        loadDataByCriteria();
+        // Load load by search when change
+        RunnableUtils.addTextFieldListeners(textSearch, this::loadData);
+        this.loadData();
     }
 
-    // <--- Load data
-    void initEventHandlers() {
-        // Attach event textSearch
-        textSearch.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-        });
-    }
-
-    public void loadDataByCriteria() {
+    // Load data
+    void loadData() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
@@ -293,12 +275,12 @@ public final class DiningTable extends javax.swing.JPanel {
                 String menuItem = selectedMenu.getText();
 
                 // Get data and load
-                dataTables = new DiningTableDAO().searchByCriteria(searchName, menuItem, "");
-                this.displayDiningTables(dataTables);
+                List<DiningTableEntity> dataList
+                        = new DiningTableDAO().searchByCriteria(searchName, menuItem, "");
+                this.displayDiningTables(dataList);
             });
-        }, 200, TimeUnit.MILLISECONDS);
+        }, DEBOUNCE_DELAY_LOAD, TimeUnit.MILLISECONDS);
     }
-    // end --->
 
     // <--- Display and handle event table dining
     public void displayDiningTables(List<DiningTableEntity> dataList) {
@@ -319,7 +301,7 @@ public final class DiningTable extends javax.swing.JPanel {
         int columnCount = 0; // Biến đếm số lượng cột hiện tại
 
         // Iterate through the dining table list for the selected area
-        for (DiningTableEntity dataItem : dataTables) {
+        for (DiningTableEntity dataItem : dataList) {
             // Create and set colors based on status
             JButton tableButton = createTableButton(dataItem);
 
@@ -374,7 +356,7 @@ public final class DiningTable extends javax.swing.JPanel {
         Common.setTableButtonBorder(selectedProduct = tableBtn, true);
 
         // Open dialog and Transmit data via file orderTableDialog
-        OrderTableJDialog dialog = new OrderTableJDialog(null, true, onSite);
+        TableOrderJDialog dialog = new TableOrderJDialog(null, true, onSite);
         dialog.displayTableInfo(data);
         dialog.displayOrderedOfTable(data.getTableID());
         dialog.setLocationRelativeTo(null);
@@ -384,7 +366,7 @@ public final class DiningTable extends javax.swing.JPanel {
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
-                loadDataByCriteria();
+                loadData(); // Reset load data
             }
         });
     }
@@ -409,10 +391,7 @@ public final class DiningTable extends javax.swing.JPanel {
     // end --->
 
     // <--- Handle event search and catogory
-    void setupMenu() {
-        // Get all table list
-        List<DiningTableEntity> dataAll = new DiningTableDAO().getAll();
-
+    void setupPanelMenu(JPanel panelMenu, List<DiningTableEntity> dataAll) {
         // Create a set to store unique names
         Set<String> dataSet = new LinkedHashSet<>();
         for (DiningTableEntity data : dataAll) {
@@ -478,7 +457,7 @@ public final class DiningTable extends javax.swing.JPanel {
 
         // Cập nhật nút được chọn hiện tại
         selectedMenu = item;
-        loadDataByCriteria();
+        this.loadData();
     }
     // end --->   
 }

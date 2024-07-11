@@ -180,6 +180,19 @@ public class TextFieldUtils {
                 }, 500, TimeUnit.MILLISECONDS);
             }
         });
+        
+        textField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                String text = textField.getText().trim();
+                textField.setText(removeCommasFromNumber(text));
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                formatPriceField(textField);
+            }
+        });
     }
 
     private static void formatPriceField(JTextField textFieldPrice) {

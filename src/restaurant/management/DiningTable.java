@@ -26,7 +26,7 @@ import restaurant.table.TableCustom;
 import restaurant.dao.DiningTableDAO;
 import restaurant.main.ManagementMode;
 import restaurant.utils.ComboBoxUtils;
-import restaurant.utils.ComponentUtils;
+import restaurant.utils.RunnableUtils;
 import restaurant.utils.TextFieldUtils;
 import restaurant.entity.DiningTableEntity;
 import restaurant.dialog.UpdateTableJDialog;
@@ -516,8 +516,11 @@ public final class DiningTable extends javax.swing.JPanel {
         );
 
         // Load list by search and classify when change
-        ComponentUtils.addListeners(
+        RunnableUtils.addTextFieldListeners(
                 textSearch,
+                this::loadData
+        );
+        RunnableUtils.addComponentListeners(
                 this::loadData,
                 cbArea, radioOn, radioOff, radioAll
         );

@@ -3,6 +3,8 @@ package restaurant.dialog;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.Objects;
+import restaurant.entity.DiningTableEntity;
+import restaurant.entity.OrderEntity;
 import restaurant.utils.Auth;
 
 public class OrderDetailJDialog extends javax.swing.JDialog {
@@ -188,13 +190,12 @@ public class OrderDetailJDialog extends javax.swing.JDialog {
     private void init() {
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(Color.WHITE);
-        displayDetailOrder();
+
+        displayDetailOrder(Auth.table, Auth.order);
     }
 
-    void displayDetailOrder() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss");
-
-        if (Auth.order == null || Auth.table == null) {
+    void displayDetailOrder(DiningTableEntity dataTable, OrderEntity dataOrder) {
+        if (dataTable == null || dataOrder == null) {
             labelNameTable.setText("Trống");
             labelTimeStart.setText("Trống");
             labelTotalAmount.setText("Trống");
@@ -203,11 +204,13 @@ public class OrderDetailJDialog extends javax.swing.JDialog {
             return;
         }
 
-        this.setTitle("Chi tiết Order [" + Auth.order.getOrderId() + "]");
-        labelNameTable.setText(Objects.toString(Auth.table.getName(), ""));
-        labelTimeStart.setText(dateFormat.format(Auth.order.getCreatedDate()));
-        labelTotalAmount.setText(Auth.order.getTotal() + " VND" + " / " + 1 + " đơn");
-        labelStatus.setText(Auth.order.getStatus());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss");
+
+        this.setTitle("Chi tiết Order [" + dataOrder.getOrderId() + "]");
+        labelNameTable.setText(Objects.toString(dataTable.getName(), ""));
+        labelTimeStart.setText(dateFormat.format(dataOrder.getCreatedDate()));
+        labelTotalAmount.setText(dataOrder.getTotal() + " VND" + " / " + 1 + " đơn");
+        labelStatus.setText(dataOrder.getStatus());
 
     }
 

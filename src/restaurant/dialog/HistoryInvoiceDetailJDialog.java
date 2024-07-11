@@ -1,23 +1,28 @@
 package restaurant.dialog;
 
 import java.awt.Color;
-import java.text.SimpleDateFormat;
 import java.util.List;
+import java.text.SimpleDateFormat;
+
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import restaurant.dao.DiningTableDAO;
-import restaurant.dao.EmployeeDAO;
+
+import restaurant.utils.Common;
+import restaurant.table.TableCustom;
+import restaurant.utils.TextFieldUtils;
+
 import restaurant.dao.OrderDAO;
 import restaurant.dao.ProductDAO;
-import restaurant.entity.DiningTableEntity;
-import restaurant.entity.EmployeeEntity;
-import restaurant.entity.InvoiceEntity;
-import restaurant.entity.OrderDetailEntity;
+import restaurant.dao.EmployeeDAO;
+import restaurant.dao.DiningTableDAO;
+import restaurant.dao.OrderDetailDAO;
+
 import restaurant.entity.OrderEntity;
 import restaurant.entity.ProductEntity;
-import restaurant.table.TableCustom;
-import restaurant.utils.Common;
-import restaurant.dao.OrderDetailDAO;
-import restaurant.utils.TextFieldUtils;
+import restaurant.entity.InvoiceEntity;
+import restaurant.entity.EmployeeEntity;
+import restaurant.entity.DiningTableEntity;
+import restaurant.entity.OrderDetailEntity;
 
 public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
 
@@ -258,9 +263,6 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
     }
 
     public void displayDetailInvoice(InvoiceEntity data) {
-        System.out.println("Run...");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss");
-
         if (data == null) {
             this.setTitle("Chi tiết đơn hàng");
             labelTable.setText("Trống");
@@ -272,6 +274,7 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
             return;
         }
 
+        // Set title
         this.setTitle("Chi tiết đơn hàng [" + data.getInvoiceID() + "]");
 
         // Get table name list
@@ -290,7 +293,7 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
         // Set name 
         EmployeeEntity employee = new EmployeeDAO().getByID(data.getEmployeeID());
         String employeeName = employee.getFullName();
-        
+
         // Set total
         String total = String.valueOf(data.getTotalAmount());
         String totalConfirm = TextFieldUtils.addCommasToNumber(total) + " đ";
@@ -301,6 +304,14 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
         labelTotal.setText(totalConfirm);
         labelStatus.setText(data.getStatus());
         textNote.setText(data.getNote());
+
+        this.displayTableOrder(dataOrders, tableOrdered);
+    }
+
+    void displayTableOrder(List<OrderEntity> dataOrders, JTable tableMain) {
+        if (dataOrders == null) {
+            return;
+        }
 
         // Set table ordered
         for (OrderEntity dataOrder : dataOrders) {
@@ -316,7 +327,7 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
                 String productStatus = dataDetail.getProductStatus();
 
                 // Get model
-                DefaultTableModel table = (DefaultTableModel) tableOrdered.getModel();
+                DefaultTableModel table = (DefaultTableModel) tableMain.getModel();
 
                 // Update model
                 table.addRow(new Object[]{
@@ -324,9 +335,6 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
                     productStatus
                 });
             }
-
         }
-
     }
-
 }

@@ -9,16 +9,16 @@ import java.util.ArrayList;
 
 public class GoodsDAO extends RestaurantDAO<GoodsEntity, String> {
 
-    final String INSERT_SQL = "INSERT INTO Goods (GoodsID, GoodsName, UnitPrice, "
-            + "ImageURL,Category, InitialQuantity, MinimumQuantity, Status, Note, Activity) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    final String UPDATE_SQL = "UPDATE Goods SET GoodsName=?, UnitPrice=?, ImageURL=?, Category=?, "
+    final String INSERT_SQL = "INSERT INTO Goods (GoodsID, GoodsName, UnitPrice, Unit, "
+            + "ImageURL, Category, InitialQuantity, MinimumQuantity, Status, Note, Activity) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    final String UPDATE_SQL = "UPDATE Goods SET GoodsName=?, UnitPrice=?, Unit=?, ImageURL=?, Category=?, "
             + "InitialQuantity=?, MinimumQuantity=?, Status=?, Note=?, Activity=? WHERE GoodsID=?";
     final String DELETE_SQL = "DELETE FROM Goods WHERE GoodsID =?";
     final String IS_EXISTS_SQL = "SELECT COUNT(*) FROM Goods WHERE GoodsID = ?";
     final String SELECT_ALL_SQL = "SELECT * FROM Goods";
     final String SELECT_BY_ID_SQL = "SELECT * FROM Goods WHERE GoodsID=?";
-    final String SELECT_BY_CRITERIA = "SELECT TOP (1000) [GoodsID], [GoodsName], [UnitPrice], "
+    final String SELECT_BY_CRITERIA = "SELECT TOP (1000) [GoodsID], [GoodsName], [UnitPrice], [Unit], "
             + "[ImageURL], [Category], [InitialQuantity], [MinimumQuantity], [Status], [Note], [Activity] "
             + "FROM [RestaurantManager].[dbo].[Goods] "
             + "WHERE ( GoodsID LIKE ? OR [GoodsName] LIKE ? ) "
@@ -30,7 +30,8 @@ public class GoodsDAO extends RestaurantDAO<GoodsEntity, String> {
                 entity.getGoodsID(),
                 entity.getGoodsName(),
                 entity.getUnitPrice(),
-                entity.getImageUrl(),
+                entity.getUnit(),
+                entity.getImageURL(),
                 entity.getCategory(),
                 entity.getInitialQuantity(),
                 entity.getMinimumQuantity(),
@@ -45,7 +46,8 @@ public class GoodsDAO extends RestaurantDAO<GoodsEntity, String> {
         JDBC.executeUpdate(UPDATE_SQL,
                 entity.getGoodsName(),
                 entity.getUnitPrice(),
-                entity.getImageUrl(),
+                entity.getUnit(),
+                entity.getImageURL(),
                 entity.getCategory(),
                 entity.getInitialQuantity(),
                 entity.getMinimumQuantity(),
@@ -113,7 +115,8 @@ public class GoodsDAO extends RestaurantDAO<GoodsEntity, String> {
         model.setGoodsID(rs.getString("GoodsID"));
         model.setGoodsName(rs.getString("GoodsName"));
         model.setUnitPrice(rs.getLong("UnitPrice"));
-        model.setCategory(rs.getString("ImageURL"));
+        model.setUnit(rs.getString("Unit"));
+        model.setImageURL(rs.getString("ImageURL"));
         model.setCategory(rs.getString("Category"));
         model.setInitialQuantity(rs.getInt("InitialQuantity"));
         model.setMinimumQuantity(rs.getInt("MinimumQuantity"));

@@ -384,8 +384,7 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         }
 
         // Setup model
-        DiningTableEntity table = Auth.table;
-        setModel(table);
+        setModel(Auth.table);
     }
 
     public void setIsEditable(boolean editable) {
@@ -457,6 +456,9 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
 
     void insert() {
         DiningTableEntity model = getModel();
+        if (model == null) {
+            return;
+        }
 
         if (new DiningTableDAO().isIdDuplicated(model.getTableID())) {
             Dialog.warning(this, "Mã ID đã tồn tại. Vui lòng chọn mã ID khác!");
@@ -480,7 +482,10 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
 
     void update() {
         DiningTableEntity model = getModel();
-
+        if (model == null) {
+            return;
+        }
+        
         if (!new DiningTableDAO().isIdDuplicated(model.getTableID())) {
             Dialog.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
             return;

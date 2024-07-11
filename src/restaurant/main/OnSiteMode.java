@@ -16,7 +16,7 @@ import restaurant.onsite.Overview;
 import restaurant.onsite.Products;
 import restaurant.onsite.Invoices;
 import restaurant.onsite.DiningTable;
-import restaurant.onsite.KitchenArea;
+import restaurant.onsite.AreaKitchen;
 
 public final class OnSiteMode extends javax.swing.JFrame {
 
@@ -490,19 +490,19 @@ public final class OnSiteMode extends javax.swing.JFrame {
     }//GEN-LAST:event_menuEndActionPerformed
 
     private void menuTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTablesActionPerformed
-        displayStaffPanels(new DiningTable(this));
+        displayOnSitePanel(new DiningTable(this));
     }//GEN-LAST:event_menuTablesActionPerformed
 
     private void menuDishesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDishesActionPerformed
-        displayStaffPanels(new Products(this));
+        displayOnSitePanel(new Products(this));
     }//GEN-LAST:event_menuDishesActionPerformed
 
     private void menuChickenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChickenActionPerformed
-        displayStaffPanels(new KitchenArea(this));
+        displayOnSitePanel(new AreaKitchen(this));
     }//GEN-LAST:event_menuChickenActionPerformed
 
     private void menuPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuPayActionPerformed
-        displayStaffPanels(new Invoices(this));
+        displayOnSitePanel(new Invoices(this));
     }//GEN-LAST:event_menuPayActionPerformed
 
     private void menuRevenueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRevenueActionPerformed
@@ -529,23 +529,24 @@ public final class OnSiteMode extends javax.swing.JFrame {
     }//GEN-LAST:event_menuIntroduceActionPerformed
 
     private void btnOverviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOverviewActionPerformed
-        displayStaffPanels(new Overview(this));
+        displayOnSitePanel(new Overview(this));
     }//GEN-LAST:event_btnOverviewActionPerformed
 
     private void btnTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTableActionPerformed
-        displayStaffPanels(new DiningTable(this));
+        displayOnSitePanel(new DiningTable(this));
     }//GEN-LAST:event_btnTableActionPerformed
 
     private void btnProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductActionPerformed
         Auth.table = null;
         Auth.order = null;
-        displayStaffPanels(new Products(this));
+        displayOnSitePanel(new Products(this));
     }//GEN-LAST:event_btnProductActionPerformed
 
     private void btnPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPayActionPerformed
         Auth.table = null;
         Auth.order = null;
-        displayStaffPanels(new Invoices(this));
+        Auth.invoice = null;
+        displayOnSitePanel(new Invoices(this));
     }//GEN-LAST:event_btnPayActionPerformed
 
     private void btnOrderTakeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderTakeActionPerformed
@@ -569,7 +570,7 @@ public final class OnSiteMode extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCheckActionPerformed
 
     private void btnBellActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBellActionPerformed
-        displayStaffPanels(new KitchenArea(this));
+        displayOnSitePanel(new AreaKitchen(this));
     }//GEN-LAST:event_btnBellActionPerformed
 
     private void btnMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuActionPerformed
@@ -667,7 +668,7 @@ public final class OnSiteMode extends javax.swing.JFrame {
         Common.customizeScrollBar(scrollPaneMain);
 
         setupHeaderButtons(btnOverview);
-        displayStaffPanels(new Overview(this));
+        displayOnSitePanel(new Overview(this));
     }
 
     public JButton[] getHeaderButtons() {
@@ -716,7 +717,7 @@ public final class OnSiteMode extends javax.swing.JFrame {
         button.setFont(button.getFont().deriveFont(fontWeight));
     }
 
-    public void displayStaffPanels(JPanel panel) {
+    public void displayOnSitePanel(JPanel panel) {
         panelMain.removeAll();
         panelMain.setLayout(new BorderLayout());
         panelMain.add(panel, BorderLayout.CENTER);

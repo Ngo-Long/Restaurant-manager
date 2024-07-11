@@ -1,45 +1,32 @@
 package restaurant.management;
 
 import java.awt.Color;
-import java.text.MessageFormat;
-import java.awt.event.MouseEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.WindowAdapter;
-import java.awt.event.ActionListener;
-import java.awt.print.PrinterException;
+import java.util.Date;
 
-import java.util.Set;
 import java.util.List;
-import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
 
-import javax.swing.JTable;
-import javax.swing.JComboBox;
 import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import restaurant.dao.InvoiceDAO;
 
 import restaurant.utils.Auth;
-import restaurant.utils.Common;
-import restaurant.dao.ProductDAO;
+import restaurant.dao.ReceiptDAO;
+import restaurant.dialog.HistoryInvoiceDetailJDialog;
+import restaurant.entity.InvoiceEntity;
 import restaurant.table.TableCustom;
 import restaurant.main.ManagementMode;
 import restaurant.utils.TextFieldUtils;
-import restaurant.entity.ProductEntity;
-import restaurant.dialog.UpdateProductJDialog;
+import restaurant.entity.ReceiptEntity;
+import restaurant.utils.ColumnTable;
 import static restaurant.utils.Common.customizeTable;
 import static restaurant.utils.Common.createButtonGroup;
 import static restaurant.utils.ExportFile.exportToExcel;
+import static restaurant.utils.RunnableUtils.addComponentListeners;
+import static restaurant.utils.RunnableUtils.addTextFieldListeners;
 
 public final class Receipt extends javax.swing.JPanel {
 
@@ -63,7 +50,7 @@ public final class Receipt extends javax.swing.JPanel {
         btnExport = new javax.swing.JButton();
         btnAdd = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tableEmployees = new javax.swing.JTable();
+        tableReceipts = new javax.swing.JTable();
         btnLast = new javax.swing.JButton();
         btnNext = new javax.swing.JButton();
         btnPrev = new javax.swing.JButton();
@@ -75,12 +62,19 @@ public final class Receipt extends javax.swing.JPanel {
         jPanel3 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         textStartDate = new com.toedter.calendar.JDateChooser();
-        textStartDate1 = new com.toedter.calendar.JDateChooser();
+        textEndDate = new com.toedter.calendar.JDateChooser();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        radioOn = new javax.swing.JRadioButton();
-        radioOff = new javax.swing.JRadioButton();
-        radioAll = new javax.swing.JRadioButton();
+        radioPurchase = new javax.swing.JRadioButton();
+        radioReturn = new javax.swing.JRadioButton();
+        radioAllReceipt = new javax.swing.JRadioButton();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        radioPaied = new javax.swing.JRadioButton();
+        radioUnpay = new javax.swing.JRadioButton();
+        radioAllPay = new javax.swing.JRadioButton();
 
         panelBody.setToolTipText("");
 
@@ -89,7 +83,7 @@ public final class Receipt extends javax.swing.JPanel {
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel3.setText("Phiếu nhập hàng");
+        jLabel3.setText("Phiếu hàng hóa");
 
         btnExport.setBackground(new java.awt.Color(0, 153, 0));
         btnExport.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -107,7 +101,7 @@ public final class Receipt extends javax.swing.JPanel {
         btnAdd.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnAdd.setForeground(new java.awt.Color(255, 255, 255));
         btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/plusWhile.png"))); // NOI18N
-        btnAdd.setText("Tạo phiếu nhập");
+        btnAdd.setText("Tạo phiếu");
         btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -115,23 +109,23 @@ public final class Receipt extends javax.swing.JPanel {
             }
         });
 
-        tableEmployees.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        tableEmployees.setModel(new javax.swing.table.DefaultTableModel(
+        tableReceipts.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        tableReceipts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Mã phiếu", "Tên NCC", "Tên nhân viên", "Ngày tạo", "Tổng tiền", "Note", "Trạng thái", "Chi tiết"
+                "Mã phiếu", "Tên NCC", "Ngày tạo", "Loại phiếu", "Tổng tiền", "Trạng thái", "Chi tiết"
             }
         ));
-        tableEmployees.setGridColor(new java.awt.Color(255, 255, 255));
-        tableEmployees.setRowHeight(40);
-        jScrollPane1.setViewportView(tableEmployees);
-        if (tableEmployees.getColumnModel().getColumnCount() > 0) {
-            tableEmployees.getColumnModel().getColumn(0).setPreferredWidth(20);
+        tableReceipts.setGridColor(new java.awt.Color(255, 255, 255));
+        tableReceipts.setRowHeight(40);
+        jScrollPane1.setViewportView(tableReceipts);
+        if (tableReceipts.getColumnModel().getColumnCount() > 0) {
+            tableReceipts.getColumnModel().getColumn(0).setPreferredWidth(30);
         }
 
         btnLast.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -212,16 +206,16 @@ public final class Receipt extends javax.swing.JPanel {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(10, 10, 10)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 483, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLast)
                     .addComponent(btnNext)
                     .addComponent(btnPrev)
                     .addComponent(btnFirst)
                     .addComponent(jLabel6))
-                .addGap(10, 10, 10))
+                .addContainerGap())
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -269,11 +263,15 @@ public final class Receipt extends javax.swing.JPanel {
         textStartDate.setFocusable(false);
         textStartDate.setFont(new java.awt.Font("Be Vietnam Pro", 0, 13)); // NOI18N
 
-        textStartDate1.setBackground(new java.awt.Color(255, 255, 255));
-        textStartDate1.setToolTipText("Ngày");
-        textStartDate1.setDateFormatString("dd/MM/yyyy");
-        textStartDate1.setFocusable(false);
-        textStartDate1.setFont(new java.awt.Font("Be Vietnam Pro", 0, 13)); // NOI18N
+        textEndDate.setBackground(new java.awt.Color(255, 255, 255));
+        textEndDate.setToolTipText("Ngày");
+        textEndDate.setDateFormatString("dd/MM/yyyy");
+        textEndDate.setFocusable(false);
+        textEndDate.setFont(new java.awt.Font("Be Vietnam Pro", 0, 13)); // NOI18N
+
+        jLabel8.setText("Từ:");
+
+        jLabel9.setText("Đến:");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -282,10 +280,19 @@ public final class Receipt extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(textStartDate1, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4)
-                    .addComponent(textStartDate, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(9, 9, 9)))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(textStartDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(textEndDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jLabel4))
+                .addGap(12, 12, 12))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -293,9 +300,13 @@ public final class Receipt extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addComponent(jLabel4)
                 .addGap(18, 18, 18)
-                .addComponent(textStartDate, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(textStartDate1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(textStartDate, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(12, 12, 12)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(textEndDate, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
@@ -303,27 +314,27 @@ public final class Receipt extends javax.swing.JPanel {
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel5.setText("Trạng thái");
+        jLabel5.setText("Loại phiếu");
 
-        radioOn.setText("Phiếu tạm");
-        radioOn.addActionListener(new java.awt.event.ActionListener() {
+        radioPurchase.setText("Phiếu nhập hàng");
+        radioPurchase.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioOnActionPerformed(evt);
+                radioPurchaseActionPerformed(evt);
             }
         });
 
-        radioOff.setSelected(true);
-        radioOff.setText("Đã nhập hàng");
-        radioOff.addActionListener(new java.awt.event.ActionListener() {
+        radioReturn.setText("Phiếu trả hàng");
+        radioReturn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioOffActionPerformed(evt);
+                radioReturnActionPerformed(evt);
             }
         });
 
-        radioAll.setText("Đã hủy");
-        radioAll.addActionListener(new java.awt.event.ActionListener() {
+        radioAllReceipt.setSelected(true);
+        radioAllReceipt.setText("Tất cả");
+        radioAllReceipt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioAllActionPerformed(evt);
+                radioAllReceiptActionPerformed(evt);
             }
         });
 
@@ -334,11 +345,11 @@ public final class Receipt extends javax.swing.JPanel {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(radioAll)
-                    .addComponent(radioOff)
-                    .addComponent(radioOn)
+                    .addComponent(radioAllReceipt)
+                    .addComponent(radioReturn)
+                    .addComponent(radioPurchase)
                     .addComponent(jLabel5))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(86, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -346,11 +357,66 @@ public final class Receipt extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addComponent(jLabel5)
                 .addGap(18, 18, 18)
-                .addComponent(radioOn)
+                .addComponent(radioPurchase)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(radioOff)
+                .addComponent(radioReturn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(radioAll)
+                .addComponent(radioAllReceipt)
+                .addContainerGap(12, Short.MAX_VALUE))
+        );
+
+        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel7.setText("Trạng thái");
+
+        radioPaied.setText("Đã thanh toán");
+        radioPaied.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioPaiedActionPerformed(evt);
+            }
+        });
+
+        radioUnpay.setText("Chưa thanh toán");
+        radioUnpay.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioUnpayActionPerformed(evt);
+            }
+        });
+
+        radioAllPay.setSelected(true);
+        radioAllPay.setText("Tất cả");
+        radioAllPay.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioAllPayActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(radioAllPay)
+                    .addComponent(radioUnpay)
+                    .addComponent(radioPaied)
+                    .addComponent(jLabel7))
+                .addContainerGap(85, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(jLabel7)
+                .addGap(18, 18, 18)
+                .addComponent(radioPaied)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(radioUnpay)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(radioAllPay)
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
@@ -359,11 +425,17 @@ public final class Receipt extends javax.swing.JPanel {
         panelBodyLayout.setHorizontalGroup(
             panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBodyLayout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelBodyLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelBodyLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1022, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(18, Short.MAX_VALUE))
@@ -373,14 +445,18 @@ public final class Receipt extends javax.swing.JPanel {
             .addGroup(panelBodyLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 584, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panelBodyLayout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 584, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(33, Short.MAX_VALUE))
                     .addGroup(panelBodyLayout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addGap(14, 14, 14)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(18, Short.MAX_VALUE))
+                        .addGap(14, 14, 14)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(14, 14, 14)
+                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -398,13 +474,12 @@ public final class Receipt extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
-        exportToExcel(tableEmployees, "Kho hàng");
+        exportToExcel(tableReceipts, "Kho hàng");
     }//GEN-LAST:event_btnExportActionPerformed
 
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        Auth.table = null;
-        openUpdateDialog("Thêm nguyên liệu", true);
+        managementMode.displayManagementPanel(new CreateReceipt(managementMode));
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastActionPerformed
@@ -426,17 +501,23 @@ public final class Receipt extends javax.swing.JPanel {
     private void textSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSearchActionPerformed
     }//GEN-LAST:event_textSearchActionPerformed
 
-    private void radioOnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_radioOnActionPerformed
+    private void radioPurchaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioPurchaseActionPerformed
+    }//GEN-LAST:event_radioPurchaseActionPerformed
 
-    private void radioOffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOffActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_radioOffActionPerformed
+    private void radioReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioReturnActionPerformed
+    }//GEN-LAST:event_radioReturnActionPerformed
 
-    private void radioAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioAllActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_radioAllActionPerformed
+    private void radioAllReceiptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioAllReceiptActionPerformed
+    }//GEN-LAST:event_radioAllReceiptActionPerformed
+
+    private void radioPaiedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioPaiedActionPerformed
+    }//GEN-LAST:event_radioPaiedActionPerformed
+
+    private void radioUnpayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioUnpayActionPerformed
+    }//GEN-LAST:event_radioUnpayActionPerformed
+
+    private void radioAllPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioAllPayActionPerformed
+    }//GEN-LAST:event_radioAllPayActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
@@ -452,34 +533,41 @@ public final class Receipt extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panelBody;
-    private javax.swing.JRadioButton radioAll;
-    private javax.swing.JRadioButton radioOff;
-    private javax.swing.JRadioButton radioOn;
-    private javax.swing.JTable tableEmployees;
+    private javax.swing.JRadioButton radioAllPay;
+    private javax.swing.JRadioButton radioAllReceipt;
+    private javax.swing.JRadioButton radioPaied;
+    private javax.swing.JRadioButton radioPurchase;
+    private javax.swing.JRadioButton radioReturn;
+    private javax.swing.JRadioButton radioUnpay;
+    private javax.swing.JTable tableReceipts;
+    private com.toedter.calendar.JDateChooser textEndDate;
     private javax.swing.JTextField textSearch;
     private com.toedter.calendar.JDateChooser textStartDate;
-    private com.toedter.calendar.JDateChooser textStartDate1;
     // End of variables declaration//GEN-END:variables
 
     int row = -1;
-    final int DEBOUNCE_DELAY_LOAD = 300; // milliseconds
+    final int DEBOUNCE_DELAY_LOAD = 300;
     final String PLACEHOLDER_STATUS = "--Trạng thái--";
-    final String PLACEHOLDER_SEARCH = "Tìm theo mã hóa đơn";
-    List<InvoiceEntity> dataAll = new InvoiceDAO().getAll();
+    final String PLACEHOLDER_SEARCH = "Tìm theo mã";
+    List<ReceiptEntity> dataAll = new ReceiptDAO().getAll();
 
     ScheduledFuture<?> scheduledFuture;
-    ExecutorService executorService = Executors.newFixedThreadPool(3);
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     void init() {
         // <--- Fuction common from file common --->
-        createButtonGroup(radioOn, radioOff, radioAll);
+        createButtonGroup(radioPaied, radioUnpay, radioAllPay);
+        createButtonGroup(radioPurchase, radioReturn, radioAllReceipt);
 
         // edit field text
         TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
@@ -487,63 +575,45 @@ public final class Receipt extends javax.swing.JPanel {
 
         // edit table
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
-        customizeTable(tableEmployees, new int[]{}, 30);
+        customizeTable(tableReceipts, new int[]{}, 30);
 
         // <--- Setup main --->
-        // Load list by search and classify when change
-        initEventHandlers();
-        loadDataByCriteria();
+        // set today on JDateChooser
+        textEndDate.setDate(new Date());
+        textStartDate.setDate(new Date());
 
-        // handle click table
-        tablesMouseClicked();
-        addDataToCombobox();
+        // add button cell column table
+        int coulumnCell = 6;
+        ColumnTable.addDetailButtonColumn(
+                tableReceipts,
+                coulumnCell,
+                this::handleClickDetailButton
+        );
+
+        // load list by search and classify when change
+        addTextFieldListeners(textSearch, this::loadData);
+        addComponentListeners(this::loadData, radioPaied, radioUnpay, radioAllPay);
+        addComponentListeners(this::loadData, radioPurchase, radioReturn, radioAllReceipt);
+        this.loadData();
     }
 
-    void tablesMouseClicked() {
-        tableEmployees.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                JTable target = (JTable) e.getSource();
-                int row = target.getSelectedRow();
-                if (row == -1) {
-                    return;
-                }
-
-                // Lấy dữ liệu từ hàng được chọn
-                String id = (String) target.getValueAt(row, 0);
-                DiningTableEntity table = new DiningTableDAO().getByID(id);
-
-                Auth.table = table;
-                openUpdateDialog("Cập nhật nguyên liệu", false);
-            }
-        });
-    }
-
-    void openUpdateDialog(String title, boolean isEditable) {
-        if (title == null || title.equals("")) {
+    void handleClickDetailButton(int row) {
+        if (row == -1) {
             return;
         }
 
-        // Init dialog
-        UpdateTableJDialog dialog = new UpdateTableJDialog(null, true);
+        // Get data detail
+        int invoiceID = (int) tableReceipts.getValueAt(row, 0);
+        InvoiceEntity dataInvoice = new InvoiceDAO().getByID(invoiceID);
 
-        dialog.setTitle(title); // Set title dialog
-        dialog.setIsEditable(isEditable); // Set editable 
-
-        // Attach event when dispose
-        dialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosed(WindowEvent e) {
-                loadDataByCriteria();
-                addDataToCombobox();
-            }
-        });
-
+        // Open dialog 
+        HistoryInvoiceDetailJDialog dialog = new HistoryInvoiceDetailJDialog(null, true);
+        dialog.displayDetailInvoice(dataInvoice);
         dialog.setVisible(true);
     }
 
     // <--- Load data
-    void loadDataByCriteria() {
+    void loadData() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
@@ -556,31 +626,37 @@ public final class Receipt extends javax.swing.JPanel {
                     keyword = "";
                 }
 
-                String selectedRadio = radioOn.isSelected() ? radioOn.getText()
-                        : radioOff.isSelected() ? radioOff.getText() : "";
+                String selectedRadioReceipt = radioPurchase.isSelected() ? radioPurchase.getText()
+                        : radioReturn.isSelected() ? radioReturn.getText() : "";
+
+                String selectedRadioPay = radioPaied.isSelected() ? radioUnpay.getText()
+                        : radioAllPay.isSelected() ? radioAllPay.getText() : "";
 
                 // Get data and load
-                dataEmployees = new EmployeeDAO().searchByCriteria(keyword, keyword, position, selectedRadio);
-                this.fillTable(dataEmployees);
+//                List<ReceiptEntity> dataList
+//                        = new ReceiptDAO().searchByCriteria(keyword, keyword, position, selectedRadioPay);
+                List<ReceiptEntity> dataList = new ReceiptDAO().getAll();
+                this.fillTable(dataList);
             });
         }, DEBOUNCE_DELAY_LOAD, TimeUnit.MILLISECONDS);
     }
 
-    public void fillTable(List<EmployeeEntity> dataList) {
+    public void fillTable(List<ReceiptEntity> dataList) {
         System.out.println("Đang load dữ liệu từ cơ sở dữ liệu...");
 
         // Display table
-        DefaultTableModel model = (DefaultTableModel) tableEmployees.getModel();
+        DefaultTableModel model = (DefaultTableModel) tableReceipts.getModel();
         model.setRowCount(0);
 
         // Load data into the table 
-        for (EmployeeEntity dataItem : dataList) {
+        for (ReceiptEntity dataItem : dataList) {
             model.addRow(new Object[]{
+                dataItem.getReceiptID(),
                 dataItem.getEmployeeID(),
-                dataItem.getFullName(),
-                dataItem.getGender(),
-                dataItem.getPhone(),
-                dataItem.getPosition(),
+                dataItem.getSupplierID(),
+                dataItem.getReceiptDate(),
+                dataItem.getTotalAmount(),
+                dataItem.getNote(),
                 dataItem.getStatus()
             });
         }
@@ -594,16 +670,16 @@ public final class Receipt extends javax.swing.JPanel {
     }
 
     void selectTableRow(int rowIndex) {
-        if (rowIndex >= 0 && rowIndex < tableEmployees.getRowCount()) {
-            tableEmployees.setRowSelectionInterval(rowIndex, rowIndex);
-            tableEmployees.scrollRectToVisible(tableEmployees.getCellRect(rowIndex, 0, true));
+        if (rowIndex >= 0 && rowIndex < tableReceipts.getRowCount()) {
+            tableReceipts.setRowSelectionInterval(rowIndex, rowIndex);
+            tableReceipts.scrollRectToVisible(tableReceipts.getCellRect(rowIndex, 0, true));
         }
     }
 
     void directional() {
         boolean edit = (this.row >= 0);
         boolean first = (this.row == 0);
-        boolean last = (this.row == tableEmployees.getRowCount() - 1);
+        boolean last = (this.row == tableReceipts.getRowCount() - 1);
 
         btnFirst.setEnabled(!first);
         btnPrev.setEnabled(edit && !first);
@@ -624,14 +700,14 @@ public final class Receipt extends javax.swing.JPanel {
     }
 
     void next() {
-        if (this.row < tableEmployees.getRowCount() - 1) {
+        if (this.row < tableReceipts.getRowCount() - 1) {
             this.row++;
             this.edit();
         }
     }
 
     void last() {
-        this.row = tableEmployees.getRowCount() - 1;
+        this.row = tableReceipts.getRowCount() - 1;
         this.edit();
     }
     // end --->

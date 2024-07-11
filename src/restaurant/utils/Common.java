@@ -1,23 +1,17 @@
 package restaurant.utils;
 
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
 import javax.swing.table.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
+import restaurant.dialog.SmallJDialog;
 
 public class Common {
 
@@ -25,7 +19,7 @@ public class Common {
     public static void initClock(JLabel labelHouse) {
         Timer timer = new Timer(1000, e -> {
             LocalTime currentTime = LocalTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
             String formattedTime = currentTime.format(formatter);
 
             labelHouse.setText(formattedTime);
@@ -283,4 +277,34 @@ public class Common {
         }
         return buttonGroup;
     }
+
+      // <--- Dialog small
+    public static void openSmallDialog(String title, String field, JComboBox combobox) {
+        if (title.equals("") || field.equals("")) {
+            return;
+        }
+
+        // Init dialog
+        SmallJDialog dialog = new SmallJDialog(null, true);
+
+        // Set title dialog
+        dialog.setTitle(title);
+        dialog.setLabel(field);
+        dialog.setCombobox(combobox);
+
+        // Open dialog
+        dialog.setVisible(true);
+    }
+
+    public static void setComboBoxValue(String value, JComboBox cbMain) {
+        if (value.trim().equals("") || value == null) {
+            return;
+        }
+
+        DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) cbMain.getModel();
+
+        model.addElement(value); // Add value
+        cbMain.setSelectedItem(value); // Display
+    }
+    // end --->
 }

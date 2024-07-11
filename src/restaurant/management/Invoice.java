@@ -17,7 +17,7 @@ import javax.swing.table.DefaultTableModel;
 import restaurant.utils.Common;
 import restaurant.utils.ColumnTable;
 import restaurant.utils.ComboBoxUtils;
-import restaurant.utils.ComponentUtils;
+import restaurant.utils.RunnableUtils;
 import restaurant.utils.TextFieldUtils;
 
 import restaurant.dao.InvoiceDAO;
@@ -87,11 +87,6 @@ public final class Invoice extends javax.swing.JPanel {
         jLabel1.setText("Trạng thái");
 
         cbEmployees.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cbEmployees.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbEmployeesActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -139,11 +134,6 @@ public final class Invoice extends javax.swing.JPanel {
         btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/plusWhile.png"))); // NOI18N
         btnAdd.setText("Nhận gọi món");
         btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
-            }
-        });
 
         btnLast.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnLast.setText(">|");
@@ -272,12 +262,6 @@ public final class Invoice extends javax.swing.JPanel {
         jLabel2.setForeground(new java.awt.Color(51, 51, 51));
         jLabel2.setText("Tìm kiếm");
 
-        textSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textSearchActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -307,25 +291,10 @@ public final class Invoice extends javax.swing.JPanel {
 
         radioOn.setSelected(true);
         radioOn.setText("Đã thanh toán");
-        radioOn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioOnActionPerformed(evt);
-            }
-        });
 
         radioOff.setText("Chưa thanh toán");
-        radioOff.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioOffActionPerformed(evt);
-            }
-        });
 
         radioAll.setText("Tất cả");
-        radioAll.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioAllActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -462,25 +431,9 @@ public final class Invoice extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cbEmployeesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbEmployeesActionPerformed
-    }//GEN-LAST:event_cbEmployeesActionPerformed
-
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
         exportToExcel(tableInvoices, "Hóa đơn");
     }//GEN-LAST:event_btnExportActionPerformed
-
-
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-    }//GEN-LAST:event_btnAddActionPerformed
-
-    private void radioOnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOnActionPerformed
-    }//GEN-LAST:event_radioOnActionPerformed
-
-    private void radioOffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOffActionPerformed
-    }//GEN-LAST:event_radioOffActionPerformed
-
-    private void radioAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioAllActionPerformed
-    }//GEN-LAST:event_radioAllActionPerformed
 
     private void btnLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastActionPerformed
         last();
@@ -497,9 +450,6 @@ public final class Invoice extends javax.swing.JPanel {
     private void btnFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstActionPerformed
         first();
     }//GEN-LAST:event_btnFirstActionPerformed
-
-    private void textSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSearchActionPerformed
-    }//GEN-LAST:event_textSearchActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
@@ -536,7 +486,6 @@ public final class Invoice extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     int row = -1;
-    final int DEBOUNCE_DELAY_LOAD = 300; // milliseconds
     final String PLACEHOLDER_STATUS = "--Trạng thái--";
     final String PLACEHOLDER_SEARCH = "Tìm theo mã hóa đơn";
     List<InvoiceEntity> dataAll = new InvoiceDAO().getAll();
@@ -562,10 +511,11 @@ public final class Invoice extends javax.swing.JPanel {
         textStartDate.setDate(new Date());
 
         // add button cell column table
+        int coulumnCell = 6;
         ColumnTable.addDetailButtonColumn(
                 tableInvoices,
-                6,
-                this::handleInvoiceClickButton
+                coulumnCell,
+                this::handleClickDetailButton
         );
 
         // add data to combobox
@@ -577,12 +527,12 @@ public final class Invoice extends javax.swing.JPanel {
         );
 
         // load list by search and classify when change
-        ComponentUtils.addListeners(
-                textSearch,
+        RunnableUtils.addTextFieldListeners(textSearch, this::loadData);
+        RunnableUtils.addComponentListeners(
                 this::loadData,
                 cbEmployees, radioOn, radioOff, radioAll
         );
-        ComponentUtils.addDateListeners(
+        RunnableUtils.addDateListeners(
                 textStartDate,
                 textEndDate,
                 this::loadData
@@ -592,7 +542,7 @@ public final class Invoice extends javax.swing.JPanel {
     }
 
     // When click button show dialog detail invoice
-    void handleInvoiceClickButton(int row) {
+    void handleClickDetailButton(int row) {
         if (row == -1) {
             return;
         }
@@ -638,7 +588,7 @@ public final class Invoice extends javax.swing.JPanel {
                         = new InvoiceDAO().searchByCriteria(startDate, endDate, keyword, selectedStatus);
                 this.fillTable(dataList);
             });
-        }, DEBOUNCE_DELAY_LOAD, TimeUnit.MILLISECONDS);
+        }, 300, TimeUnit.MILLISECONDS);
     }
 
     void fillTable(List<InvoiceEntity> dataList) {

@@ -3,6 +3,7 @@ package restaurant.dialog;
 import java.awt.Color;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
+import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.utils.TextFieldUtils;
 
@@ -211,7 +212,7 @@ public class SmallJDialog extends javax.swing.JDialog {
 
         // Move the label to another file
         UpdateProductJDialog dialog = new UpdateProductJDialog(null, true);
-        dialog.setComboBoxValue(label, cbMain);
+        Common.setComboBoxValue(label, cbMain);
 
         dispose();
     }

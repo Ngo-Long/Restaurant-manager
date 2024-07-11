@@ -10,16 +10,16 @@ import java.util.ArrayList;
 
 public class SupplierDAO extends RestaurantDAO<SupplierEntity, String> {
 
-    public static final String INSERT_SQL = "INSERT INTO Supplier (SupplierID, SupplierName, "
+    final String INSERT_SQL = "INSERT INTO Supplier (SupplierID, SupplierName, "
             + "OutstandingDebt, TotalSales, Address, Phone, Email, Description, Status) "
             + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    public static final String UPDATE_SQL = "UPDATE Supplier SET SupplierName=?, "
+    final String UPDATE_SQL = "UPDATE Supplier SET SupplierName=?, "
             + "OutstandingDebt=?, TotalSales=?, Address=?, Phone=?, Email=?, Description=?, "
             + "Status=? WHERE SupplierID=?";
-    public static final String DELETE_SQL = "DELETE FROM Supplier WHERE SupplierID=?";
-    public static final String SELECT_ALL_SQL = "SELECT * FROM Supplier";
-    public static final String SELECT_BY_ID_SQL = "SELECT * FROM Supplier WHERE SupplierID=?";
-
+    final String DELETE_SQL = "DELETE FROM Supplier WHERE SupplierID=?";
+    final String SELECT_ALL_SQL = "SELECT * FROM Supplier";
+    final String SELECT_BY_ID_SQL = "SELECT * FROM Supplier WHERE SupplierID=?";
+    final String IS_EXISTS_SQL = "SELECT COUNT(*) FROM Supplier WHERE SupplierID = ?";
     final String SELECT_BY_CRITERIA = "SELECT TOP (1000) [SupplierID], [SupplierName], [OutstandingDebt], "
             + "[TotalSales], [Address], [Phone], [Email], [Description], [Status] FROM [Supplier] "
             + "WHERE (SupplierID LIKE ? OR [SupplierName] LIKE ? OR [Phone] LIKE ?) AND [Status] LIKE ?";
@@ -77,6 +77,17 @@ public class SupplierDAO extends RestaurantDAO<SupplierEntity, String> {
         String statusTerm = "%" + status + "%";
 
         return fetchByQuery(SELECT_BY_CRITERIA, idTerm, nameTerm, phoneTerm, statusTerm);
+    }
+
+    public boolean isIdExists(String id) {
+        try (ResultSet rs = JDBC.executeQuery(IS_EXISTS_SQL, id)) {
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 
     @Override

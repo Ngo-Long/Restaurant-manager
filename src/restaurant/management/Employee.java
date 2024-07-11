@@ -23,13 +23,11 @@ import javax.swing.table.DefaultTableModel;
 import restaurant.utils.Auth;
 import restaurant.dao.EmployeeDAO;
 import restaurant.table.TableCustom;
-import restaurant.dao.DiningTableDAO;
 import restaurant.main.ManagementMode;
 import restaurant.utils.ComboBoxUtils;
-import restaurant.utils.ComponentUtils;
+import restaurant.utils.RunnableUtils;
 import restaurant.utils.TextFieldUtils;
 import restaurant.entity.EmployeeEntity;
-import restaurant.entity.DiningTableEntity;
 import restaurant.dialog.UpdateTableJDialog;
 import static restaurant.utils.Common.customizeTable;
 import static restaurant.utils.ExportFile.exportToExcel;
@@ -518,8 +516,11 @@ public final class Employee extends javax.swing.JPanel {
         );
 
         // load list by search and classify when change
-        ComponentUtils.addListeners(
+        RunnableUtils.addTextFieldListeners(
                 textSearch,
+                this::loadData
+        );
+        RunnableUtils.addComponentListeners(
                 this::loadData,
                 cbPositon, radioOn, radioOff, radioAll
         );

@@ -12,7 +12,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -24,17 +23,16 @@ import javax.swing.table.DefaultTableModel;
 import restaurant.utils.Auth;
 import restaurant.dao.GoodsDAO;
 import restaurant.table.TableCustom;
-import restaurant.dao.DiningTableDAO;
 import restaurant.entity.GoodsEntity;
 import restaurant.main.ManagementMode;
 import restaurant.utils.ComboBoxUtils;
-import restaurant.utils.ComponentUtils;
+import restaurant.utils.RunnableUtils;
 import restaurant.utils.TextFieldUtils;
-import restaurant.entity.DiningTableEntity;
-import restaurant.dialog.UpdateTableJDialog;
+import restaurant.dialog.UpdateGoodsJDialog;
 import static restaurant.utils.Common.customizeTable;
 import static restaurant.utils.ExportFile.exportToExcel;
 import static restaurant.utils.Common.createButtonGroup;
+import static restaurant.utils.TextFieldUtils.addCommasToNumber;
 
 public final class Goods extends javax.swing.JPanel {
 
@@ -159,13 +157,13 @@ public final class Goods extends javax.swing.JPanel {
         tableGoods.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tableGoods.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Mã HH", "Tên hàng hóa", "Đơn giá", "Phân loại", "SL ban đầu", "SL tối thiểu", "Trạng thái"
+                "Mã HH", "Tên hàng hóa", "Đơn giá", "Đơn vị", "Phân loại", "SL ban đầu", "SL tối thiểu", "Trạng thái"
             }
         ));
         tableGoods.setGridColor(new java.awt.Color(255, 255, 255));
@@ -308,7 +306,6 @@ public final class Goods extends javax.swing.JPanel {
         jLabel4.setForeground(new java.awt.Color(51, 51, 51));
         jLabel4.setText("Trạng thái");
 
-        radioOn.setSelected(true);
         radioOn.setText("Còn hàng");
         radioOn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -323,6 +320,7 @@ public final class Goods extends javax.swing.JPanel {
             }
         });
 
+        radioAll.setSelected(true);
         radioAll.setText("Tất cả");
         radioAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -488,7 +486,6 @@ public final class Goods extends javax.swing.JPanel {
     List<GoodsEntity> dataAll = new GoodsDAO().getAll();
 
     ScheduledFuture<?> scheduledFuture;
-    ExecutorService executorService = Executors.newFixedThreadPool(3);
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     void init() {
@@ -507,7 +504,7 @@ public final class Goods extends javax.swing.JPanel {
         // handle click table show dialog
         attachRowClickListener(
                 tableGoods,
-                () -> openUpdateDialog("Cập nhật nguyên liệu", false)
+                () -> openUpdateDialog("Cập nhật hàng hóa", false)
         );
 
         // add data to combobox
@@ -519,8 +516,11 @@ public final class Goods extends javax.swing.JPanel {
         );
 
         // load list by search and classify when change
-        ComponentUtils.addListeners(
+        RunnableUtils.addTextFieldListeners(
                 textSearch,
+                this::loadData
+        );
+        RunnableUtils.addComponentListeners(
                 this::loadData,
                 cbCategory, radioOn, radioOff, radioAll
         );
@@ -557,8 +557,7 @@ public final class Goods extends javax.swing.JPanel {
         }
 
         // Init dialog
-        UpdateTableJDialog dialog = new UpdateTableJDialog(null, true);
-
+        UpdateGoodsJDialog dialog = new UpdateGoodsJDialog(null, true);
         dialog.setTitle(title); // Set title dialog
         dialog.setIsEditable(isEditable); // Set editable 
 
@@ -625,7 +624,8 @@ public final class Goods extends javax.swing.JPanel {
             model.addRow(new Object[]{
                 dataItem.getGoodsID(),
                 dataItem.getGoodsName(),
-                dataItem.getUnitPrice(),
+                addCommasToNumber(String.valueOf(dataItem.getUnitPrice())),
+                dataItem.getUnit(),
                 dataItem.getCategory(),
                 dataItem.getInitialQuantity(),
                 dataItem.getMinimumQuantity(),

@@ -1,28 +1,30 @@
 package restaurant.dialog;
 
 import java.awt.Color;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledExecutorService;
+
+import javax.swing.Timer;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.Timer;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+
 import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
-import restaurant.dao.DiningTableDAO;
-import restaurant.entity.DiningTableEntity;
+import restaurant.dao.GoodsDAO;
+import restaurant.utils.ImageUtils;
 import restaurant.entity.GoodsEntity;
 import restaurant.utils.ComboBoxUtils;
+import restaurant.utils.TextFieldUtils;
 import static restaurant.utils.TextFieldUtils.addCommasToNumber;
 import static restaurant.utils.TextFieldUtils.getRealText;
 import static restaurant.utils.TextFieldUtils.removeCommasFromNumber;
-import restaurant.utils.ImageUtils;
-import restaurant.utils.TextFieldUtils;
+import static restaurant.utils.ImageUtils.chooseImageFromDirectory;
+import static restaurant.utils.ImageUtils.setImageButtonIcon;
 
 public final class UpdateGoodsJDialog extends javax.swing.JDialog {
 
@@ -64,6 +66,8 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         cbCategory = new javax.swing.JComboBox<>();
         btnAddCategory = new javax.swing.JButton();
+        textUnit = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -210,6 +214,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
 
         textInitQuantity.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textInitQuantity.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        textInitQuantity.setText("0");
         textInitQuantity.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         textInitQuantity.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textInitQuantity.setMargin(new java.awt.Insets(2, 60, 2, 6));
@@ -263,6 +268,20 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
             }
         });
 
+        textUnit.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        textUnit.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        textUnit.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
+        textUnit.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        textUnit.setMargin(new java.awt.Insets(2, 60, 2, 6));
+        textUnit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textUnitActionPerformed(evt);
+            }
+        });
+
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel9.setText("Đơn vị:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -270,8 +289,8 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                    .addComponent(btnImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
@@ -280,10 +299,11 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
                             .addComponent(jLabel7)
                             .addComponent(jLabel6)
                             .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(textId, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
@@ -299,7 +319,8 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(cbCategory, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnAddCategory))))
+                                .addComponent(btnAddCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(textUnit, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -326,31 +347,36 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
                             .addComponent(textPrice, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
                             .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(btnAddCategory, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(cbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(10, 10, 10)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(textUnit, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(12, 12, 12)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
-                            .addComponent(textInitQuantity)))
-                    .addComponent(btnImage, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(textInitQuantity, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)))
+                    .addComponent(btnImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(textMiniQuantity, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
-                .addGap(12, 12, 12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(btnAddCategory, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(textDesc, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12))
-                .addGap(12, 12, 12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(radioOn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(radioOff, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(20, 20, 20)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -370,16 +396,12 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void textIdMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_textIdMouseClicked
-        // TODO add your handling code here:
-
     }//GEN-LAST:event_textIdMouseClicked
 
     private void textPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textPriceActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_textPriceActionPerformed
 
     private void textNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textNameActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_textNameActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
@@ -395,19 +417,15 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_radioOnActionPerformed
 
     private void radioOffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOffActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_radioOffActionPerformed
 
     private void textDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textDescActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_textDescActionPerformed
 
     private void textInitQuantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textInitQuantityActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_textInitQuantityActionPerformed
 
     private void textMiniQuantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textMiniQuantityActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_textMiniQuantityActionPerformed
 
     private void btnImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImageActionPerformed
@@ -415,8 +433,11 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnImageActionPerformed
 
     private void btnAddCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCategoryActionPerformed
-        openSmallDialog("Thêm nhóm hàng", "Nhóm hàng:", cbCategory);
+        Common.openSmallDialog("Thêm nhóm hàng", "Nhóm hàng:", cbCategory);
     }//GEN-LAST:event_btnAddCategoryActionPerformed
+
+    private void textUnitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textUnitActionPerformed
+    }//GEN-LAST:event_textUnitActionPerformed
 
     public static void main(String args[]) {
 
@@ -461,6 +482,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -473,12 +495,15 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
     private javax.swing.JTextField textMiniQuantity;
     private javax.swing.JTextField textName;
     private javax.swing.JTextField textPrice;
+    private javax.swing.JTextField textUnit;
     // End of variables declaration//GEN-END:variables
 
     Timer timer;
     boolean isEditable = true;
     JComboBox<String> comboBox;
-    String imagePath = Auth.goods != null ? Auth.goods.getImageUrl() : "";
+    final String PLACEHOLDER_ID = "Mã tự động";
+    final String PLACEHOLDER_STATUS = "--Lựa chọn--";
+    String imagePath = Auth.goods != null ? Auth.goods.getImageURL() : "";
 
     ScheduledFuture<?> scheduledFuture;
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
@@ -489,7 +514,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         this.getContentPane().setBackground(Color.WHITE);
 
         // Setup text fields 
-        JTextField[] textFields = {textId, textName, textPrice, textInitQuantity, textMiniQuantity, textDesc};
+        JTextField[] textFields = {textId, textName, textPrice, textUnit, textInitQuantity, textMiniQuantity};
         for (JTextField textField : textFields) {
             TextFieldUtils.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
         }
@@ -497,34 +522,26 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         // Setup UI
         textName.requestFocus();
         textId.setEditable(isEditable);
-        TextFieldUtils.addPlaceholder(textId, "Mã tự động");
         ComboBoxUtils.setComboboxStyle(cbCategory);
         Common.createButtonGroup(radioOn, radioOff);
+        TextFieldUtils.addPlaceholder(textId, PLACEHOLDER_ID);
         ImageUtils.setImageButtonIcon("src/restaurant/img/background.jpg", btnImage);
 
         // <--- Setup main --->
-        addDocumentListener(textPrice);
-        addDataToComboBoxs();
-        setModel();
-    }
+        // attach event formatted price
+        TextFieldUtils.addPriceDocumentListener(textPrice);
 
-    void addDocumentListener(JTextField textField) {
-        textField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                updateFormattedText(textField);
-            }
+        // add data to combobox
+        List<GoodsEntity> dataList = new GoodsDAO().getAll();
+        ComboBoxUtils.addDataToComboBox(
+                cbCategory,
+                dataList,
+                GoodsEntity::getCategory,
+                PLACEHOLDER_STATUS
+        );
 
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                updateFormattedText(textField);
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                updateFormattedText(textField);
-            }
-        });
+        // set model
+        this.setModel(Auth.goods);
     }
 
     public void updateFormattedText(JTextField textFieldPrice) {
@@ -547,46 +564,58 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         textId.setEditable(editable);
     }
 
-    boolean validateInput(String name, String numberSeatsText, String area) {
-        if (name.trim().isEmpty() || numberSeatsText.trim().isEmpty() || area.trim().isEmpty()) {
+    boolean validateInput(String name, String priceText, String unit, String numMiniText, String category) {
+        if (name.trim().isEmpty() || priceText.trim().isEmpty() || unit.trim().isEmpty()
+                || numMiniText.trim().isEmpty() || category.isEmpty()) {
             Dialog.warning(this, "Vui lòng nhập đầy đủ thông tin!");
             return false;
         }
 
+        if (category.equals("--Lựa chọn--")) {
+            Dialog.warning(this, "Vui lòng lựa chọn khu vực!");
+            return false;
+        }
+
         try {
-            int numberSeats = Integer.parseInt(numberSeatsText);
-            if (numberSeats <= 0) {
-                Dialog.warning(this, "Số chỗ ngồi phải là số lớn hơn 0!");
+            int numMini = Integer.parseInt(numMiniText);
+            if (numMini <= 0) {
+                Dialog.warning(this, "Số lớn hơn 0!");
                 return false;
             }
         } catch (NumberFormatException e) {
-            Dialog.warning(this, "Số chỗ ngồi phải là một số hợp lệ!");
+            Dialog.warning(this, "Là một số hợp lệ!");
             return false;
         }
 
         return true;
     }
 
-    DiningTableEntity getModel() {
-        String id = getRealText(textId, "Mã tự động");
+    GoodsEntity getModel() {
+        String id = getRealText(textId, PLACEHOLDER_ID);
         String name = textName.getText();
-        String price = textPrice.getText();
-        cbCategory.setSelectedItem(product.getCategory());
-        String numberSeats = textNumberSeats.getText();
+        String priceText = textPrice.getText();
+        String unit = textUnit.getText();
+        String numMiniText = textMiniQuantity.getText();
+        String numInitText = textInitQuantity.getText();
+        String category = cbCategory.getSelectedItem().toString();
 
-        if (!validateInput(name, numberSeats, area)) {
+        if (!validateInput(name, priceText, unit, numMiniText, category)) {
             return null;
         }
 
         try {
-            DiningTableEntity model = new DiningTableEntity();
-            model.setTableID(tableId);
-            model.setName(name);
-            model.setLocation(area);
-            model.setCapacity(Integer.parseInt(numberSeats));
-            model.setStatus("Còn trống");
-            model.setDescription(textDesc.getText());
+            GoodsEntity model = new GoodsEntity();
+            model.setGoodsID(id);
+            model.setGoodsName(name);
+            model.setUnitPrice(Integer.parseInt(removeCommasFromNumber(priceText)));
+            model.setUnit(unit);
+            model.setCategory(category);
+            model.setInitialQuantity(Integer.parseInt(numInitText));
+            model.setMinimumQuantity(Integer.parseInt(numMiniText));
+            model.setStatus("Còn hàng");
+            model.setNote(textDesc.getText());
             model.setActivity(radioOn.isSelected() ? "Đang hoạt động" : "Ngưng hoạt động");
+            model.setImageURL(imagePath.equals("") ? "src/restaurant/img/background.jpg" : imagePath);
             return model;
         } catch (NumberFormatException e) {
             System.err.println("Lỗi: " + e.getMessage());
@@ -594,8 +623,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         }
     }
 
-    void setModel() {
-        GoodsEntity goods = Auth.goods;
+    void setModel(GoodsEntity goods) {
         if (goods == null) {
             return;
         }
@@ -604,27 +632,37 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         textName.setText(goods.getGoodsName());
         cbCategory.setSelectedItem(goods.getCategory());
         textPrice.setText(String.valueOf(goods.getUnitPrice()));
+        textUnit.setText(goods.getUnit());
+        textInitQuantity.setText(String.valueOf(goods.getInitialQuantity()));
+        textMiniQuantity.setText(String.valueOf(goods.getMinimumQuantity()));
+        textDesc.setText(goods.getNote());
 
         String activiti = goods.getStatus();
         radioOn.setSelected(activiti.equals("Đang hoạt động"));
         radioOff.setSelected(activiti.equals("Ngưng hoạt động"));
+
+        // Set combobox
+        cbCategory.setSelectedItem(goods.getCategory());
+
+        // Set image
+        setImageButtonIcon(imagePath, btnImage);
     }
 
     void insert() {
-        DiningTableEntity model = getModel();
+        GoodsEntity model = getModel();
 
-        if (new DiningTableDAO().isIdDuplicated(model.getTableID())) {
+        if (new GoodsDAO().isIdExists(model.getGoodsID())) {
             Dialog.warning(this, "Mã ID đã tồn tại. Vui lòng chọn mã ID khác!");
             return;
         }
 
-        if (new DiningTableDAO().isDuplicateName(model.getName())) {
-            Dialog.alert(this, "Tên bàn đã tồn tại. Vui lòng sửa tên khác!");
+        if (new GoodsDAO().isIdExists(model.getGoodsName())) {
+            Dialog.alert(this, "Tên đã tồn tại. Vui lòng sửa tên khác!");
             return;
         }
 
         try {
-            new DiningTableDAO().insert(model);
+            new GoodsDAO().insert(model);
             Dialog.success(this, "Thêm mới thành công!");
             dispose();
         } catch (Exception e) {
@@ -634,15 +672,15 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
     }
 
     void update() {
-        DiningTableEntity model = getModel();
+        GoodsEntity model = getModel();
 
-        if (!new DiningTableDAO().isIdDuplicated(model.getTableID())) {
+        if (!new GoodsDAO().isIdExists(model.getGoodsID())) {
             Dialog.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
             return;
         }
 
         try {
-            new DiningTableDAO().update(model);
+            new GoodsDAO().update(model);
             Dialog.alert(this, "Cập nhật thành công!");
             dispose();
         } catch (Exception e) {
@@ -652,13 +690,13 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
 
     void delete() {
         String id = textId.getText();
-        if (!new DiningTableDAO().isIdDuplicated(id)) {
+        if (!new GoodsDAO().isIdExists(id)) {
             Dialog.alert(this, "Mã ID không tồn tại. Vui lòng nhập lại mã ID!");
             return;
         }
 
         try {
-            new DiningTableDAO().delete(id);
+            new GoodsDAO().delete(id);
             Dialog.alert(this, "Xóa thành công!");
             dispose();
         } catch (Exception e) {

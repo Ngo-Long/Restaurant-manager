@@ -23,15 +23,13 @@ import javax.swing.table.DefaultTableModel;
 
 import restaurant.utils.Auth;
 import restaurant.dao.SupplierDAO;
+import restaurant.dialog.UpdateSupplierJDialog;
 import restaurant.table.TableCustom;
-import restaurant.dao.DiningTableDAO;
 import restaurant.main.ManagementMode;
 import restaurant.utils.ComboBoxUtils;
 import restaurant.utils.TextFieldUtils;
-import restaurant.utils.ComponentUtils;
+import restaurant.utils.RunnableUtils;
 import restaurant.entity.SupplierEntity;
-import restaurant.entity.DiningTableEntity;
-import restaurant.dialog.UpdateTableJDialog;
 import static restaurant.utils.ExportFile.exportToExcel;
 
 public final class Supplier extends javax.swing.JPanel {
@@ -418,7 +416,7 @@ public final class Supplier extends javax.swing.JPanel {
 
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        Auth.table = null;
+        Auth.supplier = null;
         openUpdateDialog("Thêm nhà cung cấp", true);
     }//GEN-LAST:event_btnAddActionPerformed
 
@@ -516,8 +514,8 @@ public final class Supplier extends javax.swing.JPanel {
         );
 
         // load list by search and classify when change
-        ComponentUtils.addListeners(
-                textSearch,
+        RunnableUtils.addTextFieldListeners(textSearch, this::loadData);
+        RunnableUtils.addComponentListeners(
                 this::loadData,
                 cbCategory, radioOn, radioOff, radioAll
         );
@@ -537,10 +535,10 @@ public final class Supplier extends javax.swing.JPanel {
 
                 // Get data from row
                 String id = (String) target.getValueAt(row, 0);
-                DiningTableEntity table = new DiningTableDAO().getByID(id);
+                SupplierEntity supplier = new SupplierDAO().getByID(id);
 
                 // Save data to auth
-                Auth.table = table;
+                Auth.supplier = supplier;
 
                 // Perform the action
                 rowClickAction.run();
@@ -554,8 +552,7 @@ public final class Supplier extends javax.swing.JPanel {
         }
 
         // Init dialog
-        UpdateTableJDialog dialog = new UpdateTableJDialog(null, true);
-
+        UpdateSupplierJDialog dialog = new UpdateSupplierJDialog(null, true);
         dialog.setTitle(title); // Set title dialog
         dialog.setIsEditable(isEditable); // Set editable 
 

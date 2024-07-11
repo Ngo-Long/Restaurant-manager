@@ -4,13 +4,10 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
 import javax.swing.SwingUtilities;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
 
-import java.util.Set;
 import java.util.List;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.concurrent.TimeUnit;
@@ -18,17 +15,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
 
-import javax.swing.JComboBox;
 import restaurant.utils.Common;
 import restaurant.utils.ColumnTable;
 import restaurant.dao.InvoiceDAO;
 import restaurant.dao.EmployeeDAO;
 import restaurant.table.TableCustom;
 import restaurant.dao.DiningTableDAO;
-import restaurant.entity.OrderEntity;
 import restaurant.entity.InvoiceEntity;
 import restaurant.entity.EmployeeEntity;
 import restaurant.entity.DiningTableEntity;
+import restaurant.utils.ComboBoxUtils;
 import restaurant.utils.TextFieldUtils;
 
 public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
@@ -255,11 +251,9 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
     private com.toedter.calendar.JDateChooser textStartDate;
     // End of variables declaration//GEN-END:variables
 
-    String tableNamesStr;
-    final String PLACEHOLDER = "Tìm theo mã hóa đơn";
-    List<OrderEntity> dataOrders;
-    List<InvoiceEntity> dataInvoices;
-    List<DiningTableEntity> dataTables;
+    String tableNames;
+    final String PLACEHOLDER_STATUS = "--Trạng thái--";
+    final String PLACEHOLDER_SEARCH = "Tìm theo mã hóa đơn";
     ScheduledFuture<?> scheduledFuture;
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
@@ -271,26 +265,36 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
         // Set table
         TableCustom.apply(jScrollPane4, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableInvoices, new int[]{}, 40);
-        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER);
-        ColumnTable.addDetailButtonColumn(tableInvoices, 6, this::handleInvoiceClickButton);
+        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
 
+        // <--- Setup main --->
         // Set today on JDateChooser
         textEndDate.setDate(new Date());
         textStartDate.setDate(new Date());
 
-        // <--- Setup main --->
+        // Add button to table
+        ColumnTable.addDetailButtonColumn(
+                tableInvoices,
+                6,
+                this::handleClickButton
+        );
+
+        // Add data to combobox
         List<InvoiceEntity> dataList = new InvoiceDAO().getAll();
-        addDataToCombobox(cbStatus, dataList);
+        ComboBoxUtils.addDataToComboBox(
+                cbStatus,
+                dataList,
+                InvoiceEntity::getStatus,
+                PLACEHOLDER_STATUS
+        );
 
         // Load data
+        btnSearch.addActionListener((ActionEvent e) -> this.loadData());
         this.loadData();
-        btnSearch.addActionListener((ActionEvent e) -> {
-            this.loadData();
-        });
     }
 
     // When click button show dialog detail invoice
-    void handleInvoiceClickButton(int row) {
+    void handleClickButton(int row) {
         if (row == -1) {
             return;
         }
@@ -305,33 +309,6 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
         dialog.setVisible(true);
     }
 
-    // <--- Load data
-    void addDataToCombobox(JComboBox cbBox, List<InvoiceEntity> dataList) {
-        // Create a modal 
-        DefaultComboBoxModel<String> modalStatus = new DefaultComboBoxModel<>();
-        modalStatus.addElement("--Trạng thái--");
-
-        DefaultComboBoxModel<String> modalPaymentMethod = new DefaultComboBoxModel<>();
-        modalPaymentMethod.addElement("--PP thanh toán--");
-
-        // Set only 
-        Set<String> setStatus = new HashSet<>();
-        for (InvoiceEntity dataItem : dataList) {
-            if (!"Chờ thanh toán".equals(dataItem.getStatus())) {
-                setStatus.add(dataItem.getStatus());
-            }
-        }
-
-        // Convert the Set to an array
-        String[] statusList = setStatus.toArray(new String[0]);
-        for (String statusItem : statusList) {
-            modalStatus.addElement(statusItem);
-        }
-
-        // Set to the comboBox
-        cbBox.setModel(modalStatus);
-    }
-
     void loadData() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
@@ -340,11 +317,11 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
         scheduledFuture = scheduledExecutorService.schedule(() -> {
             SwingUtilities.invokeLater(() -> {
                 // Get search text
-                String keyword = TextFieldUtils.getRealText(textSearch, PLACEHOLDER).trim();
+                String keyword = TextFieldUtils.getRealText(textSearch, PLACEHOLDER_SEARCH).trim();
 
                 // Get category
                 String selectedStatus = (String) cbStatus.getSelectedItem();
-                if (selectedStatus.equals("--Trạng thái--")) {
+                if (selectedStatus.equals(PLACEHOLDER_STATUS)) {
                     selectedStatus = "Đã thanh toán";
                 }
 
@@ -354,7 +331,8 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
                 String endDate = dateFormat.format(textEndDate.getDate());
 
                 // Get data and display
-                dataInvoices = new InvoiceDAO().searchByCriteria(startDate, endDate, keyword, selectedStatus);
+                List<InvoiceEntity> dataInvoices
+                        = new InvoiceDAO().searchByCriteria(startDate, endDate, keyword, selectedStatus);
                 this.fillTable(dataInvoices);
             });
         }, 200, TimeUnit.MILLISECONDS);
@@ -369,13 +347,14 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
             model.setRowCount(0);
 
             // Sắp xếp theo thời gian kết thúc từ gần nhất
-            dataInvoices.sort(Comparator.comparing(InvoiceEntity::getPaymentTime).reversed());
+            dataList.sort(Comparator.comparing(InvoiceEntity::getPaymentTime).reversed());
 
             // Load data into the table 
             for (InvoiceEntity dataItem : dataList) {
                 // Get table name list
-                dataTables = new DiningTableDAO().getByInvoicesID(dataItem.getInvoiceID());
-                tableNamesStr = dataTables.isEmpty()
+                List<DiningTableEntity> dataTables 
+                        = new DiningTableDAO().getByInvoicesID(dataItem.getInvoiceID());
+                tableNames = dataTables.isEmpty()
                         ? "Mang về"
                         : dataTables.stream()
                                 .map(DiningTableEntity::getName)
@@ -393,7 +372,7 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
                 model.addRow(new Object[]{
                     dataItem.getInvoiceID(),
                     new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(dataItem.getPaymentTime()),
-                    tableNamesStr,
+                    tableNames,
                     employeeName,
                     totalConvert,
                     dataItem.getStatus()
@@ -407,5 +386,4 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
             System.out.println(e);
         }
     }
-    // end --->
 }

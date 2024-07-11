@@ -23,6 +23,7 @@ import restaurant.management.Supplier;
 import restaurant.management.Goods;
 import restaurant.management.DiningTable;
 import restaurant.management.Invoice;
+import restaurant.management.Receipt;
 import static restaurant.utils.MenuButton.setupMenuButton;
 
 public class ManagementMode extends javax.swing.JFrame {
@@ -30,7 +31,7 @@ public class ManagementMode extends javax.swing.JFrame {
     public ManagementMode() {
         initComponents();
         svgHouse.setSvgImage("src/restaurant/icon/house.svg", 15, 15);
-        
+
         this.init();
     }
 
@@ -774,9 +775,12 @@ public class ManagementMode extends javax.swing.JFrame {
     void menuItemReceiptSelected(int index) {
         switch (index) {
             case 0:
-            case 1:
                 setupHeaderButtons(btnReceipt);
                 displayManagementPanel(new Invoice(this));
+                break;
+            case 1:
+                setupHeaderButtons(btnReceipt);
+                displayManagementPanel(new Receipt(this));
                 break;
             default:
                 break;

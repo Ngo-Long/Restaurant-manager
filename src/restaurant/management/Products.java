@@ -13,7 +13,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -29,7 +28,7 @@ import restaurant.main.ManagementMode;
 import restaurant.utils.ComboBoxUtils;
 import restaurant.utils.TextFieldUtils;
 import restaurant.entity.ProductEntity;
-import restaurant.utils.ComponentUtils;
+import restaurant.utils.RunnableUtils;
 import restaurant.dialog.UpdateProductJDialog;
 import static restaurant.utils.ExportFile.exportToExcel;
 
@@ -480,7 +479,6 @@ public final class Products extends javax.swing.JPanel {
     List<ProductEntity> dataAll = new ProductDAO().getAll();
 
     ScheduledFuture<?> scheduledFuture;
-    ExecutorService executorService = Executors.newFixedThreadPool(3);
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     void init() {
@@ -512,8 +510,8 @@ public final class Products extends javax.swing.JPanel {
         );
 
         // load list by search and classify when change
-        ComponentUtils.addListeners(
-                textSearch,
+        RunnableUtils.addTextFieldListeners(textSearch, this::loadData);
+        RunnableUtils.addComponentListeners(
                 this::loadData,
                 cbCategory, radioOn, radioOff, radioAll
         );

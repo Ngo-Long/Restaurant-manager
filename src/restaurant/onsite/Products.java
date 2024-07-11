@@ -3,27 +3,17 @@ package restaurant.onsite;
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 
-import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.BorderFactory;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingConstants;
-import javax.swing.event.DocumentEvent;
 import javax.swing.event.TableModelEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 import java.util.Set;
@@ -34,7 +24,6 @@ import java.util.stream.Collectors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 
 import restaurant.dao.OrderDAO;
@@ -55,17 +44,17 @@ import restaurant.entity.ProductEntity;
 import restaurant.entity.OrderDetailEntity;
 import restaurant.entity.DiningTableEntity;
 import restaurant.dialog.OrderDetailJDialog;
+import restaurant.main.QuickOrderMode;
 import static restaurant.utils.TextFieldUtils.getRealText;
-import static restaurant.utils.TextFieldUtils.addCommasToNumber;
-import static restaurant.utils.ImageUtils.getScaledImageIcon;
+import restaurant.utils.RunnableUtils;
 import restaurant.utils.TextFieldUtils;
 
 public class Products extends javax.swing.JPanel {
 
-    private OnSiteMode mainStaff;
+    private OnSiteMode onSite;
 
-    public Products(OnSiteMode mainStaff) {
-        this.mainStaff = mainStaff;
+    public Products(OnSiteMode onSite) {
+        this.onSite = onSite;
         initComponents();
         this.init();
     }
@@ -85,12 +74,12 @@ public class Products extends javax.swing.JPanel {
         textNote = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        labelTotal = new javax.swing.JLabel();
+        labelTotalAmount = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         textSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
         scrollPane = new javax.swing.JScrollPane();
-        panelMainProducts = new javax.swing.JPanel();
+        panelProducts = new javax.swing.JPanel();
         btnHistory = new javax.swing.JButton();
         btnSearch2 = new javax.swing.JButton();
         btnSearch3 = new javax.swing.JButton();
@@ -174,10 +163,10 @@ public class Products extends javax.swing.JPanel {
         jLabel1.setForeground(new java.awt.Color(51, 51, 51));
         jLabel1.setText("Tổng cộng");
 
-        labelTotal.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
-        labelTotal.setForeground(new java.awt.Color(255, 51, 51));
-        labelTotal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        labelTotal.setText("0₫");
+        labelTotalAmount.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        labelTotalAmount.setForeground(new java.awt.Color(255, 51, 51));
+        labelTotalAmount.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labelTotalAmount.setText("0₫");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -187,14 +176,14 @@ public class Products extends javax.swing.JPanel {
                 .addGap(8, 8, 8)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(labelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(labelTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(8, 8, 8))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(labelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(labelTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -228,12 +217,12 @@ public class Products extends javax.swing.JPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(labelOrderTable, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnSearch1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(12, 12, 12)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(textNote, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(textNote, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnSubmit, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
@@ -264,20 +253,20 @@ public class Products extends javax.swing.JPanel {
 
         scrollPane.setBorder(null);
 
-        panelMainProducts.setBackground(new java.awt.Color(255, 255, 255));
+        panelProducts.setBackground(new java.awt.Color(255, 255, 255));
 
-        javax.swing.GroupLayout panelMainProductsLayout = new javax.swing.GroupLayout(panelMainProducts);
-        panelMainProducts.setLayout(panelMainProductsLayout);
-        panelMainProductsLayout.setHorizontalGroup(
-            panelMainProductsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout panelProductsLayout = new javax.swing.GroupLayout(panelProducts);
+        panelProducts.setLayout(panelProductsLayout);
+        panelProductsLayout.setHorizontalGroup(
+            panelProductsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 853, Short.MAX_VALUE)
         );
-        panelMainProductsLayout.setVerticalGroup(
-            panelMainProductsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        panelProductsLayout.setVerticalGroup(
+            panelProductsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 554, Short.MAX_VALUE)
         );
 
-        scrollPane.setViewportView(panelMainProducts);
+        scrollPane.setViewportView(panelProducts);
 
         btnHistory.setBackground(new java.awt.Color(51, 204, 0));
         btnHistory.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -380,7 +369,7 @@ public class Products extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 418, Short.MAX_VALUE)
                 .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -424,7 +413,7 @@ public class Products extends javax.swing.JPanel {
     }//GEN-LAST:event_btnHistoryActionPerformed
 
     private void btnSearch2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearch2ActionPerformed
-        mainStaff.displayStaffPanels(new Products(mainStaff));
+        onSite.displayOnSitePanel(new Products(onSite));
     }//GEN-LAST:event_btnSearch2ActionPerformed
 
     private void btnSearch1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearch1ActionPerformed
@@ -451,94 +440,98 @@ public class Products extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel labelOrderTable;
     private javax.swing.JLabel labelOrderedTable;
-    private javax.swing.JLabel labelTotal;
-    private javax.swing.JPanel panelMainProducts;
+    private javax.swing.JLabel labelTotalAmount;
     private javax.swing.JPanel panelMenu;
+    private javax.swing.JPanel panelProducts;
     private javax.swing.JScrollPane scrollPane;
     private javax.swing.JTable tableOrder;
     private javax.swing.JTextField textNote;
     private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
-    String tableID;
-    String tableName;
     JLabel selectedMenu;
+    final int COLUMN_CELL = 2;
     final String PLACEHOLDER_NOTE = "Tối đa 60 ký tự";
     final String PLACEHOLDER_SEARCH = "Tìm theo tên món";
 
-    OrderEntity existingOrder;
-    DiningTableEntity dataTable;
-    List<ProductEntity> dataProducts;
-    List<ProductEntity> dataProductsByCategory;
-
     ScheduledFuture<?> scheduledFuture;
-    ExecutorService executorService = Executors.newFixedThreadPool(3);
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     void init() {
-        // Setup common
+        // <--- Setup common --->
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableOrder, new int[]{3}, 30);
         Common.customizeScrollBar(scrollPane);
         TextFieldUtils.addPlaceholder(textNote, PLACEHOLDER_NOTE);
         TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
-        ColumnTable.setupQuantityButtonColumn(tableOrder, 2);
 
-        // Setup
-        setupMenu();
-        displayTableInfo();
-        displayOrderInfo();
+        // <--- Setup main --->
+        // Set info
+        displayTableInfo(Auth.table);
+        displayOrderInfo(Auth.table);
 
-        // Calc total amount click column 2
+        // Add buttons quantity "+" and "-"
+        ColumnTable.addQuantityButtonsColumn(tableOrder, COLUMN_CELL);
+
+        // Calc total amount click column 
         tableOrder.getModel().addTableModelListener((TableModelEvent e) -> {
-            if (e.getColumn() == 2) {
-                calculateTotalAmount();
+            if (e.getColumn() == COLUMN_CELL) {
+                QuickOrderMode.calculateTotalAmount(tableOrder, labelTotalAmount);
             }
         });
 
+        // Get menu category
+        List<ProductEntity> dataList = new ProductDAO().getAll();
+        setupMenuCategory(dataList, panelMenu, selectedMenu);
+
         // Load data
-        initEventHandlers();
-        loadDataByCriteria();
+        RunnableUtils.addTextFieldListeners(textSearch, this::loadData);
+        this.loadData();
     }
 
-    // <--- Common 
-    void displayTableInfo() {
-        // Kiểm tra và gán giá trị 
-        if (Auth.table != null && Auth.table.getTableID() != null) {
-            tableID = Auth.table.getTableID();
-        }
-
-        if (Auth.table != null && Auth.table.getName() != null) {
-            tableName = Auth.table.getName();
-        }
-
-        // Set case
-        labelOrderTable.setText(tableID == null ? "ORDER [ Bàn Trống ]" : "ORDER [ " + tableName + " ]");
-    }
-
-    void displayOrderInfo() {
-        // Get order
-        existingOrder = new OrderDAO().getByTableID(tableID);
-        if (existingOrder == null) {
+    // <--- display info
+    void displayTableInfo(DiningTableEntity dataTable) {
+        if (dataTable == null) {
             return;
         }
 
-        // Set text note
-        String note = existingOrder.getNote();
-        if (note.equals("")) {
-            TextFieldUtils.addPlaceholder(textNote, "Tối đa 60 ký tự");
-        } else {
-            textNote.setText(note);
-        }
+        String tableID = dataTable.getTableID();
+        String tableName = dataTable.getName();
+
+        // Set case
+        labelOrderTable.setText(tableID == null
+                ? "ORDER [ Bàn Trống ]"
+                : "ORDER [ " + tableName + " ]");
     }
 
-    void setupMenu() {
-        // Get data all
-        dataProducts = new ProductDAO().getAll();
+    void displayOrderInfo(DiningTableEntity dataTable) {
+        if (dataTable == null) {
+            return;
+        }
 
+        try {
+            // Get order
+            String tableID = dataTable.getTableID();
+            OrderEntity existingOrder = new OrderDAO().getByTableID(tableID);
+
+            // Set text note
+            String note = existingOrder.getNote();
+            if (note.equals("")) {
+                TextFieldUtils.addPlaceholder(textNote, "Tối đa 60 ký tự");
+            } else {
+                textNote.setText(note);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+    // end --->
+
+    // <--- setup menu
+    void setupMenuCategory(List<ProductEntity> datAll, JPanel panelMenu, JLabel selectedMenu) {
         // Create a set to store unique names
         Set<String> dataSet = new HashSet<>();
-        for (ProductEntity dataItem : dataProducts) {
+        for (ProductEntity dataItem : datAll) {
             dataSet.add(dataItem.getCategory());
         }
 
@@ -548,31 +541,31 @@ public class Products extends javax.swing.JPanel {
         // Create buttons for each and add them to panel
         for (String dataItem : dataList) {
             // Set button location
-            JLabel item = new JLabel(dataItem);
-            item.setBackground(Color.LIGHT_GRAY);
-            item.setForeground(new Color(120, 120, 120));
-            item.setPreferredSize(new Dimension(140, 50));
-            item.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            item.setVerticalAlignment(SwingConstants.CENTER);
-            item.setHorizontalAlignment(SwingConstants.CENTER);
-            item.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            item.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
+            JLabel labelItem = new JLabel(dataItem);
+            labelItem.setBackground(Color.LIGHT_GRAY);
+            labelItem.setForeground(new Color(120, 120, 120));
+            labelItem.setPreferredSize(new Dimension(140, 50));
+            labelItem.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            labelItem.setVerticalAlignment(SwingConstants.CENTER);
+            labelItem.setHorizontalAlignment(SwingConstants.CENTER);
+            labelItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            labelItem.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
 
             // Handle click location
-            item.addMouseListener(new MouseAdapter() {
+            labelItem.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    handleClickMenu(item);
+                    handleClickMenu(labelItem);
                 }
             });
 
             // Automatically select the first item
             if (selectedMenu == null) {
-                handleClickMenu(item);
+                handleClickMenu(labelItem);
             }
 
             // Add item location to the panel
-            panelMenu.add(item);
+            panelMenu.add(labelItem);
         }
 
         // Set layout for panelButtons
@@ -583,9 +576,9 @@ public class Products extends javax.swing.JPanel {
         panelMenu.repaint();
     }
 
-    void handleClickMenu(JLabel item) {
+    void handleClickMenu(JLabel labelItem) {
         // Kiểm tra nếu nút hiện tại không phải là nút đã được chọn trước đó
-        if (selectedMenu == item) {
+        if (selectedMenu == labelItem) {
             return;
         }
 
@@ -596,38 +589,17 @@ public class Products extends javax.swing.JPanel {
         }
 
         // Thiết lập lại màu cho nút hiện tại
-        item.setForeground(new Color(255, 11, 11));
-        item.setBorder(BorderFactory.createLineBorder(new Color(255, 11, 11), 2, true));
+        labelItem.setForeground(new Color(255, 11, 11));
+        labelItem.setBorder(BorderFactory.createLineBorder(new Color(255, 11, 11), 2, true));
 
         // Cập nhật nút được chọn hiện tại
-        selectedMenu = item;
-        loadDataByCriteria();
-
+        selectedMenu = labelItem;
+        this.loadData();
     }
     // end --->
 
-    // <--- Load data
-    void initEventHandlers() {
-        // Attach event textSearch
-        textSearch.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                loadDataByCriteria();
-            }
-        });
-    }
-
-    void loadDataByCriteria() {
+    //  Load data
+    void loadData() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
@@ -639,147 +611,18 @@ public class Products extends javax.swing.JPanel {
                 String keyword = getRealText(textSearch, PLACEHOLDER_SEARCH);
 
                 // Get data and display
-                dataProductsByCategory = new ProductDAO().searchByCriteria(keyword, menuItem, "");
-                displayProductList(dataProductsByCategory);
+                List<ProductEntity> dataList
+                        = new ProductDAO().searchByCriteria(keyword, menuItem, "");
+
+                // Display product list on panel
+                QuickOrderMode.displayProductList(
+                        dataList, 
+                        panelProducts, 
+                        tableOrder, 
+                        labelTotalAmount
+                );
             });
         }, 300, TimeUnit.MILLISECONDS);
-    }
-    // end --->
-
-    // <--- Display and handle events products
-    void displayProductList(List<ProductEntity> dataList) {
-        // Reset food list
-        panelMainProducts.removeAll();
-
-        // Set layout
-        panelMainProducts.setLayout(new FlowLayout(FlowLayout.LEFT, 8, 16));
-
-        panelMainProducts.setLayout(new GridBagLayout());
-
-        // Init gridbag 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(0, 8, 16, 8);
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-
-        int columnCount = 5;
-        for (int i = 0; i < dataList.size(); i++) {
-            // create panel product item
-            ProductEntity dataItem = dataList.get(i);
-            JPanel panelProduct = createPanelProduct(dataItem);
-
-            // Tính toán vị trí dựa trên số cột
-            gbc.gridx = i % columnCount;
-            gbc.gridy = i / columnCount;
-
-            panelMainProducts.add(panelProduct, gbc);
-        }
-
-        // Refresh the panel
-        panelMainProducts.repaint();
-        panelMainProducts.revalidate();
-    }
-
-    JPanel createPanelProduct(ProductEntity product) {
-        // Create a JLabel name
-        JLabel textLabel = new JLabel(product.getProductName());
-        textLabel.setForeground(new Color(30, 30, 30));
-        textLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        textLabel.setFont(new Font(textLabel.getFont().getName(), Font.PLAIN, 14));
-
-        // Create a JLabel price
-        String price = String.valueOf(product.getPrice());
-        String formattedPrice = TextFieldUtils.addCommasToNumber(price);
-        JLabel priceLabel = new JLabel(formattedPrice + "đ");
-
-        // Set alignment, font, and color
-        priceLabel.setForeground(new Color(255, 51, 51));
-        priceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        priceLabel.setFont(new Font(priceLabel.getFont().getName(), Font.BOLD, 16));
-
-        // Create label top contains (scaledIcon) 
-        ImageIcon scaledIcon = getScaledImageIcon(product.getImageURL(), 170, 200);
-        JLabel labelTop = new JLabel(scaledIcon);
-
-        // Create panel bottom contains (name, price, border, button)
-        JPanel panelBottom = new JPanel();
-        panelBottom.add(textLabel);
-        panelBottom.add(Box.createVerticalStrut(8));
-        panelBottom.add(priceLabel);
-        panelBottom.setBackground(Color.WHITE);
-        panelBottom.setLayout(new BoxLayout(panelBottom, BoxLayout.Y_AXIS));
-        panelBottom.setBorder(BorderFactory.createEmptyBorder(6, 0, 6, 0));
-
-        // Create a panel main 
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.setBackground(Color.WHITE);
-        mainPanel.setPreferredSize(new Dimension(146, 200));
-        mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        mainPanel.setBorder(BorderFactory.createLineBorder(Color.lightGray));
-        mainPanel.add(labelTop, BorderLayout.CENTER);
-        mainPanel.add(panelBottom, BorderLayout.SOUTH);
-
-        // Attach handle click 
-        mainPanel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                // Add products to the table
-                handleClickOrderProduct(product);
-
-                // Calculate and display total amount
-                calculateTotalAmount();
-            }
-        });
-
-        return mainPanel;
-    }
-
-    void handleClickOrderProduct(ProductEntity product) {
-        // Get model
-        DefaultTableModel saveOrder = (DefaultTableModel) tableOrder.getModel();
-        String priceStr = String.valueOf(product.getPrice());
-        String formattedPrice = TextFieldUtils.addCommasToNumber(priceStr);
-
-        // Update model
-        saveOrder.addRow(new Object[]{
-            product.getProductID(),
-            product.getProductName(),
-            1,
-            formattedPrice
-        });
-
-    }
-
-    void calculateTotalAmount() {
-        long totalAmount = 0;
-        DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
-
-        for (int i = 0; i < model.getRowCount(); i++) {
-            // Get price
-            String id = model.getValueAt(i, 0).toString();
-            ProductEntity product = new ProductDAO().getByID(id);
-            long price = product.getPrice();
-
-            // Get quantity
-            String quantityStr = model.getValueAt(i, 2).toString();
-            int quantity = Integer.parseInt(quantityStr);
-
-            // Calculate subtotal for the row
-            long subtotal = price * quantity;
-            String convertSubtotal = addCommasToNumber(String.valueOf(subtotal));
-
-            // Set value
-            model.setValueAt(convertSubtotal, i, 3);
-
-            // Accumulate subtotal to totalAmount
-            totalAmount += subtotal;
-        }
-
-        // Format totalAmount to display
-        String formattedTotal = addCommasToNumber(String.valueOf(totalAmount));
-        labelTotal.setText(formattedTotal + "₫");
     }
 
     // <--- Handle click button submit and cancel
@@ -787,19 +630,20 @@ public class Products extends javax.swing.JPanel {
         // Nếu bàn chưa chọn món thì rời đi luôn
         DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
         if (model.getRowCount() == 0) {
-            mainStaff.displayStaffPanels(new DiningTable(mainStaff));
+            onSite.displayOnSitePanel(new DiningTable(onSite));
             return;
         }
 
         // Nếu bàn đã gọi món thì hỏi trước khi thoát
         Boolean result = Dialog.confirm(this, "Nếu thoát bạn sẽ mất các món ăn đã chọn?");
         if (result) {
-            mainStaff.displayStaffPanels(new DiningTable(mainStaff));
+            onSite.displayOnSitePanel(new DiningTable(onSite));
         }
     }
 
     void submit() {
-        if (labelOrderTable.getText().equals("ORDER [ Bàn Trống ]")) {
+        String tableID = Auth.table != null ? Auth.table.getTableID() : "";
+        if (tableID == "") {
             Dialog.warning(this, "Vui lòng chọn bàn ăn!");
             return;
         }
@@ -815,7 +659,7 @@ public class Products extends javax.swing.JPanel {
 
         try {
             // Create an order if don't have one yet
-            existingOrder = new OrderDAO().getByTableID(tableID);
+            OrderEntity existingOrder = new OrderDAO().getByTableID(tableID);
             if (existingOrder == null) {
                 // Create new invoice
                 int invoiceID = new InvoiceDAO().insert();
@@ -824,7 +668,7 @@ public class Products extends javax.swing.JPanel {
                 int orderId = new OrderDAO().insert(invoiceID, "Đang chuẩn bị", "Tại nhà hàng");
 
                 // Set status table
-                dataTable = new DiningTableDAO().getByID(tableID);
+                DiningTableEntity dataTable = new DiningTableDAO().getByID(tableID);
                 dataTable.setStatus("Đang phục vụ");
                 new DiningTableDAO().update(dataTable);
 
@@ -838,16 +682,16 @@ public class Products extends javax.swing.JPanel {
             if (note.length() > 60) {
                 Dialog.warning(this, "Nhập tối đa 60 ký tự!");
                 return;
+            } else {
+                existingOrder.setNote(note);
+                new OrderDAO().update(existingOrder);
             }
-
-            existingOrder.setNote(note);
-            new OrderDAO().update(existingOrder);
 
             // Add product to the order
             addProductsToOrderd(existingOrder.getOrderId(), orderProducts);
 
             // Open file table
-            mainStaff.displayStaffPanels(new DiningTable(mainStaff));
+            onSite.displayOnSitePanel(new DiningTable(onSite));
         } catch (Exception e) {
             Dialog.error(this, "Đã xảy ra lỗi khi xử lý đơn hàng!");
             e.printStackTrace();

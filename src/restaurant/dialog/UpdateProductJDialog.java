@@ -1,33 +1,25 @@
 package restaurant.dialog;
 
 import java.util.List;
-
 import java.awt.Color;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledExecutorService;
-
-import javax.swing.Timer;
-import javax.swing.JComboBox;
 import javax.swing.JTextField;
-import javax.swing.DefaultComboBoxModel;
 
 import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
+import restaurant.utils.ImageUtils;
+import restaurant.utils.ComboBoxUtils;
+import restaurant.utils.TextFieldUtils;
+
 import restaurant.dao.ProductDAO;
 import restaurant.main.ManagementMode;
 import restaurant.entity.ProductEntity;
-import restaurant.utils.ComboBoxUtils;
-import static restaurant.utils.ComboBoxUtils.addDataToComboBox;
 
 import static restaurant.utils.TextFieldUtils.getRealText;
-import static restaurant.utils.TextFieldUtils.addCommasToNumber;
-import static restaurant.utils.TextFieldUtils.removeCommasFromNumber;
-import restaurant.utils.ImageUtils;
 import static restaurant.utils.ImageUtils.setImageButtonIcon;
+import static restaurant.utils.ComboBoxUtils.addDataToComboBox;
 import static restaurant.utils.ImageUtils.chooseImageFromDirectory;
-import restaurant.utils.TextFieldUtils;
+import static restaurant.utils.TextFieldUtils.removeCommasFromNumber;
 
 public final class UpdateProductJDialog extends javax.swing.JDialog {
 
@@ -440,11 +432,11 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_textUnitActionPerformed
 
     private void btnAddCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCategoryActionPerformed
-        openSmallDialog("Thêm nhóm hàng", "Nhóm hàng:", cbCategory);
+        Common.openSmallDialog("Thêm nhóm hàng", "Nhóm hàng:", cbCategory);
     }//GEN-LAST:event_btnAddCategoryActionPerformed
 
     private void btnAddChickenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddChickenActionPerformed
-        openSmallDialog("Thêm khu chế biến", "Khu chế biến:", cbKitchenArea);
+        Common.openSmallDialog("Thêm khu chế biến", "Khu chế biến:", cbKitchenArea);
     }//GEN-LAST:event_btnAddChickenActionPerformed
 
     private void textCostPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textCostPriceActionPerformed
@@ -510,13 +502,9 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
     private javax.swing.JTextField textUnit;
     // End of variables declaration//GEN-END:variables
 
-    Timer timer;
     boolean isEditable = true;
-    JComboBox<String> comboBox;
+    String PLACEHOLDER_COMBOBOX = "--Lựa chọn--";
     String imagePath = Auth.product != null ? Auth.product.getImageURL() : "";
-
-    ScheduledFuture<?> scheduledFuture;
-    ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     void init() {
         // <--- Setup common --->
@@ -531,8 +519,8 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
 
         // Set focus field text
         textName.requestFocus();
-        TextFieldUtils.addPlaceholder(texID, "Mã tự động");
         Common.createButtonGroup(radioOn, radioOff);
+        TextFieldUtils.addPlaceholder(texID, "Mã tự động");
         ComboBoxUtils.setComboboxStyle(cbCategory, cbKitchenArea);
         ImageUtils.setImageButtonIcon("src/restaurant/img/background.jpg", btnImage);
 
@@ -542,52 +530,18 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         TextFieldUtils.addPriceDocumentListener(textCostPrice);
 
         // Setup combobox
-        String placeholder = "--Lựa chọn--";
         List<ProductEntity> dataList = new ProductDAO().getAll();
-        addDataToComboBox(cbCategory, dataList, ProductEntity::getCategory, placeholder);
-        addDataToComboBox(cbKitchenArea, dataList, ProductEntity::getKitchenArea, placeholder);
+        addDataToComboBox(cbCategory, dataList, ProductEntity::getCategory, PLACEHOLDER_COMBOBOX);
+        addDataToComboBox(cbKitchenArea, dataList, ProductEntity::getKitchenArea, PLACEHOLDER_COMBOBOX);
 
         // Set model
-        ProductEntity product = Auth.product;
-        this.setModel(product);
+        this.setModel(Auth.product);
     }
-
-    
 
     public void setIsEditable(boolean editable) {
         this.isEditable = editable;
         texID.setEditable(editable);
     }
-
-    // <--- Dialog small
-    void openSmallDialog(String title, String field, JComboBox combobox) {
-        if (title.equals("") || field.equals("")) {
-            return;
-        }
-
-        // Init dialog
-        SmallJDialog dialog = new SmallJDialog(null, true);
-
-        // Set title dialog
-        dialog.setTitle(title);
-        dialog.setLabel(field);
-        dialog.setCombobox(combobox);
-
-        // Open dialog
-        dialog.setVisible(true);
-    }
-
-    void setComboBoxValue(String value, JComboBox cbMain) {
-        if (value.trim().equals("") || value == null) {
-            return;
-        }
-
-        DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) cbMain.getModel();
-
-        model.addElement(value); // Add value
-        cbMain.setSelectedItem(value); // Display
-    }
-    // end --->
 
     // <--- CURD 
     ProductEntity getModel() {
@@ -616,9 +570,6 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
             model.setDescription(desc);
             model.setImageURL(imagePath.equals("") ? "src/restaurant/img/background.jpg" : imagePath);
             model.setStatus(radioOn.isSelected() ? "Đang kinh doanh" : "Ngừng kinh doanh");
-
-            System.out.println(imagePath);
-
             return model;
         } catch (NumberFormatException e) {
             Dialog.error(this, "Lỗi!");
@@ -674,12 +625,8 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         textName.setText(product.getProductName());
         textUnit.setText(product.getUnit());
         textDesc.setText(product.getDescription());
-
-        String costPrice = String.valueOf(product.getCostPrice());
-        textCostPrice.setText(addCommasToNumber(costPrice));
-
-        String price = String.valueOf(product.getPrice());
-        textPrice.setText(addCommasToNumber(price));
+        textPrice.setText(String.valueOf(product.getPrice()));
+        textCostPrice.setText(String.valueOf(product.getCostPrice()));
 
         // Set combobox
         cbCategory.setSelectedItem(product.getCategory());
