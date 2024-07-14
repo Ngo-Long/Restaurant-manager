@@ -11,8 +11,14 @@ import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class ImageUtils {
+
+    public static final String JPG = ".jpg";
+    public static final String JPEG = ".jpeg";
+    public static final String PNG = ".png";
+    public static final String GIF = ".gif";
 
     /**
      * Opens a file chooser dialog to select an image file from the directory.
@@ -26,6 +32,9 @@ public class ImageUtils {
     public static String chooseImageFromDirectory(JFrame frame, JButton btnImage) {
         String imgPath = "src/restaurant/img";
         JFileChooser fileChooser = new JFileChooser(imgPath);
+        fileChooser.setFileFilter(
+                new FileNameExtensionFilter("Image files", "jpg", "jpeg", "png", "gif")
+        );
 
         int result = fileChooser.showOpenDialog(frame);
         if (result == JFileChooser.APPROVE_OPTION) {
@@ -34,6 +43,11 @@ public class ImageUtils {
 
             // Get absolute path of selected image
             String imagePath = selectedFile.getAbsolutePath();
+
+            if (!isImageFile(imagePath)) {
+                Dialog.warning(frame, "Đường dẫn không hợp lệ");
+                return null;
+            }
 
             try {
                 // Định nghĩa đường dẫn tệp đích trong thư mục imgPath
@@ -54,6 +68,14 @@ public class ImageUtils {
         }
 
         return null;
+    }
+
+    private static boolean isImageFile(String filePath) {
+        String lowerCaseFilePath = filePath.toLowerCase();
+        return lowerCaseFilePath.endsWith(JPG)
+                || lowerCaseFilePath.endsWith(JPEG)
+                || lowerCaseFilePath.endsWith(PNG)
+                || lowerCaseFilePath.endsWith(GIF);
     }
 
     /**

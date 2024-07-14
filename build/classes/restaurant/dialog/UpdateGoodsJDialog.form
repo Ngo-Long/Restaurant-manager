@@ -243,10 +243,6 @@
           <Insets value="[2, 60, 2, 6]"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="textIdMouseClicked"/>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textIdActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel7">
       <Properties>
@@ -284,9 +280,6 @@
           <Insets value="[2, 60, 2, 6]"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textPriceActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel10">
       <Properties>
@@ -320,9 +313,6 @@
           <Color id="Hand Cursor"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="textName">
       <Properties>
@@ -344,9 +334,6 @@
           <Insets value="[2, 60, 2, 6]"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textNameActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="textDesc">
       <Properties>
@@ -366,9 +353,6 @@
           <Insets value="[2, 60, 2, 6]"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textDescActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnUpdate">
       <Properties>
@@ -386,9 +370,6 @@
           <Color id="Hand Cursor"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUpdateActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnDelete">
       <Properties>
@@ -406,9 +387,6 @@
           <Color id="Hand Cursor"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDeleteActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel12">
       <Properties>
@@ -426,9 +404,6 @@
         <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="&#x110;ang ho&#x1ea1;t &#x111;&#x1ed9;ng"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="radioOnActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JRadioButton" name="radioOff">
       <Properties>
@@ -437,9 +412,6 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Ng&#x1b0;ng ho&#x1ea1;t &#x111;&#x1ed9;ng"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="radioOffActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="textInitQuantity">
       <Properties>
@@ -460,9 +432,6 @@
           <Insets value="[2, 60, 2, 6]"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textInitQuantityActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel13">
       <Properties>
@@ -490,9 +459,6 @@
           <Insets value="[2, 60, 2, 6]"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textMiniQuantityActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel14">
       <Properties>
@@ -513,9 +479,6 @@
           <Color id="Hand Cursor"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnImageActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
@@ -563,9 +526,6 @@
           <Color id="Hand Cursor"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddCategoryActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="textUnit">
       <Properties>
@@ -587,9 +547,6 @@
           <Insets value="[2, 60, 2, 6]"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textUnitActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel9">
       <Properties>

@@ -1,6 +1,7 @@
 package restaurant.main;
 
-import restaurant.main.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 import restaurant.dao.AccountDAO;
 import restaurant.dao.EmployeeDAO;
@@ -85,22 +86,12 @@ public final class Login extends javax.swing.JFrame {
 
         textPassword.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textPassword.setText("123");
-        textPassword.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textPasswordActionPerformed(evt);
-            }
-        });
 
         buttonLogin.setBackground(new java.awt.Color(255, 102, 102));
         buttonLogin.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         buttonLogin.setForeground(new java.awt.Color(255, 255, 255));
         buttonLogin.setText("Login");
         buttonLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        buttonLogin.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonLoginActionPerformed(evt);
-            }
-        });
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel8.setText("Đăng ký tài khoản?");
@@ -109,11 +100,6 @@ public final class Login extends javax.swing.JFrame {
         buttonResign.setForeground(new java.awt.Color(255, 51, 51));
         buttonResign.setText("Sign Up");
         buttonResign.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        buttonResign.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonResignActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout LeftLayout = new javax.swing.GroupLayout(Left);
         Left.setLayout(LeftLayout);
@@ -221,17 +207,6 @@ public final class Login extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void buttonResignActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonResignActionPerformed
-        openFullScreenWindow(new SignUp());
-    }//GEN-LAST:event_buttonResignActionPerformed
-
-    private void buttonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonLoginActionPerformed
-        this.login();
-    }//GEN-LAST:event_buttonLoginActionPerformed
-
-    private void textPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textPasswordActionPerformed
-    }//GEN-LAST:event_textPasswordActionPerformed
-
     public static void main(String args[]) {
 
         try {
@@ -278,6 +253,27 @@ public final class Login extends javax.swing.JFrame {
 
     void init() {
         setLocationRelativeTo(null);
+
+        // Common KeyListener for ESC and ENTER keys
+        KeyAdapter keyListener = new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    System.exit(0);
+                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    getRootPane().setDefaultButton(buttonLogin);
+                    buttonLogin.requestFocus();
+                }
+            }
+        };
+
+        // Add KeyListener to textUser and textPassword
+        textUser.addKeyListener(keyListener);
+        textPassword.addKeyListener(keyListener);
+
+        // Action listener click for buttonResign and buttonLogin
+        buttonLogin.addActionListener(e -> this.login());
+        buttonResign.addActionListener(e -> openFullScreenWindow(new SignUp()));
     }
 
     void openFullScreenWindow(JFrame window) {

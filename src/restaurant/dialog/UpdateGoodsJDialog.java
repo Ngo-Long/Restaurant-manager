@@ -19,6 +19,7 @@ import restaurant.dao.GoodsDAO;
 import restaurant.utils.ImageUtils;
 import restaurant.entity.GoodsEntity;
 import restaurant.utils.ComboBoxUtils;
+import static restaurant.utils.Common.openSmallDialog;
 import restaurant.utils.TextFieldUtils;
 import static restaurant.utils.TextFieldUtils.addCommasToNumber;
 import static restaurant.utils.TextFieldUtils.getRealText;
@@ -103,16 +104,6 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         textId.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(51, 204, 0)));
         textId.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textId.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textId.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                textIdMouseClicked(evt);
-            }
-        });
-        textId.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textIdActionPerformed(evt);
-            }
-        });
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Tên hàng hóa:");
@@ -125,11 +116,6 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         textPrice.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
         textPrice.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textPrice.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textPrice.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textPriceActionPerformed(evt);
-            }
-        });
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel10.setText("Phân loại:");
@@ -142,55 +128,30 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         btnAdd.setForeground(new java.awt.Color(255, 255, 255));
         btnAdd.setText("THÊM");
         btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
-            }
-        });
 
         textName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textName.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textName.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
         textName.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textName.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textNameActionPerformed(evt);
-            }
-        });
 
         textDesc.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textDesc.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textDesc.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         textDesc.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textDesc.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textDesc.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textDescActionPerformed(evt);
-            }
-        });
 
         btnUpdate.setBackground(new java.awt.Color(0, 0, 255));
         btnUpdate.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnUpdate.setForeground(new java.awt.Color(255, 255, 255));
         btnUpdate.setText("SỬA");
         btnUpdate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnUpdateActionPerformed(evt);
-            }
-        });
 
         btnDelete.setBackground(new java.awt.Color(255, 0, 0));
         btnDelete.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnDelete.setForeground(new java.awt.Color(255, 255, 255));
         btnDelete.setText("XÓA");
         btnDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
-            }
-        });
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel12.setText("Mô tả:");
@@ -198,19 +159,9 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         radioOn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         radioOn.setSelected(true);
         radioOn.setText("Đang hoạt động");
-        radioOn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioOnActionPerformed(evt);
-            }
-        });
 
         radioOff.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         radioOff.setText("Ngưng hoạt động");
-        radioOff.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioOffActionPerformed(evt);
-            }
-        });
 
         textInitQuantity.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textInitQuantity.setHorizontalAlignment(javax.swing.JTextField.LEFT);
@@ -218,11 +169,6 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         textInitQuantity.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         textInitQuantity.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textInitQuantity.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textInitQuantity.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textInitQuantityActionPerformed(evt);
-            }
-        });
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel13.setText("SL hiện tại:");
@@ -232,22 +178,12 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         textMiniQuantity.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         textMiniQuantity.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textMiniQuantity.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textMiniQuantity.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textMiniQuantityActionPerformed(evt);
-            }
-        });
 
         jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel14.setText("SL tối thiểu:");
 
         btnImage.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnImage.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnImage.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnImageActionPerformed(evt);
-            }
-        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(102, 102, 102));
@@ -262,22 +198,12 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         btnAddCategory.setBackground(new java.awt.Color(51, 153, 0));
         btnAddCategory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/plusWhile.png"))); // NOI18N
         btnAddCategory.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnAddCategory.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddCategoryActionPerformed(evt);
-            }
-        });
 
         textUnit.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textUnit.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textUnit.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
         textUnit.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textUnit.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textUnit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textUnitActionPerformed(evt);
-            }
-        });
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel9.setText("Đơn vị:");
@@ -387,58 +313,6 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void textIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textIdActionPerformed
-
-    }//GEN-LAST:event_textIdActionPerformed
-
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        insert();
-    }//GEN-LAST:event_btnAddActionPerformed
-
-    private void textIdMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_textIdMouseClicked
-    }//GEN-LAST:event_textIdMouseClicked
-
-    private void textPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textPriceActionPerformed
-    }//GEN-LAST:event_textPriceActionPerformed
-
-    private void textNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textNameActionPerformed
-    }//GEN-LAST:event_textNameActionPerformed
-
-    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        update();
-    }//GEN-LAST:event_btnUpdateActionPerformed
-
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        delete();
-    }//GEN-LAST:event_btnDeleteActionPerformed
-
-    private void radioOnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOnActionPerformed
-
-    }//GEN-LAST:event_radioOnActionPerformed
-
-    private void radioOffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOffActionPerformed
-    }//GEN-LAST:event_radioOffActionPerformed
-
-    private void textDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textDescActionPerformed
-    }//GEN-LAST:event_textDescActionPerformed
-
-    private void textInitQuantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textInitQuantityActionPerformed
-    }//GEN-LAST:event_textInitQuantityActionPerformed
-
-    private void textMiniQuantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textMiniQuantityActionPerformed
-    }//GEN-LAST:event_textMiniQuantityActionPerformed
-
-    private void btnImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImageActionPerformed
-        imagePath = chooseImageFromDirectory(null, btnImage);
-    }//GEN-LAST:event_btnImageActionPerformed
-
-    private void btnAddCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCategoryActionPerformed
-        Common.openSmallDialog("Thêm nhóm hàng", "Nhóm hàng:", cbCategory);
-    }//GEN-LAST:event_btnAddCategoryActionPerformed
-
-    private void textUnitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textUnitActionPerformed
-    }//GEN-LAST:event_textUnitActionPerformed
-
     public static void main(String args[]) {
 
         try {
@@ -540,8 +414,20 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
                 PLACEHOLDER_STATUS
         );
 
-        // set model
-        this.setModel(Auth.goods);
+        // add more comboxbox
+        btnAddCategory.addActionListener(e -> {
+            openSmallDialog("Thêm nhóm hàng", "Nhóm hàng:", cbCategory);
+        });
+
+        // get imagePath from directory
+        btnImage.addActionListener(e -> {
+            imagePath = chooseImageFromDirectory(null, btnImage);
+        });
+
+        // click button CRUD  
+        btnAdd.addActionListener(e -> insert());
+        btnUpdate.addActionListener(e -> update());
+        btnDelete.addActionListener(e -> delete());
     }
 
     public void updateFormattedText(JTextField textFieldPrice) {

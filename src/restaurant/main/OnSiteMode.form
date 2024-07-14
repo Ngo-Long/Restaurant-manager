@@ -76,6 +76,8 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
     </Container>
+    <Component class="javax.swing.ButtonGroup" name="buttonGroup1">
+    </Component>
     <Menu class="javax.swing.JMenuBar" name="menuBar">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="menuSystem">
@@ -485,9 +487,6 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnOverviewActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnTable">
           <Properties>
@@ -502,9 +501,6 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTableActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnProduct">
           <Properties>
@@ -519,9 +515,6 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnProductActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnPay">
           <Properties>
@@ -536,9 +529,6 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPayActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnOrderTake">
           <Properties>
@@ -550,9 +540,6 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnOrderTakeActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnClosingShift">
           <Properties>
@@ -564,9 +551,6 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnClosingShiftActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnWareHouse">
           <Properties>
@@ -578,9 +562,6 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnWareHouseActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnCheck">
           <Properties>

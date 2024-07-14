@@ -4,7 +4,6 @@ import java.util.List;
 import java.awt.Color;
 import javax.swing.JTextField;
 
-import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.utils.ImageUtils;
@@ -12,9 +11,9 @@ import restaurant.utils.ComboBoxUtils;
 import restaurant.utils.TextFieldUtils;
 
 import restaurant.dao.ProductDAO;
-import restaurant.main.ManagementMode;
 import restaurant.entity.ProductEntity;
 
+import static restaurant.utils.Common.openSmallDialog;
 import static restaurant.utils.TextFieldUtils.getRealText;
 import static restaurant.utils.ImageUtils.setImageButtonIcon;
 import static restaurant.utils.ComboBoxUtils.addDataToComboBox;
@@ -22,8 +21,6 @@ import static restaurant.utils.ImageUtils.chooseImageFromDirectory;
 import static restaurant.utils.TextFieldUtils.removeCommasFromNumber;
 
 public final class UpdateProductJDialog extends javax.swing.JDialog {
-
-    private ManagementMode mainManager;
 
     public UpdateProductJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -66,6 +63,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         jLabel9 = new javax.swing.JLabel();
         textCostPrice = new javax.swing.JTextField();
         textDesc = new javax.swing.JTextField();
+        jProgressBar1 = new javax.swing.JProgressBar();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -101,16 +99,6 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         texID.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(51, 204, 0)));
         texID.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         texID.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        texID.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                texIDMouseClicked(evt);
-            }
-        });
-        texID.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                texIDActionPerformed(evt);
-            }
-        });
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Tên hàng hóa:");
@@ -123,11 +111,6 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         textPrice.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
         textPrice.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textPrice.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textPrice.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textPriceActionPerformed(evt);
-            }
-        });
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel10.setText("Nhóm hàng:");
@@ -141,22 +124,12 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         btnAdd.setText("THÊM");
         btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAdd.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
-            }
-        });
 
         textName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textName.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textName.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
         textName.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textName.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textNameActionPerformed(evt);
-            }
-        });
 
         btnUpdate.setBackground(new java.awt.Color(0, 0, 255));
         btnUpdate.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
@@ -164,11 +137,6 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         btnUpdate.setText("SỬA");
         btnUpdate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnUpdate.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnUpdateActionPerformed(evt);
-            }
-        });
 
         btnDelete.setBackground(new java.awt.Color(255, 0, 0));
         btnDelete.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
@@ -176,19 +144,9 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         btnDelete.setText("XÓA");
         btnDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnDelete.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
-            }
-        });
 
         btnImage.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         btnImage.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnImage.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnImageActionPerformed(evt);
-            }
-        });
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel13.setText("Khu chế biến:");
@@ -201,11 +159,6 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         btnAddChicken.setForeground(new java.awt.Color(51, 153, 0));
         btnAddChicken.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/plusWhile.png"))); // NOI18N
         btnAddChicken.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnAddChicken.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddChickenActionPerformed(evt);
-            }
-        });
 
         cbCategory.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cbCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -214,11 +167,6 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         btnAddCategory.setBackground(new java.awt.Color(51, 153, 0));
         btnAddCategory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/plusWhile.png"))); // NOI18N
         btnAddCategory.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnAddCategory.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddCategoryActionPerformed(evt);
-            }
-        });
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel12.setText("Trạng thái:");
@@ -226,19 +174,9 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         radioOn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         radioOn.setSelected(true);
         radioOn.setText("Đang kinh doanh");
-        radioOn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioOnActionPerformed(evt);
-            }
-        });
 
         radioOff.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         radioOff.setText("Ngừng kinh doanh");
-        radioOff.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioOffActionPerformed(evt);
-            }
-        });
 
         jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel14.setText("Đơn vị tính:");
@@ -248,11 +186,6 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         textUnit.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
         textUnit.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textUnit.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textUnit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textUnitActionPerformed(evt);
-            }
-        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(102, 102, 102));
@@ -268,13 +201,12 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         textCostPrice.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
         textCostPrice.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textCostPrice.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textCostPrice.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textCostPriceActionPerformed(evt);
-            }
-        });
 
         textDesc.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jProgressBar1.setForeground(new java.awt.Color(204, 0, 51));
+        jProgressBar1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jProgressBar1.setStringPainted(true);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -292,7 +224,8 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnImage, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
@@ -335,7 +268,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(40, Short.MAX_VALUE)
+                .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -366,10 +299,11 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
                         .addComponent(cbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(12, 12, 12)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnAddChicken, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbKitchenArea, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cbKitchenArea)
+                    .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(textDesc, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -380,7 +314,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(radioOff, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(radioOn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -390,58 +324,6 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void texIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_texIDActionPerformed
-
-    }//GEN-LAST:event_texIDActionPerformed
-
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        insert();
-    }//GEN-LAST:event_btnAddActionPerformed
-
-    private void texIDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_texIDMouseClicked
-
-    }//GEN-LAST:event_texIDMouseClicked
-
-    private void textPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textPriceActionPerformed
-    }//GEN-LAST:event_textPriceActionPerformed
-
-    private void textNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textNameActionPerformed
-    }//GEN-LAST:event_textNameActionPerformed
-
-    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        update();
-    }//GEN-LAST:event_btnUpdateActionPerformed
-
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        delete();
-    }//GEN-LAST:event_btnDeleteActionPerformed
-
-    private void btnImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImageActionPerformed
-        imagePath = chooseImageFromDirectory(null, btnImage);
-    }//GEN-LAST:event_btnImageActionPerformed
-
-    private void radioOnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOnActionPerformed
-
-    }//GEN-LAST:event_radioOnActionPerformed
-
-    private void radioOffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOffActionPerformed
-    }//GEN-LAST:event_radioOffActionPerformed
-
-    private void textUnitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textUnitActionPerformed
-    }//GEN-LAST:event_textUnitActionPerformed
-
-    private void btnAddCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCategoryActionPerformed
-        Common.openSmallDialog("Thêm nhóm hàng", "Nhóm hàng:", cbCategory);
-    }//GEN-LAST:event_btnAddCategoryActionPerformed
-
-    private void btnAddChickenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddChickenActionPerformed
-        Common.openSmallDialog("Thêm khu chế biến", "Khu chế biến:", cbKitchenArea);
-    }//GEN-LAST:event_btnAddChickenActionPerformed
-
-    private void textCostPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textCostPriceActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_textCostPriceActionPerformed
 
     public static void main(String args[]) {
 
@@ -489,6 +371,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JList<String> jList1;
+    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
@@ -502,9 +385,9 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
     private javax.swing.JTextField textUnit;
     // End of variables declaration//GEN-END:variables
 
-    boolean isEditable = true;
-    String PLACEHOLDER_COMBOBOX = "--Lựa chọn--";
-    String imagePath = Auth.product != null ? Auth.product.getImageURL() : "";
+    String imagePath;
+    final String PLACEHOLDER_ID = "Mã tự động";
+    final String PLACEHOLDER_COMBOBOX = "--Lựa chọn--";
 
     void init() {
         // <--- Setup common --->
@@ -520,32 +403,51 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         // Set focus field text
         textName.requestFocus();
         Common.createButtonGroup(radioOn, radioOff);
-        TextFieldUtils.addPlaceholder(texID, "Mã tự động");
+        TextFieldUtils.addPlaceholder(texID, PLACEHOLDER_ID);
         ComboBoxUtils.setComboboxStyle(cbCategory, cbKitchenArea);
         ImageUtils.setImageButtonIcon("src/restaurant/img/background.jpg", btnImage);
 
         // <--- Setup main --->
-        // Attach event formatted price
+        // attach event formatted price
         TextFieldUtils.addPriceDocumentListener(textPrice);
         TextFieldUtils.addPriceDocumentListener(textCostPrice);
 
-        // Setup combobox
+        // setup combobox
         List<ProductEntity> dataList = new ProductDAO().getAll();
-        addDataToComboBox(cbCategory, dataList, ProductEntity::getCategory, PLACEHOLDER_COMBOBOX);
-        addDataToComboBox(cbKitchenArea, dataList, ProductEntity::getKitchenArea, PLACEHOLDER_COMBOBOX);
+        addDataToComboBox(
+                cbCategory,
+                dataList,
+                ProductEntity::getCategory,
+                PLACEHOLDER_COMBOBOX
+        );
+        addDataToComboBox(
+                cbKitchenArea,
+                dataList,
+                ProductEntity::getKitchenArea,
+                PLACEHOLDER_COMBOBOX
+        );
 
-        // Set model
-        this.setModel(Auth.product);
+        // add more comboxbox
+        btnAddCategory.addActionListener(e -> {
+            openSmallDialog("Thêm nhóm hàng", "Nhóm hàng:", cbCategory);
+        });
+        btnAddChicken.addActionListener(e -> {
+            openSmallDialog("Thêm khu chế biến", "Khu chế biến:", cbKitchenArea);
+        });
+
+        // get imagePath from directory
+        btnImage.addActionListener(e -> {
+            imagePath = chooseImageFromDirectory(null, btnImage);
+        });
+
+        // click button CRUD  
+        btnAdd.addActionListener(e -> insert());
+        btnUpdate.addActionListener(e -> update());
+        btnDelete.addActionListener(e -> delete());
     }
 
-    public void setIsEditable(boolean editable) {
-        this.isEditable = editable;
-        texID.setEditable(editable);
-    }
-
-    // <--- CURD 
     ProductEntity getModel() {
-        String id = getRealText(texID, "Mã tự động");
+        String id = getRealText(texID, PLACEHOLDER_ID);
         String name = textName.getText();
         String costPriceText = textCostPrice.getText();
         String priceText = textPrice.getText();
@@ -568,12 +470,11 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
             model.setCategory(category);
             model.setKitchenArea(kitchenArea);
             model.setDescription(desc);
-            model.setImageURL(imagePath.equals("") ? "src/restaurant/img/background.jpg" : imagePath);
+            model.setImageURL(imagePath);
             model.setStatus(radioOn.isSelected() ? "Đang kinh doanh" : "Ngừng kinh doanh");
             return model;
         } catch (NumberFormatException e) {
             Dialog.error(this, "Lỗi!");
-            System.err.println("Lỗi: " + e.getMessage());
             return null;
         }
     }
@@ -615,30 +516,30 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         return true;
     }
 
-    void setModel(ProductEntity product) {
-        if (product == null) {
+    public void setModel(ProductEntity dataProduct) {
+        if (dataProduct == null) {
             return;
         }
 
         // Set text 
-        texID.setText(product.getProductID());
-        textName.setText(product.getProductName());
-        textUnit.setText(product.getUnit());
-        textDesc.setText(product.getDescription());
-        textPrice.setText(String.valueOf(product.getPrice()));
-        textCostPrice.setText(String.valueOf(product.getCostPrice()));
+        texID.setText(dataProduct.getProductID());
+        textName.setText(dataProduct.getProductName());
+        textUnit.setText(dataProduct.getUnit());
+        textDesc.setText(dataProduct.getDescription());
+        textPrice.setText(String.valueOf(dataProduct.getPrice()));
+        textCostPrice.setText(String.valueOf(dataProduct.getCostPrice()));
 
         // Set combobox
-        cbCategory.setSelectedItem(product.getCategory());
-        cbKitchenArea.setSelectedItem(product.getKitchenArea());
+        cbCategory.setSelectedItem(dataProduct.getCategory());
+        cbKitchenArea.setSelectedItem(dataProduct.getKitchenArea());
 
         // Set radio
-        String activiti = product.getStatus();
+        String activiti = dataProduct.getStatus();
         radioOn.setSelected(activiti.equals("Đang kinh doanh"));
         radioOff.setSelected(activiti.equals("Ngừng kinh doanh"));
 
         // Set image
-        setImageButtonIcon(imagePath, btnImage);
+        setImageButtonIcon(dataProduct.getImageURL(), btnImage);
     }
 
     void insert() {
@@ -702,5 +603,4 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
             Dialog.error(this, "Xóa thất bại!");
         }
     }
-    // end --->
 }

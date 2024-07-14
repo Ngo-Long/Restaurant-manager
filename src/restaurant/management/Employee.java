@@ -558,9 +558,7 @@ public final class Employee extends javax.swing.JPanel {
 
         // Init dialog
         UpdateTableJDialog dialog = new UpdateTableJDialog(null, true);
-
         dialog.setTitle(title); // Set title dialog
-        dialog.setIsEditable(isEditable); // Set editable 
 
         // Attach event when dispose
         dialog.addWindowListener(new WindowAdapter() {

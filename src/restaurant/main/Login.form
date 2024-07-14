@@ -192,9 +192,6 @@
             </Property>
             <Property name="text" type="java.lang.String" value="123"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textPasswordActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="buttonLogin">
           <Properties>
@@ -212,9 +209,6 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonLoginActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel8">
           <Properties>
@@ -237,9 +231,6 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonResignActionPerformed"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>

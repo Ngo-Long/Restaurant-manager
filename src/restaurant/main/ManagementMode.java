@@ -16,22 +16,20 @@ import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 
-import restaurant.management.Overview;
-import restaurant.management.Employee;
-import restaurant.management.Products;
-import restaurant.management.Supplier;
 import restaurant.management.Goods;
-import restaurant.management.DiningTable;
 import restaurant.management.Invoice;
 import restaurant.management.Receipt;
+import restaurant.management.Overview;
+import restaurant.management.Employee;
+import restaurant.management.Product;
+import restaurant.management.Supplier;
+import restaurant.management.DiningTable;
 import static restaurant.utils.MenuButton.setupMenuButton;
 
 public class ManagementMode extends javax.swing.JFrame {
 
     public ManagementMode() {
         initComponents();
-        svgHouse.setSvgImage("src/restaurant/icon/house.svg", 15, 15);
-
         this.init();
     }
 
@@ -66,7 +64,6 @@ public class ManagementMode extends javax.swing.JFrame {
         btnEmployee = new javax.swing.JButton();
         btnSuppleir = new javax.swing.JButton();
         btnReport = new javax.swing.JButton();
-        svgHouse = new restaurant.utils.SVGImage();
         scrollPaneMain = new javax.swing.JScrollPane();
         panelMain = new javax.swing.JPanel();
         menuBar = new javax.swing.JMenuBar();
@@ -149,81 +146,41 @@ public class ManagementMode extends javax.swing.JFrame {
         btnOverview.setText("Tổng Quan");
         btnOverview.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 6, true));
         btnOverview.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnOverview.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnOverviewActionPerformed(evt);
-            }
-        });
 
         btnTable.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnTable.setText("Phòng/Bàn");
         btnTable.setBorder(null);
         btnTable.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnTable.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTableActionPerformed(evt);
-            }
-        });
 
         btnProduct.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnProduct.setText("Sản Phẩm");
         btnProduct.setBorder(null);
         btnProduct.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnProduct.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnProductActionPerformed(evt);
-            }
-        });
 
         btnWareHouse.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnWareHouse.setText("Hàng Hóa");
         btnWareHouse.setBorder(null);
         btnWareHouse.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnWareHouse.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnWareHouseActionPerformed(evt);
-            }
-        });
 
         btnReceipt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnReceipt.setText("Giao dịch");
         btnReceipt.setBorder(null);
         btnReceipt.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnReceipt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnReceiptActionPerformed(evt);
-            }
-        });
 
         btnEmployee.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnEmployee.setText("Nhân Viên");
         btnEmployee.setBorder(null);
         btnEmployee.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnEmployee.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEmployeeActionPerformed(evt);
-            }
-        });
 
         btnSuppleir.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnSuppleir.setText("Đối Tác");
         btnSuppleir.setBorder(null);
         btnSuppleir.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnSuppleir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSuppleirActionPerformed(evt);
-            }
-        });
 
         btnReport.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnReport.setText("Báo Cáo");
         btnReport.setBorder(null);
         btnReport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnReport.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnReportActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -232,9 +189,7 @@ public class ManagementMode extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(labelLogo)
-                .addGap(82, 82, 82)
-                .addComponent(svgHouse, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(115, 115, 115)
                 .addComponent(btnOverview, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(8, 8, 8)
                 .addComponent(btnTable, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -273,12 +228,8 @@ public class ManagementMode extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(svgHouse, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         scrollPaneMain.setBorder(null);
@@ -552,7 +503,7 @@ public class ManagementMode extends javax.swing.JFrame {
     }//GEN-LAST:event_menuTablesActionPerformed
 
     private void menuDishesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDishesActionPerformed
-        displayManagementPanel(new Products(this));
+        displayManagementPanel(new Product(this));
     }//GEN-LAST:event_menuDishesActionPerformed
 
     private void menuChickenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChickenActionPerformed
@@ -606,41 +557,9 @@ public class ManagementMode extends javax.swing.JFrame {
         openFullScreenWindow(new QuickOrderMode());
     }//GEN-LAST:event_menuItemWayHomeActionPerformed
 
-    private void btnOverviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOverviewActionPerformed
-        displayManagementPanel(new Overview(this));
-    }//GEN-LAST:event_btnOverviewActionPerformed
-
-    private void btnTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTableActionPerformed
-        displayManagementPanel(new DiningTable(this));
-    }//GEN-LAST:event_btnTableActionPerformed
-
-    private void btnProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductActionPerformed
-        displayManagementPanel(new Products(this));
-    }//GEN-LAST:event_btnProductActionPerformed
-
-    private void btnWareHouseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWareHouseActionPerformed
-        displayManagementPanel(new Goods(this));
-    }//GEN-LAST:event_btnWareHouseActionPerformed
-
-    private void btnReceiptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceiptActionPerformed
-        displayManagementPanel(new Invoice(this));
-    }//GEN-LAST:event_btnReceiptActionPerformed
-
-    private void btnEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmployeeActionPerformed
-        displayManagementPanel(new Employee(this));
-    }//GEN-LAST:event_btnEmployeeActionPerformed
-
     private void menuEmployees1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEmployees1ActionPerformed
         displayManagementPanel(new Goods(this));
     }//GEN-LAST:event_menuEmployees1ActionPerformed
-
-    private void btnSuppleirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuppleirActionPerformed
-        displayManagementPanel(new Supplier(this));
-    }//GEN-LAST:event_btnSuppleirActionPerformed
-
-    private void btnReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportActionPerformed
-        displayManagementPanel(new Supplier(this));
-    }//GEN-LAST:event_btnReportActionPerformed
 
     public static void main(String args[]) {
 
@@ -725,7 +644,6 @@ public class ManagementMode extends javax.swing.JFrame {
     private javax.swing.JMenu menuVaiTro;
     private javax.swing.JPanel panelMain;
     private javax.swing.JScrollPane scrollPaneMain;
-    private restaurant.utils.SVGImage svgHouse;
     // End of variables declaration//GEN-END:variables
 
     JButton selectedButton = btnOverview;
@@ -751,6 +669,16 @@ public class ManagementMode extends javax.swing.JFrame {
         String[] menuItemsReport = {"Cuối ngày", "Bán hàng", "Hàng hóa",
             "Khách hàng", "Nhà cung cấp", "Nhân viên", "Tài chính"};
         setupMenuButton(btnReport, menuItemsReport, this::menuItemReportSelected);
+        
+        // handle click button header
+        btnOverview.addActionListener(e -> displayManagementPanel(new Overview(this)));
+        btnTable.addActionListener(e -> displayManagementPanel(new DiningTable(this)));
+        btnProduct.addActionListener(e -> displayManagementPanel(new Product(this)));
+        btnWareHouse.addActionListener(e -> displayManagementPanel(new Goods(this)));
+        btnReceipt.addActionListener(e -> displayManagementPanel(new Invoice(this)));
+        btnSuppleir.addActionListener(e -> displayManagementPanel(new Supplier(this)));
+        btnEmployee.addActionListener(e -> displayManagementPanel(new Employee(this)));
+        btnReport.addActionListener(e -> displayManagementPanel(new Overview(this)));
 
         // Attach event hover button chose. Fisrt button is btnOverview
         setupHeaderButtons(btnOverview);

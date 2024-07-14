@@ -23,7 +23,7 @@ public class SmallJDialog extends javax.swing.JDialog {
         textMain = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
         textNote = new javax.swing.JTextField();
-        btnAdd = new javax.swing.JButton();
+        btnSubmit = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -37,11 +37,6 @@ public class SmallJDialog extends javax.swing.JDialog {
         textMain.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
         textMain.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textMain.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textMain.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textMainActionPerformed(evt);
-            }
-        });
 
         jLabel15.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel15.setText("Ghi chú:");
@@ -55,23 +50,13 @@ public class SmallJDialog extends javax.swing.JDialog {
         textNote.setEnabled(false);
         textNote.setFocusable(false);
         textNote.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textNote.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textNoteActionPerformed(evt);
-            }
-        });
 
-        btnAdd.setBackground(new java.awt.Color(0, 153, 0));
-        btnAdd.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
-        btnAdd.setForeground(new java.awt.Color(255, 255, 255));
-        btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/check.png"))); // NOI18N
-        btnAdd.setText("Thực hiện");
-        btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
-            }
-        });
+        btnSubmit.setBackground(new java.awt.Color(0, 153, 0));
+        btnSubmit.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btnSubmit.setForeground(new java.awt.Color(255, 255, 255));
+        btnSubmit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/check.png"))); // NOI18N
+        btnSubmit.setText("Thực hiện");
+        btnSubmit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         btnCancel.setBackground(new java.awt.Color(102, 102, 102));
         btnCancel.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
@@ -79,11 +64,6 @@ public class SmallJDialog extends javax.swing.JDialog {
         btnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/cancel.png"))); // NOI18N
         btnCancel.setText("Bỏ qua");
         btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnCancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -94,7 +74,7 @@ public class SmallJDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(48, 48, 48)
-                        .addComponent(btnAdd)
+                        .addComponent(btnSubmit)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCancel))
                     .addGroup(layout.createSequentialGroup()
@@ -120,29 +100,13 @@ public class SmallJDialog extends javax.swing.JDialog {
                     .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void textMainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textMainActionPerformed
-
-    }//GEN-LAST:event_textMainActionPerformed
-
-    private void textNoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textNoteActionPerformed
-
-    }//GEN-LAST:event_textNoteActionPerformed
-
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        submit();
-    }//GEN-LAST:event_btnAddActionPerformed
-
-    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        dispose();
-    }//GEN-LAST:event_btnCancelActionPerformed
 
     public static void main(String args[]) {
 
@@ -170,8 +134,8 @@ public class SmallJDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnSubmit;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel labelMain;
     private javax.swing.JTextField textMain;
@@ -189,6 +153,10 @@ public class SmallJDialog extends javax.swing.JDialog {
         for (JTextField textField : textFields) {
             TextFieldUtils.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
         }
+        
+        // Handle click button
+        btnSubmit.addActionListener(e -> submit());
+        btnCancel.addActionListener(e -> dispose());
     }
 
     public void setLabel(String label) {

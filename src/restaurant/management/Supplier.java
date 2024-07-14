@@ -554,7 +554,6 @@ public final class Supplier extends javax.swing.JPanel {
         // Init dialog
         UpdateSupplierJDialog dialog = new UpdateSupplierJDialog(null, true);
         dialog.setTitle(title); // Set title dialog
-        dialog.setIsEditable(isEditable); // Set editable 
 
         // Attach event when dispose
         dialog.addWindowListener(new WindowAdapter() {

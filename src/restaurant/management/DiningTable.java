@@ -1,7 +1,6 @@
 package restaurant.management;
 
 import javax.swing.JTable;
-import java.text.MessageFormat;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -10,17 +9,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.WindowAdapter;
-import java.awt.print.PrinterException;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
 
-import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.table.TableCustom;
 import restaurant.dao.DiningTableDAO;
@@ -31,7 +26,7 @@ import restaurant.utils.TextFieldUtils;
 import restaurant.entity.DiningTableEntity;
 import restaurant.dialog.UpdateTableJDialog;
 import static restaurant.utils.Common.customizeTable;
-import static restaurant.utils.ExportFile.exportToExcel;
+import restaurant.utils.TableNavigator;
 
 public final class DiningTable extends javax.swing.JPanel {
 
@@ -83,11 +78,6 @@ public final class DiningTable extends javax.swing.JPanel {
         jLabel1.setText("Khu vực");
 
         cbArea.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cbArea.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbAreaActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -123,11 +113,6 @@ public final class DiningTable extends javax.swing.JPanel {
         btnExport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/export-file.png"))); // NOI18N
         btnExport.setText("Export");
         btnExport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnExport.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExportActionPerformed(evt);
-            }
-        });
 
         btnImport.setBackground(new java.awt.Color(0, 153, 0));
         btnImport.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -135,11 +120,6 @@ public final class DiningTable extends javax.swing.JPanel {
         btnImport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/file-import.png"))); // NOI18N
         btnImport.setText("Import");
         btnImport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnImport.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnImportActionPerformed(evt);
-            }
-        });
 
         btnAdd.setBackground(new java.awt.Color(0, 153, 0));
         btnAdd.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -147,11 +127,6 @@ public final class DiningTable extends javax.swing.JPanel {
         btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/plusWhile.png"))); // NOI18N
         btnAdd.setText("Thêm phòng/bàn");
         btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
-            }
-        });
 
         tableDiningTables.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tableDiningTables.setModel(new javax.swing.table.DefaultTableModel(
@@ -176,38 +151,18 @@ public final class DiningTable extends javax.swing.JPanel {
         btnLast.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnLast.setText(">|");
         btnLast.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnLast.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLastActionPerformed(evt);
-            }
-        });
 
         btnNext.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnNext.setText(">>");
         btnNext.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnNext.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNextActionPerformed(evt);
-            }
-        });
 
         btnPrev.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnPrev.setText("<<");
         btnPrev.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnPrev.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPrevActionPerformed(evt);
-            }
-        });
 
         btnFirst.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnFirst.setText("|<");
         btnFirst.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnFirst.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnFirstActionPerformed(evt);
-            }
-        });
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(102, 102, 102));
@@ -272,12 +227,6 @@ public final class DiningTable extends javax.swing.JPanel {
         jLabel2.setForeground(new java.awt.Color(51, 51, 51));
         jLabel2.setText("Tìm kiếm");
 
-        textSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textSearchActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -287,7 +236,7 @@ public final class DiningTable extends javax.swing.JPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -307,25 +256,10 @@ public final class DiningTable extends javax.swing.JPanel {
 
         radioOn.setSelected(true);
         radioOn.setText("Đang hoạt động");
-        radioOn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioOnActionPerformed(evt);
-            }
-        });
 
         radioOff.setText("Ngưng hoạt động");
-        radioOff.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioOffActionPerformed(evt);
-            }
-        });
 
         radioAll.setText("Tất cả");
-        radioAll.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioAllActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -362,8 +296,8 @@ public final class DiningTable extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1022, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(18, Short.MAX_VALUE))
@@ -397,57 +331,6 @@ public final class DiningTable extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cbAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbAreaActionPerformed
-    }//GEN-LAST:event_cbAreaActionPerformed
-
-    private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
-        exportToExcel(tableDiningTables, "Bàn ăn");
-    }//GEN-LAST:event_btnExportActionPerformed
-
-    private void btnImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportActionPerformed
-        MessageFormat header = new MessageFormat("Danh sách bàn ăn");
-        MessageFormat footer = new MessageFormat("Trang {0, number, integer}");
-
-        try {
-            tableDiningTables.print(JTable.PrintMode.FIT_WIDTH, header, footer);
-        } catch (PrinterException ex) {
-            Logger.getLogger(DiningTable.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnImportActionPerformed
-
-
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        Auth.table = null;
-        openUpdateDialog("Thêm phòng/bàn", true);
-    }//GEN-LAST:event_btnAddActionPerformed
-
-    private void radioOnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOnActionPerformed
-    }//GEN-LAST:event_radioOnActionPerformed
-
-    private void radioOffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOffActionPerformed
-    }//GEN-LAST:event_radioOffActionPerformed
-
-    private void radioAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioAllActionPerformed
-    }//GEN-LAST:event_radioAllActionPerformed
-
-    private void btnLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastActionPerformed
-        last();
-    }//GEN-LAST:event_btnLastActionPerformed
-
-    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
-        next();
-    }//GEN-LAST:event_btnNextActionPerformed
-
-    private void btnPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrevActionPerformed
-        prev();
-    }//GEN-LAST:event_btnPrevActionPerformed
-
-    private void btnFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstActionPerformed
-        first();
-    }//GEN-LAST:event_btnFirstActionPerformed
-
-    private void textSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSearchActionPerformed
-    }//GEN-LAST:event_textSearchActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
@@ -482,6 +365,8 @@ public final class DiningTable extends javax.swing.JPanel {
     final int DEBOUNCE_DELAY_LOAD = 300; // milliseconds
     final String PLACEHOLDER_STATUS = "--Tất cả--";
     final String PLACEHOLDER_SEARCH = "Tìm theo tên bàn";
+    
+    DiningTableEntity dataTable;
     List<DiningTableEntity> dataAll = new DiningTableDAO().getAll();
 
     ScheduledFuture<?> scheduledFuture;
@@ -501,10 +386,19 @@ public final class DiningTable extends javax.swing.JPanel {
         customizeTable(tableDiningTables, new int[]{}, 30);
 
         // <--- Setup main --->
-        // Handle click table show dialog
+        TableNavigator navigator = new TableNavigator(tableDiningTables);
+        btnFirst.addActionListener(e -> navigator.first());
+        btnNext.addActionListener(e -> navigator.next());
+        btnPrev.addActionListener(e -> navigator.prev());
+        btnLast.addActionListener(e -> navigator.last());
+
+        // Click button add  product
+        btnAdd.addActionListener(e -> openUpdateDialog("Thêm phòng/bàn", null));
+
+        // handle click row table show dialog
         attachRowClickListener(
                 tableDiningTables,
-                () -> openUpdateDialog("Cập nhật phòng/bàn", false)
+                () -> openUpdateDialog("Cập nhật sản phẩm", dataTable)
         );
 
         // Add data to combobox
@@ -539,10 +433,7 @@ public final class DiningTable extends javax.swing.JPanel {
 
                 // Get data from row
                 String id = (String) target.getValueAt(row, 0);
-                DiningTableEntity table = new DiningTableDAO().getByID(id);
-
-                // Save data to auth
-                Auth.table = table;
+                dataTable = new DiningTableDAO().getByID(id);
 
                 // Perform the action
                 rowClickAction.run();
@@ -550,17 +441,16 @@ public final class DiningTable extends javax.swing.JPanel {
         });
     }
 
-    void openUpdateDialog(String title, boolean isEditable) {
+    void openUpdateDialog(String title, DiningTableEntity dataTable) {
         if (title == null || title.equals("")) {
             return;
         }
 
         // Init dialog
         UpdateTableJDialog dialog = new UpdateTableJDialog(null, true);
-
         dialog.setTitle(title); // Set title dialog
-        dialog.setIsEditable(isEditable); // Set editable 
-
+        dialog.setModel(dataTable); // Set data
+        
         // Attach event when dispose
         dialog.addWindowListener(new WindowAdapter() {
             @Override

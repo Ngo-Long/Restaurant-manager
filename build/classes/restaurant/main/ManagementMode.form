@@ -462,9 +462,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
                   <Component id="labelLogo" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="82" max="-2" attributes="0"/>
-                  <Component id="svgHouse" min="-2" pref="27" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="115" max="-2" attributes="0"/>
                   <Component id="btnOverview" min="-2" pref="90" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                   <Component id="btnTable" min="-2" pref="90" max="-2" attributes="0"/>
@@ -509,14 +507,8 @@
               </Group>
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <Component id="jButton3" min="-2" pref="42" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      </Group>
-                      <Component id="svgHouse" max="32767" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jButton3" min="-2" pref="42" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -574,9 +566,6 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnOverviewActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnTable">
           <Properties>
@@ -591,9 +580,6 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTableActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnProduct">
           <Properties>
@@ -608,9 +594,6 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnProductActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnWareHouse">
           <Properties>
@@ -625,9 +608,6 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnWareHouseActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnReceipt">
           <Properties>
@@ -642,9 +622,6 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnReceiptActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnEmployee">
           <Properties>
@@ -659,9 +636,6 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEmployeeActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnSuppleir">
           <Properties>
@@ -676,9 +650,6 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSuppleirActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnReport">
           <Properties>
@@ -693,11 +664,6 @@
               <Color id="Hand Cursor"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnReportActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="restaurant.utils.SVGImage" name="svgHouse">
         </Component>
       </SubComponents>
     </Container>

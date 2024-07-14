@@ -2,7 +2,6 @@ package restaurant.dialog;
 
 import java.awt.Color;
 import javax.swing.JTextField;
-import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.dao.SupplierDAO;
@@ -79,16 +78,6 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
         textID.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(51, 204, 0)));
         textID.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textID.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textID.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                textIDMouseClicked(evt);
-            }
-        });
-        textID.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textIDActionPerformed(evt);
-            }
-        });
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Tên NCC:");
@@ -101,11 +90,6 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
         textPhone.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
         textPhone.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textPhone.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textPhone.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textPhoneActionPerformed(evt);
-            }
-        });
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel10.setText("Email:");
@@ -118,66 +102,36 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
         btnAdd.setForeground(new java.awt.Color(255, 255, 255));
         btnAdd.setText("THÊM");
         btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
-            }
-        });
 
         textName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textName.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textName.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
         textName.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textName.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textNameActionPerformed(evt);
-            }
-        });
 
         textDesc.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textDesc.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textDesc.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         textDesc.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textDesc.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textDesc.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textDescActionPerformed(evt);
-            }
-        });
 
         textEmail.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textEmail.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textEmail.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         textEmail.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textEmail.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textEmail.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textEmailActionPerformed(evt);
-            }
-        });
 
         btnUpdate.setBackground(new java.awt.Color(0, 0, 255));
         btnUpdate.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnUpdate.setForeground(new java.awt.Color(255, 255, 255));
         btnUpdate.setText("SỬA");
         btnUpdate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnUpdateActionPerformed(evt);
-            }
-        });
 
         btnDelete.setBackground(new java.awt.Color(255, 0, 0));
         btnDelete.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnDelete.setForeground(new java.awt.Color(255, 255, 255));
         btnDelete.setText("XÓA");
         btnDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
-            }
-        });
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel12.setText("Mô tả:");
@@ -185,30 +139,15 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
         radioOn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         radioOn.setSelected(true);
         radioOn.setText("Đang hợp tác");
-        radioOn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioOnActionPerformed(evt);
-            }
-        });
 
         radioOff.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         radioOff.setText("Ngừng hợp tác");
-        radioOff.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioOffActionPerformed(evt);
-            }
-        });
 
         textAddress.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textAddress.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textAddress.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         textAddress.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textAddress.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textAddress.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textAddressActionPerformed(evt);
-            }
-        });
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel13.setText("Địa chỉ:");
@@ -292,48 +231,6 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void textIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textIDActionPerformed
-
-    }//GEN-LAST:event_textIDActionPerformed
-
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        insert();
-    }//GEN-LAST:event_btnAddActionPerformed
-
-    private void textDescActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textDescActionPerformed
-    }//GEN-LAST:event_textDescActionPerformed
-
-    private void textIDMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_textIDMouseClicked
-
-    }//GEN-LAST:event_textIDMouseClicked
-
-    private void textPhoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textPhoneActionPerformed
-    }//GEN-LAST:event_textPhoneActionPerformed
-
-    private void textEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textEmailActionPerformed
-    }//GEN-LAST:event_textEmailActionPerformed
-
-    private void textNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textNameActionPerformed
-    }//GEN-LAST:event_textNameActionPerformed
-
-    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        update();
-    }//GEN-LAST:event_btnUpdateActionPerformed
-
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        delete();
-    }//GEN-LAST:event_btnDeleteActionPerformed
-
-    private void radioOnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOnActionPerformed
-
-    }//GEN-LAST:event_radioOnActionPerformed
-
-    private void radioOffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOffActionPerformed
-    }//GEN-LAST:event_radioOffActionPerformed
-
-    private void textAddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textAddressActionPerformed
-    }//GEN-LAST:event_textAddressActionPerformed
-
     public static void main(String args[]) {
 
         try {
@@ -386,7 +283,6 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
     private javax.swing.JTextField textPhone;
     // End of variables declaration//GEN-END:variables
 
-    boolean isEditable = true;
     final String PLACEHOLDER_ID = "Mã tự động";
 
     void init() {
@@ -396,7 +292,6 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
 
         // Setup UI
         textName.requestFocus();
-        textID.setEditable(isEditable);
         Common.createButtonGroup(radioOn, radioOff);
         TextFieldUtils.addPlaceholder(textID, PLACEHOLDER_ID);
 
@@ -406,13 +301,10 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
             TextFieldUtils.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
         }
 
-        // Setup model
-        setModel(Auth.supplier);
-    }
-
-    public void setIsEditable(boolean editable) {
-        this.isEditable = editable;
-        textID.setEditable(editable);
+        // Click button CRUD  
+        btnAdd.addActionListener(e -> insert());
+        btnUpdate.addActionListener(e -> update());
+        btnDelete.addActionListener(e -> delete());
     }
 
     boolean validateInput(String name, String phoneText) {
@@ -460,7 +352,7 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
         }
     }
 
-    void setModel(SupplierEntity data) {
+    public void setModel(SupplierEntity data) {
         if (data == null) {
             return;
         }

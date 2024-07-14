@@ -1,12 +1,17 @@
 package restaurant.management;
 
 import java.awt.Color;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import restaurant.dao.SupplierDAO;
+import restaurant.entity.SupplierEntity;
 import restaurant.utils.Common;
 import restaurant.utils.TextFieldUtils;
 
 import restaurant.table.TableCustom;
 import restaurant.main.ManagementMode;
+import restaurant.utils.Auth;
 import restaurant.utils.ComboBoxUtils;
 
 public class CreateReceipt extends javax.swing.JPanel {
@@ -47,7 +52,7 @@ public class CreateReceipt extends javax.swing.JPanel {
         cbReceiptType = new javax.swing.JComboBox<>();
         jLabel7 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        labelTax1 = new javax.swing.JLabel();
+        labelEmployeeName = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
         textTax = new javax.swing.JTextField();
@@ -84,7 +89,7 @@ public class CreateReceipt extends javax.swing.JPanel {
             tableOrdered.getColumnModel().getColumn(0).setPreferredWidth(25);
             tableOrdered.getColumnModel().getColumn(0).setMaxWidth(25);
             tableOrdered.getColumnModel().getColumn(1).setPreferredWidth(20);
-            tableOrdered.getColumnModel().getColumn(2).setPreferredWidth(100);
+            tableOrdered.getColumnModel().getColumn(2).setPreferredWidth(140);
             tableOrdered.getColumnModel().getColumn(3).setPreferredWidth(20);
             tableOrdered.getColumnModel().getColumn(4).setPreferredWidth(20);
             tableOrdered.getColumnModel().getColumn(5).setPreferredWidth(20);
@@ -140,8 +145,7 @@ public class CreateReceipt extends javax.swing.JPanel {
                         .addGap(0, 0, 0)
                         .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnHistory)
-                        .addGap(0, 0, 0)))
+                        .addComponent(btnHistory)))
                 .addGap(12, 12, 12))
         );
         jPanel3Layout.setVerticalGroup(
@@ -170,7 +174,7 @@ public class CreateReceipt extends javax.swing.JPanel {
         labelDate.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         labelDate.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labelDate.setText("31-05-2024");
-        labelDate.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(204, 204, 204)));
+        labelDate.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
 
         labelTotal.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         labelTotal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -259,9 +263,9 @@ public class CreateReceipt extends javax.swing.JPanel {
             .addGap(0, 2, Short.MAX_VALUE)
         );
 
-        labelTax1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        labelTax1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        labelTax1.setText("Ngô Kim Long");
+        labelEmployeeName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelEmployeeName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labelEmployeeName.setText("Ngô Kim Long");
 
         jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButton1.setText("0");
@@ -300,7 +304,7 @@ public class CreateReceipt extends javax.swing.JPanel {
         labelTime.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         labelTime.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labelTime.setText("23:39");
-        labelTime.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(204, 204, 204)));
+        labelTime.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -328,12 +332,15 @@ public class CreateReceipt extends javax.swing.JPanel {
                                     .addComponent(cbReceiptType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(cbSuppliers, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(textID, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(labelTax1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(jPanel4Layout.createSequentialGroup()
                                         .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(labelDate)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(labelTime))))
+                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                                .addComponent(labelDate)
+                                                .addGap(22, 22, 22)
+                                                .addComponent(labelTime))
+                                            .addComponent(labelEmployeeName, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(0, 0, Short.MAX_VALUE))))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel9)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -344,8 +351,9 @@ public class CreateReceipt extends javax.swing.JPanel {
                                         .addComponent(radioUnpay))
                                     .addGroup(jPanel4Layout.createSequentialGroup()
                                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(139, 139, 139)
-                                        .addComponent(labelTotal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(labelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(4, 4, 4)))))
                         .addGap(14, 14, 14))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -375,7 +383,7 @@ public class CreateReceipt extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelTax1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(labelEmployeeName, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(16, 16, 16)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -396,7 +404,7 @@ public class CreateReceipt extends javax.swing.JPanel {
                     .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(radioPaied, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(radioUnpay, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(12, 12, 12)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -412,7 +420,7 @@ public class CreateReceipt extends javax.swing.JPanel {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnPayInvoice, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
                     .addComponent(btnCancel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -485,9 +493,9 @@ public class CreateReceipt extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel labelDate;
+    private javax.swing.JLabel labelEmployeeName;
     private javax.swing.JLabel labelInvoiceID;
     private javax.swing.JLabel labelOrderedTable;
-    private javax.swing.JLabel labelTax1;
     private javax.swing.JLabel labelTime;
     private javax.swing.JLabel labelTotal;
     private javax.swing.JLabel labelTotalAmount;
@@ -501,12 +509,13 @@ public class CreateReceipt extends javax.swing.JPanel {
 
     final String PLACEHOLDER_ID = "Mã phiếu tự động";
     final String PLACEHOLDER_SEARCH = "Tìm hàng hóa theo tên hoặc mã";
+    final String PLACEHOLDER_STATUS = "--Lựa chọn--";
 
     void init() {
         // <--- Setup common --->
         // set time
         Common.initClock(labelTime);
-//        labelDate.setDate(new Date());
+        labelDate.setText(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
 
         // set table
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
@@ -525,6 +534,19 @@ public class CreateReceipt extends javax.swing.JPanel {
         TextFieldUtils.addFocusBorder(textTax, new Color(51, 204, 0), new Color(204, 204, 204));
 
         // <--- Setup main --->
+        // set name employee
+        if (Auth.user != null) {
+            labelEmployeeName.setText("" + Auth.user.getFullName());
+        }
+
+        // add data to combobox
+        List<SupplierEntity> dataList = new SupplierDAO().getAll();
+        ComboBoxUtils.addDataToComboBox(
+                cbSuppliers,
+                dataList,
+                SupplierEntity::getSupplierName,
+                PLACEHOLDER_STATUS
+        );
     }
 
 }

@@ -12,8 +12,8 @@ import java.awt.event.WindowAdapter;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.main.OnSiteMode;
-import restaurant.onsite.Products;
-import restaurant.onsite.Invoices;
+import restaurant.onsite.Product;
+import restaurant.onsite.Invoice;
 import restaurant.table.TableCustom;
 
 import restaurant.utils.Auth;
@@ -289,7 +289,7 @@ public final class TableOrderJDialog extends javax.swing.JDialog {
         // Set attach info other file
         Auth.table = dataTable;
         Auth.order = dataOrder;
-        onSite.displayOnSitePanel(new Products(onSite));
+        onSite.displayOnSitePanel(new Product(onSite));
         dispose();
     }//GEN-LAST:event_btnAddOrderActionPerformed
 
@@ -490,7 +490,7 @@ public final class TableOrderJDialog extends javax.swing.JDialog {
         Auth.invoice = dataInvoice;
 
         // Display file invoice
-        onSite.displayOnSitePanel(new Invoices(onSite));
+        onSite.displayOnSitePanel(new Invoice(onSite));
         dispose();
     }
 

@@ -47,8 +47,8 @@
                   <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="jPanel4" max="32767" attributes="0"/>
-                      <Component id="jPanel2" max="32767" attributes="0"/>
                       <Component id="jPanel3" max="32767" attributes="0"/>
+                      <Component id="jPanel2" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jPanel1" min="-2" pref="1022" max="-2" attributes="0"/>
@@ -131,9 +131,6 @@
                   </StringArray>
                 </Property>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbAreaActionPerformed"/>
-              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
@@ -245,9 +242,6 @@
                   <Color id="Hand Cursor"/>
                 </Property>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnExportActionPerformed"/>
-              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnImport">
               <Properties>
@@ -268,9 +262,6 @@
                   <Color id="Hand Cursor"/>
                 </Property>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnImportActionPerformed"/>
-              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnAdd">
               <Properties>
@@ -291,9 +282,6 @@
                   <Color id="Hand Cursor"/>
                 </Property>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddActionPerformed"/>
-              </Events>
             </Component>
             <Container class="javax.swing.JScrollPane" name="jScrollPane1">
               <AuxValues>
@@ -372,9 +360,6 @@
                   <Color id="Hand Cursor"/>
                 </Property>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLastActionPerformed"/>
-              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnNext">
               <Properties>
@@ -386,9 +371,6 @@
                   <Color id="Hand Cursor"/>
                 </Property>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnNextActionPerformed"/>
-              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnPrev">
               <Properties>
@@ -400,9 +382,6 @@
                   <Color id="Hand Cursor"/>
                 </Property>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPrevActionPerformed"/>
-              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnFirst">
               <Properties>
@@ -414,9 +393,6 @@
                   <Color id="Hand Cursor"/>
                 </Property>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnFirstActionPerformed"/>
-              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel6">
               <Properties>
@@ -447,7 +423,7 @@
                           <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                           <Component id="textSearch" min="-2" pref="183" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="15" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -476,9 +452,6 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="textSearch">
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textSearchActionPerformed"/>
-              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -537,25 +510,16 @@
                 <Property name="selected" type="boolean" value="true"/>
                 <Property name="text" type="java.lang.String" value="&#x110;ang ho&#x1ea1;t &#x111;&#x1ed9;ng"/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="radioOnActionPerformed"/>
-              </Events>
             </Component>
             <Component class="javax.swing.JRadioButton" name="radioOff">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Ng&#x1b0;ng ho&#x1ea1;t &#x111;&#x1ed9;ng"/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="radioOffActionPerformed"/>
-              </Events>
             </Component>
             <Component class="javax.swing.JRadioButton" name="radioAll">
               <Properties>
                 <Property name="text" type="java.lang.String" value="T&#x1ea5;t c&#x1ea3;"/>
               </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="radioAllActionPerformed"/>
-              </Events>
             </Component>
           </SubComponents>
         </Container>

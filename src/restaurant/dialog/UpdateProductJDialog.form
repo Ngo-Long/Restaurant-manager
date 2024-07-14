@@ -104,6 +104,7 @@
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="btnImage" pref="200" max="32767" attributes="0"/>
                           <Component id="jLabel1" max="32767" attributes="0"/>
+                          <Component id="jProgressBar1" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
@@ -162,7 +163,7 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace pref="40" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -202,12 +203,13 @@
                   </Group>
               </Group>
               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="btnAddChicken" alignment="0" min="-2" pref="32" max="-2" attributes="0"/>
-                  <Component id="jLabel13" alignment="0" min="-2" pref="32" max="-2" attributes="0"/>
-                  <Component id="cbKitchenArea" min="-2" pref="32" max="-2" attributes="0"/>
+                  <Component id="jLabel13" alignment="0" max="32767" attributes="0"/>
+                  <Component id="cbKitchenArea" max="32767" attributes="0"/>
+                  <Component id="jProgressBar1" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="textDesc" min="-2" pref="70" max="-2" attributes="0"/>
                   <Component id="jLabel11" min="-2" pref="28" max="-2" attributes="0"/>
@@ -220,7 +222,7 @@
                       <Component id="radioOn" min="-2" pref="30" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="31" max="32767" attributes="0"/>
+              <EmptySpace pref="20" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnAdd" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
                   <Component id="btnUpdate" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
@@ -260,10 +262,6 @@
           <Insets value="[2, 60, 2, 6]"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="texIDMouseClicked"/>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="texIDActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel7">
       <Properties>
@@ -301,9 +299,6 @@
           <Insets value="[2, 60, 2, 6]"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textPriceActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel10">
       <Properties>
@@ -338,9 +333,6 @@
         </Property>
         <Property name="horizontalTextPosition" type="int" value="0"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="textName">
       <Properties>
@@ -362,9 +354,6 @@
           <Insets value="[2, 60, 2, 6]"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textNameActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnUpdate">
       <Properties>
@@ -383,9 +372,6 @@
         </Property>
         <Property name="horizontalTextPosition" type="int" value="0"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUpdateActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnDelete">
       <Properties>
@@ -404,9 +390,6 @@
         </Property>
         <Property name="horizontalTextPosition" type="int" value="0"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDeleteActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnImage">
       <Properties>
@@ -419,9 +402,6 @@
           <Color id="Hand Cursor"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnImageActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel13">
       <Properties>
@@ -467,9 +447,6 @@
           <Color id="Hand Cursor"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddChickenActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JComboBox" name="cbCategory">
       <Properties>
@@ -504,9 +481,6 @@
           <Color id="Hand Cursor"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddCategoryActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel12">
       <Properties>
@@ -524,9 +498,6 @@
         <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="&#x110;ang kinh doanh"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="radioOnActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JRadioButton" name="radioOff">
       <Properties>
@@ -535,9 +506,6 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Ng&#x1eeb;ng kinh doanh"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="radioOffActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel14">
       <Properties>
@@ -567,9 +535,6 @@
           <Insets value="[2, 60, 2, 6]"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textUnitActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
@@ -612,9 +577,6 @@
           <Insets value="[2, 60, 2, 6]"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textCostPriceActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="textDesc">
       <Properties>
@@ -623,6 +585,19 @@
             <EtchetBorder/>
           </Border>
         </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JProgressBar" name="jProgressBar1">
+      <Properties>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="33" green="0" red="cc" type="rgb"/>
+        </Property>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
+            <EtchetBorder/>
+          </Border>
+        </Property>
+        <Property name="stringPainted" type="boolean" value="true"/>
       </Properties>
     </Component>
   </SubComponents>

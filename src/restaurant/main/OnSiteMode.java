@@ -13,8 +13,8 @@ import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.onsite.Overview;
-import restaurant.onsite.Products;
-import restaurant.onsite.Invoices;
+import restaurant.onsite.Product;
+import restaurant.onsite.Invoice;
 import restaurant.onsite.DiningTable;
 import restaurant.onsite.AreaKitchen;
 
@@ -41,6 +41,7 @@ public final class OnSiteMode extends javax.swing.JFrame {
         jMenu5 = new javax.swing.JMenu();
         jPopupMenu1 = new javax.swing.JPopupMenu();
         jPopupMenu2 = new javax.swing.JPopupMenu();
+        buttonGroup1 = new javax.swing.ButtonGroup();
         scrollPaneMain = new javax.swing.JScrollPane();
         panelMain = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
@@ -130,68 +131,33 @@ public final class OnSiteMode extends javax.swing.JFrame {
         btnOverview.setText("Tổng Quan");
         btnOverview.setBorder(null);
         btnOverview.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnOverview.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnOverviewActionPerformed(evt);
-            }
-        });
 
         btnTable.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnTable.setText("Bàn Ăn");
         btnTable.setBorder(null);
         btnTable.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnTable.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTableActionPerformed(evt);
-            }
-        });
 
         btnProduct.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnProduct.setText("Món Ăn");
         btnProduct.setBorder(null);
         btnProduct.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnProduct.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnProductActionPerformed(evt);
-            }
-        });
 
         btnPay.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnPay.setText("Thanh Toán");
         btnPay.setBorder(null);
         btnPay.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnPay.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPayActionPerformed(evt);
-            }
-        });
 
         btnOrderTake.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnOrderTake.setText("Lịch hẹn");
         btnOrderTake.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnOrderTake.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnOrderTakeActionPerformed(evt);
-            }
-        });
 
         btnClosingShift.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnClosingShift.setText("Chốt Ca");
         btnClosingShift.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnClosingShift.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClosingShiftActionPerformed(evt);
-            }
-        });
 
         btnWareHouse.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnWareHouse.setText("Kho Hàng");
         btnWareHouse.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnWareHouse.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnWareHouseActionPerformed(evt);
-            }
-        });
 
         btnCheck.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnCheck.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/check-mark.png"))); // NOI18N
@@ -494,7 +460,7 @@ public final class OnSiteMode extends javax.swing.JFrame {
     }//GEN-LAST:event_menuTablesActionPerformed
 
     private void menuDishesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDishesActionPerformed
-        displayOnSitePanel(new Products(this));
+        displayOnSitePanel(new Product(this));
     }//GEN-LAST:event_menuDishesActionPerformed
 
     private void menuChickenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChickenActionPerformed
@@ -502,7 +468,7 @@ public final class OnSiteMode extends javax.swing.JFrame {
     }//GEN-LAST:event_menuChickenActionPerformed
 
     private void menuPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuPayActionPerformed
-        displayOnSitePanel(new Invoices(this));
+        displayOnSitePanel(new Invoice(this));
     }//GEN-LAST:event_menuPayActionPerformed
 
     private void menuRevenueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRevenueActionPerformed
@@ -527,36 +493,6 @@ public final class OnSiteMode extends javax.swing.JFrame {
     private void menuIntroduceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuIntroduceActionPerformed
 
     }//GEN-LAST:event_menuIntroduceActionPerformed
-
-    private void btnOverviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOverviewActionPerformed
-        displayOnSitePanel(new Overview(this));
-    }//GEN-LAST:event_btnOverviewActionPerformed
-
-    private void btnTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTableActionPerformed
-        displayOnSitePanel(new DiningTable(this));
-    }//GEN-LAST:event_btnTableActionPerformed
-
-    private void btnProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductActionPerformed
-        Auth.table = null;
-        Auth.order = null;
-        displayOnSitePanel(new Products(this));
-    }//GEN-LAST:event_btnProductActionPerformed
-
-    private void btnPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPayActionPerformed
-        Auth.table = null;
-        Auth.order = null;
-        Auth.invoice = null;
-        displayOnSitePanel(new Invoices(this));
-    }//GEN-LAST:event_btnPayActionPerformed
-
-    private void btnOrderTakeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderTakeActionPerformed
-    }//GEN-LAST:event_btnOrderTakeActionPerformed
-
-    private void btnClosingShiftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClosingShiftActionPerformed
-    }//GEN-LAST:event_btnClosingShiftActionPerformed
-
-    private void btnWareHouseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWareHouseActionPerformed
-    }//GEN-LAST:event_btnWareHouseActionPerformed
 
     private void menuItemEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemEmployeeActionPerformed
         openFullScreenWindow(new OnSiteMode());
@@ -614,6 +550,7 @@ public final class OnSiteMode extends javax.swing.JFrame {
     private javax.swing.JButton btnProduct;
     private javax.swing.JButton btnTable;
     private javax.swing.JButton btnWareHouse;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu3;
@@ -667,7 +604,25 @@ public final class OnSiteMode extends javax.swing.JFrame {
         Common.setAccountMenu(menuStaff);
         Common.customizeScrollBar(scrollPaneMain);
 
+        // handle click button header
+        btnOverview.addActionListener(e -> displayOnSitePanel(new Overview(this)));
+        btnTable.addActionListener(e -> displayOnSitePanel(new DiningTable(this)));
+        btnProduct.addActionListener(e -> {
+            Auth.table = null;
+            Auth.order = null;
+            displayOnSitePanel(new Product(this));
+        });
+        btnPay.addActionListener(e -> {
+            Auth.table = null;
+            Auth.order = null;
+            Auth.invoice = null;
+            displayOnSitePanel(new Invoice(this));
+        });
+
+        // Attach event hover button chose. Fisrt button is btnOverview
         setupHeaderButtons(btnOverview);
+
+        // Display UI main
         displayOnSitePanel(new Overview(this));
     }
 
