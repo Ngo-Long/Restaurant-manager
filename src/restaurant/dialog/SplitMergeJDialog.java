@@ -6,11 +6,11 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import restaurant.dao.DiningTableDAO;
 import restaurant.dao.OrderDAO;
-import restaurant.entity.DiningTableEntity;
-import restaurant.entity.OrderEntity;
+import restaurant.entity.DiningTable;
+import restaurant.entity.Order;
 import restaurant.main.OnSiteMode;
 import restaurant.table.TableCustom;
-import restaurant.utils.ComboBoxUtils;
+import restaurant.utils.XComboBox;
 import restaurant.utils.Common;
 
 public class SplitMergeJDialog extends javax.swing.JDialog {
@@ -260,7 +260,7 @@ public class SplitMergeJDialog extends javax.swing.JDialog {
     private javax.swing.JTable tableSplit;
     // End of variables declaration//GEN-END:variables
 
-    DiningTableEntity dataTable;
+    DiningTable dataTable;
     private JComboBox<String> cbMain;
 
     void init() {
@@ -272,13 +272,13 @@ public class SplitMergeJDialog extends javax.swing.JDialog {
         TableCustom.apply(jScrollPane2, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableSplit, new int[]{}, 25);
         Common.customizeTable(tableMerge, new int[]{}, 25);
-        ComboBoxUtils.setComboboxStyle(cbOrderPairing, cbSplitOrder, cbSplitTable);
+        XComboBox.setComboboxStyle(cbOrderPairing, cbSplitOrder, cbSplitTable);
 
         // Set combobox
         addDataToComboboxs();
     }
 
-    void setInfoDialog(DiningTableEntity dataTable) {
+    void setInfoDialog(DiningTable dataTable) {
         System.out.println(dataTable);
         if (dataTable == null) {
             return;
@@ -288,7 +288,7 @@ public class SplitMergeJDialog extends javax.swing.JDialog {
         String tableName = dataTable.getName();
         String tableLocation = dataTable.getLocation();
 
-        OrderEntity order = new OrderDAO().getByTableID(tableID);
+        Order order = new OrderDAO().getByTableID(tableID);
         String orderID = String.valueOf(order.getOrderId());
         labelTitle.setText(tableName + " - " + tableLocation);
     }
@@ -333,7 +333,7 @@ public class SplitMergeJDialog extends javax.swing.JDialog {
 //    }
     void addDataToComboboxs() {
         // Get all table list
-        List<DiningTableEntity> dataAllTables = new DiningTableDAO().getAll();
+        List<DiningTable> dataAllTables = new DiningTableDAO().getAll();
 
         // Create a DefaultComboBoxModel 
         DefaultComboBoxModel<String> comboBoxOrderTables = new DefaultComboBoxModel<>();
@@ -344,7 +344,7 @@ public class SplitMergeJDialog extends javax.swing.JDialog {
         comboBoxTables.addElement("Chọn bàn");
 
         // Add table name to the ComboBoxModel
-        for (DiningTableEntity dataTable : dataAllTables) {
+        for (DiningTable dataTable : dataAllTables) {
             // All table
             comboBoxTables.addElement(dataTable.getName());
 

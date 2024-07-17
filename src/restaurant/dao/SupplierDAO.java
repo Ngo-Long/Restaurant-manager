@@ -1,14 +1,14 @@
 package restaurant.dao;
 
-import restaurant.utils.JDBC;
-import restaurant.entity.SupplierEntity;
+import restaurant.utils.XJdbc;
+import restaurant.entity.Supplier;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class SupplierDAO extends RestaurantDAO<SupplierEntity, String> {
+public class SupplierDAO extends RestaurantDAO<Supplier, String> {
 
     final String INSERT_SQL = "INSERT INTO Supplier (SupplierID, SupplierName, "
             + "OutstandingDebt, TotalSales, Address, Phone, Email, Description, Status) "
@@ -25,8 +25,8 @@ public class SupplierDAO extends RestaurantDAO<SupplierEntity, String> {
             + "WHERE (SupplierID LIKE ? OR [SupplierName] LIKE ? OR [Phone] LIKE ?) AND [Status] LIKE ?";
 
     @Override
-    public void insert(SupplierEntity entity) {
-        JDBC.executeUpdate(INSERT_SQL,
+    public void insert(Supplier entity) {
+        XJdbc.executeUpdate(INSERT_SQL,
                 entity.getSupplierID(),
                 entity.getSupplierName(),
                 entity.getOutstandingDebt(),
@@ -40,8 +40,8 @@ public class SupplierDAO extends RestaurantDAO<SupplierEntity, String> {
     }
 
     @Override
-    public void update(SupplierEntity entity) {
-        JDBC.executeUpdate(UPDATE_SQL,
+    public void update(Supplier entity) {
+        XJdbc.executeUpdate(UPDATE_SQL,
                 entity.getSupplierName(),
                 entity.getOutstandingDebt(),
                 entity.getTotalSales(),
@@ -56,21 +56,21 @@ public class SupplierDAO extends RestaurantDAO<SupplierEntity, String> {
 
     @Override
     public void delete(String id) {
-        JDBC.executeUpdate(DELETE_SQL, id);
+        XJdbc.executeUpdate(DELETE_SQL, id);
     }
 
     @Override
-    public SupplierEntity getByID(String id) {
-        List<SupplierEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
+    public Supplier getByID(String id) {
+        List<Supplier> list = fetchByQuery(SELECT_BY_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
     }
 
     @Override
-    public List<SupplierEntity> getAll() {
+    public List<Supplier> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
     }
 
-    public List<SupplierEntity> searchByCriteria(String id, String name, String phone, String status) {
+    public List<Supplier> searchByCriteria(String id, String name, String phone, String status) {
         String idTerm = "%" + id + "%";
         String nameTerm = "%" + name + "%";
         String phoneTerm = "%" + phone + "%";
@@ -80,7 +80,7 @@ public class SupplierDAO extends RestaurantDAO<SupplierEntity, String> {
     }
 
     public boolean isIdExists(String id) {
-        try (ResultSet rs = JDBC.executeQuery(IS_EXISTS_SQL, id)) {
+        try (ResultSet rs = XJdbc.executeQuery(IS_EXISTS_SQL, id)) {
             if (rs.next()) {
                 return rs.getInt(1) > 0;
             }
@@ -91,12 +91,12 @@ public class SupplierDAO extends RestaurantDAO<SupplierEntity, String> {
     }
 
     @Override
-    protected List<SupplierEntity> fetchByQuery(String sql, Object... args) {
-        List<SupplierEntity> list = new ArrayList<>();
+    protected List<Supplier> fetchByQuery(String sql, Object... args) {
+        List<Supplier> list = new ArrayList<>();
 
-        try (ResultSet rs = JDBC.executeQuery(sql, args)) {
+        try (ResultSet rs = XJdbc.executeQuery(sql, args)) {
             while (rs.next()) {
-                SupplierEntity model = readFromResultSet(rs);
+                Supplier model = readFromResultSet(rs);
                 list.add(model);
             }
         } catch (SQLException ex) {
@@ -106,8 +106,8 @@ public class SupplierDAO extends RestaurantDAO<SupplierEntity, String> {
         return list;
     }
 
-    private SupplierEntity readFromResultSet(ResultSet rs) throws SQLException {
-        SupplierEntity model = new SupplierEntity();
+    private Supplier readFromResultSet(ResultSet rs) throws SQLException {
+        Supplier model = new Supplier();
         model.setSupplierID(rs.getString("SupplierID"));
         model.setSupplierName(rs.getString("SupplierName"));
         model.setOutstandingDebt(rs.getLong("OutstandingDebt"));

@@ -1,11 +1,11 @@
 package restaurant.utils;
 
-import restaurant.entity.AccountEntity;
+import restaurant.entity.Account;
 
 public class AccountInfo {
 
     // Đối tượng này chứa thông tin người sử dụng sau khi đăng nhập
-    public static AccountEntity account = null;
+    public static Account account = null;
 
     // Xóa thông tin của người sử dụng khi có yêu cầu đăng xuất
     public static void clear() {

@@ -1,13 +1,13 @@
 package restaurant.dao;
 
-import restaurant.utils.JDBC;
-import restaurant.entity.EmployeeEntity;
+import restaurant.utils.XJdbc;
+import restaurant.entity.Employee;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class EmployeeDAO extends RestaurantDAO<EmployeeEntity, String> {
+public class EmployeeDAO extends RestaurantDAO<Employee, String> {
 
     final String INSERT_SQL = "INSERT INTO Employee (EmployeeID, ShiftID, FullName, Gender, "
             + "Phone, DateOfBirth, IDCard, Email, Address, UrlImage, Position, Status, Salary, "
@@ -29,7 +29,7 @@ public class EmployeeDAO extends RestaurantDAO<EmployeeEntity, String> {
             + "AND [Position] LIKE ? "
             + "AND [Status] LIKE ? ";
 
-    public List<EmployeeEntity> searchByCriteria(String id, String name, String position, String status) {
+    public List<Employee> searchByCriteria(String id, String name, String position, String status) {
         String idTerm = "%" + id + "%";
         String nameTerm = "%" + name + "%";
         String positionTerm = "%" + position + "%";
@@ -39,8 +39,8 @@ public class EmployeeDAO extends RestaurantDAO<EmployeeEntity, String> {
     }
 
     @Override
-    public void insert(EmployeeEntity entity) {
-        JDBC.executeUpdate(INSERT_SQL,
+    public void insert(Employee entity) {
+        XJdbc.executeUpdate(INSERT_SQL,
                 entity.getEmployeeID(),
                 entity.getShiftID(),
                 entity.getFullName(),
@@ -62,8 +62,8 @@ public class EmployeeDAO extends RestaurantDAO<EmployeeEntity, String> {
     }
 
     @Override
-    public void update(EmployeeEntity entity) {
-        JDBC.executeUpdate(UPDATE_SQL,
+    public void update(Employee entity) {
+        XJdbc.executeUpdate(UPDATE_SQL,
                 entity.getShiftID(),
                 entity.getFullName(),
                 entity.getGender(),
@@ -86,22 +86,22 @@ public class EmployeeDAO extends RestaurantDAO<EmployeeEntity, String> {
 
     @Override
     public void delete(String id) {
-        JDBC.executeUpdate(DELETE_SQL, id);
+        XJdbc.executeUpdate(DELETE_SQL, id);
     }
 
     @Override
-    public EmployeeEntity getByID(String id) {
-        List<EmployeeEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
+    public Employee getByID(String id) {
+        List<Employee> list = fetchByQuery(SELECT_BY_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
     }
 
     @Override
-    public List<EmployeeEntity> getAll() {
+    public List<Employee> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
     }
 
     public boolean isIdExists(String employeeID) {
-        try (ResultSet rs = JDBC.executeQuery(IS_EXISTS_SQL, employeeID)) {
+        try (ResultSet rs = XJdbc.executeQuery(IS_EXISTS_SQL, employeeID)) {
             if (rs.next()) {
                 return rs.getInt(1) > 0;
             }
@@ -112,16 +112,16 @@ public class EmployeeDAO extends RestaurantDAO<EmployeeEntity, String> {
     }
 
     public void updateStatusToResigned(String employeeID) {
-        JDBC.executeUpdate("UPDATE Employee SET Status = 'Nghỉ việc' WHERE EmployeeID = ?", employeeID);
+        XJdbc.executeUpdate("UPDATE Employee SET Status = 'Nghỉ việc' WHERE EmployeeID = ?", employeeID);
     }
 
     @Override
-    protected List<EmployeeEntity> fetchByQuery(String sql, Object... args) {
-        List<EmployeeEntity> list = new ArrayList<>();
+    protected List<Employee> fetchByQuery(String sql, Object... args) {
+        List<Employee> list = new ArrayList<>();
 
-        try (ResultSet rs = JDBC.executeQuery(sql, args)) {
+        try (ResultSet rs = XJdbc.executeQuery(sql, args)) {
             while (rs.next()) {
-                EmployeeEntity model = readFromResultSet(rs);
+                Employee model = readFromResultSet(rs);
                 list.add(model);
             }
         } catch (SQLException ex) {
@@ -131,8 +131,8 @@ public class EmployeeDAO extends RestaurantDAO<EmployeeEntity, String> {
         return list;
     }
 
-    private EmployeeEntity readFromResultSet(ResultSet rs) throws SQLException {
-        EmployeeEntity model = new EmployeeEntity();
+    private Employee readFromResultSet(ResultSet rs) throws SQLException {
+        Employee model = new Employee();
         model.setEmployeeID(rs.getString("EmployeeID"));
         model.setShiftID(rs.getString("ShiftID"));
         model.setFullName(rs.getString("FullName"));

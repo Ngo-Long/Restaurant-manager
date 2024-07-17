@@ -2,6 +2,7 @@ package restaurant.dialog;
 
 import java.awt.Color;
 import javax.swing.JCheckBox;
+import static restaurant.utils.Common.createButtonGroup;
 import restaurant.utils.Dialog;
 
 public class ReasonDeletionJDialog extends javax.swing.JDialog {
@@ -152,11 +153,7 @@ public class ReasonDeletionJDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSubmitActionPerformed
-        String reason = getSelectedReason();
-        if (reason == null) {
-            return;
-        }
-        dispose();
+
     }//GEN-LAST:event_buttonSubmitActionPerformed
 
     private void buttonCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCloseActionPerformed
@@ -212,23 +209,19 @@ public class ReasonDeletionJDialog extends javax.swing.JDialog {
     private void init() {
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(Color.white);
-        handleCheckBoxSelection();
-    }
 
-    void handleCheckBoxSelection() {
-        // Array to hold checkboxes
-        JCheckBox[] checkBoxes = {jCheckBox1, jCheckBox2, jCheckBox3, jCheckBox4, jCheckBox5, jCheckBox6};
+        // Add to group
+        createButtonGroup(jCheckBox1, jCheckBox2, jCheckBox3, jCheckBox4, jCheckBox5, jCheckBox6);
 
-        // Add action listeners to checkboxes
-        for (JCheckBox checkBox : checkBoxes) {
-            checkBox.addActionListener(e -> {
-                for (JCheckBox cb : checkBoxes) {
-                    if (cb != checkBox) {
-                        cb.setSelected(false);
-                    }
-                }
-            });
-        }
+        // Handle click button
+        buttonClose.addActionListener(e -> dispose());
+        buttonSubmit.addActionListener(e -> {
+            String reason = getSelectedReason();
+            if (reason == null) {
+                return;
+            }
+            dispose();
+        });
     }
 
     public String getSelectedReason() {

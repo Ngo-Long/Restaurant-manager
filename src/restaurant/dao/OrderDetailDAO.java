@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.ArrayList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import restaurant.entity.OrderDetailEntity;
-import restaurant.utils.JDBC;
+import restaurant.entity.OrderDetail;
+import restaurant.utils.XJdbc;
 
-public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
+public class OrderDetailDAO extends RestaurantDAO<OrderDetail, Integer> {
 
     final String INSERT_SQL = "INSERT INTO OrderDetail (OrderID, ProductID, ProductQuantity, ProductStatus,"
             + " ProductDesc, Note, StartTime) VALUES (?, ?, ?, ?, ?, N'', GETDATE())";
@@ -37,8 +37,8 @@ public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
     final String SELECT_PENDING_PRODUCTS_SQL = "SELECT * FROM OrderDetail WHERE ProductStatus = N'Chưa xử lý'";
 
     @Override
-    public void insert(OrderDetailEntity model) {
-        JDBC.executeUpdate(INSERT_SQL,
+    public void insert(OrderDetail model) {
+        XJdbc.executeUpdate(INSERT_SQL,
                 model.getOrderID(),
                 model.getProductID(),
                 model.getProductQuantity(),
@@ -48,8 +48,8 @@ public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
     }
 
     @Override
-    public void update(OrderDetailEntity model) {
-        JDBC.executeUpdate(UPDATE_SQL,
+    public void update(OrderDetail model) {
+        XJdbc.executeUpdate(UPDATE_SQL,
                 model.getOrderID(),
                 model.getProductID(),
                 model.getProductQuantity(),
@@ -62,21 +62,21 @@ public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
 
     @Override
     public void delete(Integer id) {
-        JDBC.executeUpdate(DELETE_SQL, id);
+        XJdbc.executeUpdate(DELETE_SQL, id);
     }
 
     @Override
-    public OrderDetailEntity getByID(Integer id) {
-        List<OrderDetailEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
+    public OrderDetail getByID(Integer id) {
+        List<OrderDetail> list = fetchByQuery(SELECT_BY_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
     }
 
     @Override
-    public List<OrderDetailEntity> getAll() {
+    public List<OrderDetail> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
     }
 
-    public List<OrderDetailEntity> searchByCriteria(String status, String kitchen,
+    public List<OrderDetail> searchByCriteria(String status, String kitchen,
             String name, String startDate, String endDate) {
 
         String statusTerm = "%" + status + "%";
@@ -88,21 +88,21 @@ public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
         return fetchByQuery(SELECT_BY_CRITERIA, startDayTerm, endDayTerm, statusTerm, kitchenTerm, nameTerm);
     }
 
-    public List<OrderDetailEntity> getPendingProducts() {
+    public List<OrderDetail> getPendingProducts() {
         return fetchByQuery(SELECT_PENDING_PRODUCTS_SQL);
     }
 
-    public List<OrderDetailEntity> getByOrderID(int orderID) {
+    public List<OrderDetail> getByOrderID(int orderID) {
         return fetchByQuery(SELECT_BY_ORDER_ID_SQL, orderID);
     }
 
     @Override
-    protected List<OrderDetailEntity> fetchByQuery(String sql, Object... args) {
-        List<OrderDetailEntity> list = new ArrayList<>();
+    protected List<OrderDetail> fetchByQuery(String sql, Object... args) {
+        List<OrderDetail> list = new ArrayList<>();
 
-        try (ResultSet rs = JDBC.executeQuery(sql, args)) {
+        try (ResultSet rs = XJdbc.executeQuery(sql, args)) {
             while (rs.next()) {
-                OrderDetailEntity model = readFromResultSet(rs);
+                OrderDetail model = readFromResultSet(rs);
                 list.add(model);
             }
         } catch (SQLException ex) {
@@ -112,8 +112,8 @@ public class OrderDetailDAO extends RestaurantDAO<OrderDetailEntity, Integer> {
         return list;
     }
 
-    private OrderDetailEntity readFromResultSet(ResultSet rs) throws SQLException {
-        OrderDetailEntity model = new OrderDetailEntity();
+    private OrderDetail readFromResultSet(ResultSet rs) throws SQLException {
+        OrderDetail model = new OrderDetail();
         model.setOrderDetailID(rs.getInt("OrderDetailID"));
         model.setOrderID(rs.getInt("OrderID"));
         model.setProductID(rs.getString("ProductID"));

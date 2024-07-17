@@ -3,15 +3,15 @@ package restaurant.dialog;
 import java.awt.Color;
 import java.util.List;
 import javax.swing.JTextField;
-import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.dao.DiningTableDAO;
-import restaurant.entity.DiningTableEntity;
-import restaurant.utils.ComboBoxUtils;
-import static restaurant.utils.ComboBoxUtils.addDataToComboBox;
+import restaurant.entity.DiningTable;
+import restaurant.utils.XComboBox;
+import static restaurant.utils.XComboBox.insertPlaceholder;
+import static restaurant.utils.XComboBox.loadDataToComboBox;
 import static restaurant.utils.Common.openSmallDialog;
-import restaurant.utils.TextFieldUtils;
+import restaurant.utils.XTextField;
 
 public final class UpdateTableJDialog extends javax.swing.JDialog {
 
@@ -291,25 +291,21 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
 
         // Setup UI
         textTableName.requestFocus();
-        TextFieldUtils.addPlaceholder(textTableId, "Mã tự động");
-        ComboBoxUtils.setComboboxStyle(cbLocation);
+        XTextField.addPlaceholder(textTableId, "Mã tự động");
+        XComboBox.setComboboxStyle(cbLocation);
         Common.createButtonGroup(radioOn, radioOff);
 
         // Setup text fields 
         JTextField[] textFields = {textTableId, textTableName, textNumberSeats};
         for (JTextField textField : textFields) {
-            TextFieldUtils.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
+            XTextField.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
         }
 
         // <--- Setup main --->
         // setup combobox
-        List<DiningTableEntity> dataList = new DiningTableDAO().getAll();
-        addDataToComboBox(
-                cbLocation,
-                dataList,
-                DiningTableEntity::getLocation,
-                PLACEHOLDER_COMBOBOX
-        );
+        List<DiningTable> dataList = new DiningTableDAO().getAll();
+        loadDataToComboBox(cbLocation, dataList, DiningTable::getLocation);
+        insertPlaceholder(cbLocation, PLACEHOLDER_COMBOBOX);
 
         // add more comboxbox
         btnAddLocation.addActionListener(e -> {
@@ -342,8 +338,8 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         return true;
     }
 
-    DiningTableEntity getModel() {
-        String tableId = TextFieldUtils.getRealText(textTableId, PLACEHOLDER_ID);
+    DiningTable getModel() {
+        String tableId = XTextField.getRealText(textTableId, PLACEHOLDER_ID);
         String name = textTableName.getText();
         String area = cbLocation.getSelectedItem().toString();
         String numberSeats = textNumberSeats.getText();
@@ -353,7 +349,7 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         }
 
         try {
-            DiningTableEntity model = new DiningTableEntity();
+            DiningTable model = new DiningTable();
             model.setTableID(tableId);
             model.setName(name);
             model.setLocation(area);
@@ -368,7 +364,7 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         }
     }
 
-    public void setModel(DiningTableEntity dataTable) {
+    public void setModel(DiningTable dataTable) {
         if (dataTable == null) {
             return;
         }
@@ -385,7 +381,7 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
     }
 
     void insert() {
-        DiningTableEntity model = getModel();
+        DiningTable model = getModel();
         if (model == null) {
             return;
         }
@@ -411,7 +407,7 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
     }
 
     void update() {
-        DiningTableEntity model = getModel();
+        DiningTable model = getModel();
         if (model == null) {
             return;
         }

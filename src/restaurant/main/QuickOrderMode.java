@@ -33,16 +33,15 @@ import javax.swing.ImageIcon;
 import javax.swing.BorderFactory;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.dao.OrderDAO;
 import restaurant.dao.InvoiceDAO;
 import restaurant.dao.ProductDAO;
 import restaurant.dao.OrderDetailDAO;
-import restaurant.entity.InvoiceEntity;
-import restaurant.entity.ProductEntity;
-import restaurant.entity.OrderDetailEntity;
+import restaurant.entity.Invoice;
+import restaurant.entity.Product;
+import restaurant.entity.OrderDetail;
 import restaurant.dialog.HistoryInvoicesJDialog;
 
 import restaurant.utils.Auth;
@@ -50,12 +49,13 @@ import restaurant.utils.Dialog;
 import restaurant.utils.Common;
 import restaurant.table.TableCustom;
 import restaurant.utils.ColumnTable;
-import restaurant.utils.RunnableUtils;
-import restaurant.utils.TextFieldUtils;
-import static restaurant.utils.TextFieldUtils.getRealText;
-import static restaurant.utils.ImageUtils.getScaledImageIcon;
-import static restaurant.utils.TextFieldUtils.addCommasToNumber;
-import static restaurant.utils.TextFieldUtils.removeCommasFromNumber;
+import restaurant.utils.XTextField;
+import static restaurant.utils.XTextField.getRealText;
+import static restaurant.utils.XImage.getScaledImageIcon;
+import static restaurant.utils.XTextField.addCommasToNumber;
+import static restaurant.utils.XRunnable.addTextFieldListeners;
+import static restaurant.utils.ColumnTable.addQuantityButtonsColumn;
+import static restaurant.utils.XTextField.removeCommasFromNumber;
 
 public final class QuickOrderMode extends javax.swing.JFrame {
 
@@ -111,27 +111,10 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         menuLogout = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         menuEnd = new javax.swing.JMenuItem();
-        menuManager = new javax.swing.JMenu();
-        menuTables = new javax.swing.JMenuItem();
-        menuDishes = new javax.swing.JMenuItem();
-        menuChicken = new javax.swing.JMenuItem();
-        menuPay = new javax.swing.JMenuItem();
-        menuStatistical = new javax.swing.JMenu();
-        menuRevenue = new javax.swing.JMenuItem();
-        jSeparator3 = new javax.swing.JPopupMenu.Separator();
-        menuIngridiants = new javax.swing.JMenuItem();
-        jSeparator8 = new javax.swing.JPopupMenu.Separator();
-        menuClients = new javax.swing.JMenuItem();
-        jSeparator9 = new javax.swing.JPopupMenu.Separator();
-        menuProducts = new javax.swing.JMenuItem();
-        menuItemHelp = new javax.swing.JMenu();
-        menuInstruct = new javax.swing.JMenuItem();
-        jSeparator5 = new javax.swing.JPopupMenu.Separator();
-        menuIntroduce = new javax.swing.JMenuItem();
         menuVaiTro = new javax.swing.JMenu();
-        menuItemManager = new javax.swing.JMenuItem();
-        menuItemDirectly = new javax.swing.JMenuItem();
-        menuItemWayHome = new javax.swing.JMenuItem();
+        menuItemManagement = new javax.swing.JMenuItem();
+        menuItemOnSite = new javax.swing.JMenuItem();
+        menuItemSalerQuick = new javax.swing.JMenuItem();
         menuStaff = new javax.swing.JMenu();
 
         jMenuItem1.setText("jMenuItem1");
@@ -162,11 +145,6 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         jPanel3.setPreferredSize(new java.awt.Dimension(1260, 639));
 
         textSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        textSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textSearchActionPerformed(evt);
-            }
-        });
 
         btnSearch.setBackground(new java.awt.Color(255, 51, 51));
         btnSearch.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -174,11 +152,6 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         btnSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/Search.png"))); // NOI18N
         btnSearch.setToolTipText("Tìm kiếm");
         btnSearch.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSearchActionPerformed(evt);
-            }
-        });
 
         scrollPane.setBorder(null);
 
@@ -203,11 +176,6 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         btnHistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/historyWhile.png"))); // NOI18N
         btnHistory.setToolTipText("Xem lịch sử gọi món");
         btnHistory.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnHistory.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnHistoryActionPerformed(evt);
-            }
-        });
 
         btnReset.setBackground(new java.awt.Color(0, 153, 153));
         btnReset.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -215,11 +183,6 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         btnReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/historyWhile.png"))); // NOI18N
         btnReset.setToolTipText("Reset trang (Ctrl + F5)");
         btnReset.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnReset.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnResetActionPerformed(evt);
-            }
-        });
 
         labelOrderedTable.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
         labelOrderedTable.setForeground(new java.awt.Color(255, 51, 51));
@@ -289,7 +252,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Mã món", "Tên món ăn ", "Số lượng", "Thành tiền"
+                "Mã món", "", "Tên món ăn ", "Số lượng", "Thành tiền"
             }
         ));
         tableOrder.setAlignmentX(1.0F);
@@ -302,9 +265,10 @@ public final class QuickOrderMode extends javax.swing.JFrame {
             tableOrder.getColumnModel().getColumn(0).setMinWidth(0);
             tableOrder.getColumnModel().getColumn(0).setPreferredWidth(0);
             tableOrder.getColumnModel().getColumn(0).setMaxWidth(0);
-            tableOrder.getColumnModel().getColumn(1).setPreferredWidth(220);
-            tableOrder.getColumnModel().getColumn(2).setPreferredWidth(80);
-            tableOrder.getColumnModel().getColumn(3).setPreferredWidth(90);
+            tableOrder.getColumnModel().getColumn(1).setPreferredWidth(20);
+            tableOrder.getColumnModel().getColumn(2).setPreferredWidth(180);
+            tableOrder.getColumnModel().getColumn(3).setPreferredWidth(80);
+            tableOrder.getColumnModel().getColumn(4).setPreferredWidth(80);
         }
 
         btnSubmit.setBackground(new java.awt.Color(0, 153, 0));
@@ -313,11 +277,6 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         btnSubmit.setText("THANH TOÁN");
         btnSubmit.setToolTipText("Ấn xác nhận để chuyển tới bếp");
         btnSubmit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnSubmit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSubmitActionPerformed(evt);
-            }
-        });
 
         btnCancel.setBackground(new java.awt.Color(255, 0, 51));
         btnCancel.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
@@ -325,11 +284,6 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         btnCancel.setText("HỦY");
         btnCancel.setToolTipText("Quay về bàn ăn");
         btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnCancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelActionPerformed(evt);
-            }
-        });
 
         btnSearch1.setBackground(new java.awt.Color(255, 51, 51));
         btnSearch1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -337,11 +291,6 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         btnSearch1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/cart-while-24px.png"))); // NOI18N
         btnSearch1.setToolTipText("Tìm kiếm");
         btnSearch1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnSearch1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSearch1ActionPerformed(evt);
-            }
-        });
 
         labelOrderTable.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
         labelOrderTable.setForeground(new java.awt.Color(255, 51, 51));
@@ -456,181 +405,32 @@ public final class QuickOrderMode extends javax.swing.JFrame {
 
         menuChange.setText("Đổi mật khẩu");
         menuChange.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuChange.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuChangeActionPerformed(evt);
-            }
-        });
         menuSystem.add(menuChange);
         menuSystem.add(jSeparator2);
 
         menuLogout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         menuLogout.setText("Đăng xuất");
         menuLogout.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuLogout.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuLogoutActionPerformed(evt);
-            }
-        });
         menuSystem.add(menuLogout);
         menuSystem.add(jSeparator1);
 
         menuEnd.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0));
         menuEnd.setText("Kết thúc");
         menuEnd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuEnd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuEndActionPerformed(evt);
-            }
-        });
         menuSystem.add(menuEnd);
 
         menuBar.add(menuSystem);
 
-        menuManager.setText("Quản lý");
-        menuManager.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        menuTables.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
-        menuTables.setText("Bàn ăn");
-        menuTables.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuTables.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuTablesActionPerformed(evt);
-            }
-        });
-        menuManager.add(menuTables);
-
-        menuDishes.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
-        menuDishes.setText("Món ăn");
-        menuDishes.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuDishes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuDishesActionPerformed(evt);
-            }
-        });
-        menuManager.add(menuDishes);
-
-        menuChicken.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, 0));
-        menuChicken.setText("Nhà bếp");
-        menuChicken.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuChicken.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuChickenActionPerformed(evt);
-            }
-        });
-        menuManager.add(menuChicken);
-
-        menuPay.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
-        menuPay.setText("Thanh toán");
-        menuPay.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuPay.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuPayActionPerformed(evt);
-            }
-        });
-        menuManager.add(menuPay);
-
-        menuBar.add(menuManager);
-
-        menuStatistical.setText("Thống kê");
-        menuStatistical.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        menuRevenue.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, java.awt.event.InputEvent.SHIFT_DOWN_MASK));
-        menuRevenue.setText("Xem doanh thu cuối ngày");
-        menuRevenue.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuRevenue.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuRevenueActionPerformed(evt);
-            }
-        });
-        menuStatistical.add(menuRevenue);
-        menuStatistical.add(jSeparator3);
-
-        menuIngridiants.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, java.awt.event.InputEvent.SHIFT_DOWN_MASK));
-        menuIngridiants.setText("Xem nguyên liệu cuối ngày");
-        menuIngridiants.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuIngridiants.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuIngridiantsActionPerformed(evt);
-            }
-        });
-        menuStatistical.add(menuIngridiants);
-        menuStatistical.add(jSeparator8);
-
-        menuClients.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, java.awt.event.InputEvent.SHIFT_DOWN_MASK));
-        menuClients.setText("Xem khách hàng cuối ngày");
-        menuClients.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuClients.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuClientsActionPerformed(evt);
-            }
-        });
-        menuStatistical.add(menuClients);
-        menuStatistical.add(jSeparator9);
-
-        menuProducts.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.SHIFT_DOWN_MASK));
-        menuProducts.setText("Xem món ăn cuối ngày");
-        menuProducts.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuProducts.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuProductsActionPerformed(evt);
-            }
-        });
-        menuStatistical.add(menuProducts);
-
-        menuBar.add(menuStatistical);
-
-        menuItemHelp.setText("Trợ giúp");
-        menuItemHelp.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        menuInstruct.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
-        menuInstruct.setText("Hướng dẫn sử dụng");
-        menuInstruct.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuInstruct.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuInstructActionPerformed(evt);
-            }
-        });
-        menuItemHelp.add(menuInstruct);
-        menuItemHelp.add(jSeparator5);
-
-        menuIntroduce.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
-        menuIntroduce.setText("Giới thiệu sản phẩm");
-        menuIntroduce.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuIntroduce.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuIntroduceActionPerformed(evt);
-            }
-        });
-        menuItemHelp.add(menuIntroduce);
-
-        menuBar.add(menuItemHelp);
-
         menuVaiTro.setText("Vai trò");
 
-        menuItemManager.setText("Quản lý");
-        menuItemManager.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemManagerActionPerformed(evt);
-            }
-        });
-        menuVaiTro.add(menuItemManager);
+        menuItemManagement.setText("Quản lý");
+        menuVaiTro.add(menuItemManagement);
 
-        menuItemDirectly.setText("Bán tại bàn");
-        menuItemDirectly.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemDirectlyActionPerformed(evt);
-            }
-        });
-        menuVaiTro.add(menuItemDirectly);
+        menuItemOnSite.setText("Bán tại bàn");
+        menuVaiTro.add(menuItemOnSite);
 
-        menuItemWayHome.setText("Bán mang đi");
-        menuItemWayHome.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemWayHomeActionPerformed(evt);
-            }
-        });
-        menuVaiTro.add(menuItemWayHome);
+        menuItemSalerQuick.setText("Bán mang đi");
+        menuVaiTro.add(menuItemSalerQuick);
 
         menuBar.add(menuVaiTro);
 
@@ -662,107 +462,6 @@ public final class QuickOrderMode extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void menuLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLogoutActionPerformed
-        if (Dialog.confirm(this, "Bạn muốn đăng xuất?")) {
-            Auth.clear();
-            dispose();
-            new Login(this, true).setVisible(true);
-        }
-    }//GEN-LAST:event_menuLogoutActionPerformed
-
-    private void menuEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEndActionPerformed
-        if (Dialog.confirm(this, "Bạn muốn kết thúc làm việc?")) {
-            System.exit(0);
-        }
-    }//GEN-LAST:event_menuEndActionPerformed
-
-    private void menuTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTablesActionPerformed
-    }//GEN-LAST:event_menuTablesActionPerformed
-
-    private void menuDishesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDishesActionPerformed
-    }//GEN-LAST:event_menuDishesActionPerformed
-
-    private void menuChickenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChickenActionPerformed
-    }//GEN-LAST:event_menuChickenActionPerformed
-
-    private void menuPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuPayActionPerformed
-    }//GEN-LAST:event_menuPayActionPerformed
-
-    private void menuRevenueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRevenueActionPerformed
-
-    }//GEN-LAST:event_menuRevenueActionPerformed
-
-    private void menuIngridiantsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuIngridiantsActionPerformed
-
-    }//GEN-LAST:event_menuIngridiantsActionPerformed
-
-    private void menuClientsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuClientsActionPerformed
-
-    }//GEN-LAST:event_menuClientsActionPerformed
-
-    private void menuProductsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuProductsActionPerformed
-
-    }//GEN-LAST:event_menuProductsActionPerformed
-
-    private void menuInstructActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuInstructActionPerformed
-    }//GEN-LAST:event_menuInstructActionPerformed
-
-    private void menuIntroduceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuIntroduceActionPerformed
-
-    }//GEN-LAST:event_menuIntroduceActionPerformed
-
-    private void menuItemManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemManagerActionPerformed
-        openFullScreenWindow(new ManagementMode());
-    }//GEN-LAST:event_menuItemManagerActionPerformed
-
-    private void menuItemDirectlyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemDirectlyActionPerformed
-        openFullScreenWindow(new OnSiteMode());
-    }//GEN-LAST:event_menuItemDirectlyActionPerformed
-
-    private void menuChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChangeActionPerformed
-
-    }//GEN-LAST:event_menuChangeActionPerformed
-
-    private void textSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSearchActionPerformed
-
-    }//GEN-LAST:event_textSearchActionPerformed
-
-    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-
-    }//GEN-LAST:event_btnSearchActionPerformed
-
-    private void btnHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistoryActionPerformed
-        new HistoryInvoicesJDialog(null, true).setVisible(true);
-    }//GEN-LAST:event_btnHistoryActionPerformed
-
-    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        openFullScreenWindow(new QuickOrderMode());
-    }//GEN-LAST:event_btnResetActionPerformed
-
-    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
-        submit();
-    }//GEN-LAST:event_btnSubmitActionPerformed
-
-    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        if (tableOrder != null && tableOrder.getRowCount() == 0) {
-            Dialog.warning(this, "Vui lòng chọn món ăn!");
-            return;
-        }
-
-        Boolean result = Dialog.confirm(this, "Nếu hủy bạn sẽ mất các món ăn đã chọn?");
-        if (result) {
-            cancel();
-        }
-    }//GEN-LAST:event_btnCancelActionPerformed
-
-    private void btnSearch1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearch1ActionPerformed
-
-    }//GEN-LAST:event_btnSearch1ActionPerformed
-
-    private void menuItemWayHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemWayHomeActionPerformed
-        openFullScreenWindow(new QuickOrderMode());
-    }//GEN-LAST:event_menuItemWayHomeActionPerformed
 
     public static void main(String args[]) {
 
@@ -811,10 +510,6 @@ public final class QuickOrderMode extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
-    private javax.swing.JPopupMenu.Separator jSeparator3;
-    private javax.swing.JPopupMenu.Separator jSeparator5;
-    private javax.swing.JPopupMenu.Separator jSeparator8;
-    private javax.swing.JPopupMenu.Separator jSeparator9;
     private javax.swing.JLabel labelIcon1;
     private javax.swing.JLabel labelOrderTable;
     private javax.swing.JLabel labelOrderedTable;
@@ -822,26 +517,13 @@ public final class QuickOrderMode extends javax.swing.JFrame {
     private javax.swing.JLabel labelVoucher;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem menuChange;
-    private javax.swing.JMenuItem menuChicken;
-    private javax.swing.JMenuItem menuClients;
-    private javax.swing.JMenuItem menuDishes;
     private javax.swing.JMenuItem menuEnd;
-    private javax.swing.JMenuItem menuIngridiants;
-    private javax.swing.JMenuItem menuInstruct;
-    private javax.swing.JMenuItem menuIntroduce;
-    private javax.swing.JMenuItem menuItemDirectly;
-    private javax.swing.JMenu menuItemHelp;
-    private javax.swing.JMenuItem menuItemManager;
-    private javax.swing.JMenuItem menuItemWayHome;
+    private javax.swing.JMenuItem menuItemManagement;
+    private javax.swing.JMenuItem menuItemOnSite;
+    private javax.swing.JMenuItem menuItemSalerQuick;
     private javax.swing.JMenuItem menuLogout;
-    private javax.swing.JMenu menuManager;
-    private javax.swing.JMenuItem menuPay;
-    private javax.swing.JMenuItem menuProducts;
-    private javax.swing.JMenuItem menuRevenue;
     private javax.swing.JMenu menuStaff;
-    private javax.swing.JMenu menuStatistical;
     private javax.swing.JMenu menuSystem;
-    private javax.swing.JMenuItem menuTables;
     private javax.swing.JMenu menuVaiTro;
     private javax.swing.JPanel panelMenu;
     private javax.swing.JPanel panelProducts;
@@ -852,9 +534,9 @@ public final class QuickOrderMode extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     JLabel selectedMenu;
-    final int COLUMN_CELL = 2;
     final String PLACEHOLDER_NOTE = "Tối đa 60 ký tự";
     final String PLACEHOLDER_SEARCH = "Tìm theo tên món";
+
     ScheduledFuture<?> scheduledFuture;
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
@@ -866,41 +548,118 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         Common.customizeScrollBar(scrollPane);
 
         // set text field
-        TextFieldUtils.addPlaceholder(textNote, PLACEHOLDER_NOTE);
-        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
+        XTextField.addPlaceholder(textNote, PLACEHOLDER_NOTE);
+        XTextField.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
 
         // <--- Setup main --->
-        // Get data all
-        List<ProductEntity> dataProducts = new ProductDAO().getAll();
+        // handle click list menu
+        handleClickListMenu();
+
+        // handle click button header list
+        handleClickButtonHeaders();
+
+        // add button column cell list
+        addButtonColumnCells();
+
+        // get data all
+        List<Product> dataProducts = new ProductDAO().getAll();
         setupMenuCategory(dataProducts, panelMenu);
 
-        // Add button change quantity "+" and "-"
-        ColumnTable.addQuantityButtonsColumn(tableOrder, COLUMN_CELL);
+        // attach event when change text field
+        addTextFieldListeners(textSearch, this::loadData);
 
-        // Calc total amount click column 
-        tableOrder.getModel().addTableModelListener((TableModelEvent e) -> {
-            if (e.getColumn() == COLUMN_CELL) {
-                calculateTotalAmount(tableOrder, labelTotalAmount);
-            }
-        });
-
-        // Load data
-        RunnableUtils.addTextFieldListeners(textSearch, this::loadData);
+        // load data
         this.loadData();
     }
 
+    void addButtonColumnCells() {
+        // Add button delete row
+        int COLUMN_CELL_ONE = 1;
+        ColumnTable.addButtonIconColumn(
+                "src/restaurant/icon/delete.png",
+                COLUMN_CELL_ONE,
+                tableOrder,
+                this::handleClickBtnColumnDelete
+        );
+
+        // Add button change quantity "+" and "-"
+        final int COLUMN_CELL_THREE = 3;
+        addQuantityButtonsColumn(tableOrder, COLUMN_CELL_THREE, false);
+
+        // Calc total amount click column 
+        tableOrder.getModel().addTableModelListener(e -> {
+            if (e.getColumn() == COLUMN_CELL_THREE) {
+                calculateTotalAmount(tableOrder, labelTotalAmount);
+            }
+        });
+    }
+
+    void handleClickBtnColumnDelete(int row) {
+        boolean isSubmit = Dialog.confirm(this, "Xác nhận xóa món ăn!");
+        if (isSubmit) {
+            // Remove selected row
+            if (tableOrder.isEditing()) {
+                tableOrder.getCellEditor().stopCellEditing();
+            }
+
+            // Call table get model 
+            DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
+
+            // Delete row
+            model.removeRow(row);
+        }
+    }
+
     // <--- Common 
+    void handleClickListMenu() {
+        menuLogout.addActionListener(e -> {
+            if (Dialog.confirm(this, "Bạn muốn đăng xuất?")) {
+                Auth.clear();
+                dispose();
+                new Login(this, true).setVisible(true);
+            }
+        });
+        menuEnd.addActionListener(e -> {
+            if (Dialog.confirm(this, "Bạn muốn kết thúc làm việc?")) {
+                System.exit(0);
+            }
+        });
+        menuItemOnSite.addActionListener(e -> openFullScreenWindow(new OnSiteMode()));
+        menuItemSalerQuick.addActionListener(e -> openFullScreenWindow(new QuickOrderMode()));
+        menuItemManagement.addActionListener(e -> openFullScreenWindow(new ManagementMode()));
+    }
+
+    void handleClickButtonHeaders() {
+        btnSubmit.addActionListener(e -> submit());
+        btnReset.addActionListener(e -> openFullScreenWindow(new QuickOrderMode()));
+        btnHistory.addActionListener(e -> {
+            new HistoryInvoicesJDialog(null, true).setVisible(true);
+        });
+        btnCancel.addActionListener(e -> {
+            if (tableOrder != null && tableOrder.getRowCount() == 0) {
+                Dialog.warning(this, "Vui lòng chọn món ăn!");
+                return;
+            }
+
+            Boolean result = Dialog.confirm(this, "Nếu hủy bạn sẽ mất các món ăn đã chọn?");
+            if (result) {
+                cancel();
+            }
+        });
+    }
+
     void openFullScreenWindow(JFrame window) {
         window.setExtendedState(JFrame.MAXIMIZED_BOTH);
         window.setVisible(true);
         this.dispose();
     }
+    // end -->
 
     // <--- setup menu
-    void setupMenuCategory(List<ProductEntity> dataList, JPanel panelMenu) {
+    void setupMenuCategory(List<Product> dataList, JPanel panelMenu) {
         // Create a set to store unique names
         Set<String> dataSet = new HashSet<>();
-        for (ProductEntity dataItem : dataList) {
+        for (Product dataItem : dataList) {
             dataSet.add(dataItem.getCategory());
         }
 
@@ -978,7 +737,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
                 String keyword = getRealText(textSearch, PLACEHOLDER_SEARCH);
 
                 // Get data and display
-                List<ProductEntity> dataList
+                List<Product> dataList
                         = new ProductDAO().searchByCriteria(keyword, menuItem, "");
 
                 // Display product list on panel
@@ -994,7 +753,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
     }
 
     // <--- Display and handle events products
-    public static void displayProductList(List<ProductEntity> dataList, JPanel panelMain, JTable tableOrder, JLabel labelTotal) {
+    public static void displayProductList(List<Product> dataList, JPanel panelMain, JTable tableOrder, JLabel labelTotal) {
         // Reset food list
         panelMain.removeAll();
 
@@ -1013,7 +772,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         int columnCount = 0; // Biến đếm số lượng cột hiện tại
 
         // Iterate through the dining table list for the selected area
-        for (ProductEntity dataItem : dataList) {
+        for (Product dataItem : dataList) {
             // Create and set colors based on status
             JPanel productItem = createPanelProduct(dataItem, tableOrder, labelTotal);
 
@@ -1036,7 +795,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         panelMain.revalidate();
     }
 
-    public static JPanel createPanelProduct(ProductEntity dataProduct, JTable tableOrder, JLabel labelTotal) {
+    public static JPanel createPanelProduct(Product dataProduct, JTable tableOrder, JLabel labelTotal) {
         // Create a JLabel name
         JLabel textLabel = new JLabel(dataProduct.getProductName());
         textLabel.setForeground(new Color(30, 30, 30));
@@ -1081,7 +840,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 // Add products to the table
-                handleClickOrderProduct(dataProduct, tableOrder);
+                clickAddDataToTable(dataProduct, tableOrder);
 
                 // Calculate and display total amount
                 calculateTotalAmount(tableOrder, labelTotal);
@@ -1091,19 +850,26 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         return mainPanel;
     }
 
-    public static void handleClickOrderProduct(ProductEntity dataProduct, JTable tableOrder) {
+    public static void clickAddDataToTable(Product dataProduct, JTable tableOrder) {
+        if (dataProduct == null || tableOrder == null) {
+            return;
+        }
+
         // Get model
-        DefaultTableModel saveOrder = (DefaultTableModel) tableOrder.getModel();
+        DefaultTableModel modelOrder = (DefaultTableModel) tableOrder.getModel();
+
         String priceStr = String.valueOf(dataProduct.getPrice());
         String formattedPrice = addCommasToNumber(priceStr);
 
         // Check if the product already exists in the table
         boolean productExists = false;
-        for (int i = 0; i < saveOrder.getRowCount(); i++) {
-            if (saveOrder.getValueAt(i, 0).equals(dataProduct.getProductID())) {
-                // Product exists, increase quantity by 1
-                int quantity = (int) saveOrder.getValueAt(i, 2);
-                saveOrder.setValueAt(quantity + 1, i, 2);
+        for (int i = 0; i < modelOrder.getRowCount(); i++) {
+            if (modelOrder.getValueAt(i, 0).equals(dataProduct.getProductID())) {
+                // Product exists, increase quantity by 3
+                int quantity = (modelOrder.getValueAt(i, 3) instanceof String)
+                        ? Integer.parseInt((String) modelOrder.getValueAt(i, 3))
+                        : (Integer) modelOrder.getValueAt(i, 3);
+                modelOrder.setValueAt(quantity + 1, i, 3);
                 productExists = true;
                 break;
             }
@@ -1111,8 +877,9 @@ public final class QuickOrderMode extends javax.swing.JFrame {
 
         // If the product does not exist, add a new row
         if (!productExists) {
-            saveOrder.addRow(new Object[]{
+            modelOrder.addRow(new Object[]{
                 dataProduct.getProductID(),
+                "",
                 dataProduct.getProductName(),
                 1,
                 formattedPrice
@@ -1127,11 +894,11 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         for (int i = 0; i < model.getRowCount(); i++) {
             // Get price
             String id = model.getValueAt(i, 0).toString();
-            ProductEntity product = new ProductDAO().getByID(id);
+            Product product = new ProductDAO().getByID(id);
             long price = product.getPrice();
 
             // Get quantity
-            String quantityStr = model.getValueAt(i, 2).toString();
+            String quantityStr = model.getValueAt(i, 3).toString();
             int quantity = Integer.parseInt(quantityStr);
 
             // Calculate subtotal for the row
@@ -1139,7 +906,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
             String convertSubtotal = addCommasToNumber(String.valueOf(subtotal));
 
             // Set value
-            model.setValueAt(convertSubtotal, i, 3);
+            model.setValueAt(convertSubtotal, i, 4);
 
             // Accumulate subtotal to totalAmount
             totalAmount += subtotal;
@@ -1201,7 +968,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
             int totalAmount = Integer.parseInt(removeCommasFromNumber(labelTotalAmount.getText()));
 
             // Update invoice
-            InvoiceEntity invoiceModel = new InvoiceDAO().getByID(invoiceID);
+            Invoice invoiceModel = new InvoiceDAO().getByID(invoiceID);
             invoiceModel.setInvoiceID(invoiceID);
             invoiceModel.setEmployeeID(Auth.user.getEmployeeID());
             invoiceModel.setPaymentMethod("Tiền mặt");
@@ -1228,7 +995,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
                 int quantity = Integer.parseInt(row.get(2).toString());
 //                String desc = row.get(3) != null ? row.get(3).toString() : "";
 
-                OrderDetailEntity newDetail = new OrderDetailEntity();
+                OrderDetail newDetail = new OrderDetail();
                 newDetail.setOrderID(orderID);
                 newDetail.setProductID(productID);
                 newDetail.setProductQuantity(quantity);

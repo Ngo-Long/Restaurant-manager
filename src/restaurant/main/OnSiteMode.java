@@ -12,11 +12,11 @@ import javax.swing.JButton;
 import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
-import restaurant.onsite.Overview;
-import restaurant.onsite.Product;
-import restaurant.onsite.Invoice;
-import restaurant.onsite.DiningTable;
-import restaurant.onsite.AreaKitchen;
+import restaurant.onsite.OverviewFrm;
+import restaurant.onsite.ProductFrm;
+import restaurant.onsite.InvoiceFrm;
+import restaurant.onsite.DiningTableFrm;
+import restaurant.onsite.AreaKitchenFrm;
 
 public final class OnSiteMode extends javax.swing.JFrame {
 
@@ -80,9 +80,9 @@ public final class OnSiteMode extends javax.swing.JFrame {
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
         menuIntroduce = new javax.swing.JMenuItem();
         menuVaiTro = new javax.swing.JMenu();
-        menuItemManager = new javax.swing.JMenuItem();
-        menuItemEmployee = new javax.swing.JMenuItem();
-        menuItemWayHome = new javax.swing.JMenuItem();
+        menuItemManagement = new javax.swing.JMenuItem();
+        menuItemOnSite = new javax.swing.JMenuItem();
+        menuItemSalerQuick = new javax.swing.JMenuItem();
         menuStaff = new javax.swing.JMenu();
 
         jMenuItem1.setText("jMenuItem1");
@@ -163,31 +163,16 @@ public final class OnSiteMode extends javax.swing.JFrame {
         btnCheck.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/check-mark.png"))); // NOI18N
         btnCheck.setBorder(null);
         btnCheck.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnCheck.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCheckActionPerformed(evt);
-            }
-        });
 
         btnBell.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnBell.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/bell.png"))); // NOI18N
         btnBell.setBorder(null);
         btnBell.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnBell.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBellActionPerformed(evt);
-            }
-        });
 
         btnMenu.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnMenu.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/menu.png"))); // NOI18N
         btnMenu.setBorder(null);
         btnMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnMenu.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMenuActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -240,33 +225,18 @@ public final class OnSiteMode extends javax.swing.JFrame {
 
         menuChange.setText("Đổi mật khẩu");
         menuChange.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuChange.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuChangeActionPerformed(evt);
-            }
-        });
         menuSystem.add(menuChange);
         menuSystem.add(jSeparator2);
 
         menuLogout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         menuLogout.setText("Đăng xuất");
         menuLogout.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuLogout.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuLogoutActionPerformed(evt);
-            }
-        });
         menuSystem.add(menuLogout);
         menuSystem.add(jSeparator1);
 
         menuEnd.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0));
         menuEnd.setText("Kết thúc");
         menuEnd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuEnd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuEndActionPerformed(evt);
-            }
-        });
         menuSystem.add(menuEnd);
 
         menuBar.add(menuSystem);
@@ -277,41 +247,21 @@ public final class OnSiteMode extends javax.swing.JFrame {
         menuTables.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         menuTables.setText("Bàn ăn");
         menuTables.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuTables.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuTablesActionPerformed(evt);
-            }
-        });
         menuManager.add(menuTables);
 
         menuDishes.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
         menuDishes.setText("Món ăn");
         menuDishes.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuDishes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuDishesActionPerformed(evt);
-            }
-        });
         menuManager.add(menuDishes);
 
         menuChicken.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, 0));
         menuChicken.setText("Nhà bếp");
         menuChicken.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuChicken.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuChickenActionPerformed(evt);
-            }
-        });
         menuManager.add(menuChicken);
 
         menuPay.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
         menuPay.setText("Thanh toán");
         menuPay.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuPay.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuPayActionPerformed(evt);
-            }
-        });
         menuManager.add(menuPay);
 
         menuBar.add(menuManager);
@@ -322,44 +272,24 @@ public final class OnSiteMode extends javax.swing.JFrame {
         menuRevenue.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, java.awt.event.InputEvent.SHIFT_DOWN_MASK));
         menuRevenue.setText("Xem doanh thu cuối ngày");
         menuRevenue.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuRevenue.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuRevenueActionPerformed(evt);
-            }
-        });
         menuStatistical.add(menuRevenue);
         menuStatistical.add(jSeparator3);
 
         menuIngridiants.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, java.awt.event.InputEvent.SHIFT_DOWN_MASK));
         menuIngridiants.setText("Xem nguyên liệu cuối ngày");
         menuIngridiants.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuIngridiants.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuIngridiantsActionPerformed(evt);
-            }
-        });
         menuStatistical.add(menuIngridiants);
         menuStatistical.add(jSeparator8);
 
         menuClients.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, java.awt.event.InputEvent.SHIFT_DOWN_MASK));
         menuClients.setText("Xem khách hàng cuối ngày");
         menuClients.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuClients.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuClientsActionPerformed(evt);
-            }
-        });
         menuStatistical.add(menuClients);
         menuStatistical.add(jSeparator9);
 
         menuProducts.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.SHIFT_DOWN_MASK));
         menuProducts.setText("Xem món ăn cuối ngày");
         menuProducts.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuProducts.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuProductsActionPerformed(evt);
-            }
-        });
         menuStatistical.add(menuProducts);
 
         menuBar.add(menuStatistical);
@@ -370,51 +300,26 @@ public final class OnSiteMode extends javax.swing.JFrame {
         menuInstruct.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         menuInstruct.setText("Hướng dẫn sử dụng");
         menuInstruct.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuInstruct.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuInstructActionPerformed(evt);
-            }
-        });
         menuItemHelp.add(menuInstruct);
         menuItemHelp.add(jSeparator5);
 
         menuIntroduce.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
         menuIntroduce.setText("Giới thiệu sản phẩm");
         menuIntroduce.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuIntroduce.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuIntroduceActionPerformed(evt);
-            }
-        });
         menuItemHelp.add(menuIntroduce);
 
         menuBar.add(menuItemHelp);
 
         menuVaiTro.setText("Vai trò");
 
-        menuItemManager.setText("Quản lý");
-        menuItemManager.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemManagerActionPerformed(evt);
-            }
-        });
-        menuVaiTro.add(menuItemManager);
+        menuItemManagement.setText("Quản lý");
+        menuVaiTro.add(menuItemManagement);
 
-        menuItemEmployee.setText("Bán tại bàn");
-        menuItemEmployee.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemEmployeeActionPerformed(evt);
-            }
-        });
-        menuVaiTro.add(menuItemEmployee);
+        menuItemOnSite.setText("Bán tại bàn");
+        menuVaiTro.add(menuItemOnSite);
 
-        menuItemWayHome.setText("Bán mang đi");
-        menuItemWayHome.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemWayHomeActionPerformed(evt);
-            }
-        });
-        menuVaiTro.add(menuItemWayHome);
+        menuItemSalerQuick.setText("Bán mang đi");
+        menuVaiTro.add(menuItemSalerQuick);
 
         menuBar.add(menuVaiTro);
 
@@ -440,85 +345,6 @@ public final class OnSiteMode extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void menuLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLogoutActionPerformed
-        if (Dialog.confirm(this, "Bạn muốn đăng xuất?")) {
-            Auth.clear();
-            dispose();
-            new Login(this, true).setVisible(true);
-        }
-    }//GEN-LAST:event_menuLogoutActionPerformed
-
-    private void menuEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEndActionPerformed
-        if (Dialog.confirm(this, "Bạn muốn kết thúc làm việc?")) {
-            System.exit(0);
-        }
-    }//GEN-LAST:event_menuEndActionPerformed
-
-    private void menuTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTablesActionPerformed
-        displayOnSitePanel(new DiningTable(this));
-    }//GEN-LAST:event_menuTablesActionPerformed
-
-    private void menuDishesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDishesActionPerformed
-        displayOnSitePanel(new Product(this));
-    }//GEN-LAST:event_menuDishesActionPerformed
-
-    private void menuChickenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChickenActionPerformed
-        displayOnSitePanel(new AreaKitchen(this));
-    }//GEN-LAST:event_menuChickenActionPerformed
-
-    private void menuPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuPayActionPerformed
-        displayOnSitePanel(new Invoice(this));
-    }//GEN-LAST:event_menuPayActionPerformed
-
-    private void menuRevenueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRevenueActionPerformed
-
-    }//GEN-LAST:event_menuRevenueActionPerformed
-
-    private void menuIngridiantsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuIngridiantsActionPerformed
-
-    }//GEN-LAST:event_menuIngridiantsActionPerformed
-
-    private void menuClientsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuClientsActionPerformed
-
-    }//GEN-LAST:event_menuClientsActionPerformed
-
-    private void menuProductsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuProductsActionPerformed
-
-    }//GEN-LAST:event_menuProductsActionPerformed
-
-    private void menuInstructActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuInstructActionPerformed
-    }//GEN-LAST:event_menuInstructActionPerformed
-
-    private void menuIntroduceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuIntroduceActionPerformed
-
-    }//GEN-LAST:event_menuIntroduceActionPerformed
-
-    private void menuItemEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemEmployeeActionPerformed
-        openFullScreenWindow(new OnSiteMode());
-    }//GEN-LAST:event_menuItemEmployeeActionPerformed
-
-    private void menuItemManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemManagerActionPerformed
-        openFullScreenWindow(new ManagementMode());
-    }//GEN-LAST:event_menuItemManagerActionPerformed
-
-    private void btnCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCheckActionPerformed
-    }//GEN-LAST:event_btnCheckActionPerformed
-
-    private void btnBellActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBellActionPerformed
-        displayOnSitePanel(new AreaKitchen(this));
-    }//GEN-LAST:event_btnBellActionPerformed
-
-    private void btnMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuActionPerformed
-    }//GEN-LAST:event_btnMenuActionPerformed
-
-    private void menuChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChangeActionPerformed
-
-    }//GEN-LAST:event_menuChangeActionPerformed
-
-    private void menuItemWayHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemWayHomeActionPerformed
-        openFullScreenWindow(new QuickOrderMode());
-    }//GEN-LAST:event_menuItemWayHomeActionPerformed
 
     public static void main(String args[]) {
 
@@ -579,10 +405,10 @@ public final class OnSiteMode extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuIngridiants;
     private javax.swing.JMenuItem menuInstruct;
     private javax.swing.JMenuItem menuIntroduce;
-    private javax.swing.JMenuItem menuItemEmployee;
     private javax.swing.JMenu menuItemHelp;
-    private javax.swing.JMenuItem menuItemManager;
-    private javax.swing.JMenuItem menuItemWayHome;
+    private javax.swing.JMenuItem menuItemManagement;
+    private javax.swing.JMenuItem menuItemOnSite;
+    private javax.swing.JMenuItem menuItemSalerQuick;
     private javax.swing.JMenuItem menuLogout;
     private javax.swing.JMenu menuManager;
     private javax.swing.JMenuItem menuPay;
@@ -604,26 +430,46 @@ public final class OnSiteMode extends javax.swing.JFrame {
         Common.setAccountMenu(menuStaff);
         Common.customizeScrollBar(scrollPaneMain);
 
+        // handle click menu
+        menuLogout.addActionListener(e -> {
+            if (Dialog.confirm(this, "Bạn muốn đăng xuất?")) {
+                Auth.clear();
+                dispose();
+                new Login(this, true).setVisible(true);
+            }
+        });
+        menuEnd.addActionListener(e -> {
+            if (Dialog.confirm(this, "Bạn muốn kết thúc làm việc?")) {
+                System.exit(0);
+            }
+        });
+        menuTables.addActionListener(e -> displayOnSitePanel(new ProductFrm(this)));
+        menuDishes.addActionListener(e -> displayOnSitePanel(new ProductFrm(this)));
+        menuItemOnSite.addActionListener(e -> openFullScreenWindow(new OnSiteMode()));
+        menuItemSalerQuick.addActionListener(e -> openFullScreenWindow(new QuickOrderMode()));
+        menuItemManagement.addActionListener(e -> openFullScreenWindow(new ManagementMode()));
+
         // handle click button header
-        btnOverview.addActionListener(e -> displayOnSitePanel(new Overview(this)));
-        btnTable.addActionListener(e -> displayOnSitePanel(new DiningTable(this)));
+        btnOverview.addActionListener(e -> displayOnSitePanel(new OverviewFrm(this)));
+        btnTable.addActionListener(e -> displayOnSitePanel(new DiningTableFrm(this)));
+        btnBell.addActionListener(e -> displayOnSitePanel(new AreaKitchenFrm(this)));
         btnProduct.addActionListener(e -> {
             Auth.table = null;
             Auth.order = null;
-            displayOnSitePanel(new Product(this));
+            displayOnSitePanel(new ProductFrm(this));
         });
         btnPay.addActionListener(e -> {
             Auth.table = null;
             Auth.order = null;
             Auth.invoice = null;
-            displayOnSitePanel(new Invoice(this));
+            displayOnSitePanel(new InvoiceFrm(this));
         });
 
         // Attach event hover button chose. Fisrt button is btnOverview
         setupHeaderButtons(btnOverview);
 
         // Display UI main
-        displayOnSitePanel(new Overview(this));
+        displayOnSitePanel(new OverviewFrm(this));
     }
 
     public JButton[] getHeaderButtons() {

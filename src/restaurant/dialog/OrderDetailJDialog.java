@@ -3,8 +3,8 @@ package restaurant.dialog;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.Objects;
-import restaurant.entity.DiningTableEntity;
-import restaurant.entity.OrderEntity;
+import restaurant.entity.DiningTable;
+import restaurant.entity.Order;
 import restaurant.utils.Auth;
 
 public class OrderDetailJDialog extends javax.swing.JDialog {
@@ -194,7 +194,7 @@ public class OrderDetailJDialog extends javax.swing.JDialog {
         displayDetailOrder(Auth.table, Auth.order);
     }
 
-    void displayDetailOrder(DiningTableEntity dataTable, OrderEntity dataOrder) {
+    void displayDetailOrder(DiningTable dataTable, Order dataOrder) {
         if (dataTable == null || dataOrder == null) {
             labelNameTable.setText("Trống");
             labelTimeStart.setText("Trống");
@@ -211,7 +211,6 @@ public class OrderDetailJDialog extends javax.swing.JDialog {
         labelTimeStart.setText(dateFormat.format(dataOrder.getCreatedDate()));
         labelTotalAmount.setText(dataOrder.getTotal() + " VND" + " / " + 1 + " đơn");
         labelStatus.setText(dataOrder.getStatus());
-
     }
 
 }

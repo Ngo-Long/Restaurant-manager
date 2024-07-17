@@ -5,7 +5,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
-import restaurant.utils.TextFieldUtils;
+import restaurant.utils.XTextField;
 
 public class SmallJDialog extends javax.swing.JDialog {
 
@@ -151,7 +151,7 @@ public class SmallJDialog extends javax.swing.JDialog {
         // Set text fields 
         JTextField[] textFields = {textMain, textNote};
         for (JTextField textField : textFields) {
-            TextFieldUtils.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
+            XTextField.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
         }
         
         // Handle click button

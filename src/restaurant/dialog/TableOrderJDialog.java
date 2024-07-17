@@ -12,24 +12,24 @@ import java.awt.event.WindowAdapter;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.main.OnSiteMode;
-import restaurant.onsite.Product;
-import restaurant.onsite.Invoice;
+import restaurant.onsite.ProductFrm;
+import restaurant.onsite.InvoiceFrm;
 import restaurant.table.TableCustom;
 
 import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.utils.Ordered;
-import restaurant.utils.ComboBoxUtils;
-import restaurant.utils.TextFieldUtils;
+import restaurant.utils.XComboBox;
+import restaurant.utils.XTextField;
 import restaurant.dao.OrderDAO;
 import restaurant.dao.InvoiceDAO;
 import restaurant.dao.OrderDetailDAO;
 import restaurant.dao.DiningTableDAO;
-import restaurant.entity.OrderEntity;
-import restaurant.entity.InvoiceEntity;
-import restaurant.entity.DiningTableEntity;
-import restaurant.entity.OrderDetailEntity;
+import restaurant.entity.Order;
+import restaurant.entity.Invoice;
+import restaurant.entity.DiningTable;
+import restaurant.entity.OrderDetail;
 
 public final class TableOrderJDialog extends javax.swing.JDialog {
 
@@ -108,11 +108,6 @@ public final class TableOrderJDialog extends javax.swing.JDialog {
         btnSplitMerge.setText("Tách nghép");
         btnSplitMerge.setToolTipText("Chọn bàn cần chuyển trước ");
         btnSplitMerge.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnSplitMerge.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSplitMergeActionPerformed(evt);
-            }
-        });
 
         btnAddOrder.setBackground(new java.awt.Color(0, 153, 0));
         btnAddOrder.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
@@ -120,11 +115,6 @@ public final class TableOrderJDialog extends javax.swing.JDialog {
         btnAddOrder.setText("THÊM MÓN (F2)");
         btnAddOrder.setToolTipText("Ấn F2 để chọn món ăn");
         btnAddOrder.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnAddOrder.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddOrderActionPerformed(evt);
-            }
-        });
 
         btnPay.setBackground(new java.awt.Color(0, 0, 204));
         btnPay.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
@@ -132,11 +122,6 @@ public final class TableOrderJDialog extends javax.swing.JDialog {
         btnPay.setText("THANH TOÁN (F4)");
         btnPay.setToolTipText("Ấn F4 để thanh toán");
         btnPay.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnPay.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPayActionPerformed(evt);
-            }
-        });
 
         tableOrderedDishes.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         tableOrderedDishes.setModel(new javax.swing.table.DefaultTableModel(
@@ -201,11 +186,6 @@ public final class TableOrderJDialog extends javax.swing.JDialog {
 
         cbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Còn trống", "Đang phục vụ", "Đã đặt" }));
         cbStatus.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        cbStatus.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbStatusActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -271,36 +251,6 @@ public final class TableOrderJDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnSplitMergeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSplitMergeActionPerformed
-
-    }//GEN-LAST:event_btnSplitMergeActionPerformed
-
-
-    private void btnAddOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddOrderActionPerformed
-        // Set selected button product
-        JButton[] buttons = onSite.getHeaderButtons();
-        for (JButton button : buttons) {
-            if (button.getText().equals("Món Ăn")) {
-                onSite.setupHeaderButtons(button);
-                break;
-            }
-        }
-
-        // Set attach info other file
-        Auth.table = dataTable;
-        Auth.order = dataOrder;
-        onSite.displayOnSitePanel(new Product(onSite));
-        dispose();
-    }//GEN-LAST:event_btnAddOrderActionPerformed
-
-
-    private void btnPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPayActionPerformed
-        pay();
-    }//GEN-LAST:event_btnPayActionPerformed
-
-    private void cbStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbStatusActionPerformed
-    }//GEN-LAST:event_cbStatusActionPerformed
-
     public static void main(String args[]) {
 
         try {
@@ -349,8 +299,8 @@ public final class TableOrderJDialog extends javax.swing.JDialog {
     private javax.swing.JTextField textNote;
     // End of variables declaration//GEN-END:variables
 
-    OrderEntity dataOrder;
-    DiningTableEntity dataTable;
+    Order dataOrder;
+    DiningTable dataTable;
 
     void init() {
         // <--- Set common --->
@@ -360,7 +310,7 @@ public final class TableOrderJDialog extends javax.swing.JDialog {
         // set UI
         TableCustom.apply(jScrollPane3, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableOrderedDishes, new int[]{}, 30);
-        ComboBoxUtils.setComboboxStyle(cbStatus);
+        XComboBox.setComboboxStyle(cbStatus);
         btnSplitMerge.setBackground(Color.WHITE);
 
         // <--- Setup main --->
@@ -377,13 +327,15 @@ public final class TableOrderJDialog extends javax.swing.JDialog {
         });
 
         // Attach event when click button split merge
-        btnSplitMerge.addActionListener((ActionEvent e) -> {
+        btnSplitMerge.addActionListener(e -> {
             handleClickBtnSplitMerge(btnSplitMerge, dataTable);
         });
 
+        btnPay.addActionListener(e -> pay());
+        btnAddOrder.addActionListener(e -> addOrder());
     }
 
-    public void displayTableInfo(DiningTableEntity diningTable) {
+    public void displayTableInfo(DiningTable diningTable) {
         dataTable = diningTable;
         cbStatus.setSelectedItem(dataTable.getStatus());
         labelTableId.setText(dataTable.getTableID());
@@ -397,8 +349,8 @@ public final class TableOrderJDialog extends javax.swing.JDialog {
 
         try {
             // Get data order and order deatails
-            OrderEntity dataOrder = new OrderDAO().getByTableID(tableID);
-            List<OrderDetailEntity> dataOrderDetails
+            Order dataOrder = new OrderDAO().getByTableID(tableID);
+            List<OrderDetail> dataOrderDetails
                     = new OrderDetailDAO().getByOrderID(dataOrder.getOrderId());
 
             // Set title
@@ -410,7 +362,7 @@ public final class TableOrderJDialog extends javax.swing.JDialog {
 
             // Set total 
             long total = dataOrder.getTotal();
-            String totalConvert = TextFieldUtils.addCommasToNumber(String.valueOf(total));
+            String totalConvert = XTextField.addCommasToNumber(String.valueOf(total));
             labelTotal.setText(totalConvert + "₫");
 
             // Set note
@@ -430,7 +382,7 @@ public final class TableOrderJDialog extends javax.swing.JDialog {
         }
     }
 
-    void handleClickBtnSplitMerge(JButton tableBtn, DiningTableEntity dataTable) {
+    void handleClickBtnSplitMerge(JButton tableBtn, DiningTable dataTable) {
         // Open dialog and Transmit data via file orderTableDialog
         SplitMergeJDialog dialog = new SplitMergeJDialog(null, true, onSite);
         dialog.setInfoDialog(dataTable);
@@ -461,7 +413,7 @@ public final class TableOrderJDialog extends javax.swing.JDialog {
         }
 
         try {
-            DiningTableEntity dataTable = new DiningTableDAO().getByID(tableID);
+            DiningTable dataTable = new DiningTableDAO().getByID(tableID);
             dataTable.setStatus(status);
             new DiningTableDAO().update(dataTable);
             Dialog.success(this, "Đổi trạng thái thành công!");
@@ -483,14 +435,31 @@ public final class TableOrderJDialog extends javax.swing.JDialog {
 
         // Set attach info other file
         String tableID = dataTable.getTableID();
-        InvoiceEntity dataInvoice = new InvoiceDAO().getByTableID(tableID);
+        Invoice dataInvoice = new InvoiceDAO().getByTableID(tableID);
 
         // Add add to auth
         Auth.table = dataTable;
         Auth.invoice = dataInvoice;
 
         // Display file invoice
-        onSite.displayOnSitePanel(new Invoice(onSite));
+        onSite.displayOnSitePanel(new InvoiceFrm(onSite));
+        dispose();
+    }
+
+    void addOrder() {
+        // Set selected button product
+        JButton[] buttons = onSite.getHeaderButtons();
+        for (JButton button : buttons) {
+            if (button.getText().equals("Món Ăn")) {
+                onSite.setupHeaderButtons(button);
+                break;
+            }
+        }
+
+        // Set attach info other file
+        Auth.table = dataTable;
+        Auth.order = dataOrder;
+        onSite.displayOnSitePanel(new ProductFrm(onSite));
         dispose();
     }
 

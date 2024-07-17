@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.ArrayList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import restaurant.utils.JDBC;
+import restaurant.utils.XJdbc;
 import restaurant.utils.Dialog;
-import restaurant.entity.InvoiceEntity;
+import restaurant.entity.Invoice;
 
-public class InvoiceDAO extends RestaurantDAO<InvoiceEntity, Integer> {
+public class InvoiceDAO extends RestaurantDAO<Invoice, Integer> {
 
     final String INSERT_SQL = "INSERT INTO Invoice (Status) VALUES (N'Chờ thanh toán');";
     final String UPDATE_SQL = "UPDATE Invoice SET EmployeeID=?, Tax=?, Discount=?, PaymentMethod=?, "
@@ -33,7 +33,7 @@ public class InvoiceDAO extends RestaurantDAO<InvoiceEntity, Integer> {
             + "AND i.[Status] LIKE ? ";
 
     @Override
-    public void insert(InvoiceEntity entity) {
+    public void insert(Invoice entity) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -43,10 +43,10 @@ public class InvoiceDAO extends RestaurantDAO<InvoiceEntity, Integer> {
     }
 
     public int insert() {
-        JDBC.executeUpdate(INSERT_SQL);
+        XJdbc.executeUpdate(INSERT_SQL);
 
         int latestInvoiceID = 0;
-        try (ResultSet rs = JDBC.executeQuery(SELECT_LATEST_ID_SQL)) {
+        try (ResultSet rs = XJdbc.executeQuery(SELECT_LATEST_ID_SQL)) {
             if (rs.next()) {
                 latestInvoiceID = rs.getInt("InvoiceID");
             }
@@ -59,8 +59,8 @@ public class InvoiceDAO extends RestaurantDAO<InvoiceEntity, Integer> {
     }
 
     @Override
-    public void update(InvoiceEntity model) {
-        JDBC.executeUpdate(UPDATE_SQL,
+    public void update(Invoice model) {
+        XJdbc.executeUpdate(UPDATE_SQL,
                 model.getEmployeeID(),
                 model.getTax(),
                 model.getDiscount(),
@@ -73,22 +73,22 @@ public class InvoiceDAO extends RestaurantDAO<InvoiceEntity, Integer> {
     }
 
     @Override
-    public InvoiceEntity getByID(Integer id) {
-        List<InvoiceEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
+    public Invoice getByID(Integer id) {
+        List<Invoice> list = fetchByQuery(SELECT_BY_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
     }
 
-    public InvoiceEntity getByTableID(String id) {
-        List<InvoiceEntity> list = fetchByQuery(SELECT_BY_TABLE_ID_SQL, id);
+    public Invoice getByTableID(String id) {
+        List<Invoice> list = fetchByQuery(SELECT_BY_TABLE_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
     }
 
     @Override
-    public List<InvoiceEntity> getAll() {
+    public List<Invoice> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
     }
 
-    public List<InvoiceEntity> searchByCriteria(String startDate, String endDate, String id, String status) {
+    public List<Invoice> searchByCriteria(String startDate, String endDate, String id, String status) {
         String startDayTerm = startDate + " 00:00:00";
         String endDayTerm = endDate + " 23:59:59";
         String idTerm = "%" + id + "%";
@@ -98,12 +98,12 @@ public class InvoiceDAO extends RestaurantDAO<InvoiceEntity, Integer> {
     }
 
     @Override
-    protected List<InvoiceEntity> fetchByQuery(String sql, Object... args) {
-        List<InvoiceEntity> list = new ArrayList<>();
+    protected List<Invoice> fetchByQuery(String sql, Object... args) {
+        List<Invoice> list = new ArrayList<>();
 
-        try (ResultSet rs = JDBC.executeQuery(sql, args)) {
+        try (ResultSet rs = XJdbc.executeQuery(sql, args)) {
             while (rs.next()) {
-                InvoiceEntity model = readFromResultSet(rs);
+                Invoice model = readFromResultSet(rs);
                 list.add(model);
             }
         } catch (SQLException ex) {
@@ -114,8 +114,8 @@ public class InvoiceDAO extends RestaurantDAO<InvoiceEntity, Integer> {
         return list;
     }
 
-    private InvoiceEntity readFromResultSet(ResultSet rs) throws SQLException {
-        InvoiceEntity model = new InvoiceEntity();
+    private Invoice readFromResultSet(ResultSet rs) throws SQLException {
+        Invoice model = new Invoice();
         model.setInvoiceID(rs.getInt("InvoiceID"));
         model.setEmployeeID(rs.getString("EmployeeID"));
         model.setTax(rs.getInt("Tax"));

@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.ArrayList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import restaurant.utils.JDBC;
-import restaurant.entity.OrderTableEntity;
+import restaurant.utils.XJdbc;
+import restaurant.entity.OrderTable;
 
-public class OrderTableDAO extends RestaurantDAO<OrderTableEntity, Integer> {
+public class OrderTableDAO extends RestaurantDAO<OrderTable, Integer> {
 
     private static final String INSERT_SQL = "INSERT INTO OrderTable (OrderID, TableID, Status) VALUES (?, ?, ?)";
     private static final String UPDATE_SQL = "UPDATE OrderTable SET OrderID=?, TableID=?, Status=? WHERE OrderTableID=?";
@@ -16,21 +16,17 @@ public class OrderTableDAO extends RestaurantDAO<OrderTableEntity, Integer> {
     private static final String SELECT_BY_ID_SQL = "SELECT * FROM OrderTable WHERE OrderTableID=?";
 
     @Override
-    public void insert(OrderTableEntity orderTable) {
-        JDBC.executeUpdate(INSERT_SQL,
+    public void insert(OrderTable orderTable) {
+        XJdbc.executeUpdate(INSERT_SQL,
                 orderTable.getOrderID(),
                 orderTable.getTableID(),
                 orderTable.getStatus()
         );
     }
 
-    public void insert(int orderID, String tableID, String status) {
-        JDBC.executeUpdate(INSERT_SQL, orderID, tableID, status);
-    }
-
     @Override
-    public void update(OrderTableEntity orderTable) {
-        JDBC.executeUpdate(UPDATE_SQL,
+    public void update(OrderTable orderTable) {
+        XJdbc.executeUpdate(UPDATE_SQL,
                 orderTable.getOrderID(),
                 orderTable.getTableID(),
                 orderTable.getStatus(),
@@ -40,27 +36,27 @@ public class OrderTableDAO extends RestaurantDAO<OrderTableEntity, Integer> {
 
     @Override
     public void delete(Integer orderTableID) {
-        JDBC.executeUpdate(DELETE_SQL, orderTableID);
+        XJdbc.executeUpdate(DELETE_SQL, orderTableID);
     }
 
     @Override
-    public List<OrderTableEntity> getAll() {
+    public List<OrderTable> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
     }
 
     @Override
-    public OrderTableEntity getByID(Integer orderTableID) {
-        List<OrderTableEntity> result = fetchByQuery(SELECT_BY_ID_SQL, orderTableID);
+    public OrderTable getByID(Integer orderTableID) {
+        List<OrderTable> result = fetchByQuery(SELECT_BY_ID_SQL, orderTableID);
         return result.isEmpty() ? null : result.get(0);
     }
 
     @Override
-    protected List<OrderTableEntity> fetchByQuery(String sql, Object... args) {
-        List<OrderTableEntity> list = new ArrayList<>();
+    protected List<OrderTable> fetchByQuery(String sql, Object... args) {
+        List<OrderTable> list = new ArrayList<>();
 
-        try (ResultSet rs = JDBC.executeQuery(sql, args)) {
+        try (ResultSet rs = XJdbc.executeQuery(sql, args)) {
             while (rs.next()) {
-                OrderTableEntity model = readFromResultSet(rs);
+                OrderTable model = readFromResultSet(rs);
                 list.add(model);
             }
         } catch (SQLException ex) {
@@ -70,8 +66,8 @@ public class OrderTableDAO extends RestaurantDAO<OrderTableEntity, Integer> {
         return list;
     }
 
-    private OrderTableEntity readFromResultSet(ResultSet rs) throws SQLException {
-        OrderTableEntity model = new OrderTableEntity();
+    private OrderTable readFromResultSet(ResultSet rs) throws SQLException {
+        OrderTable model = new OrderTable();
         model.setOrderTableID(rs.getInt("OrderTableID"));
         model.setOrderID(rs.getInt("OrderID"));
         model.setTableID(rs.getString("TableID"));

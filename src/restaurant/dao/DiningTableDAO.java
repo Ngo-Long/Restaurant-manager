@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.ArrayList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import restaurant.utils.JDBC;
-import restaurant.entity.DiningTableEntity;
+import restaurant.utils.XJdbc;
+import restaurant.entity.DiningTable;
 
-public class DiningTableDAO extends RestaurantDAO<DiningTableEntity, String> {
+public class DiningTableDAO extends RestaurantDAO<DiningTable, String> {
 
     final String INSERT_SQL = "INSERT INTO DiningTable (TableID, Name, Location, Capacity, "
             + "Status, Description, Activity) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -35,8 +35,8 @@ public class DiningTableDAO extends RestaurantDAO<DiningTableEntity, String> {
     final String CHECK_DUPLICATED_NAME_SQL = "SELECT COUNT(*) FROM DiningTable WHERE Name = ?";
 
     @Override
-    public void insert(DiningTableEntity entity) {
-        JDBC.executeUpdate(INSERT_SQL,
+    public void insert(DiningTable entity) {
+        XJdbc.executeUpdate(INSERT_SQL,
                 entity.getTableID(),
                 entity.getName(),
                 entity.getLocation(),
@@ -48,8 +48,8 @@ public class DiningTableDAO extends RestaurantDAO<DiningTableEntity, String> {
     }
 
     @Override
-    public void update(DiningTableEntity entity) {
-        JDBC.executeUpdate(UPDATE_SQL,
+    public void update(DiningTable entity) {
+        XJdbc.executeUpdate(UPDATE_SQL,
                 entity.getName(),
                 entity.getLocation(),
                 entity.getCapacity(),
@@ -62,31 +62,31 @@ public class DiningTableDAO extends RestaurantDAO<DiningTableEntity, String> {
 
     @Override
     public void delete(String id) {
-        JDBC.executeUpdate(DELETE_SQL, id);
+        XJdbc.executeUpdate(DELETE_SQL, id);
     }
 
     @Override
-    public List<DiningTableEntity> getAll() {
+    public List<DiningTable> getAll() {
         return this.fetchByQuery(SELECT_ALL_SQL);
     }
 
-    public List<DiningTableEntity> getByInvoicesID(int id) {
+    public List<DiningTable> getByInvoicesID(int id) {
         return this.fetchByQuery(SELECT_BY_INVOICE_ID_SQL, id);
     }
 
     @Override
-    public DiningTableEntity getByID(String id) {
-        List<DiningTableEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
+    public DiningTable getByID(String id) {
+        List<DiningTable> list = fetchByQuery(SELECT_BY_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
     }
 
-    public DiningTableEntity getByOrderID(int id) {
-        List<DiningTableEntity> list = fetchByQuery(SELECT_BY_ORDER_ID_SQL, id);
+    public DiningTable getByOrderID(int id) {
+        List<DiningTable> list = fetchByQuery(SELECT_BY_ORDER_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
     }
 
     public String getIdByName(String tableName) {
-        try (ResultSet rs = JDBC.executeQuery("SELECT TableID FROM DiningTable WHERE Name = ?", tableName)) {
+        try (ResultSet rs = XJdbc.executeQuery("SELECT TableID FROM DiningTable WHERE Name = ?", tableName)) {
             if (rs.next()) {
                 return rs.getString("TableID");
             }
@@ -96,7 +96,7 @@ public class DiningTableDAO extends RestaurantDAO<DiningTableEntity, String> {
         return null;
     }
 
-    public List<DiningTableEntity> searchByCriteria(String name, String location, String activity) {
+    public List<DiningTable> searchByCriteria(String name, String location, String activity) {
         String nameTerm = "%" + name + "%";
         String locationTerm = "%" + location + "%";
         String activityTerm = "%" + activity + "%";
@@ -105,7 +105,7 @@ public class DiningTableDAO extends RestaurantDAO<DiningTableEntity, String> {
     }
 
     public boolean isIdDuplicated(String id) {
-        try (ResultSet rs = JDBC.executeQuery(CHECK_DUPLICATED_ID_SQL, id)) {
+        try (ResultSet rs = XJdbc.executeQuery(CHECK_DUPLICATED_ID_SQL, id)) {
             if (rs.next()) {
                 int count = rs.getInt(1);
                 return count > 0;
@@ -118,7 +118,7 @@ public class DiningTableDAO extends RestaurantDAO<DiningTableEntity, String> {
     }
 
     public boolean isDuplicateName(String name) {
-        try (ResultSet rs = JDBC.executeQuery(CHECK_DUPLICATED_NAME_SQL, name)) {
+        try (ResultSet rs = XJdbc.executeQuery(CHECK_DUPLICATED_NAME_SQL, name)) {
             if (rs.next()) {
                 int count = rs.getInt(1);
                 return count > 0;
@@ -130,12 +130,12 @@ public class DiningTableDAO extends RestaurantDAO<DiningTableEntity, String> {
     }
 
     @Override
-    protected List<DiningTableEntity> fetchByQuery(String sql, Object... args) {
-        List<DiningTableEntity> list = new ArrayList<>();
+    protected List<DiningTable> fetchByQuery(String sql, Object... args) {
+        List<DiningTable> list = new ArrayList<>();
 
-        try (ResultSet rs = JDBC.executeQuery(sql, args)) {
+        try (ResultSet rs = XJdbc.executeQuery(sql, args)) {
             while (rs.next()) {
-                DiningTableEntity model = readFromResultSet(rs);
+                DiningTable model = readFromResultSet(rs);
                 list.add(model);
             }
         } catch (SQLException ex) {
@@ -145,8 +145,8 @@ public class DiningTableDAO extends RestaurantDAO<DiningTableEntity, String> {
         return list;
     }
 
-    private DiningTableEntity readFromResultSet(ResultSet rs) throws SQLException {
-        DiningTableEntity model = new DiningTableEntity();
+    private DiningTable readFromResultSet(ResultSet rs) throws SQLException {
+        DiningTable model = new DiningTable();
         model.setTableID(rs.getString("TableID"));
         model.setName(rs.getString("Name"));
         model.setLocation(rs.getString("Location"));

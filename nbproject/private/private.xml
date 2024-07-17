@@ -2,6 +2,11 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/dao/ReceiptDAO.java</file>
+            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/onsite/Product.java</file>
+            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/dao/OrderTableDAO.java</file>
+            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/management/CreateReceipt.java</file>
+        </group>
     </open-files>
 </project-private>

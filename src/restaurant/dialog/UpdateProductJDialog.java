@@ -6,19 +6,20 @@ import javax.swing.JTextField;
 
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
-import restaurant.utils.ImageUtils;
-import restaurant.utils.ComboBoxUtils;
-import restaurant.utils.TextFieldUtils;
+import restaurant.utils.XImage;
+import restaurant.utils.XComboBox;
+import restaurant.utils.XTextField;
 
 import restaurant.dao.ProductDAO;
-import restaurant.entity.ProductEntity;
+import restaurant.entity.Product;
+import static restaurant.utils.XComboBox.insertPlaceholder;
 
 import static restaurant.utils.Common.openSmallDialog;
-import static restaurant.utils.TextFieldUtils.getRealText;
-import static restaurant.utils.ImageUtils.setImageButtonIcon;
-import static restaurant.utils.ComboBoxUtils.addDataToComboBox;
-import static restaurant.utils.ImageUtils.chooseImageFromDirectory;
-import static restaurant.utils.TextFieldUtils.removeCommasFromNumber;
+import static restaurant.utils.XTextField.getRealText;
+import static restaurant.utils.XImage.setImageButtonIcon;
+import static restaurant.utils.XComboBox.loadDataToComboBox;
+import static restaurant.utils.XImage.chooseImageFromDirectory;
+import static restaurant.utils.XTextField.removeCommasFromNumber;
 
 public final class UpdateProductJDialog extends javax.swing.JDialog {
 
@@ -397,35 +398,28 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         // Set text fields 
         JTextField[] textFields = {texID, textName, textCostPrice, textPrice, textUnit, textPrice};
         for (JTextField textField : textFields) {
-            TextFieldUtils.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
+            XTextField.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
         }
 
         // Set focus field text
         textName.requestFocus();
         Common.createButtonGroup(radioOn, radioOff);
-        TextFieldUtils.addPlaceholder(texID, PLACEHOLDER_ID);
-        ComboBoxUtils.setComboboxStyle(cbCategory, cbKitchenArea);
-        ImageUtils.setImageButtonIcon("src/restaurant/img/background.jpg", btnImage);
+        XTextField.addPlaceholder(texID, PLACEHOLDER_ID);
+        XComboBox.setComboboxStyle(cbCategory, cbKitchenArea);
+        XImage.setImageButtonIcon("src/restaurant/img/background.jpg", btnImage);
 
         // <--- Setup main --->
         // attach event formatted price
-        TextFieldUtils.addPriceDocumentListener(textPrice);
-        TextFieldUtils.addPriceDocumentListener(textCostPrice);
+        XTextField.addPriceDocumentListener(textPrice);
+        XTextField.addPriceDocumentListener(textCostPrice);
 
         // setup combobox
-        List<ProductEntity> dataList = new ProductDAO().getAll();
-        addDataToComboBox(
-                cbCategory,
-                dataList,
-                ProductEntity::getCategory,
-                PLACEHOLDER_COMBOBOX
-        );
-        addDataToComboBox(
-                cbKitchenArea,
-                dataList,
-                ProductEntity::getKitchenArea,
-                PLACEHOLDER_COMBOBOX
-        );
+        List<Product> dataList = new ProductDAO().getAll();
+        loadDataToComboBox(cbCategory, dataList, Product::getCategory);
+        loadDataToComboBox(cbKitchenArea, dataList, Product::getKitchenArea);
+        
+        insertPlaceholder(cbCategory, PLACEHOLDER_COMBOBOX);
+        insertPlaceholder(cbKitchenArea, PLACEHOLDER_COMBOBOX);
 
         // add more comboxbox
         btnAddCategory.addActionListener(e -> {
@@ -446,7 +440,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         btnDelete.addActionListener(e -> delete());
     }
 
-    ProductEntity getModel() {
+    Product getModel() {
         String id = getRealText(texID, PLACEHOLDER_ID);
         String name = textName.getText();
         String costPriceText = textCostPrice.getText();
@@ -461,7 +455,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         }
 
         try {
-            ProductEntity model = new ProductEntity();
+            Product model = new Product();
             model.setProductID(id);
             model.setProductName(name);
             model.setCostPrice(Integer.parseInt(removeCommasFromNumber(costPriceText)));
@@ -516,7 +510,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         return true;
     }
 
-    public void setModel(ProductEntity dataProduct) {
+    public void setModel(Product dataProduct) {
         if (dataProduct == null) {
             return;
         }
@@ -543,7 +537,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
     }
 
     void insert() {
-        ProductEntity model = getModel();
+        Product model = getModel();
         if (model == null) {
             return;
         }
@@ -569,7 +563,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
     }
 
     void update() {
-        ProductEntity model = getModel();
+        Product model = getModel();
         if (model == null) {
             return;
         }

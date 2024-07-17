@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.table.DefaultTableModel;
 import restaurant.dao.ProductDAO;
-import restaurant.entity.OrderDetailEntity;
-import restaurant.entity.ProductEntity;
+import restaurant.entity.OrderDetail;
+import restaurant.entity.Product;
 
 public class Ordered {
 
@@ -17,14 +17,14 @@ public class Ordered {
      * @param productPriceMap là bản đồ để lưu trữ giá của từng sản phẩm
      * @param productQuantityMap là bản đồ để lưu trữ số lượng của từng sản phẩm
      */
-    public static void processOrderedDetails(List<OrderDetailEntity> orderDetails, Map<String, Long> productPriceMap, Map<String, Integer> productQuantityMap) {
-        for (OrderDetailEntity orderDetail : orderDetails) {
+    public static void processOrderedDetails(List<OrderDetail> orderDetails, Map<String, Long> productPriceMap, Map<String, Integer> productQuantityMap) {
+        for (OrderDetail orderDetail : orderDetails) {
             // Get id and level
             String productId = orderDetail.getProductID();
             String productLevel = !orderDetail.getProductDesc().isEmpty() ? " (" + orderDetail.getProductDesc() + ")" : "";
 
             // Get name and level
-            ProductEntity productEntity = new ProductDAO().getByID(productId);
+            Product productEntity = new ProductDAO().getByID(productId);
             String productName = productEntity.getProductName();
             String productNameAndLevel = productName + productLevel;
 
@@ -57,11 +57,11 @@ public class Ordered {
 
             // Get unit price and quantity it for display -> ex: 50.000₫ x 3
             long unitPrice = productPriceMap.get(productNameAndLevel);
-            String convertUnitPrice = TextFieldUtils.addCommasToNumber(String.valueOf(unitPrice));
+            String convertUnitPrice = XTextField.addCommasToNumber(String.valueOf(unitPrice));
 
             // Calculate and format the total price for the quantit -> ex: 50.000 x 3 = 150.000
             long totalPrice = unitPrice * totalQuantity;
-            String convertTotalPrice = TextFieldUtils.addCommasToNumber(String.valueOf(totalPrice));
+            String convertTotalPrice = XTextField.addCommasToNumber(String.valueOf(totalPrice));
 
             // Add a new row to the table model with product details
             model.addRow(new Object[]{

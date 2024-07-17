@@ -16,15 +16,15 @@ import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 
-import restaurant.management.Goods;
-import restaurant.management.Invoice;
-import restaurant.management.Receipt;
-import restaurant.management.Overview;
-import restaurant.management.Employee;
-import restaurant.management.Product;
-import restaurant.management.Supplier;
-import restaurant.management.DiningTable;
-import static restaurant.utils.MenuButton.setupMenuButton;
+import restaurant.management.GoodsFrm;
+import restaurant.management.InvoiceFrm;
+import restaurant.management.ReceiptFrm;
+import restaurant.management.OverviewFrm;
+import restaurant.management.EmployeeFrm;
+import restaurant.management.ProductFrm;
+import restaurant.management.SupplierFrm;
+import restaurant.management.DiningTableFrm;
+import static restaurant.utils.PopupMenu.addPopupMenuButton;
 
 public class ManagementMode extends javax.swing.JFrame {
 
@@ -96,9 +96,9 @@ public class ManagementMode extends javax.swing.JFrame {
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
         menuIntroduce = new javax.swing.JMenuItem();
         menuVaiTro = new javax.swing.JMenu();
-        menuItemManager = new javax.swing.JMenuItem();
-        menuItemEmployee = new javax.swing.JMenuItem();
-        menuItemWayHome = new javax.swing.JMenuItem();
+        menuItemManagement = new javax.swing.JMenuItem();
+        menuItemOnSite = new javax.swing.JMenuItem();
+        menuItemSalerQuick = new javax.swing.JMenuItem();
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -134,11 +134,6 @@ public class ManagementMode extends javax.swing.JFrame {
         labelLogo.setText("HOT NOODLE");
         labelLogo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         labelLogo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        labelLogo.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                labelLogoMouseClicked(evt);
-            }
-        });
 
         btnOverview.setBackground(new java.awt.Color(255, 102, 102));
         btnOverview.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -256,33 +251,18 @@ public class ManagementMode extends javax.swing.JFrame {
 
         menuChange.setText("Đổi mật khẩu");
         menuChange.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuChange.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuChangeActionPerformed(evt);
-            }
-        });
         menuSystem.add(menuChange);
         menuSystem.add(jSeparator2);
 
         menuLogout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         menuLogout.setText("Đăng xuất");
         menuLogout.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuLogout.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuLogoutActionPerformed(evt);
-            }
-        });
         menuSystem.add(menuLogout);
         menuSystem.add(jSeparator1);
 
         menuEnd.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0));
         menuEnd.setText("Kết thúc");
         menuEnd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuEnd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuEndActionPerformed(evt);
-            }
-        });
         menuSystem.add(menuEnd);
 
         menuBar.add(menuSystem);
@@ -293,62 +273,32 @@ public class ManagementMode extends javax.swing.JFrame {
         menuTables.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         menuTables.setText("Bàn ăn");
         menuTables.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuTables.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuTablesActionPerformed(evt);
-            }
-        });
         menuManager.add(menuTables);
 
         menuDishes.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
         menuDishes.setText("Món ăn");
         menuDishes.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuDishes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuDishesActionPerformed(evt);
-            }
-        });
         menuManager.add(menuDishes);
 
         menuChicken.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, 0));
         menuChicken.setText("Nhà bếp");
         menuChicken.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuChicken.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuChickenActionPerformed(evt);
-            }
-        });
         menuManager.add(menuChicken);
 
         menuPay.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0));
         menuPay.setText("Thanh toán");
         menuPay.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuPay.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuPayActionPerformed(evt);
-            }
-        });
         menuManager.add(menuPay);
         menuManager.add(jSeparator4);
 
         menuEmployees.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
         menuEmployees.setText("Nhân viên");
         menuEmployees.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuEmployees.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuEmployeesActionPerformed(evt);
-            }
-        });
         menuManager.add(menuEmployees);
 
         menuEmployees1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
         menuEmployees1.setText("Kho hàng");
         menuEmployees1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuEmployees1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuEmployees1ActionPerformed(evt);
-            }
-        });
         menuManager.add(menuEmployees1);
 
         menuBar.add(menuManager);
@@ -359,44 +309,24 @@ public class ManagementMode extends javax.swing.JFrame {
         menuRevenue.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, java.awt.event.InputEvent.SHIFT_DOWN_MASK));
         menuRevenue.setText("Xem doanh thu cuối ngày");
         menuRevenue.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuRevenue.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuRevenueActionPerformed(evt);
-            }
-        });
         menuStatistical.add(menuRevenue);
         menuStatistical.add(jSeparator3);
 
         menuIngridiants.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, java.awt.event.InputEvent.SHIFT_DOWN_MASK));
         menuIngridiants.setText("Xem nguyên liệu cuối ngày");
         menuIngridiants.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuIngridiants.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuIngridiantsActionPerformed(evt);
-            }
-        });
         menuStatistical.add(menuIngridiants);
         menuStatistical.add(jSeparator8);
 
         menuClients.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, java.awt.event.InputEvent.SHIFT_DOWN_MASK));
         menuClients.setText("Xem khách hàng cuối ngày");
         menuClients.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuClients.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuClientsActionPerformed(evt);
-            }
-        });
         menuStatistical.add(menuClients);
         menuStatistical.add(jSeparator9);
 
         menuProducts.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.SHIFT_DOWN_MASK));
         menuProducts.setText("Xem món ăn cuối ngày");
         menuProducts.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuProducts.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuProductsActionPerformed(evt);
-            }
-        });
         menuStatistical.add(menuProducts);
 
         menuBar.add(menuStatistical);
@@ -412,51 +342,26 @@ public class ManagementMode extends javax.swing.JFrame {
         menuInstruct.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         menuInstruct.setText("Hướng dẫn sử dụng");
         menuInstruct.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuInstruct.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuInstructActionPerformed(evt);
-            }
-        });
         menuItemHelp.add(menuInstruct);
         menuItemHelp.add(jSeparator5);
 
         menuIntroduce.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
         menuIntroduce.setText("Giới thiệu sản phẩm");
         menuIntroduce.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuIntroduce.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuIntroduceActionPerformed(evt);
-            }
-        });
         menuItemHelp.add(menuIntroduce);
 
         menuBar.add(menuItemHelp);
 
         menuVaiTro.setText("Vai trò");
 
-        menuItemManager.setText("Quản lý");
-        menuItemManager.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemManagerActionPerformed(evt);
-            }
-        });
-        menuVaiTro.add(menuItemManager);
+        menuItemManagement.setText("Quản lý");
+        menuVaiTro.add(menuItemManagement);
 
-        menuItemEmployee.setText("Bán tại bàn");
-        menuItemEmployee.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemEmployeeActionPerformed(evt);
-            }
-        });
-        menuVaiTro.add(menuItemEmployee);
+        menuItemOnSite.setText("Bán tại bàn");
+        menuVaiTro.add(menuItemOnSite);
 
-        menuItemWayHome.setText("Bán mang đi");
-        menuItemWayHome.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemWayHomeActionPerformed(evt);
-            }
-        });
-        menuVaiTro.add(menuItemWayHome);
+        menuItemSalerQuick.setText("Bán mang đi");
+        menuVaiTro.add(menuItemSalerQuick);
 
         menuBar.add(menuVaiTro);
 
@@ -479,87 +384,6 @@ public class ManagementMode extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void menuChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChangeActionPerformed
-
-    }//GEN-LAST:event_menuChangeActionPerformed
-
-    private void menuLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLogoutActionPerformed
-        if (Dialog.confirm(this, "Bạn muốn đăng xuất?")) {
-            Auth.clear();
-            dispose();
-            new Login(this, true).setVisible(true);
-        }
-    }//GEN-LAST:event_menuLogoutActionPerformed
-
-    private void menuEndActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEndActionPerformed
-        if (Dialog.confirm(this, "Bạn muốn kết thúc làm việc?")) {
-            System.exit(0);
-        }
-    }//GEN-LAST:event_menuEndActionPerformed
-
-    private void menuTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTablesActionPerformed
-        displayManagementPanel(new DiningTable(this));
-    }//GEN-LAST:event_menuTablesActionPerformed
-
-    private void menuDishesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuDishesActionPerformed
-        displayManagementPanel(new Product(this));
-    }//GEN-LAST:event_menuDishesActionPerformed
-
-    private void menuChickenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuChickenActionPerformed
-//        displayManagerPanels(new ConfirmProducts(this));
-    }//GEN-LAST:event_menuChickenActionPerformed
-
-    private void menuPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuPayActionPerformed
-//        displayManagerPanels(new Invoices(this));
-    }//GEN-LAST:event_menuPayActionPerformed
-
-    private void menuEmployeesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEmployeesActionPerformed
-        displayManagementPanel(new Employee(this));
-    }//GEN-LAST:event_menuEmployeesActionPerformed
-
-    private void menuRevenueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRevenueActionPerformed
-
-    }//GEN-LAST:event_menuRevenueActionPerformed
-
-    private void menuIngridiantsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuIngridiantsActionPerformed
-
-    }//GEN-LAST:event_menuIngridiantsActionPerformed
-
-    private void menuClientsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuClientsActionPerformed
-
-    }//GEN-LAST:event_menuClientsActionPerformed
-
-    private void menuProductsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuProductsActionPerformed
-
-    }//GEN-LAST:event_menuProductsActionPerformed
-
-    private void menuInstructActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuInstructActionPerformed
-    }//GEN-LAST:event_menuInstructActionPerformed
-
-    private void menuIntroduceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuIntroduceActionPerformed
-
-    }//GEN-LAST:event_menuIntroduceActionPerformed
-
-    private void labelLogoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelLogoMouseClicked
-//        displayPanels(new Overview(this));
-    }//GEN-LAST:event_labelLogoMouseClicked
-
-    private void menuItemManagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemManagerActionPerformed
-        openFullScreenWindow(new ManagementMode());
-    }//GEN-LAST:event_menuItemManagerActionPerformed
-
-    private void menuItemEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemEmployeeActionPerformed
-        openFullScreenWindow(new OnSiteMode());
-    }//GEN-LAST:event_menuItemEmployeeActionPerformed
-
-    private void menuItemWayHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemWayHomeActionPerformed
-        openFullScreenWindow(new QuickOrderMode());
-    }//GEN-LAST:event_menuItemWayHomeActionPerformed
-
-    private void menuEmployees1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEmployees1ActionPerformed
-        displayManagementPanel(new Goods(this));
-    }//GEN-LAST:event_menuEmployees1ActionPerformed
 
     public static void main(String args[]) {
 
@@ -629,10 +453,10 @@ public class ManagementMode extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuIngridiants;
     private javax.swing.JMenuItem menuInstruct;
     private javax.swing.JMenuItem menuIntroduce;
-    private javax.swing.JMenuItem menuItemEmployee;
     private javax.swing.JMenu menuItemHelp;
-    private javax.swing.JMenuItem menuItemManager;
-    private javax.swing.JMenuItem menuItemWayHome;
+    private javax.swing.JMenuItem menuItemManagement;
+    private javax.swing.JMenuItem menuItemOnSite;
+    private javax.swing.JMenuItem menuItemSalerQuick;
     private javax.swing.JMenuItem menuLogout;
     private javax.swing.JMenu menuManager;
     private javax.swing.JMenuItem menuPay;
@@ -650,41 +474,75 @@ public class ManagementMode extends javax.swing.JFrame {
 
     void init() {
         // Common
-//        Common.initClock(labelHouse);
         Common.customizeScrollBar(scrollPaneMain);
 
-        // Create dropdown menu when hover button
-        String[] menuItemsGoods = {"Danh mục", "Kiểm kho"};
-        setupMenuButton(btnWareHouse, menuItemsGoods, this::menuItemGoodsSelected);
+        // Create dropdown menu when hover button 
+        addPopupMenuButtonList();
 
-        String[] menuItemsReceipt = {"Hóa đơn", "Nhập hàng"};
-        setupMenuButton(btnReceipt, menuItemsReceipt, this::menuItemReceiptSelected);
-
-        String[] menuItemsPartner = {"Khách hàng", "Nhà cung cấp"};
-        setupMenuButton(btnSuppleir, menuItemsPartner, this::menuItemPartnerSelected);
-
-        String[] menuItemsEmployee = {"Nhân viên", "Lịch làm việc", "Chấm công", "Bảng tính lương"};
-        setupMenuButton(btnEmployee, menuItemsEmployee, this::menuItemEmployeeSelected);
-
-        String[] menuItemsReport = {"Cuối ngày", "Bán hàng", "Hàng hóa",
-            "Khách hàng", "Nhà cung cấp", "Nhân viên", "Tài chính"};
-        setupMenuButton(btnReport, menuItemsReport, this::menuItemReportSelected);
-        
         // handle click button header
-        btnOverview.addActionListener(e -> displayManagementPanel(new Overview(this)));
-        btnTable.addActionListener(e -> displayManagementPanel(new DiningTable(this)));
-        btnProduct.addActionListener(e -> displayManagementPanel(new Product(this)));
-        btnWareHouse.addActionListener(e -> displayManagementPanel(new Goods(this)));
-        btnReceipt.addActionListener(e -> displayManagementPanel(new Invoice(this)));
-        btnSuppleir.addActionListener(e -> displayManagementPanel(new Supplier(this)));
-        btnEmployee.addActionListener(e -> displayManagementPanel(new Employee(this)));
-        btnReport.addActionListener(e -> displayManagementPanel(new Overview(this)));
+        handleClickHeaderButtonList();
+
+        // handle click menu item
+        handleClickMenuAndMenuItem();
 
         // Attach event hover button chose. Fisrt button is btnOverview
         setupHeaderButtons(btnOverview);
 
         // Display UI main
-        displayManagementPanel(new Overview(this));
+        displayManagementPanel(new OverviewFrm(this));
+    }
+
+    // method hadle event click buttons title
+    void handleClickHeaderButtonList() {
+        btnOverview.addActionListener(e -> displayManagementPanel(new OverviewFrm(this)));
+        btnTable.addActionListener(e -> displayManagementPanel(new DiningTableFrm(this)));
+        btnProduct.addActionListener(e -> displayManagementPanel(new ProductFrm(this)));
+        btnWareHouse.addActionListener(e -> displayManagementPanel(new GoodsFrm(this)));
+        btnReceipt.addActionListener(e -> displayManagementPanel(new InvoiceFrm(this)));
+        btnSuppleir.addActionListener(e -> displayManagementPanel(new SupplierFrm(this)));
+        btnEmployee.addActionListener(e -> displayManagementPanel(new EmployeeFrm(this)));
+        btnReport.addActionListener(e -> displayManagementPanel(new OverviewFrm(this)));
+    }
+
+    // method handle event click menu and menu item
+    void handleClickMenuAndMenuItem() {
+        menuItemOnSite.addActionListener(e -> openFullScreenWindow(new OnSiteMode()));
+        menuItemSalerQuick.addActionListener(e -> openFullScreenWindow(new QuickOrderMode()));
+        menuItemManagement.addActionListener(e -> openFullScreenWindow(new ManagementMode()));
+        menuEmployees1.addActionListener(e -> displayManagementPanel(new ProductFrm(this)));
+        menuTables.addActionListener(e -> displayManagementPanel(new ProductFrm(this)));
+        menuDishes.addActionListener(e -> displayManagementPanel(new ProductFrm(this)));
+        menuEnd.addActionListener(e -> {
+            if (Dialog.confirm(this, "Bạn muốn kết thúc làm việc?")) {
+                System.exit(0);
+            }
+        });
+        menuLogout.addActionListener(e -> {
+            if (Dialog.confirm(this, "Bạn muốn đăng xuất?")) {
+                Auth.clear();
+                dispose();
+                new Login(this, true).setVisible(true);
+            }
+        });
+    }
+
+    // method add menu when hover button
+    void addPopupMenuButtonList() {
+        String[] menuItemsGoods = {"Danh mục", "Kiểm kho"};
+        addPopupMenuButton(btnWareHouse, menuItemsGoods, this::menuItemGoodsSelected);
+
+        String[] menuItemsReceipt = {"Hóa đơn", "Nhập hàng"};
+        addPopupMenuButton(btnReceipt, menuItemsReceipt, this::menuItemReceiptSelected);
+
+        String[] menuItemsPartner = {"Khách hàng", "Nhà cung cấp"};
+        addPopupMenuButton(btnSuppleir, menuItemsPartner, this::menuItemPartnerSelected);
+
+        String[] menuItemsEmployee = {"Nhân viên", "Lịch làm việc", "Chấm công", "Bảng tính lương"};
+        addPopupMenuButton(btnEmployee, menuItemsEmployee, this::menuItemEmployeeSelected);
+
+        String[] menuItemsReport = {"Cuối ngày", "Bán hàng", "Hàng hóa",
+            "Khách hàng", "Nhà cung cấp", "Nhân viên", "Tài chính"};
+        addPopupMenuButton(btnReport, menuItemsReport, this::menuItemReportSelected);
     }
 
     // <--- Callback function to handle menu item selection
@@ -693,7 +551,7 @@ public class ManagementMode extends javax.swing.JFrame {
             case 0:
             case 1:
                 setupHeaderButtons(btnWareHouse);
-                displayManagementPanel(new Goods(this));
+                displayManagementPanel(new GoodsFrm(this));
                 break;
             default:
                 break;
@@ -704,11 +562,11 @@ public class ManagementMode extends javax.swing.JFrame {
         switch (index) {
             case 0:
                 setupHeaderButtons(btnReceipt);
-                displayManagementPanel(new Invoice(this));
+                displayManagementPanel(new InvoiceFrm(this));
                 break;
             case 1:
                 setupHeaderButtons(btnReceipt);
-                displayManagementPanel(new Receipt(this));
+                displayManagementPanel(new ReceiptFrm(this));
                 break;
             default:
                 break;
@@ -720,7 +578,7 @@ public class ManagementMode extends javax.swing.JFrame {
             case 0:
             case 1:
                 setupHeaderButtons(btnSuppleir);
-                displayManagementPanel(new Supplier(this));
+                displayManagementPanel(new SupplierFrm(this));
                 break;
             default:
                 break;
@@ -734,7 +592,7 @@ public class ManagementMode extends javax.swing.JFrame {
             case 2:
             case 3:
                 setupHeaderButtons(btnEmployee);
-                displayManagementPanel(new Employee(this));
+                displayManagementPanel(new EmployeeFrm(this));
                 break;
             default:
                 break;
@@ -751,7 +609,7 @@ public class ManagementMode extends javax.swing.JFrame {
             case 5:
             case 6:
                 setupHeaderButtons(btnReport);
-                displayManagementPanel(new Employee(this));
+                displayManagementPanel(new EmployeeFrm(this));
                 break;
             default:
                 break;

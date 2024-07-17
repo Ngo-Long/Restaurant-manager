@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.ArrayList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import restaurant.utils.JDBC;
-import restaurant.entity.ProductEntity;
+import restaurant.utils.XJdbc;
+import restaurant.entity.Product;
 
-public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
+public class ProductDAO extends RestaurantDAO<Product, String> {
 
     final String INSERT_SQL = "INSERT INTO Product (ProductID, ProductName, CostPrice, Price, Unit, ImageURL, "
             + "Category, KitchenArea, Description, Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -31,8 +31,8 @@ public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
     final String CHECK_DUPLICATED_NAME_SQL = "SELECT COUNT(*) FROM Product WHERE ProductName = ?";
 
     @Override
-    public void insert(ProductEntity model) {
-        JDBC.executeUpdate(INSERT_SQL,
+    public void insert(Product model) {
+        XJdbc.executeUpdate(INSERT_SQL,
                 model.getProductID(),
                 model.getProductName(),
                 model.getCostPrice(),
@@ -47,8 +47,8 @@ public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
     }
 
     @Override
-    public void update(ProductEntity model) {
-        JDBC.executeUpdate(UPDATE_SQL,
+    public void update(Product model) {
+        XJdbc.executeUpdate(UPDATE_SQL,
                 model.getProductName(),
                 model.getCostPrice(),
                 model.getPrice(),
@@ -64,26 +64,26 @@ public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
 
     @Override
     public void delete(String id) {
-        JDBC.executeUpdate(DELETE_SQL, id);
+        XJdbc.executeUpdate(DELETE_SQL, id);
     }
 
     @Override
-    public ProductEntity getByID(String id) {
-        List<ProductEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
+    public Product getByID(String id) {
+        List<Product> list = fetchByQuery(SELECT_BY_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
     }
 
     @Override
-    public List<ProductEntity> getAll() {
+    public List<Product> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
     }
 
-    public List<ProductEntity> getAllByCategory(String category) {
+    public List<Product> getAllByCategory(String category) {
         return fetchByQuery(SELECT_ALL_BY_CATEGORY_SQL, category);
     }
 
     public boolean isDuplicatedId(String id) {
-        try (ResultSet rs = JDBC.executeQuery(CHECK_DUPLICATED_ID_SQL, id)) {
+        try (ResultSet rs = XJdbc.executeQuery(CHECK_DUPLICATED_ID_SQL, id)) {
             if (rs.next()) {
                 int count = rs.getInt(1);
                 return count > 0;
@@ -96,7 +96,7 @@ public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
     }
 
     public boolean isDuplicateName(String name) {
-        try (ResultSet rs = JDBC.executeQuery(CHECK_DUPLICATED_NAME_SQL, name)) {
+        try (ResultSet rs = XJdbc.executeQuery(CHECK_DUPLICATED_NAME_SQL, name)) {
             if (rs.next()) {
                 int count = rs.getInt(1);
                 return count > 0;
@@ -108,14 +108,14 @@ public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
     }
 
     public static String getIdDishFromName(String dishName) {
-        try (ResultSet resultSet = JDBC.executeQuery(SELECT_ID_BY_NAME_SQL, dishName)) {
+        try (ResultSet resultSet = XJdbc.executeQuery(SELECT_ID_BY_NAME_SQL, dishName)) {
             return resultSet.next() ? resultSet.getString("ProductID") : null;
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    public List<ProductEntity> searchByCriteria(String name, String category, String status) {
+    public List<Product> searchByCriteria(String name, String category, String status) {
         String nameTerm = "%" + name + "%";
         String categoryTerm = "%" + category + "%";
         String statusTerm = "%" + status + "%";
@@ -124,12 +124,12 @@ public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
     }
 
     @Override
-    protected List<ProductEntity> fetchByQuery(String sql, Object... args) {
-        List<ProductEntity> list = new ArrayList<>();
+    protected List<Product> fetchByQuery(String sql, Object... args) {
+        List<Product> list = new ArrayList<>();
 
-        try (ResultSet rs = JDBC.executeQuery(sql, args)) {
+        try (ResultSet rs = XJdbc.executeQuery(sql, args)) {
             while (rs.next()) {
-                ProductEntity model = readFromResultSet(rs);
+                Product model = readFromResultSet(rs);
                 list.add(model);
             }
         } catch (SQLException ex) {
@@ -139,8 +139,8 @@ public class ProductDAO extends RestaurantDAO<ProductEntity, String> {
         return list;
     }
 
-    private ProductEntity readFromResultSet(ResultSet rs) throws SQLException {
-        ProductEntity model = new ProductEntity();
+    private Product readFromResultSet(ResultSet rs) throws SQLException {
+        Product model = new Product();
         model.setProductID(rs.getString("ProductID"));
         model.setProductName(rs.getString("ProductName"));
         model.setCostPrice(rs.getLong("CostPrice"));

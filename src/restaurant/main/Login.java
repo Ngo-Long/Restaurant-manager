@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 import restaurant.dao.AccountDAO;
 import restaurant.dao.EmployeeDAO;
-import restaurant.entity.EmployeeEntity;
+import restaurant.entity.Employee;
 import restaurant.utils.Auth;
 import restaurant.utils.Dialog;
 
@@ -298,7 +298,7 @@ public final class Login extends javax.swing.JFrame {
         }
 
         String employeeID = account.findEmployeeIDByAccount(username, password);
-        EmployeeEntity employee = new EmployeeDAO().getByID(employeeID);
+        Employee employee = new EmployeeDAO().getByID(employeeID);
         if (employee == null) {
             Dialog.alert(this, "Không tìm thấy thông tin nhân viên!");
             return;

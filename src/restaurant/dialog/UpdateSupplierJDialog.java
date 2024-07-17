@@ -5,8 +5,8 @@ import javax.swing.JTextField;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.dao.SupplierDAO;
-import restaurant.utils.TextFieldUtils;
-import restaurant.entity.SupplierEntity;
+import restaurant.utils.XTextField;
+import restaurant.entity.Supplier;
 
 public final class UpdateSupplierJDialog extends javax.swing.JDialog {
 
@@ -293,12 +293,12 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
         // Setup UI
         textName.requestFocus();
         Common.createButtonGroup(radioOn, radioOff);
-        TextFieldUtils.addPlaceholder(textID, PLACEHOLDER_ID);
+        XTextField.addPlaceholder(textID, PLACEHOLDER_ID);
 
         // Setup text fields 
         JTextField[] textFields = {textID, textName, textPhone, textEmail, textPhone, textAddress};
         for (JTextField textField : textFields) {
-            TextFieldUtils.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
+            XTextField.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
         }
 
         // Click button CRUD  
@@ -327,8 +327,8 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
         return true;
     }
 
-    SupplierEntity getModel() {
-        String id = TextFieldUtils.getRealText(textID, PLACEHOLDER_ID);
+    Supplier getModel() {
+        String id = XTextField.getRealText(textID, PLACEHOLDER_ID);
         String name = textName.getText();
         String phoneText = textPhone.getText();
 
@@ -337,7 +337,7 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
         }
 
         try {
-            SupplierEntity model = new SupplierEntity();
+            Supplier model = new Supplier();
             model.setSupplierID(id);
             model.setSupplierName(name);
             model.setPhone(phoneText);
@@ -352,7 +352,7 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
         }
     }
 
-    public void setModel(SupplierEntity data) {
+    public void setModel(Supplier data) {
         if (data == null) {
             return;
         }
@@ -370,7 +370,7 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
     }
 
     void insert() {
-        SupplierEntity model = getModel();
+        Supplier model = getModel();
         if (model == null) {
             return;
         }
@@ -391,7 +391,7 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
     }
 
     void update() {
-        SupplierEntity model = getModel();
+        Supplier model = getModel();
         if (model == null) {
             return;
         }

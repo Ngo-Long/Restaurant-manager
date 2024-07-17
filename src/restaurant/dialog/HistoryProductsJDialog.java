@@ -24,11 +24,11 @@ import restaurant.table.TableCustom;
 import restaurant.dao.ProductDAO;
 import restaurant.dao.DiningTableDAO;
 import restaurant.dao.OrderDetailDAO;
-import restaurant.entity.ProductEntity;
-import restaurant.entity.DiningTableEntity;
-import restaurant.entity.OrderDetailEntity;
-import restaurant.utils.ComboBoxUtils;
-import restaurant.utils.TextFieldUtils;
+import restaurant.entity.Product;
+import restaurant.entity.DiningTable;
+import restaurant.entity.OrderDetail;
+import restaurant.utils.XComboBox;
+import restaurant.utils.XTextField;
 
 public final class HistoryProductsJDialog extends javax.swing.JDialog {
 
@@ -83,12 +83,6 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         setTitle("Lịch sử chế biến ");
         setBackground(new java.awt.Color(51, 102, 255));
 
-        textSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textSearchActionPerformed(evt);
-            }
-        });
-
         textStartDate.setBackground(new java.awt.Color(255, 255, 255));
         textStartDate.setToolTipText("Ngày");
         textStartDate.setDateFormatString("dd/MM/yyyy");
@@ -110,11 +104,6 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         btnSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/searchWhile.png"))); // NOI18N
         btnSearch.setToolTipText("Tìm kiếm");
         btnSearch.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSearchActionPerformed(evt);
-            }
-        });
 
         btnReset.setBackground(new java.awt.Color(0, 153, 153));
         btnReset.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -122,11 +111,6 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         btnReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/refreshWhile.png"))); // NOI18N
         btnReset.setToolTipText("Reset trang (Ctrl + F5)");
         btnReset.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnReset.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnResetActionPerformed(evt);
-            }
-        });
 
         tableOrderDetail.setFont(new java.awt.Font("SansSerif", 0, 13)); // NOI18N
         tableOrderDetail.setForeground(new java.awt.Color(51, 51, 51));
@@ -205,19 +189,6 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void textSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSearchActionPerformed
-
-    }//GEN-LAST:event_textSearchActionPerformed
-
-    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-
-    }//GEN-LAST:event_btnSearchActionPerformed
-
-    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        dispose();
-        new HistoryProductsJDialog(null, true).setVisible(true);
-    }//GEN-LAST:event_btnResetActionPerformed
-
     public static void main(String args[]) {
 
         try {
@@ -261,7 +232,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     final String PLACEHOLDER = "Tìm theo tên món";
-    List<OrderDetailEntity> dataOrderDetails;
+    List<OrderDetail> dataOrderDetails;
     ScheduledFuture<?> scheduledFuture;
     ExecutorService executorService = Executors.newFixedThreadPool(3);
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
@@ -276,9 +247,9 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         Common.customizeTable(tableOrderDetail, new int[]{}, 40);
 
         // Set text field
-        TextFieldUtils.addPlaceholder(textSearch, PLACEHOLDER);
-        ComboBoxUtils.setComboboxStyle(cbStatus);
-        ComboBoxUtils.setComboboxStyle(cbKitchen);
+        XTextField.addPlaceholder(textSearch, PLACEHOLDER);
+        XComboBox.setComboboxStyle(cbStatus);
+        XComboBox.setComboboxStyle(cbKitchen);
 
         // Set today on JDateChooser
         textEndDate.setDate(new Date());
@@ -287,23 +258,36 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         // <--- Setup main --->
         // Set combobox
         addDataToComboboxs(cbStatus, cbKitchen);
-        ColumnTable.addDetailButtonColumn(tableOrderDetail, 6, this::handleOrderDetailClickButton);
+
+        // add button column to table
+        final int COULMN_CELL = 6;
+        ColumnTable.addButtonColumn(
+                "Chi tiết",
+                new Color(0, 153, 153),
+                COULMN_CELL,
+                tableOrderDetail,
+                this::handleClickBtnColumn
+        );
+
+        // Handle click button
+        btnSearch.addActionListener(e -> this.loadData());
+        btnReset.addActionListener(e -> {
+            dispose();
+            new HistoryProductsJDialog(null, true).setVisible(true);
+        });
 
         // Load data
-        loadDataByCriteria();
-        btnSearch.addActionListener((java.awt.event.ActionEvent evt1) -> {
-            loadDataByCriteria();
-        });
+        this.loadData();
     }
 
-    void handleOrderDetailClickButton(int row) {
+    void handleClickBtnColumn(int row) {
         if (row == -1) {
             return;
         }
 
         // Get data detail
         int detailID = (int) tableOrderDetail.getValueAt(row, 0);
-        OrderDetailEntity dataDetail = new OrderDetailDAO().getByID(detailID);
+        OrderDetail dataDetail = new OrderDetailDAO().getByID(detailID);
 
         // Open dialog 
         HistoryProductDetailJDialog dialog = new HistoryProductDetailJDialog(null, true);
@@ -313,8 +297,8 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
 
     void addDataToComboboxs(JComboBox cbStatus, JComboBox cbKitchen) {
         // Get all list
-        List<OrderDetailEntity> dataDetails = new OrderDetailDAO().getAll();
-        List<ProductEntity> dataProducts = new ProductDAO().getAll();
+        List<OrderDetail> dataDetails = new OrderDetailDAO().getAll();
+        List<Product> dataProducts = new ProductDAO().getAll();
 
         // Create a modal 
         DefaultComboBoxModel<String> modalStatus = new DefaultComboBoxModel<>();
@@ -325,7 +309,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
 
         // Set only status
         Set<String> setStatus = new HashSet<>();
-        for (OrderDetailEntity dataItem : dataDetails) {
+        for (OrderDetail dataItem : dataDetails) {
             if (!"Chưa xử lý".equals(dataItem.getProductStatus())) {
                 setStatus.add(dataItem.getProductStatus());
             }
@@ -333,9 +317,9 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
 
         // Set only kitchen
         Set<String> setKitchen = new HashSet<>();
-        for (ProductEntity dataItem : dataProducts) {
+        for (Product dataItem : dataProducts) {
             String productID = dataItem.getProductID();
-            ProductEntity product = new ProductDAO().getByID(productID);
+            Product product = new ProductDAO().getByID(productID);
 
             setKitchen.add(product.getKitchenArea());
         }
@@ -356,7 +340,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         cbKitchen.setModel(modalKitchen);
     }
 
-    void loadDataByCriteria() {
+    void loadData() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
@@ -364,7 +348,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         scheduledFuture = scheduledExecutorService.schedule(() -> {
             SwingUtilities.invokeLater(() -> {
                 // Get search text
-                String keyword = TextFieldUtils.getRealText(textSearch, PLACEHOLDER);
+                String keyword = XTextField.getRealText(textSearch, PLACEHOLDER);
 
                 // Get category
                 String selectedStatus = (String) cbStatus.getSelectedItem();
@@ -389,7 +373,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         }, 200, TimeUnit.MILLISECONDS);
     }
 
-    void fillTable(List<OrderDetailEntity> dataList) {
+    void fillTable(List<OrderDetail> dataList) {
         try {
             System.out.println("Đang load dữ liệu lịch sử chế biến từ cơ sở dữ liệu...");
 
@@ -398,12 +382,12 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
             model.setRowCount(0);
 
             // Sắp xếp theo thời gian kết thúc từ gần nhất
-            dataOrderDetails.sort(Comparator.comparing(OrderDetailEntity::getEndTime).reversed());
+            dataOrderDetails.sort(Comparator.comparing(OrderDetail::getEndTime).reversed());
 
             // Load data into the table 
-            for (OrderDetailEntity dataItem : dataList) {
+            for (OrderDetail dataItem : dataList) {
                 // Get info product
-                ProductEntity productEntity = new ProductDAO().getByID(dataItem.getProductID());
+                Product productEntity = new ProductDAO().getByID(dataItem.getProductID());
                 String productName = productEntity.getProductName();
                 String productDesc = dataItem.getProductDesc();
                 productDesc = (productDesc == null || productDesc.isEmpty()) ? "" : " ( " + productDesc + " )";
@@ -411,7 +395,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
                 String productDateEnd = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(dataItem.getEndTime());
 
                 // Get table by id table
-                DiningTableEntity tableDining = new DiningTableDAO().getByOrderID(dataItem.getOrderID());
+                DiningTable tableDining = new DiningTableDAO().getByOrderID(dataItem.getOrderID());
                 String tableName = tableDining != null ? tableDining.getName() : "Mang về";
 
                 model.addRow(new Object[]{

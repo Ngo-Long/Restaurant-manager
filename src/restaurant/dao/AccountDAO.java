@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.ArrayList;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import restaurant.utils.JDBC;
-import restaurant.entity.AccountEntity;
+import restaurant.utils.XJdbc;
+import restaurant.entity.Account;
 
-public class AccountDAO extends RestaurantDAO<AccountEntity, String> {
+public class AccountDAO extends RestaurantDAO<Account, String> {
 
     final String INSERT_SQL = "INSERT INTO Account (AccountID, EmployeeID, Username, Password, CreatedDate) VALUES (?, ?, ?, ?, ?)";
     final String UPDATE_SQL = "UPDATE Account SET EmployeeID=?, Username=?, Password=?, CreatedDate=? WHERE AccountID=?";
@@ -16,8 +16,8 @@ public class AccountDAO extends RestaurantDAO<AccountEntity, String> {
     final String SELECT_BY_ID_SQL = "SELECT * FROM Account WHERE AccountID=?";
 
     @Override
-    public void insert(AccountEntity entity) {
-        JDBC.executeUpdate(INSERT_SQL,
+    public void insert(Account entity) {
+        XJdbc.executeUpdate(INSERT_SQL,
                 entity.getAccountID(),
                 entity.getEmployeeID(),
                 entity.getUsername(),
@@ -27,8 +27,8 @@ public class AccountDAO extends RestaurantDAO<AccountEntity, String> {
     }
 
     @Override
-    public void update(AccountEntity entity) {
-        JDBC.executeUpdate(UPDATE_SQL,
+    public void update(Account entity) {
+        XJdbc.executeUpdate(UPDATE_SQL,
                 entity.getEmployeeID(),
                 entity.getUsername(),
                 entity.getPassword(),
@@ -39,23 +39,23 @@ public class AccountDAO extends RestaurantDAO<AccountEntity, String> {
 
     @Override
     public void delete(String id) {
-        JDBC.executeUpdate(DELETE_SQL, id);
+        XJdbc.executeUpdate(DELETE_SQL, id);
     }
 
     @Override
-    public AccountEntity getByID(String id) {
-        List<AccountEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
+    public Account getByID(String id) {
+        List<Account> list = fetchByQuery(SELECT_BY_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
     }
 
     @Override
-    public List<AccountEntity> getAll() {
+    public List<Account> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
     }
 
     public boolean checkLogin(String username, String password) {
         String sql = "SELECT COUNT(*) FROM Account WHERE Username = ? AND Password = ?";
-        try (ResultSet rs = JDBC.executeQuery(sql, username, password)) {
+        try (ResultSet rs = XJdbc.executeQuery(sql, username, password)) {
             if (rs.next()) {
                 return rs.getInt(1) > 0;
             }
@@ -67,7 +67,7 @@ public class AccountDAO extends RestaurantDAO<AccountEntity, String> {
 
     public String findEmployeeIDByAccount(String username, String password) {
         String sql = "SELECT EmployeeID FROM Account WHERE Username = ? AND Password = ?";
-        try (ResultSet rs = JDBC.executeQuery(sql, username, password)) {
+        try (ResultSet rs = XJdbc.executeQuery(sql, username, password)) {
             if (rs.next()) {
                 return rs.getString("EmployeeID");
             }
@@ -78,12 +78,12 @@ public class AccountDAO extends RestaurantDAO<AccountEntity, String> {
     }
 
     @Override
-    protected List<AccountEntity> fetchByQuery(String sql, Object... args) {
-        List<AccountEntity> list = new ArrayList<>();
+    protected List<Account> fetchByQuery(String sql, Object... args) {
+        List<Account> list = new ArrayList<>();
 
-        try (ResultSet rs = JDBC.executeQuery(sql, args)) {
+        try (ResultSet rs = XJdbc.executeQuery(sql, args)) {
             while (rs.next()) {
-                AccountEntity model = readFromResultSet(rs);
+                Account model = readFromResultSet(rs);
                 list.add(model);
             }
         } catch (SQLException ex) {
@@ -93,8 +93,8 @@ public class AccountDAO extends RestaurantDAO<AccountEntity, String> {
         return list;
     }
 
-    private AccountEntity readFromResultSet(ResultSet rs) throws SQLException {
-        AccountEntity model = new AccountEntity();
+    private Account readFromResultSet(ResultSet rs) throws SQLException {
+        Account model = new Account();
         model.setAccountID(rs.getString("AccountID"));
         model.setEmployeeID(rs.getString("EmployeeID"));
         model.setUsername(rs.getString("Username"));

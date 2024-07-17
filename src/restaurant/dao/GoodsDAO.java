@@ -1,13 +1,13 @@
 package restaurant.dao;
 
-import restaurant.utils.JDBC;
-import restaurant.entity.GoodsEntity;
+import restaurant.utils.XJdbc;
+import restaurant.entity.Goods;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.ArrayList;
 
-public class GoodsDAO extends RestaurantDAO<GoodsEntity, String> {
+public class GoodsDAO extends RestaurantDAO<Goods, String> {
 
     final String INSERT_SQL = "INSERT INTO Goods (GoodsID, GoodsName, UnitPrice, Unit, "
             + "ImageURL, Category, InitialQuantity, MinimumQuantity, Status, Note, Activity) "
@@ -15,9 +15,12 @@ public class GoodsDAO extends RestaurantDAO<GoodsEntity, String> {
     final String UPDATE_SQL = "UPDATE Goods SET GoodsName=?, UnitPrice=?, Unit=?, ImageURL=?, Category=?, "
             + "InitialQuantity=?, MinimumQuantity=?, Status=?, Note=?, Activity=? WHERE GoodsID=?";
     final String DELETE_SQL = "DELETE FROM Goods WHERE GoodsID =?";
-    final String IS_EXISTS_SQL = "SELECT COUNT(*) FROM Goods WHERE GoodsID = ?";
     final String SELECT_ALL_SQL = "SELECT * FROM Goods";
     final String SELECT_BY_ID_SQL = "SELECT * FROM Goods WHERE GoodsID=?";
+
+    final String IS_EXISTS_SQL = "SELECT COUNT(*) FROM Goods WHERE GoodsID = ?";
+    final String NAME_EXISTS_SQL = "SELECT COUNT(*) FROM Product WHERE ProductName = ?";
+
     final String SELECT_BY_CRITERIA = "SELECT TOP (1000) [GoodsID], [GoodsName], [UnitPrice], [Unit], "
             + "[ImageURL], [Category], [InitialQuantity], [MinimumQuantity], [Status], [Note], [Activity] "
             + "FROM [RestaurantManager].[dbo].[Goods] "
@@ -25,8 +28,8 @@ public class GoodsDAO extends RestaurantDAO<GoodsEntity, String> {
             + "AND [Category] LIKE ? AND [Status] LIKE ?";
 
     @Override
-    public void insert(GoodsEntity entity) {
-        JDBC.executeUpdate(INSERT_SQL,
+    public void insert(Goods entity) {
+        XJdbc.executeUpdate(INSERT_SQL,
                 entity.getGoodsID(),
                 entity.getGoodsName(),
                 entity.getUnitPrice(),
@@ -42,8 +45,8 @@ public class GoodsDAO extends RestaurantDAO<GoodsEntity, String> {
     }
 
     @Override
-    public void update(GoodsEntity entity) {
-        JDBC.executeUpdate(UPDATE_SQL,
+    public void update(Goods entity) {
+        XJdbc.executeUpdate(UPDATE_SQL,
                 entity.getGoodsName(),
                 entity.getUnitPrice(),
                 entity.getUnit(),
@@ -60,21 +63,21 @@ public class GoodsDAO extends RestaurantDAO<GoodsEntity, String> {
 
     @Override
     public void delete(String id) {
-        JDBC.executeUpdate(DELETE_SQL, id);
+        XJdbc.executeUpdate(DELETE_SQL, id);
     }
 
     @Override
-    public GoodsEntity getByID(String id) {
-        List<GoodsEntity> list = fetchByQuery(SELECT_BY_ID_SQL, id);
+    public Goods getByID(String id) {
+        List<Goods> list = fetchByQuery(SELECT_BY_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
     }
 
     @Override
-    public List<GoodsEntity> getAll() {
+    public List<Goods> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
     }
 
-    public List<GoodsEntity> searchByCriteria(String id, String name, String category, String status) {
+    public List<Goods> searchByCriteria(String id, String name, String category, String status) {
         String idTerm = "%" + id + "%";
         String nameTerm = "%" + name + "%";
         String categoryTerm = "%" + category + "%";
@@ -84,7 +87,7 @@ public class GoodsDAO extends RestaurantDAO<GoodsEntity, String> {
     }
 
     public boolean isIdExists(String id) {
-        try (ResultSet rs = JDBC.executeQuery(IS_EXISTS_SQL, id)) {
+        try (ResultSet rs = XJdbc.executeQuery(IS_EXISTS_SQL, id)) {
             if (rs.next()) {
                 return rs.getInt(1) > 0;
             }
@@ -94,13 +97,25 @@ public class GoodsDAO extends RestaurantDAO<GoodsEntity, String> {
         return false;
     }
 
-    @Override
-    protected List<GoodsEntity> fetchByQuery(String sql, Object... args) {
-        List<GoodsEntity> list = new ArrayList<>();
+    public boolean isNameExists(String name) {
+        try (ResultSet rs = XJdbc.executeQuery(NAME_EXISTS_SQL, name)) {
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                return count > 0;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
 
-        try (ResultSet rs = JDBC.executeQuery(sql, args)) {
+    @Override
+    protected List<Goods> fetchByQuery(String sql, Object... args) {
+        List<Goods> list = new ArrayList<>();
+
+        try (ResultSet rs = XJdbc.executeQuery(sql, args)) {
             while (rs.next()) {
-                GoodsEntity model = readFromResultSet(rs);
+                Goods model = readFromResultSet(rs);
                 list.add(model);
             }
         } catch (SQLException ex) {
@@ -110,8 +125,8 @@ public class GoodsDAO extends RestaurantDAO<GoodsEntity, String> {
         return list;
     }
 
-    private GoodsEntity readFromResultSet(ResultSet rs) throws SQLException {
-        GoodsEntity model = new GoodsEntity();
+    private Goods readFromResultSet(ResultSet rs) throws SQLException {
+        Goods model = new Goods();
         model.setGoodsID(rs.getString("GoodsID"));
         model.setGoodsName(rs.getString("GoodsName"));
         model.setUnitPrice(rs.getLong("UnitPrice"));

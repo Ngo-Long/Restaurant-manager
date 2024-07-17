@@ -4,11 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import restaurant.entity.OrderEntity;
+import restaurant.entity.Order;
 import restaurant.utils.Dialog;
-import restaurant.utils.JDBC;
+import restaurant.utils.XJdbc;
 
-public class OrderDAO extends RestaurantDAO<OrderEntity, Integer> {
+public class OrderDAO extends RestaurantDAO<Order, Integer> {
 
     final String INSERT_SQL = "INSERT INTO [Order] (InvoiceID, Status, Method, CreatedDate)"
             + " VALUES (?, ?, ?, GETDATE())";
@@ -23,8 +23,8 @@ public class OrderDAO extends RestaurantDAO<OrderEntity, Integer> {
     final String SELECT_LATEST_ID_SQL = "SELECT TOP 1 OrderID FROM [Order] ORDER BY OrderID DESC";
 
     @Override
-    public void insert(OrderEntity model) {
-        JDBC.executeUpdate(INSERT_SQL,
+    public void insert(Order model) {
+        XJdbc.executeUpdate(INSERT_SQL,
                 model.getInvoiceID(),
                 model.getStatus(),
                 model.getMethod()
@@ -32,10 +32,10 @@ public class OrderDAO extends RestaurantDAO<OrderEntity, Integer> {
     }
 
     public int insert(int invoiceId, String method, String status) {
-        JDBC.executeUpdate(INSERT_SQL, invoiceId, method, status);
+        XJdbc.executeUpdate(INSERT_SQL, invoiceId, method, status);
 
         int latestID = 0;
-        try (ResultSet rs = JDBC.executeQuery(SELECT_LATEST_ID_SQL)) {
+        try (ResultSet rs = XJdbc.executeQuery(SELECT_LATEST_ID_SQL)) {
             if (rs.next()) {
                 latestID = rs.getInt("OrderID");
             }
@@ -48,8 +48,8 @@ public class OrderDAO extends RestaurantDAO<OrderEntity, Integer> {
     }
 
     @Override
-    public void update(OrderEntity model) {
-        JDBC.executeUpdate(UPDATE_SQL,
+    public void update(Order model) {
+        XJdbc.executeUpdate(UPDATE_SQL,
                 model.getNote(),
                 model.getMethod(),
                 model.getTotal(),
@@ -60,36 +60,36 @@ public class OrderDAO extends RestaurantDAO<OrderEntity, Integer> {
 
     @Override
     public void delete(Integer id) {
-        JDBC.executeUpdate(DELETE_SQL, id);
+        XJdbc.executeUpdate(DELETE_SQL, id);
     }
 
     @Override
-    public List<OrderEntity> getAll() {
+    public List<Order> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
     }
 
-    public List<OrderEntity> getByInvoiceID(Integer id) {
+    public List<Order> getByInvoiceID(Integer id) {
         return fetchByQuery(SELECT_BY_INVOICE_ID, id);
     }
 
     @Override
-    public OrderEntity getByID(Integer id) {
-        List<OrderEntity> orders = fetchByQuery(SELECT_BY_ID, id);
+    public Order getByID(Integer id) {
+        List<Order> orders = fetchByQuery(SELECT_BY_ID, id);
         return orders.isEmpty() ? null : orders.get(0);
     }
 
-    public OrderEntity getByTableID(String id) {
-        List<OrderEntity> orders = fetchByQuery(SELECT_BY_TABLE_ID, id);
+    public Order getByTableID(String id) {
+        List<Order> orders = fetchByQuery(SELECT_BY_TABLE_ID, id);
         return orders.isEmpty() ? null : orders.get(0);
     }
 
     @Override
-    protected List<OrderEntity> fetchByQuery(String sql, Object... args) {
-        List<OrderEntity> list = new ArrayList<>();
+    protected List<Order> fetchByQuery(String sql, Object... args) {
+        List<Order> list = new ArrayList<>();
 
-        try (ResultSet rs = JDBC.executeQuery(sql, args)) {
+        try (ResultSet rs = XJdbc.executeQuery(sql, args)) {
             while (rs.next()) {
-                OrderEntity model = readFromResultSet(rs);
+                Order model = readFromResultSet(rs);
                 list.add(model);
             }
         } catch (SQLException ex) {
@@ -99,8 +99,8 @@ public class OrderDAO extends RestaurantDAO<OrderEntity, Integer> {
         return list;
     }
 
-    private OrderEntity readFromResultSet(ResultSet rs) throws SQLException {
-        OrderEntity model = new OrderEntity();
+    private Order readFromResultSet(ResultSet rs) throws SQLException {
+        Order model = new Order();
         model.setOrderId(rs.getInt("OrderID"));
         model.setInvoiceID(rs.getInt("InvoiceID"));
         model.setNote(rs.getString("Note"));

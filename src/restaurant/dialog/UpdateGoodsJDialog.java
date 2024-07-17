@@ -16,16 +16,16 @@ import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.dao.GoodsDAO;
-import restaurant.utils.ImageUtils;
-import restaurant.entity.GoodsEntity;
-import restaurant.utils.ComboBoxUtils;
+import restaurant.utils.XImage;
+import restaurant.entity.Goods;
+import restaurant.utils.XComboBox;
 import static restaurant.utils.Common.openSmallDialog;
-import restaurant.utils.TextFieldUtils;
-import static restaurant.utils.TextFieldUtils.addCommasToNumber;
-import static restaurant.utils.TextFieldUtils.getRealText;
-import static restaurant.utils.TextFieldUtils.removeCommasFromNumber;
-import static restaurant.utils.ImageUtils.chooseImageFromDirectory;
-import static restaurant.utils.ImageUtils.setImageButtonIcon;
+import restaurant.utils.XTextField;
+import static restaurant.utils.XTextField.addCommasToNumber;
+import static restaurant.utils.XTextField.getRealText;
+import static restaurant.utils.XTextField.removeCommasFromNumber;
+import static restaurant.utils.XImage.chooseImageFromDirectory;
+import static restaurant.utils.XImage.setImageButtonIcon;
 
 public final class UpdateGoodsJDialog extends javax.swing.JDialog {
 
@@ -390,29 +390,28 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         // Setup text fields 
         JTextField[] textFields = {textId, textName, textPrice, textUnit, textInitQuantity, textMiniQuantity};
         for (JTextField textField : textFields) {
-            TextFieldUtils.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
+            XTextField.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
         }
 
         // Setup UI
         textName.requestFocus();
         textId.setEditable(isEditable);
-        ComboBoxUtils.setComboboxStyle(cbCategory);
+        XComboBox.setComboboxStyle(cbCategory);
         Common.createButtonGroup(radioOn, radioOff);
-        TextFieldUtils.addPlaceholder(textId, PLACEHOLDER_ID);
-        ImageUtils.setImageButtonIcon("src/restaurant/img/background.jpg", btnImage);
+        XTextField.addPlaceholder(textId, PLACEHOLDER_ID);
+        XImage.setImageButtonIcon("src/restaurant/img/background.jpg", btnImage);
 
         // <--- Setup main --->
         // attach event formatted price
-        TextFieldUtils.addPriceDocumentListener(textPrice);
+        XTextField.addPriceDocumentListener(textPrice);
 
         // add data to combobox
-        List<GoodsEntity> dataList = new GoodsDAO().getAll();
-        ComboBoxUtils.addDataToComboBox(
-                cbCategory,
+        List<Goods> dataList = new GoodsDAO().getAll();
+        XComboBox.loadDataToComboBox(cbCategory,
                 dataList,
-                GoodsEntity::getCategory,
-                PLACEHOLDER_STATUS
+                Goods::getCategory
         );
+        XComboBox.insertPlaceholder(cbCategory, PLACEHOLDER_STATUS);
 
         // add more comboxbox
         btnAddCategory.addActionListener(e -> {
@@ -476,7 +475,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         return true;
     }
 
-    GoodsEntity getModel() {
+    Goods getModel() {
         String id = getRealText(textId, PLACEHOLDER_ID);
         String name = textName.getText();
         String priceText = textPrice.getText();
@@ -490,7 +489,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         }
 
         try {
-            GoodsEntity model = new GoodsEntity();
+            Goods model = new Goods();
             model.setGoodsID(id);
             model.setGoodsName(name);
             model.setUnitPrice(Integer.parseInt(removeCommasFromNumber(priceText)));
@@ -509,7 +508,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         }
     }
 
-    void setModel(GoodsEntity goods) {
+    void setModel(Goods goods) {
         if (goods == null) {
             return;
         }
@@ -535,14 +534,14 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
     }
 
     void insert() {
-        GoodsEntity model = getModel();
+        Goods model = getModel();
 
         if (new GoodsDAO().isIdExists(model.getGoodsID())) {
             Dialog.warning(this, "Mã ID đã tồn tại. Vui lòng chọn mã ID khác!");
             return;
         }
 
-        if (new GoodsDAO().isIdExists(model.getGoodsName())) {
+        if (new GoodsDAO().isNameExists(model.getGoodsName())) {
             Dialog.alert(this, "Tên đã tồn tại. Vui lòng sửa tên khác!");
             return;
         }
@@ -558,10 +557,15 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
     }
 
     void update() {
-        GoodsEntity model = getModel();
+        Goods model = getModel();
 
         if (!new GoodsDAO().isIdExists(model.getGoodsID())) {
             Dialog.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
+            return;
+        }
+
+        if (new GoodsDAO().isNameExists(model.getGoodsName())) {
+            Dialog.alert(this, "Tên đã tồn tại. Vui lòng sửa tên khác!");
             return;
         }
 

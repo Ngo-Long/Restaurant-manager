@@ -3,8 +3,8 @@ package restaurant.dialog;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 import restaurant.dao.ProductDAO;
-import restaurant.entity.OrderDetailEntity;
-import restaurant.entity.ProductEntity;
+import restaurant.entity.OrderDetail;
+import restaurant.entity.Product;
 
 public class HistoryProductDetailJDialog extends javax.swing.JDialog {
 
@@ -192,7 +192,7 @@ public class HistoryProductDetailJDialog extends javax.swing.JDialog {
         this.getContentPane().setBackground(Color.WHITE);
     }
 
-    public void displayDetailOrder(OrderDetailEntity data) {
+    public void displayDetailOrder(OrderDetail data) {
         if (data == null) {
             this.setTitle("Chi tiết chế biến");
             labelName.setText("Trống");
@@ -206,7 +206,7 @@ public class HistoryProductDetailJDialog extends javax.swing.JDialog {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss");
 
         this.setTitle("Chi tiết chế biến [" + data.getOrderDetailID() + "]");
-        ProductEntity dataProduct = new ProductDAO().getByID(data.getProductID());
+        Product dataProduct = new ProductDAO().getByID(data.getProductID());
         labelName.setText(dataProduct.getProductName());
         labelTime.setText(dateFormat.format(data.getEndTime()));
         labelQuantity.setText(String.valueOf(data.getProductQuantity()));

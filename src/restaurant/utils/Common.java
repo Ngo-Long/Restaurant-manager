@@ -1,7 +1,7 @@
 package restaurant.utils;
 
 import java.awt.*;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -16,13 +16,13 @@ import restaurant.dialog.SmallJDialog;
 public class Common {
 
     // Update clock
-    public static void initClock(JLabel labelHouse) {
+    public static void startClock(JLabel label, String timeFormat) {
         Timer timer = new Timer(1000, e -> {
-            LocalTime currentTime = LocalTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            LocalDateTime currentTime = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(timeFormat);
             String formattedTime = currentTime.format(formatter);
 
-            labelHouse.setText(formattedTime);
+            label.setText(formattedTime);
         });
         timer.start();
     }
@@ -51,7 +51,7 @@ public class Common {
         // Setup table
         table.setRowHeight(rowHeight);         // Set row height for the table
         table.setGridColor(Color.WHITE);
-        table.setDefaultEditor(Object.class, null);  // Ko sửa nội 
+        table.setDefaultEditor(Object.class, null);  // Ko sửa nội dung
         table.setBorder(new LineBorder(Color.WHITE));
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // Chọn duy nhất một hàng
 
@@ -278,7 +278,7 @@ public class Common {
         return buttonGroup;
     }
 
-      // <--- Dialog small
+    // <--- Dialog small
     public static void openSmallDialog(String title, String field, JComboBox combobox) {
         if (title.equals("") || field.equals("")) {
             return;

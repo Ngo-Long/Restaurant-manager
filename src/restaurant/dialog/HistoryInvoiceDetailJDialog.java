@@ -9,7 +9,7 @@ import javax.swing.table.DefaultTableModel;
 
 import restaurant.utils.Common;
 import restaurant.table.TableCustom;
-import restaurant.utils.TextFieldUtils;
+import restaurant.utils.XTextField;
 
 import restaurant.dao.OrderDAO;
 import restaurant.dao.ProductDAO;
@@ -17,12 +17,12 @@ import restaurant.dao.EmployeeDAO;
 import restaurant.dao.DiningTableDAO;
 import restaurant.dao.OrderDetailDAO;
 
-import restaurant.entity.OrderEntity;
-import restaurant.entity.ProductEntity;
-import restaurant.entity.InvoiceEntity;
-import restaurant.entity.EmployeeEntity;
-import restaurant.entity.DiningTableEntity;
-import restaurant.entity.OrderDetailEntity;
+import restaurant.entity.Order;
+import restaurant.entity.Product;
+import restaurant.entity.Invoice;
+import restaurant.entity.Employee;
+import restaurant.entity.DiningTable;
+import restaurant.entity.OrderDetail;
 
 public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
 
@@ -262,7 +262,7 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
         Common.customizeTable(tableOrdered, new int[]{}, 30);
     }
 
-    public void displayDetailInvoice(InvoiceEntity data) {
+    public void displayDetailInvoice(Invoice data) {
         if (data == null) {
             this.setTitle("Chi tiết đơn hàng");
             labelTable.setText("Trống");
@@ -278,8 +278,8 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
         this.setTitle("Chi tiết đơn hàng [" + data.getInvoiceID() + "]");
 
         // Get table name list
-        List<DiningTableEntity> dataTables = new DiningTableDAO().getByInvoicesID(data.getInvoiceID());
-        for (DiningTableEntity dateTable : dataTables) {
+        List<DiningTable> dataTables = new DiningTableDAO().getByInvoicesID(data.getInvoiceID());
+        for (DiningTable dateTable : dataTables) {
             tableNamesStr = String.join(" + ", dateTable.getName());
         }
         if (tableNamesStr == null) {
@@ -287,16 +287,16 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
         }
 
         // Quantity order
-        List<OrderEntity> dataOrders = new OrderDAO().getByInvoiceID(data.getInvoiceID());
+        List<Order> dataOrders = new OrderDAO().getByInvoiceID(data.getInvoiceID());
         int quantityOrders = dataOrders.size();
 
         // Set name 
-        EmployeeEntity employee = new EmployeeDAO().getByID(data.getEmployeeID());
+        Employee employee = new EmployeeDAO().getByID(data.getEmployeeID());
         String employeeName = employee.getFullName();
 
         // Set total
         String total = String.valueOf(data.getTotalAmount());
-        String totalConfirm = TextFieldUtils.addCommasToNumber(total) + " đ";
+        String totalConfirm = XTextField.addCommasToNumber(total) + " đ";
 
         labelTable.setText(tableNamesStr + " / " + quantityOrders + " đơn");
         labelEmployee.setText(employeeName);
@@ -308,20 +308,20 @@ public class HistoryInvoiceDetailJDialog extends javax.swing.JDialog {
         this.displayTableOrder(dataOrders, tableOrdered);
     }
 
-    void displayTableOrder(List<OrderEntity> dataOrders, JTable tableMain) {
+    void displayTableOrder(List<Order> dataOrders, JTable tableMain) {
         if (dataOrders == null) {
             return;
         }
 
         // Set table ordered
-        for (OrderEntity dataOrder : dataOrders) {
+        for (Order dataOrder : dataOrders) {
             // Get order deatails
             int orderID = dataOrder.getOrderId();
-            List<OrderDetailEntity> dataDetails = new OrderDetailDAO().getByOrderID(orderID);
+            List<OrderDetail> dataDetails = new OrderDetailDAO().getByOrderID(orderID);
 
-            for (OrderDetailEntity dataDetail : dataDetails) {
+            for (OrderDetail dataDetail : dataDetails) {
                 String productID = dataDetail.getProductID();
-                ProductEntity dataProduct = new ProductDAO().getByID(productID);
+                Product dataProduct = new ProductDAO().getByID(productID);
                 String productName = dataProduct.getProductName();
                 int productQuantity = dataDetail.getProductQuantity();
                 String productStatus = dataDetail.getProductStatus();
