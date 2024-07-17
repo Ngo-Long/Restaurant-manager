@@ -8,16 +8,20 @@ import java.sql.SQLException;
 
 import restaurant.utils.XJdbc;
 import restaurant.entity.Receipt;
+import restaurant.utils.Dialog;
 
 public class ReceiptDAO extends RestaurantDAO<Receipt, String> {
 
     final String INSERT_SQL = "INSERT INTO Receipt (ReceiptID, SupplierID, EmployeeID, "
             + "TransactionType, ReceiptDate, TotalAmount, Note, Status) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    final String UPDATE_SQL = "UPDATE Receipt SET SupplierID=?, EmployeeID=?, TransactionType=?, "
-            + "ReceiptDate=?, TotalAmount=?, Note=?, Status=? WHERE ReceiptID=?";
+            + "VALUES (?, ?, ?, ?, GETDATE(), ?, ?, ?)";
+    final String UPDATE_SQL = "UPDATE Receipt SET SupplierID=?, EmployeeID=?, "
+            + "TransactionType=?, TotalAmount=?, Note=?, Status=? WHERE ReceiptID=?";
     final String DELETE_SQL = "DELETE FROM Receipt WHERE ReceiptID =?";
+
     final String IS_EXISTS_SQL = "SELECT COUNT(*) FROM Receipt WHERE ReceiptID = ?";
+    final String SELECT_LATEST_ID_SQL = "SELECT TOP 1 ReceiptID FROM Receipt ORDER BY ReceiptID DESC";
+
     final String SELECT_ALL_SQL = "SELECT * FROM Receipt";
     final String SELECT_BY_ID_SQL = "SELECT * FROM Receipt WHERE ReceiptID=?";
     final String SELECT_BY_CRITERIA = "SELECT TOP (1000) [ReceiptID], [SupplierID], [EmployeeID], "
@@ -34,11 +38,24 @@ public class ReceiptDAO extends RestaurantDAO<Receipt, String> {
                 entity.getSupplierID(),
                 entity.getEmployeeID(),
                 entity.getTransactionType(),
-                entity.getReceiptDate(),
                 entity.getTotalAmount(),
                 entity.getNote(),
                 entity.getStatus()
         );
+    }
+
+    public String insert() {
+        XJdbc.executeUpdate(INSERT_SQL);
+
+        String latestReceiptID = null;
+        try (ResultSet rs = XJdbc.executeQuery(SELECT_LATEST_ID_SQL)) {
+            if (rs.next()) {
+                latestReceiptID = rs.getString("ReceiptID");
+            }
+        } catch (SQLException ex) {
+        }
+
+        return latestReceiptID;
     }
 
     @Override
@@ -47,7 +64,6 @@ public class ReceiptDAO extends RestaurantDAO<Receipt, String> {
                 entity.getSupplierID(),
                 entity.getEmployeeID(),
                 entity.getTransactionType(),
-                entity.getReceiptDate(),
                 entity.getTotalAmount(),
                 entity.getNote(),
                 entity.getStatus(),
@@ -69,6 +85,19 @@ public class ReceiptDAO extends RestaurantDAO<Receipt, String> {
     @Override
     public List<Receipt> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
+    }
+
+    public String getLatestReceiptID() {
+        String latestReceiptID = null;
+        try (ResultSet rs = XJdbc.executeQuery(SELECT_LATEST_ID_SQL)) {
+            if (rs.next()) {
+                latestReceiptID = rs.getString("ReceiptID");
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+
+        return latestReceiptID;
     }
 
     public List<Receipt> searchByCriteria(String id, String supplierID, String employeeID, String transactionType, String status) {
@@ -120,4 +149,6 @@ public class ReceiptDAO extends RestaurantDAO<Receipt, String> {
         model.setStatus(rs.getString("Status"));
         return model;
     }
+
+   
 }

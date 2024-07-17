@@ -28,7 +28,6 @@ import restaurant.entity.DiningTable;
 import restaurant.table.TableCustom;
 import restaurant.main.ManagementMode;
 import restaurant.dialog.HistoryInvoiceDetailJDialog;
-import static restaurant.utils.ExportFile.exportToExcel;
 import static restaurant.utils.XRunnable.addDateListeners;
 import static restaurant.utils.XComboBox.insertPlaceholder;
 import static restaurant.utils.XComboBox.loadDataToComboBox;

@@ -556,7 +556,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         handleClickListMenu();
 
         // handle click button header list
-        handleClickButtonHeaders();
+        handleClickButton();
 
         // add button column cell list
         addButtonColumnCells();
@@ -583,7 +583,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         );
 
         // Add button change quantity "+" and "-"
-        final int COLUMN_CELL_THREE = 3;
+        int COLUMN_CELL_THREE = 3;
         addQuantityButtonsColumn(tableOrder, COLUMN_CELL_THREE, false);
 
         // Calc total amount click column 
@@ -629,7 +629,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         menuItemManagement.addActionListener(e -> openFullScreenWindow(new ManagementMode()));
     }
 
-    void handleClickButtonHeaders() {
+    void handleClickButton() {
         btnSubmit.addActionListener(e -> submit());
         btnReset.addActionListener(e -> openFullScreenWindow(new QuickOrderMode()));
         btnHistory.addActionListener(e -> {
@@ -938,6 +938,13 @@ public final class QuickOrderMode extends javax.swing.JFrame {
             return;
         }
 
+        // Set note for invoice
+        String note = getRealText(textNote, "Tối đa 60 ký tự");
+        if (note.length() > 60) {
+            Dialog.warning(this, "Ghi chú tối đa 60 ký tự!");
+            return;
+        }
+
         Boolean result = Dialog.confirm(this, "Xác nhận thanh toán đơn hàng!");
         if (!result) {
             return;
@@ -956,13 +963,6 @@ public final class QuickOrderMode extends javax.swing.JFrame {
 
             // Add product to the order
             addProductsToOrderd(orderId, orderProducts);
-
-            // Set note for invoice
-            String note = getRealText(textNote, "Tối đa 60 ký tự");
-            if (note.length() > 60) {
-                Dialog.warning(this, "Nhập tối đa 60 ký tự!");
-                return;
-            }
 
             // Get total
             int totalAmount = Integer.parseInt(removeCommasFromNumber(labelTotalAmount.getText()));

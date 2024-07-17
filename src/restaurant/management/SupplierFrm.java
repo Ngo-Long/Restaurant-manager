@@ -18,11 +18,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.utils.Auth;
+
 import restaurant.dao.SupplierDAO;
+import restaurant.entity.Supplier;
+import restaurant.utils.XRunnable;
+import restaurant.utils.XTextField;
 import restaurant.table.TableCustom;
 import restaurant.main.ManagementMode;
-import restaurant.utils.XTextField;
-import restaurant.utils.XRunnable;
 import restaurant.dialog.UpdateSupplierJDialog;
 import static restaurant.utils.XComboBox.insertPlaceholder;
 import static restaurant.utils.XComboBox.loadDataToComboBox;
@@ -400,7 +402,7 @@ public final class SupplierFrm extends javax.swing.JPanel {
         );
 
         // add data to combobox
-        loadDataToComboBox(cbCategory, dao.getAll(), restaurant.entity.Supplier::getStatus);
+        loadDataToComboBox(cbCategory, dao.getAll(), Supplier::getStatus);
         insertPlaceholder(cbCategory, PLACEHOLDER_STATUS);
 
         // call event when change
@@ -427,7 +429,7 @@ public final class SupplierFrm extends javax.swing.JPanel {
 
                 // Get data from row
                 String id = (String) target.getValueAt(row, 0);
-                restaurant.entity.Supplier supplier = new SupplierDAO().getByID(id);
+                Supplier supplier = new SupplierDAO().getByID(id);
 
                 // Save data to auth
                 Auth.supplier = supplier;
@@ -455,7 +457,7 @@ public final class SupplierFrm extends javax.swing.JPanel {
                 loadDataFillTable();
 
                 // reset combobox
-                loadDataToComboBox(cbCategory, dao.getAll(), restaurant.entity.Supplier::getStatus);
+                loadDataToComboBox(cbCategory, dao.getAll(), Supplier::getStatus);
                 insertPlaceholder(cbCategory, PLACEHOLDER_STATUS);
             }
         });
@@ -487,7 +489,7 @@ public final class SupplierFrm extends javax.swing.JPanel {
                         : radioOff.isSelected() ? radioOff.getText() : "";
 
                 // Get data and load
-                List<restaurant.entity.Supplier> dataList
+                List<Supplier> dataList
                         = new SupplierDAO().searchByCriteria(keyword, keyword, keyword, selectedRadio);
                 this.fillTable(dataList);
             });
@@ -502,7 +504,7 @@ public final class SupplierFrm extends javax.swing.JPanel {
         model.setRowCount(0);
 
         // Load data into the table 
-        for (restaurant.entity.Supplier dataItem : dataList) {
+        for (Supplier dataItem : dataList) {
             model.addRow(new Object[]{
                 dataItem.getSupplierID(),
                 dataItem.getSupplierName(),

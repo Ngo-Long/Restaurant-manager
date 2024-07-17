@@ -17,26 +17,24 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
 
 import restaurant.utils.Common;
-import restaurant.table.TableCustom;
-import restaurant.dao.DiningTableDAO;
-import restaurant.main.ManagementMode;
 import restaurant.utils.XComboBox;
 import restaurant.utils.XTextField;
+import restaurant.table.TableCustom;
+import restaurant.entity.DiningTable;
+import restaurant.dao.DiningTableDAO;
+import restaurant.main.ManagementMode;
+import restaurant.utils.TableNavigator;
 import restaurant.dialog.UpdateTableJDialog;
+import static restaurant.utils.Common.customizeTable;
 import static restaurant.utils.XComboBox.insertPlaceholder;
 import static restaurant.utils.XComboBox.loadDataToComboBox;
-import static restaurant.utils.Common.customizeTable;
 import static restaurant.utils.XRunnable.addComponentListeners;
 import static restaurant.utils.XRunnable.addTextFieldListeners;
-import restaurant.utils.TableNavigator;
 
 public final class DiningTableFrm extends javax.swing.JPanel {
 
-    private ManagementMode mainManager;
-
     public DiningTableFrm(ManagementMode mainManager) {
         initComponents();
-        this.mainManager = mainManager;
         this.init();
     }
 
@@ -368,7 +366,7 @@ public final class DiningTableFrm extends javax.swing.JPanel {
     final String PLACEHOLDER_STATUS = "--Tất cả--";
     final String PLACEHOLDER_SEARCH = "Tìm theo tên bàn";
 
-    restaurant.entity.DiningTable dataTable;
+    DiningTable dataTable;
     DiningTableDAO dao = new DiningTableDAO();
 
     ScheduledFuture<?> scheduledFuture;
@@ -404,7 +402,11 @@ public final class DiningTableFrm extends javax.swing.JPanel {
         );
 
         // Add data to combobox
-        loadDataToComboBox(cbArea, dao.getAll(), restaurant.entity.DiningTable::getLocation);
+        loadDataToComboBox(
+                cbArea,
+                dao.getAll(),
+                DiningTable::getLocation
+        );
         insertPlaceholder(cbArea, PLACEHOLDER_STATUS);
 
         // Load list by search and classify when change
@@ -438,7 +440,7 @@ public final class DiningTableFrm extends javax.swing.JPanel {
         });
     }
 
-    void openUpdateDialog(String title, restaurant.entity.DiningTable dataTable) {
+    void openUpdateDialog(String title, DiningTable dataTable) {
         if (title == null || title.equals("")) {
             return;
         }
@@ -456,7 +458,7 @@ public final class DiningTableFrm extends javax.swing.JPanel {
                 loadDataFillTable();
 
                 // reset combobox
-                loadDataToComboBox(cbArea, dao.getAll(), restaurant.entity.DiningTable::getLocation);
+                loadDataToComboBox(cbArea, dao.getAll(), DiningTable::getLocation);
                 insertPlaceholder(cbArea, PLACEHOLDER_STATUS);
             }
         });
@@ -487,7 +489,7 @@ public final class DiningTableFrm extends javax.swing.JPanel {
                         : radioOff.isSelected() ? radioOff.getText() : "";
 
                 // Get data and load
-                List<restaurant.entity.DiningTable> dataList
+                List<DiningTable> dataList
                         = dao.searchByCriteria(searchName, location, selectedRadio);
                 this.fillTable(dataList);
             });
@@ -502,7 +504,7 @@ public final class DiningTableFrm extends javax.swing.JPanel {
         model.setRowCount(0);
 
         // Load data into the table 
-        for (restaurant.entity.DiningTable dataTable : dataTables) {
+        for (DiningTable dataTable : dataTables) {
             model.addRow(new Object[]{
                 dataTable.getTableID(),
                 dataTable.getName(),

@@ -17,16 +17,17 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.utils.Common;
+import restaurant.entity.Product;
 import restaurant.dao.ProductDAO;
+import restaurant.utils.XTextField;
 import restaurant.table.TableCustom;
 import restaurant.main.ManagementMode;
-import restaurant.utils.XTextField;
+import restaurant.utils.TableNavigator;
 import restaurant.dialog.UpdateProductJDialog;
 import static restaurant.utils.XComboBox.insertPlaceholder;
 import static restaurant.utils.XComboBox.loadDataToComboBox;
 import static restaurant.utils.XRunnable.addComponentListeners;
 import static restaurant.utils.XRunnable.addTextFieldListeners;
-import restaurant.utils.TableNavigator;
 
 public final class ProductFrm extends javax.swing.JPanel {
 
@@ -402,8 +403,8 @@ public final class ProductFrm extends javax.swing.JPanel {
         );
 
         // add data to combobox
-        loadDataToComboBox(cbCategory, dao.getAll(), restaurant.entity.Product::getCategory);
         insertPlaceholder(cbCategory, PLACEHOLDER_STATUS);
+        loadDataToComboBox(cbCategory, dao.getAll(), Product::getCategory);
 
         // load list by search and classify when change
         addTextFieldListeners(textSearch, this::loadDataFillTable);
@@ -435,7 +436,7 @@ public final class ProductFrm extends javax.swing.JPanel {
         });
     }
 
-    void openUpdateDialog(String title, restaurant.entity.Product dataProduct) {
+    void openUpdateDialog(String title, Product dataProduct) {
         if (title == null || title.equals("")) {
             return;
         }
@@ -453,7 +454,7 @@ public final class ProductFrm extends javax.swing.JPanel {
                 loadDataFillTable();
 
                 // reset combobox
-                loadDataToComboBox(cbCategory, dao.getAll(), restaurant.entity.Product::getCategory);
+                loadDataToComboBox(cbCategory, dao.getAll(), Product::getCategory);
                 insertPlaceholder(cbCategory, PLACEHOLDER_STATUS);
             }
         });
@@ -485,14 +486,14 @@ public final class ProductFrm extends javax.swing.JPanel {
                         : radioOff.isSelected() ? radioOff.getText() : "";
 
                 // Get data and load
-                List<restaurant.entity.Product> dataList
+                List<Product> dataList
                         = dao.searchByCriteria(search, category, selectedRadio);
                 this.fillTable(dataList);
             });
         }, DEBOUNCE_DELAY_LOAD, TimeUnit.MILLISECONDS);
     }
 
-    void fillTable(List<restaurant.entity.Product> dataProducts) {
+    void fillTable(List<Product> dataProducts) {
         System.out.println("Đang load dữ liệu từ cơ sở dữ liệu...");
 
         // Display table
@@ -500,7 +501,7 @@ public final class ProductFrm extends javax.swing.JPanel {
         model.setRowCount(0);
 
         // Load data into the table 
-        for (restaurant.entity.Product dataProduct : dataProducts) {
+        for (Product dataProduct : dataProducts) {
             String price = String.valueOf(dataProduct.getPrice());
             String formattedPrice = XTextField.addCommasToNumber(price) + "đ";
 

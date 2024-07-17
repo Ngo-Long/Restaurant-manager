@@ -30,31 +30,37 @@ import javax.swing.table.DefaultTableModel;
 
 import restaurant.dao.GoodsDAO;
 import restaurant.dao.ReceiptDAO;
+import restaurant.dao.ReceiptDetailDAO;
 import restaurant.dao.SupplierDAO;
 import restaurant.table.TableCustom;
 import restaurant.entity.Goods;
 import restaurant.entity.Receipt;
+import restaurant.entity.ReceiptDetail;
 import restaurant.main.ManagementMode;
 import restaurant.entity.Supplier;
 
 import restaurant.utils.Auth;
 import restaurant.utils.Common;
-import restaurant.utils.ColumnTable;
+import restaurant.utils.Dialog;
 import restaurant.utils.XComboBox;
 import restaurant.utils.XTextField;
-import static restaurant.utils.ColumnTable.addTextFieldColumn;
-import static restaurant.utils.XTextField.addCommasToNumber;
-import static restaurant.utils.ColumnTable.addQuantityButtonsColumn;
+import restaurant.utils.ColumnTable;
 import static restaurant.utils.XComboBox.insertPlaceholder;
+import static restaurant.utils.XTextField.addCommasToNumber;
 import static restaurant.utils.XComboBox.loadDataToComboBox;
-import restaurant.utils.Dialog;
+import static restaurant.utils.ColumnTable.addTextFieldColumn;
 import static restaurant.utils.XTextField.removeCommasFromNumber;
+import static restaurant.utils.ColumnTable.addQuantityButtonsColumn;
+import static restaurant.utils.XTextField.getRealText;
 
-public class CreateReceiptFrm extends javax.swing.JPanel {
+public final class CreateReceiptFrm extends javax.swing.JPanel {
 
-    public CreateReceiptFrm(ManagementMode mainManager) {
+    private final ManagementMode managementMode;
+
+    public CreateReceiptFrm(ManagementMode managementMode) {
         initComponents();
         this.init();
+        this.managementMode = managementMode;
     }
 
     @SuppressWarnings("unchecked")
@@ -96,6 +102,7 @@ public class CreateReceiptFrm extends javax.swing.JPanel {
         radioUnpay = new javax.swing.JRadioButton();
         jLabel11 = new javax.swing.JLabel();
         labelTime = new javax.swing.JLabel();
+        textNote = new javax.swing.JTextField();
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setAutoscrolls(true);
@@ -322,6 +329,9 @@ public class CreateReceiptFrm extends javax.swing.JPanel {
         labelTime.setText("23:39");
         labelTime.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
 
+        textNote.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        textNote.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED), "Ghi chú", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Segoe UI", 0, 16))); // NOI18N
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -367,23 +377,23 @@ public class CreateReceiptFrm extends javax.swing.JPanel {
                                         .addComponent(radioUnpay))
                                     .addGroup(jPanel4Layout.createSequentialGroup()
                                         .addComponent(btnQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(labelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(33, 33, 33)
+                                        .addComponent(labelTotal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGap(4, 4, 4)))))
                         .addGap(14, 14, 14))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel11)
                             .addComponent(labelInvoiceID, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                                    .addComponent(jLabel16)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(labelTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                                    .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel16)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(labelTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(textNote))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel4Layout.setVerticalGroup(
@@ -396,47 +406,49 @@ public class CreateReceiptFrm extends javax.swing.JPanel {
                     .addComponent(labelDate, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelTime, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12)
+                .addGap(10, 10, 10)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelEmployeeName, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(16, 16, 16)
+                .addGap(10, 10, 10)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(textID, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(16, 16, 16)
+                .addGap(10, 10, 10)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cbReceiptType, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(10, 10, 10)
                         .addComponent(cbSuppliers, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(25, 25, 25)
+                .addGap(12, 12, 12)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25)
+                .addGap(12, 12, 12)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(radioPaied, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(radioUnpay, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12)
+                .addGap(10, 10, 10)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(labelTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(14, 14, 14)
+                .addGap(10, 10, 10)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(1, 1, 1)
                         .addComponent(textDiscount, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)))
-                .addGap(14, 14, 14)
+                .addGap(10, 10, 10)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(textNote, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnSubmit, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
                     .addComponent(btnCancel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -501,11 +513,13 @@ public class CreateReceiptFrm extends javax.swing.JPanel {
     private javax.swing.JTable tableReceipts;
     private javax.swing.JTextField textDiscount;
     private javax.swing.JTextField textID;
+    private javax.swing.JTextField textNote;
     private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
     final int DEBOUNCE_DELAY_LOAD = 200;
     final String PLACEHOLDER_ID = "Mã phiếu tự động";
+    final String PLACEHOLDER_NOTE = "Tối đa 60 ký tự";
     final String PLACEHOLDER_STATUS = "--Lựa chọn--";
     final String PLACEHOLDER_SEARCH = "Tìm hàng hóa theo tên hoặc mã";
 
@@ -548,19 +562,12 @@ public class CreateReceiptFrm extends javax.swing.JPanel {
 
         // add data to combobox
         List<Supplier> dataSupplierList = new SupplierDAO().getAll();
-        loadDataToComboBox(cbSuppliers,
-                dataSupplierList,
-                Supplier::getSupplierName
-        );
+        loadDataToComboBox(cbSuppliers, dataSupplierList, Supplier::getSupplierName);
         insertPlaceholder(cbSuppliers, PLACEHOLDER_STATUS);
 
         // handle click button search
-        btnSearch.addActionListener(e -> {
-            this.loadDataPopupMenu();
-        });
-
+        btnSearch.addActionListener(e -> this.loadDataPopupMenu());
         btnSubmit.addActionListener(e -> submit());
-
     }
 
     // <--- button column cell list
@@ -610,38 +617,94 @@ public class CreateReceiptFrm extends javax.swing.JPanel {
 
     // <--- submit and cancel
     void submit() {
-        if (!isSubmit()) {
+        // Get data from the table
+        DefaultTableModel model = (DefaultTableModel) tableReceipts.getModel();
+        String supplierName = cbSuppliers.getSelectedItem().toString();
+        String type = cbReceiptType.getSelectedItem().toString();
+        String totalStr = removeCommasFromNumber(labelTotalAmount.getText());
+        String note = getRealText(textNote, PLACEHOLDER_NOTE);
+
+        if (!validateInput(model, supplierName, type, note)) {
             return;
         }
 
-        // Get data from the table
-        DefaultTableModel model = (DefaultTableModel) tableReceipts.getModel();
+        Boolean result = Dialog.confirm(this, "Xác nhận tạo biên lai!");
+        if (!result) {
+            return;
+        }
 
         try {
+            // get supplier id
+            String supplierID = new SupplierDAO().getIdByName(supplierName);
+
+            // create new receipt
             Receipt receipt = new Receipt();
             receipt.setEmployeeID(Auth.user.getEmployeeID());
-            receipt.setSupplierID(PLACEHOLDER_ID);
-            receipt.setTransactionType(PLACEHOLDER_ID);
-            receipt.setTotalAmount(1000);
-            receipt.setNote(PLACEHOLDER_ID);
-            receipt.setStatus(PLACEHOLDER_ID);
+            receipt.setSupplierID(supplierID);
+            receipt.setTransactionType(type);
+            receipt.setTotalAmount(Long.parseLong(totalStr));
+            receipt.setNote(note);
+            receipt.setStatus(radioPaied.isSelected() ? "Đã thanh toán" : "Chưa trả");
             new ReceiptDAO().insert(receipt);
+
+            // get receipt id
+            String receiptID = new ReceiptDAO().getLatestReceiptID();
+            Receipt dataReceipt = new ReceiptDAO().getByID(receiptID);
+
+            // For each new list of goods list
+            for (Vector<Object> row : model.getDataVector()) {
+                // get price
+                String price = removeCommasFromNumber(row.get(4).toString());
+
+                // create new receipt detail
+                ReceiptDetail receiptDetail = new ReceiptDetail();
+                receiptDetail.setReceiptID(receiptID);
+                receiptDetail.setGoodsID(row.get(1).toString());
+                receiptDetail.setQuantity(Integer.parseInt(row.get(3).toString()));
+                receiptDetail.setUnitPrice(Integer.parseInt(price));
+                new ReceiptDetailDAO().insert(receiptDetail);
+            }
+
+            Dialog.success(this, "Tạo biên lai [ " + dataReceipt.getTransactionType() + " ] thành công!\n\n"
+                    + "Vào lúc " + dataReceipt.getReceiptDate());
+            managementMode.displayManagementPanel(new ReceiptFrm(managementMode));
         } catch (Exception e) {
+            System.out.println(e);
+            Dialog.alert(this, "Lỗi không xác nhận được!");
         }
     }
 
-    boolean isSubmit() {
+    boolean validateInput(DefaultTableModel model, String supplierName, String type, String note) {
         if (Auth.user == null) {
             Dialog.warning(this, "Vui lòng đăng nhập!");
             return false;
         }
 
-        if (tableReceipts.getRowCount() == 0) {
+        if (model.getRowCount() == 0) {
             Dialog.warning(this, "Vui lòng chọn hàng hóa!");
             return false;
         }
 
-//        if ()
+        if (type.equals(PLACEHOLDER_STATUS)) {
+            Dialog.warning(this, "Vui lòng chọn phiếu!");
+            return false;
+        }
+
+        if (supplierName.equals(PLACEHOLDER_STATUS)) {
+            Dialog.warning(this, "Vui lòng chọn nhà cung cấp!");
+            return false;
+        }
+
+        if (note.equals(PLACEHOLDER_STATUS)) {
+            Dialog.warning(this, "Vui lòng chọn nhà cung cấp!");
+            return false;
+        }
+
+        if (note.length() > 60) {
+            Dialog.warning(this, "Ghi chú tối đa 60 ký tự!");
+            return false;
+        }
+
         return true;
     }
 

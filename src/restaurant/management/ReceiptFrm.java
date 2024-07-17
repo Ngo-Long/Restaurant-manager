@@ -11,12 +11,13 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import restaurant.dao.InvoiceDAO;
 import restaurant.dao.ReceiptDAO;
+import restaurant.entity.Receipt;
+import restaurant.entity.Invoice;
 import javax.swing.SwingUtilities;
+import restaurant.utils.XTextField;
 import restaurant.table.TableCustom;
 import restaurant.utils.ColumnTable;
 import restaurant.main.ManagementMode;
-import restaurant.entity.Invoice;
-import restaurant.utils.XTextField;
 import restaurant.utils.TableNavigator;
 import javax.swing.table.DefaultTableModel;
 import restaurant.dialog.HistoryInvoiceDetailJDialog;
@@ -31,8 +32,8 @@ public final class ReceiptFrm extends javax.swing.JPanel {
 
     public ReceiptFrm(ManagementMode managementMode) {
         initComponents();
-        this.managementMode = managementMode;
         this.init();
+        this.managementMode = managementMode;
     }
 
     @SuppressWarnings("unchecked")
@@ -445,7 +446,7 @@ public final class ReceiptFrm extends javax.swing.JPanel {
     final int DEBOUNCE_DELAY_LOAD = 300;
     final String PLACEHOLDER_STATUS = "--Trạng thái--";
     final String PLACEHOLDER_SEARCH = "Tìm theo mã";
-    List<restaurant.entity.Receipt> dataAll = new ReceiptDAO().getAll();
+    List<Receipt> dataAll = new ReceiptDAO().getAll();
 
     ScheduledFuture<?> scheduledFuture;
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
@@ -492,8 +493,14 @@ public final class ReceiptFrm extends javax.swing.JPanel {
 
         // load list by search and classify when change
         addTextFieldListeners(textSearch, this::loadData);
-        addComponentListeners(this::loadData, radioPaied, radioUnpay, radioAllPay);
-        addComponentListeners(this::loadData, radioPurchase, radioReturn, radioAllReceipt);
+        addComponentListeners(
+                this::loadData,
+                radioPaied, radioUnpay, radioAllPay
+        );
+        addComponentListeners(
+                this::loadData,
+                radioPurchase, radioReturn, radioAllReceipt
+        );
 
         // Load data
         this.loadData();
@@ -536,13 +543,13 @@ public final class ReceiptFrm extends javax.swing.JPanel {
                 // Get data and load
 //                List<ReceiptEntity> dataList
 //                        = new ReceiptDAO().searchByCriteria(keyword, keyword, position, selectedRadioPay);
-                List<restaurant.entity.Receipt> dataList = new ReceiptDAO().getAll();
+                List<Receipt> dataList = new ReceiptDAO().getAll();
                 this.fillTable(dataList);
             });
         }, DEBOUNCE_DELAY_LOAD, TimeUnit.MILLISECONDS);
     }
 
-    public void fillTable(List<restaurant.entity.Receipt> dataList) {
+    public void fillTable(List<Receipt> dataList) {
         System.out.println("Đang load dữ liệu từ cơ sở dữ liệu...");
 
         // Display table
@@ -550,7 +557,7 @@ public final class ReceiptFrm extends javax.swing.JPanel {
         model.setRowCount(0);
 
         // Load data into the table 
-        for (restaurant.entity.Receipt dataItem : dataList) {
+        for (Receipt dataItem : dataList) {
             model.addRow(new Object[]{
                 dataItem.getReceiptID(),
                 dataItem.getEmployeeID(),

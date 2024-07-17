@@ -18,7 +18,7 @@ public class ProductDAO extends RestaurantDAO<Product, String> {
     final String SELECT_ALL_BY_CATEGORY_SQL = "SELECT * FROM Product WHERE Category=? ORDER BY ProductName";
 
     final String SELECT_BY_ID_SQL = "SELECT * FROM Product WHERE ProductID=?";
-    static final String SELECT_ID_BY_NAME_SQL = "SELECT ProductID FROM Product WHERE ProductName=?";
+    final String SELECT_ID_BY_NAME_SQL = "SELECT ProductID FROM Product WHERE ProductName=?";
 
     final String SELECT_BY_CRITERIA_SQL = "SELECT TOP 1000 ProductID, ProductName, CostPrice, Price, Unit, "
             + "ImageURL, Category, KitchenArea, Description, Status FROM Product "
@@ -107,7 +107,7 @@ public class ProductDAO extends RestaurantDAO<Product, String> {
         return false;
     }
 
-    public static String getIdDishFromName(String dishName) {
+    public String getIdByName(String dishName) {
         try (ResultSet resultSet = XJdbc.executeQuery(SELECT_ID_BY_NAME_SQL, dishName)) {
             return resultSet.next() ? resultSet.getString("ProductID") : null;
         } catch (SQLException ex) {

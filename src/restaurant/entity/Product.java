@@ -1,5 +1,7 @@
 package restaurant.entity;
 
+import java.util.Objects;
+
 public class Product {
 
     private String productID;
@@ -12,6 +14,19 @@ public class Product {
     private String kitchenArea;
     private String description;
     private String status;
+
+    //    @Override
+//    public boolean equals(Object obj) {
+//        Product other = (Product) obj;
+//        return other.getProductID().equals(this.getProductID());
+//    }
+    @Override
+    public boolean equals(Object obj) {
+        Product other = (Product) obj;
+
+        return other.getProductID().equals(this.getProductID())
+                && other.getProductName().equals(this.getProductName());
+    }
 
     public String getProductID() {
         return productID;

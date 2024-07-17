@@ -1,16 +1,12 @@
 package restaurant.management;
 
 import java.awt.Color;
-import java.text.MessageFormat;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.WindowAdapter;
-import java.awt.print.PrinterException;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
@@ -22,26 +18,23 @@ import javax.swing.table.DefaultTableModel;
 
 import restaurant.utils.Auth;
 import restaurant.dao.EmployeeDAO;
+import restaurant.entity.Employee;
+import restaurant.utils.XTextField;
 import restaurant.table.TableCustom;
 import restaurant.main.ManagementMode;
-import restaurant.utils.XComboBox;
-import restaurant.utils.XTextField;
 import restaurant.dialog.UpdateTableJDialog;
-import static restaurant.utils.XComboBox.insertPlaceholder;
+
 import static restaurant.utils.Common.customizeTable;
-import static restaurant.utils.ExportFile.exportToExcel;
 import static restaurant.utils.Common.createButtonGroup;
+import static restaurant.utils.XComboBox.insertPlaceholder;
 import static restaurant.utils.XComboBox.loadDataToComboBox;
 import static restaurant.utils.XRunnable.addComponentListeners;
 import static restaurant.utils.XRunnable.addTextFieldListeners;
 
 public final class EmployeeFrm extends javax.swing.JPanel {
 
-    private ManagementMode managementMode;
-
     public EmployeeFrm(ManagementMode managementMode) {
         initComponents();
-        this.managementMode = managementMode;
         this.init();
     }
 
@@ -85,11 +78,6 @@ public final class EmployeeFrm extends javax.swing.JPanel {
         jLabel1.setText("Chức danh");
 
         cbPositon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cbPositon.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbPositonActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -125,11 +113,6 @@ public final class EmployeeFrm extends javax.swing.JPanel {
         btnExport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/export-file.png"))); // NOI18N
         btnExport.setText("Export");
         btnExport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnExport.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExportActionPerformed(evt);
-            }
-        });
 
         btnImport.setBackground(new java.awt.Color(0, 153, 0));
         btnImport.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -137,11 +120,6 @@ public final class EmployeeFrm extends javax.swing.JPanel {
         btnImport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/file-import.png"))); // NOI18N
         btnImport.setText("Import");
         btnImport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnImport.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnImportActionPerformed(evt);
-            }
-        });
 
         btnAdd.setBackground(new java.awt.Color(0, 153, 0));
         btnAdd.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -178,38 +156,18 @@ public final class EmployeeFrm extends javax.swing.JPanel {
         btnLast.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnLast.setText(">|");
         btnLast.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnLast.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLastActionPerformed(evt);
-            }
-        });
 
         btnNext.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnNext.setText(">>");
         btnNext.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnNext.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNextActionPerformed(evt);
-            }
-        });
 
         btnPrev.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnPrev.setText("<<");
         btnPrev.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnPrev.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPrevActionPerformed(evt);
-            }
-        });
 
         btnFirst.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnFirst.setText("|<");
         btnFirst.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnFirst.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnFirstActionPerformed(evt);
-            }
-        });
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(102, 102, 102));
@@ -274,12 +232,6 @@ public final class EmployeeFrm extends javax.swing.JPanel {
         jLabel2.setForeground(new java.awt.Color(51, 51, 51));
         jLabel2.setText("Tìm kiếm");
 
-        textSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textSearchActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -309,25 +261,10 @@ public final class EmployeeFrm extends javax.swing.JPanel {
 
         radioOn.setSelected(true);
         radioOn.setText("Đang làm");
-        radioOn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioOnActionPerformed(evt);
-            }
-        });
 
         radioOff.setText("Nghỉ việc");
-        radioOff.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioOffActionPerformed(evt);
-            }
-        });
 
         radioAll.setText("Tất cả");
-        radioAll.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioAllActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -399,57 +336,11 @@ public final class EmployeeFrm extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cbPositonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPositonActionPerformed
-    }//GEN-LAST:event_cbPositonActionPerformed
-
-    private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
-        exportToExcel(tableEmployees, "Bàn ăn");
-    }//GEN-LAST:event_btnExportActionPerformed
-
-    private void btnImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportActionPerformed
-        MessageFormat header = new MessageFormat("Danh sách bàn ăn");
-        MessageFormat footer = new MessageFormat("Trang {0, number, integer}");
-
-        try {
-            tableEmployees.print(JTable.PrintMode.FIT_WIDTH, header, footer);
-        } catch (PrinterException ex) {
-            Logger.getLogger(EmployeeFrm.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnImportActionPerformed
-
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         Auth.table = null;
         openUpdateDialog("Thêm phòng/bàn", true);
     }//GEN-LAST:event_btnAddActionPerformed
-
-    private void radioOnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOnActionPerformed
-    }//GEN-LAST:event_radioOnActionPerformed
-
-    private void radioOffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioOffActionPerformed
-    }//GEN-LAST:event_radioOffActionPerformed
-
-    private void radioAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioAllActionPerformed
-    }//GEN-LAST:event_radioAllActionPerformed
-
-    private void btnLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLastActionPerformed
-        last();
-    }//GEN-LAST:event_btnLastActionPerformed
-
-    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
-        next();
-    }//GEN-LAST:event_btnNextActionPerformed
-
-    private void btnPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrevActionPerformed
-        prev();
-    }//GEN-LAST:event_btnPrevActionPerformed
-
-    private void btnFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFirstActionPerformed
-        first();
-    }//GEN-LAST:event_btnFirstActionPerformed
-
-    private void textSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textSearchActionPerformed
-    }//GEN-LAST:event_textSearchActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
@@ -484,7 +375,8 @@ public final class EmployeeFrm extends javax.swing.JPanel {
     final int DEBOUNCE_DELAY_LOAD = 300;
     final String PLACEHOLDER_STATUS = "--Tất cả--";
     final String PLACEHOLDER_SEARCH = "Tìm theo mã hoặc tên";
-    List<restaurant.entity.Employee> dataEmployees;
+
+    List<Employee> dataEmployees;
     EmployeeDAO dao = new EmployeeDAO();
 
     ScheduledFuture<?> scheduledFuture;
@@ -510,7 +402,7 @@ public final class EmployeeFrm extends javax.swing.JPanel {
         );
 
         // add data to combobox
-        loadDataToComboBox(cbPositon, dao.getAll(), restaurant.entity.Employee::getPosition);
+        loadDataToComboBox(cbPositon, dao.getAll(), Employee::getPosition);
         insertPlaceholder(cbPositon, PLACEHOLDER_STATUS);
 
         // load list by search and classify when change
@@ -540,7 +432,7 @@ public final class EmployeeFrm extends javax.swing.JPanel {
 
                 // Get data from row
                 String id = (String) target.getValueAt(row, 0);
-                restaurant.entity.Employee employee = new EmployeeDAO().getByID(id);
+                Employee employee = new EmployeeDAO().getByID(id);
 
                 // Save data to auth
                 Auth.user = employee;
@@ -568,7 +460,7 @@ public final class EmployeeFrm extends javax.swing.JPanel {
                 loadDataFillTable();
 
                 // reset combobox
-                loadDataToComboBox(cbPositon, dao.getAll(), restaurant.entity.Employee::getPosition);
+                loadDataToComboBox(cbPositon, dao.getAll(), Employee::getPosition);
                 insertPlaceholder(cbPositon, PLACEHOLDER_STATUS);
             }
         });
@@ -606,7 +498,7 @@ public final class EmployeeFrm extends javax.swing.JPanel {
         }, DEBOUNCE_DELAY_LOAD, TimeUnit.MILLISECONDS);
     }
 
-    void fillTable(List<restaurant.entity.Employee> dataList) {
+    void fillTable(List<Employee> dataList) {
         System.out.println("Đang load dữ liệu từ cơ sở dữ liệu...");
 
         // Display table
@@ -614,7 +506,7 @@ public final class EmployeeFrm extends javax.swing.JPanel {
         model.setRowCount(0);
 
         // Load data into the table 
-        for (restaurant.entity.Employee dataItem : dataList) {
+        for (Employee dataItem : dataList) {
             model.addRow(new Object[]{
                 dataItem.getEmployeeID(),
                 dataItem.getFullName(),
@@ -627,52 +519,4 @@ public final class EmployeeFrm extends javax.swing.JPanel {
     }
     // end --->
 
-    // <--- Directional
-    void edit() {
-        this.selectTableRow(this.row);
-        this.directional();
-    }
-
-    void selectTableRow(int rowIndex) {
-        if (rowIndex >= 0 && rowIndex < tableEmployees.getRowCount()) {
-            tableEmployees.setRowSelectionInterval(rowIndex, rowIndex);
-            tableEmployees.scrollRectToVisible(tableEmployees.getCellRect(rowIndex, 0, true));
-        }
-    }
-
-    void directional() {
-        boolean edit = (this.row >= 0);
-        boolean first = (this.row == 0);
-        boolean last = (this.row == tableEmployees.getRowCount() - 1);
-
-        btnFirst.setEnabled(!first);
-        btnPrev.setEnabled(edit && !first);
-        btnNext.setEnabled(edit && !last);
-        btnLast.setEnabled(!last);
-    }
-
-    void first() {
-        this.row = 0;
-        this.edit();
-    }
-
-    void prev() {
-        if (this.row > 0) {
-            this.row--;
-            this.edit();
-        }
-    }
-
-    void next() {
-        if (this.row < tableEmployees.getRowCount() - 1) {
-            this.row++;
-            this.edit();
-        }
-    }
-
-    void last() {
-        this.row = tableEmployees.getRowCount() - 1;
-        this.edit();
-    }
-    // end --->
 }

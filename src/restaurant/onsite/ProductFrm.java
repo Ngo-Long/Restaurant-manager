@@ -41,13 +41,12 @@ import restaurant.dao.OrderDetailDAO;
 import restaurant.utils.Auth;
 import restaurant.utils.Dialog;
 import restaurant.utils.Common;
-import restaurant.utils.ColumnTable;
+import restaurant.entity.Product;
 import restaurant.utils.XTextField;
 import restaurant.main.OnSiteMode;
 import restaurant.table.TableCustom;
 import restaurant.main.QuickOrderMode;
 import restaurant.dialog.OrderDetailJDialog;
-import restaurant.entity.Product;
 import static restaurant.utils.ColumnTable.addButtonIconColumn;
 import static restaurant.utils.ColumnTable.addQuantityButtonsColumn;
 import static restaurant.utils.XTextField.getRealText;
@@ -660,7 +659,7 @@ public final class ProductFrm extends javax.swing.JPanel {
 
     boolean isSubmit() {
         String tableID = Auth.table != null ? Auth.table.getTableID() : "";
-        if ("".equals(tableID)) {
+        if (tableID.equals("")) {
             Dialog.warning(this, "Vui lòng chọn bàn ăn!");
             return false;
         }

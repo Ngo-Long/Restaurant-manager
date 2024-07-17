@@ -23,6 +23,7 @@ import restaurant.main.ManagementMode;
 import restaurant.utils.TableNavigator;
 import restaurant.utils.XTextField;
 import restaurant.dialog.UpdateGoodsJDialog;
+import restaurant.entity.Goods;
 import static restaurant.utils.Common.customizeTable;
 import static restaurant.utils.Common.createButtonGroup;
 import static restaurant.utils.XComboBox.insertPlaceholder;
@@ -410,7 +411,7 @@ public final class GoodsFrm extends javax.swing.JPanel {
         );
 
         // add data to combobox
-        loadDataToComboBox(cbCategory, dao.getAll(), restaurant.entity.Goods::getCategory);
+        loadDataToComboBox(cbCategory, dao.getAll(), Goods::getCategory);
         insertPlaceholder(cbCategory, PLACEHOLDER_STATUS);
 
         // load data list by search and classify when change
@@ -437,7 +438,7 @@ public final class GoodsFrm extends javax.swing.JPanel {
 
                 // Lấy dữ liệu từ hàng được chọn
                 String id = (String) target.getValueAt(row, 0);
-                restaurant.entity.Goods goods = new GoodsDAO().getByID(id);
+                Goods goods = new GoodsDAO().getByID(id);
 
                 // Save data to auth
                 Auth.goods = goods;
@@ -466,7 +467,7 @@ public final class GoodsFrm extends javax.swing.JPanel {
                 loadDataFillTable();
 
                 // reset combobox
-                loadDataToComboBox(cbCategory, dao.getAll(), restaurant.entity.Goods::getCategory);
+                loadDataToComboBox(cbCategory, dao.getAll(), Goods::getCategory);
                 insertPlaceholder(cbCategory, PLACEHOLDER_STATUS);
             }
         });
@@ -498,14 +499,14 @@ public final class GoodsFrm extends javax.swing.JPanel {
                         : radioOff.isSelected() ? radioOff.getText() : "";
 
                 // Get data and load
-                List<restaurant.entity.Goods> dataList
+                List<Goods> dataList
                         = new GoodsDAO().searchByCriteria(keyword, keyword, position, selectedRadio);
                 this.fillTable(dataList);
             });
         }, DEBOUNCE_DELAY_LOAD, TimeUnit.MILLISECONDS);
     }
 
-    void fillTable(List<restaurant.entity.Goods> dataList) {
+    void fillTable(List<Goods> dataList) {
         System.out.println("Đang load dữ liệu từ cơ sở dữ liệu...");
 
         // Display table

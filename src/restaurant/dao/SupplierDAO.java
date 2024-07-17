@@ -19,6 +19,7 @@ public class SupplierDAO extends RestaurantDAO<Supplier, String> {
     final String DELETE_SQL = "DELETE FROM Supplier WHERE SupplierID=?";
     final String SELECT_ALL_SQL = "SELECT * FROM Supplier";
     final String SELECT_BY_ID_SQL = "SELECT * FROM Supplier WHERE SupplierID=?";
+    final String SELECT_ID_BY_NAME_SQL = "SELECT SupplierID FROM Supplier WHERE SupplierName=?";
     final String IS_EXISTS_SQL = "SELECT COUNT(*) FROM Supplier WHERE SupplierID = ?";
     final String SELECT_BY_CRITERIA = "SELECT TOP (1000) [SupplierID], [SupplierName], [OutstandingDebt], "
             + "[TotalSales], [Address], [Phone], [Email], [Description], [Status] FROM [Supplier] "
@@ -68,6 +69,14 @@ public class SupplierDAO extends RestaurantDAO<Supplier, String> {
     @Override
     public List<Supplier> getAll() {
         return fetchByQuery(SELECT_ALL_SQL);
+    }
+
+    public String getIdByName(String dishName) {
+        try (ResultSet resultSet = XJdbc.executeQuery(SELECT_ID_BY_NAME_SQL, dishName)) {
+            return resultSet.next() ? resultSet.getString("SupplierID") : null;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public List<Supplier> searchByCriteria(String id, String name, String phone, String status) {
