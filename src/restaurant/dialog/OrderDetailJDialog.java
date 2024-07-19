@@ -57,6 +57,7 @@ public class OrderDetailJDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Order [31584]");
         setBackground(new java.awt.Color(255, 255, 255));
+        setResizable(false);
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("Bàn ăn:");

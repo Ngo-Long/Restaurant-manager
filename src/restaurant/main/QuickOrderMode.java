@@ -31,6 +31,9 @@ import javax.swing.JFrame;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
@@ -54,8 +57,8 @@ import static restaurant.utils.XTextField.getRealText;
 import static restaurant.utils.XImage.getScaledImageIcon;
 import static restaurant.utils.XTextField.addCommasToNumber;
 import static restaurant.utils.XRunnable.addTextFieldListeners;
-import static restaurant.utils.ColumnTable.addQuantityButtonsColumn;
 import static restaurant.utils.XTextField.removeCommasFromNumber;
+import static restaurant.utils.ColumnTable.addQuantityButtonsColumn;
 
 public final class QuickOrderMode extends javax.swing.JFrame {
 
@@ -534,6 +537,8 @@ public final class QuickOrderMode extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     JLabel selectedMenu;
+    int COLUMN_CELL_ONE = 1;
+    int COLUMN_CELL_THREE = 3;
     final String PLACEHOLDER_NOTE = "Tối đa 60 ký tự";
     final String PLACEHOLDER_SEARCH = "Tìm theo tên món";
 
@@ -553,13 +558,14 @@ public final class QuickOrderMode extends javax.swing.JFrame {
 
         // <--- Setup main --->
         // handle click list menu
-        handleClickListMenu();
+        handleClickListMenuItem(menuLogout, menuEnd,
+                menuItemOnSite, menuItemSalerQuick, menuItemManagement);
 
         // handle click button header list
-        handleClickButton();
+        handleClickButtons(btnSubmit, btnReset, btnHistory, btnCancel);
 
         // add button column cell list
-        addButtonColumnCells();
+        addButtonColumnCells(tableOrder, COLUMN_CELL_ONE, COLUMN_CELL_THREE);
 
         // get data all
         List<Product> dataProducts = new ProductDAO().getAll();
@@ -572,9 +578,8 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         this.loadData();
     }
 
-    void addButtonColumnCells() {
+    void addButtonColumnCells(JTable tableOrder, int COLUMN_CELL_ONE, int COLUMN_CELL_THREE) {
         // Add button delete row
-        int COLUMN_CELL_ONE = 1;
         ColumnTable.addButtonIconColumn(
                 "src/restaurant/icon/delete.png",
                 COLUMN_CELL_ONE,
@@ -583,7 +588,6 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         );
 
         // Add button change quantity "+" and "-"
-        int COLUMN_CELL_THREE = 3;
         addQuantityButtonsColumn(tableOrder, COLUMN_CELL_THREE, false);
 
         // Calc total amount click column 
@@ -611,7 +615,8 @@ public final class QuickOrderMode extends javax.swing.JFrame {
     }
 
     // <--- Common 
-    void handleClickListMenu() {
+    void handleClickListMenuItem(JMenuItem menuLogout, JMenuItem menuEnd, JMenuItem menuItemOnSite,
+            JMenuItem menuItemSalerQuick, JMenuItem menuItemManagement) {
         menuLogout.addActionListener(e -> {
             if (Dialog.confirm(this, "Bạn muốn đăng xuất?")) {
                 Auth.clear();
@@ -629,7 +634,8 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         menuItemManagement.addActionListener(e -> openFullScreenWindow(new ManagementMode()));
     }
 
-    void handleClickButton() {
+    void handleClickButtons(JButton btnSubmit, JButton btnReset,
+            JButton btnHistory, JButton btnCancel) {
         btnSubmit.addActionListener(e -> submit());
         btnReset.addActionListener(e -> openFullScreenWindow(new QuickOrderMode()));
         btnHistory.addActionListener(e -> {
@@ -908,8 +914,8 @@ public final class QuickOrderMode extends javax.swing.JFrame {
             long price = product.getPrice();
 
             // Get quantity
-            String quantityStr = model.getValueAt(i, 3).toString();
-            int quantity = Integer.parseInt(quantityStr);
+            String quantityStr = (String) model.getValueAt(i, 3).toString();
+            int quantity = Integer.parseInt(removeCommasFromNumber(quantityStr));
 
             // Calculate subtotal for the row
             long subtotal = price * quantity;
@@ -1001,9 +1007,9 @@ public final class QuickOrderMode extends javax.swing.JFrame {
             // For each new list of dishes
             for (Vector<Object> row : orderProducts) {
                 String productID = row.get(0).toString();
-                String name = row.get(1).toString();
-                int quantity = Integer.parseInt(row.get(2).toString());
-//                String desc = row.get(3) != null ? row.get(3).toString() : "";
+                String name = row.get(2).toString();
+                int quantity = Integer.parseInt(row.get(3).toString());
+//                String desc = row.get(4) != null ? row.get(4).toString() : "";
 
                 OrderDetail newDetail = new OrderDetail();
                 newDetail.setOrderID(orderID);

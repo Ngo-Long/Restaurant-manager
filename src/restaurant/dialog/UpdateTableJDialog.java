@@ -9,6 +9,7 @@ import restaurant.utils.XComboBox;
 import restaurant.utils.XTextField;
 import restaurant.dao.DiningTableDAO;
 import restaurant.entity.DiningTable;
+import static restaurant.utils.XTextField.getRealText;
 import static restaurant.utils.Common.openSmallDialog;
 import static restaurant.utils.XComboBox.insertPlaceholder;
 import static restaurant.utils.XComboBox.loadDataToComboBox;
@@ -31,13 +32,13 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         jList1 = new javax.swing.JList<>();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
-        textTableId = new javax.swing.JTextField();
+        textID = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         btnAdd = new javax.swing.JButton();
-        textTableName = new javax.swing.JTextField();
+        textName = new javax.swing.JTextField();
         textDesc = new javax.swing.JTextField();
         textNumberSeats = new javax.swing.JTextField();
         btnUpdate = new javax.swing.JButton();
@@ -73,15 +74,18 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cập nhật phòng/bàn");
         setBackground(new java.awt.Color(255, 255, 255));
+        setResizable(false);
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("Mã bàn:");
 
-        textTableId.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        textTableId.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        textTableId.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(51, 204, 0)));
-        textTableId.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        textTableId.setMargin(new java.awt.Insets(2, 60, 2, 6));
+        textID.setEditable(false);
+        textID.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        textID.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        textID.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(51, 204, 0)));
+        textID.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        textID.setMargin(new java.awt.Insets(2, 60, 2, 6));
+        textID.setRequestFocusEnabled(false);
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Tên bàn:");
@@ -101,11 +105,11 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         btnAdd.setText("THÊM");
         btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        textTableName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        textTableName.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        textTableName.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
-        textTableName.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        textTableName.setMargin(new java.awt.Insets(2, 60, 2, 6));
+        textName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        textName.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        textName.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
+        textName.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        textName.setMargin(new java.awt.Insets(2, 60, 2, 6));
 
         textDesc.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textDesc.setHorizontalAlignment(javax.swing.JTextField.LEFT);
@@ -166,8 +170,8 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
                             .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(textTableId)
-                            .addComponent(textTableName)
+                            .addComponent(textID)
+                            .addComponent(textName)
                             .addComponent(textNumberSeats)
                             .addComponent(textDesc)
                             .addGroup(layout.createSequentialGroup()
@@ -192,14 +196,14 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
                 .addGap(40, 40, 40)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(textTableId, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(textID, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(16, 16, 16)
                         .addComponent(jLabel7))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(12, 12, 12)
-                        .addComponent(textTableName, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(textName, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(textNumberSeats, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -276,11 +280,12 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
     private javax.swing.JRadioButton radioOff;
     private javax.swing.JRadioButton radioOn;
     private javax.swing.JTextField textDesc;
+    private javax.swing.JTextField textID;
+    private javax.swing.JTextField textName;
     private javax.swing.JTextField textNumberSeats;
-    private javax.swing.JTextField textTableId;
-    private javax.swing.JTextField textTableName;
     // End of variables declaration//GEN-END:variables
 
+    String saveName;
     final String PLACEHOLDER_ID = "Mã tự động";
     final String PLACEHOLDER_COMBOBOX = "--Lựa chọn--";
 
@@ -290,13 +295,13 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         this.getContentPane().setBackground(Color.WHITE);
 
         // Setup UI
-        textTableName.requestFocus();
-        XTextField.addPlaceholder(textTableId, PLACEHOLDER_ID);
+        textName.requestFocus();
+        XTextField.addPlaceholder(textID, PLACEHOLDER_ID);
         XComboBox.setComboboxStyle(cbLocation);
         Common.createButtonGroup(radioOn, radioOff);
 
         // Setup text fields 
-        JTextField[] textFields = {textTableId, textTableName, textNumberSeats};
+        JTextField[] textFields = {textID, textName, textNumberSeats};
         for (JTextField textField : textFields) {
             XTextField.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
         }
@@ -324,6 +329,11 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
             return false;
         }
 
+        if (area.equals(PLACEHOLDER_COMBOBOX)) {
+            Dialog.warning(this, "Vui lòng chọn khu vực!");
+            return false;
+        }
+
         try {
             int numberSeats = Integer.parseInt(numberSeatsText);
             if (numberSeats <= 0) {
@@ -339,8 +349,8 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
     }
 
     DiningTable getModel() {
-        String tableId = XTextField.getRealText(textTableId, PLACEHOLDER_ID);
-        String name = textTableName.getText();
+        String tableId = XTextField.getRealText(textID, PLACEHOLDER_ID);
+        String name = textName.getText();
         String area = cbLocation.getSelectedItem().toString();
         String numberSeats = textNumberSeats.getText();
 
@@ -369,8 +379,10 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
             return;
         }
 
-        textTableId.setText(dataTable.getTableID());
-        textTableName.setText(dataTable.getName());
+        saveName = dataTable.getName();
+        textName.setText(dataTable.getName());
+
+        textID.setText(dataTable.getTableID());
         cbLocation.setSelectedItem(dataTable.getLocation());
         textNumberSeats.setText(String.valueOf(dataTable.getCapacity()));
         textDesc.setText(dataTable.getDescription());
@@ -386,13 +398,13 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
             return;
         }
 
-        if (new DiningTableDAO().isIdDuplicated(model.getTableID())) {
-            Dialog.warning(this, "Mã bàn đã tồn tại!");
+        if (new DiningTableDAO().isIDExists(model.getTableID())) {
+            Dialog.warning(this, "Bàn ăn đã tồn tại!");
             return;
         }
 
-        if (new DiningTableDAO().isDuplicateName(model.getName())) {
-            Dialog.alert(this, "Tên bàn đã tồn tại. Vui lòng nhập tên khác!");
+        if (new DiningTableDAO().isNameExists(model.getName())) {
+            Dialog.warning(this, "Tên bàn đã tồn tại. Vui lòng nhập tên khác!");
             return;
         }
 
@@ -401,34 +413,56 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
             Dialog.success(this, "Thêm mới thành công!");
             dispose();
         } catch (Exception e) {
-            Dialog.alert(this, "Thêm mới thất bại!");
+            Dialog.error(this, "Thêm mới thất bại!");
             e.printStackTrace();
         }
     }
 
     void update() {
+        String id = getRealText(textID, PLACEHOLDER_ID);
+        if (id.equals("")) {
+            Dialog.warning(this, "Bàn ăn không tồn tại!");
+            return;
+        }
+
         DiningTable model = getModel();
         if (model == null) {
             return;
         }
 
+        if (!textName.getText().equals(saveName)
+                && new DiningTableDAO().isNameExists(model.getName())) {
+            Dialog.warning(this, "Tên bàn đã tồn tại. Vui lòng nhập tên khác!");
+            return;
+        }
+
         try {
             new DiningTableDAO().update(model);
-            Dialog.alert(this, "Cập nhật thành công!");
+            Dialog.success(this, "Cập nhật thành công!");
             dispose();
         } catch (Exception e) {
-            Dialog.alert(this, "Cập nhật thất bại!");
+            Dialog.error(this, "Cập nhật thất bại!");
         }
     }
 
     void delete() {
+        String id = getRealText(textID, PLACEHOLDER_ID);
+        if (id.equals("")) {
+            Dialog.warning(this, "Bàn ăn không tồn tại!");
+            return;
+        }
+
+        boolean isResult = Dialog.confirm(this, "Xác nhận xóa!");
+        if (!isResult) {
+            return;
+        }
 
         try {
-            new DiningTableDAO().delete(textTableId.getText());
-            Dialog.alert(this, "Xóa thành công!");
+            new DiningTableDAO().delete(id);
+            Dialog.success(this, "Xóa thành công!");
             dispose();
         } catch (Exception e) {
-            Dialog.alert(this, "Xóa thất bại!");
+            Dialog.error(this, "Xóa thất bại!");
         }
     }
     // end --->

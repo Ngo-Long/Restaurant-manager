@@ -7,16 +7,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
 
-import javax.swing.Timer;
-import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.dao.GoodsDAO;
-import restaurant.dao.ProductDAO;
 import restaurant.utils.XImage;
 import restaurant.entity.Goods;
 import restaurant.utils.XComboBox;
@@ -27,8 +23,8 @@ import static restaurant.utils.XImage.setImageButtonIcon;
 import static restaurant.utils.XComboBox.insertPlaceholder;
 import static restaurant.utils.XComboBox.loadDataToComboBox;
 import static restaurant.utils.XTextField.addCommasToNumber;
-import static restaurant.utils.XTextField.removeCommasFromNumber;
 import static restaurant.utils.XImage.chooseImageFromDirectory;
+import static restaurant.utils.XTextField.removeCommasFromNumber;
 
 public final class UpdateGoodsJDialog extends javax.swing.JDialog {
 
@@ -98,6 +94,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cập nhật hàng hóa");
         setBackground(new java.awt.Color(255, 255, 255));
+        setResizable(false);
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("Mã hàng hóa:");
@@ -377,7 +374,8 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
     private javax.swing.JTextField textUnit;
     // End of variables declaration//GEN-END:variables
 
-    String imagePath = "";
+    String saveName;
+    String imagePath;
     final String PLACEHOLDER_ID = "Mã tự động";
     final String PLACEHOLDER_STATUS = "--Lựa chọn--";
 
@@ -449,11 +447,6 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
             return false;
         }
 
-        if (new GoodsDAO().isNameExists(name)) {
-            Dialog.alert(this, "Tên đã tồn tại. Vui lòng sửa tên khác!");
-            return false;
-        }
-
         if (category.equals("--Lựa chọn--")) {
             Dialog.warning(this, "Vui lòng lựa chọn khu vực!");
             return false;
@@ -511,8 +504,10 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
             return;
         }
 
-        textId.setText(goods.getGoodsID());
+        saveName = goods.getGoodsName();
         textName.setText(goods.getGoodsName());
+
+        textId.setText(goods.getGoodsID());
         cbCategory.setSelectedItem(goods.getCategory());
         textPrice.setText(String.valueOf(goods.getUnitPrice()));
         textUnit.setText(goods.getUnit());
@@ -538,12 +533,12 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         }
 
         if (new GoodsDAO().isIdExists(model.getGoodsID())) {
-            Dialog.warning(this, "Mã hàng hóa đã tồn tại!");
+            Dialog.warning(this, "Hàng hóa đã tồn tại!");
             return;
         }
 
         if (new GoodsDAO().isNameExists(model.getGoodsName())) {
-            Dialog.alert(this, "Tên đã tồn tại. Vui lòng nhập tên khác!");
+            Dialog.warning(this, "Tên đã tồn tại. Vui lòng nhập tên khác!");
             return;
         }
 
@@ -552,7 +547,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
             Dialog.success(this, "Thêm mới thành công!");
             dispose();
         } catch (Exception e) {
-            Dialog.alert(this, "Thêm mới thất bại!");
+            Dialog.error(this, "Thêm mới thất bại!");
             e.printStackTrace();
         }
     }
@@ -563,22 +558,41 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
             return;
         }
 
+        System.out.println(!textName.getText().equals(saveName));
+        if (!textName.getText().equals(saveName)
+                && new GoodsDAO().isNameExists(model.getGoodsName())) {
+            Dialog.warning(this, "Tên đã tồn tại. Vui lòng nhập tên khác!");
+            return;
+        }
+
         try {
             new GoodsDAO().update(model);
-            Dialog.alert(this, "Cập nhật thành công!");
+            Dialog.success(this, "Cập nhật thành công!");
             dispose();
         } catch (Exception e) {
-            Dialog.alert(this, "Cập nhật thất bại!");
+            Dialog.error(this, "Cập nhật thất bại!");
         }
     }
 
     void delete() {
+        String id = getRealText(textId, PLACEHOLDER_ID);
+        if (id.equals("")) {
+            Dialog.alert(this, "Hàng hóa không tồn tại!");
+            return;
+        }
+
+        boolean isResult = Dialog.confirm(this, "Xác nhận xóa!");
+        if (!isResult) {
+            return;
+        }
+
         try {
-            new GoodsDAO().delete(textId.getText());
-            Dialog.alert(this, "Xóa thành công!");
+            new GoodsDAO().delete(id);
+            Dialog.success(this, "Xóa thành công!");
             dispose();
         } catch (Exception e) {
-            Dialog.alert(this, "Xóa thất bại!");
+            Dialog.error(this, "Hàng hóa đã sử dụng\n"
+                    + "không xóa được!");
         }
     }
     // end --->

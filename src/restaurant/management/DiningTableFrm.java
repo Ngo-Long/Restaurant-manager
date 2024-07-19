@@ -454,12 +454,8 @@ public final class DiningTableFrm extends javax.swing.JPanel {
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
-                // reset data
-                loadDataFillTable();
-
-                // reset combobox
-                loadDataToComboBox(cbArea, dao.getAll(), DiningTable::getLocation);
-                insertPlaceholder(cbArea, PLACEHOLDER_STATUS);
+               
+                
             }
         });
 

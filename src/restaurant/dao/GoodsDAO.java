@@ -21,6 +21,7 @@ public class GoodsDAO extends RestaurantDAO<Goods, String> {
     final String IS_EXISTS_SQL = "SELECT COUNT(*) FROM Goods WHERE GoodsID = ?";
     final String NAME_EXISTS_SQL = "SELECT COUNT(*) FROM Goods WHERE GoodsName = ?";
 
+    final String SELECT_BY_CATEGORY_SQL = "SELECT * FROM Goods WHERE Category = ?";
     final String SELECT_BY_CRITERIA = "SELECT TOP (1000) [GoodsID], [GoodsName], [UnitPrice], [Unit], "
             + "[ImageURL], [Category], [InitialQuantity], [MinimumQuantity], [Status], [Note], [Activity] "
             + "FROM [RestaurantManager].[dbo].[Goods] "
@@ -77,15 +78,6 @@ public class GoodsDAO extends RestaurantDAO<Goods, String> {
         return fetchByQuery(SELECT_ALL_SQL);
     }
 
-    public List<Goods> searchByCriteria(String id, String name, String category, String status) {
-        String idTerm = "%" + id + "%";
-        String nameTerm = "%" + name + "%";
-        String categoryTerm = "%" + category + "%";
-        String statusTerm = "%" + status + "%";
-
-        return fetchByQuery(SELECT_BY_CRITERIA, idTerm, nameTerm, categoryTerm, statusTerm);
-    }
-
     public boolean isIdExists(String id) {
         try (ResultSet rs = XJdbc.executeQuery(IS_EXISTS_SQL, id)) {
             if (rs.next()) {
@@ -107,6 +99,19 @@ public class GoodsDAO extends RestaurantDAO<Goods, String> {
             ex.printStackTrace();
         }
         return false;
+    }
+
+    public List<Goods> findByCategory(String category) {
+        return fetchByQuery(SELECT_BY_CATEGORY_SQL, category);
+    }
+
+    public List<Goods> searchByCriteria(String id, String name, String category, String status) {
+        String idTerm = "%" + id + "%";
+        String nameTerm = "%" + name + "%";
+        String categoryTerm = "%" + category + "%";
+        String statusTerm = "%" + status + "%";
+
+        return fetchByQuery(SELECT_BY_CRITERIA, idTerm, nameTerm, categoryTerm, statusTerm);
     }
 
     @Override

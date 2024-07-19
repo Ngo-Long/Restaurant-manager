@@ -92,6 +92,7 @@ public final class TableOrderJDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Đơn hàng ");
         setBackground(new java.awt.Color(51, 102, 255));
+        setResizable(false);
 
         labelTenBan1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         labelTenBan1.setText("Tên:");

@@ -11,10 +11,8 @@ import restaurant.utils.XImage;
 import restaurant.utils.XComboBox;
 import restaurant.utils.XTextField;
 
-import restaurant.dao.ProductDAO;
-import restaurant.dao.SupplierDAO;
 import restaurant.entity.Product;
-
+import restaurant.dao.ProductDAO;
 import static restaurant.utils.Common.openSmallDialog;
 import static restaurant.utils.XTextField.getRealText;
 import static restaurant.utils.XImage.setImageButtonIcon;
@@ -41,7 +39,7 @@ public final class UpdateProductJDialog extends JDialog {
         jList1 = new javax.swing.JList<>();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
-        texID = new javax.swing.JTextField();
+        textID = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         textPrice = new javax.swing.JTextField();
@@ -93,17 +91,18 @@ public final class UpdateProductJDialog extends JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cập nhật hàng hóa");
         setBackground(new java.awt.Color(255, 255, 255));
+        setResizable(false);
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("Mã hàng hóa:");
 
-        texID.setEditable(false);
-        texID.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        texID.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        texID.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(51, 204, 0)));
-        texID.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        texID.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        texID.setRequestFocusEnabled(false);
+        textID.setEditable(false);
+        textID.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        textID.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        textID.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(51, 204, 0)));
+        textID.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        textID.setMargin(new java.awt.Insets(2, 60, 2, 6));
+        textID.setRequestFocusEnabled(false);
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Tên hàng hóa:");
@@ -236,7 +235,7 @@ public final class UpdateProductJDialog extends JDialog {
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(texID, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(textID, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -278,7 +277,7 @@ public final class UpdateProductJDialog extends JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(texID, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(textID, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(12, 12, 12)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -382,14 +381,15 @@ public final class UpdateProductJDialog extends JDialog {
     private javax.swing.JTable jTable1;
     private javax.swing.JRadioButton radioOff;
     private javax.swing.JRadioButton radioOn;
-    private javax.swing.JTextField texID;
     private javax.swing.JTextField textCostPrice;
     private javax.swing.JTextField textDesc;
+    private javax.swing.JTextField textID;
     private javax.swing.JTextField textName;
     private javax.swing.JTextField textPrice;
     private javax.swing.JTextField textUnit;
     // End of variables declaration//GEN-END:variables
 
+    String saveName;
     String imagePath;
     final String PLACEHOLDER_ID = "Mã tự động";
     final String PLACEHOLDER_COMBOBOX = "--Lựa chọn--";
@@ -400,7 +400,7 @@ public final class UpdateProductJDialog extends JDialog {
         this.getContentPane().setBackground(Color.WHITE);
 
         // Set text fields 
-        JTextField[] textFields = {texID, textName, textCostPrice, textPrice, textUnit, textPrice};
+        JTextField[] textFields = {textID, textName, textCostPrice, textPrice, textUnit, textPrice};
         for (JTextField textField : textFields) {
             XTextField.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
         }
@@ -408,7 +408,7 @@ public final class UpdateProductJDialog extends JDialog {
         // Set focus field text
         textName.requestFocus();
         Common.createButtonGroup(radioOn, radioOff);
-        XTextField.addPlaceholder(texID, PLACEHOLDER_ID);
+        XTextField.addPlaceholder(textID, PLACEHOLDER_ID);
         XComboBox.setComboboxStyle(cbCategory, cbKitchenArea);
         XImage.setImageButtonIcon("src/restaurant/img/background.jpg", btnImage);
 
@@ -445,7 +445,7 @@ public final class UpdateProductJDialog extends JDialog {
     }
 
     Product getModel() {
-        String id = getRealText(texID, PLACEHOLDER_ID);
+        String id = getRealText(textID, PLACEHOLDER_ID);
         String name = textName.getText();
         String costPriceText = textCostPrice.getText();
         String priceText = textPrice.getText();
@@ -519,9 +519,10 @@ public final class UpdateProductJDialog extends JDialog {
             return;
         }
 
-        // Set text 
-        texID.setText(dataProduct.getProductID());
+        saveName = dataProduct.getProductName();
         textName.setText(dataProduct.getProductName());
+
+        textID.setText(dataProduct.getProductID());
         textUnit.setText(dataProduct.getUnit());
         textDesc.setText(dataProduct.getDescription());
         textPrice.setText(String.valueOf(dataProduct.getPrice()));
@@ -547,13 +548,13 @@ public final class UpdateProductJDialog extends JDialog {
             return;
         }
 
-        if (new ProductDAO().isDuplicatedId(model.getProductID())) {
-            Dialog.warning(this, "Mã sản phẩm đã tồn tại!");
+        if (new ProductDAO().isIDExists(model.getProductID())) {
+            Dialog.warning(this, "Sản phẩm đã tồn tại!");
             return;
         }
 
-        if (new ProductDAO().isDuplicateName(model.getProductName())) {
-            Dialog.alert(this, "Tên đã tồn tại. Vui lòng nhập tên khác!");
+        if (new ProductDAO().isNameExists(model.getProductName())) {
+            Dialog.warning(this, "Tên đã tồn tại. Vui lòng nhập tên khác!");
             return;
         }
 
@@ -568,8 +569,20 @@ public final class UpdateProductJDialog extends JDialog {
     }
 
     void update() {
+        String id = getRealText(textID, PLACEHOLDER_ID);
+        if (id.equals("")) {
+            Dialog.warning(this, "Sản phẩm không tồn tại!");
+            return;
+        }
+
         Product model = getModel();
         if (model == null) {
+            return;
+        }
+
+        if (!textName.getText().equals(saveName)
+                && new ProductDAO().isNameExists(model.getProductName())) {
+            Dialog.warning(this, "Tên đã tồn tại. Vui lòng nhập tên khác!");
             return;
         }
 
@@ -578,14 +591,25 @@ public final class UpdateProductJDialog extends JDialog {
             Dialog.success(this, "Cập nhật thành công!");
             dispose();
         } catch (Exception e) {
-            Dialog.alert(this, "Cập nhật thất bại!");
+            Dialog.error(this, "Cập nhật thất bại!");
         }
     }
 
     void delete() {
+        String id = getRealText(textID, PLACEHOLDER_ID);
+        if (id.equals("")) {
+            Dialog.warning(this, "Sản phẩm không tồn tại!");
+            return;
+        }
+
+        boolean isResult = Dialog.confirm(this, "Xác nhận xóa!");
+        if (!isResult) {
+            return;
+        }
+
         try {
-            new ProductDAO().delete(texID.getText());
-            Dialog.alert(this, "Xóa thành công!");
+            new ProductDAO().delete(textID.getText());
+            Dialog.success(this, "Xóa thành công!");
             dispose();
         } catch (Exception e) {
             Dialog.error(this, "Xóa thất bại!");

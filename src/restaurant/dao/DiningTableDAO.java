@@ -14,8 +14,7 @@ public class DiningTableDAO extends RestaurantDAO<DiningTable, String> {
     final String UPDATE_SQL = "UPDATE DiningTable SET Name=?, Location=?, Capacity=?, "
             + "Status=?, Description=?, Activity=? WHERE TableID=?";
     final String DELETE_SQL = "DELETE FROM DiningTable WHERE TableID = ?";
-    final String SELECT_ALL_SQL = "SELECT * FROM DiningTable "
-            + "ORDER BY CAST(SUBSTRING(Name, CHARINDEX(' ', Name) + 1, LEN(Name)) AS INT) ";
+    final String SELECT_ALL_SQL = "SELECT * FROM DiningTable";
     final String SELECT_BY_ID_SQL = "SELECT * FROM DiningTable WHERE TableID=? ";
 
     final String SELECT_BY_ORDER_ID_SQL = "SELECT dt.* FROM [Order] o "
@@ -104,7 +103,7 @@ public class DiningTableDAO extends RestaurantDAO<DiningTable, String> {
         return this.fetchByQuery(SELECT_BY_CRITERIA, nameTerm, locationTerm, activityTerm);
     }
 
-    public boolean isIdDuplicated(String id) {
+    public boolean isIDExists(String id) {
         try (ResultSet rs = XJdbc.executeQuery(CHECK_DUPLICATED_ID_SQL, id)) {
             if (rs.next()) {
                 int count = rs.getInt(1);
@@ -117,7 +116,7 @@ public class DiningTableDAO extends RestaurantDAO<DiningTable, String> {
         return false;
     }
 
-    public boolean isDuplicateName(String name) {
+    public boolean isNameExists(String name) {
         try (ResultSet rs = XJdbc.executeQuery(CHECK_DUPLICATED_NAME_SQL, name)) {
             if (rs.next()) {
                 int count = rs.getInt(1);

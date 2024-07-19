@@ -1,13 +1,15 @@
 package restaurant.dialog;
 
 import java.awt.Color;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.utils.XTextField;
 
-public class SmallTextFiledJDialog extends javax.swing.JDialog {
+public final class SmallTextFiledJDialog extends javax.swing.JDialog {
 
     public SmallTextFiledJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -28,6 +30,7 @@ public class SmallTextFiledJDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Thêm khu vực");
+        setResizable(false);
 
         labelMain.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         labelMain.setText("Khu vực:");
@@ -56,6 +59,7 @@ public class SmallTextFiledJDialog extends javax.swing.JDialog {
         btnSubmit.setForeground(new java.awt.Color(255, 255, 255));
         btnSubmit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/check.png"))); // NOI18N
         btnSubmit.setText("Thực hiện");
+        btnSubmit.setToolTipText("Enter");
         btnSubmit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         btnCancel.setBackground(new java.awt.Color(102, 102, 102));
@@ -63,6 +67,7 @@ public class SmallTextFiledJDialog extends javax.swing.JDialog {
         btnCancel.setForeground(new java.awt.Color(255, 255, 255));
         btnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/cancel.png"))); // NOI18N
         btnCancel.setText("Bỏ qua");
+        btnCancel.setToolTipText("Esc");
         btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -153,10 +158,22 @@ public class SmallTextFiledJDialog extends javax.swing.JDialog {
         for (JTextField textField : textFields) {
             XTextField.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
         }
-        
+
         // Handle click button
         btnSubmit.addActionListener(e -> submit());
         btnCancel.addActionListener(e -> dispose());
+
+        // Common KeyListener for ESC and ENTER keys
+        textMain.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    System.exit(0);
+                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    btnSubmit.doClick();
+                }
+            }
+        });
     }
 
     public void setLabel(String label) {
@@ -173,13 +190,13 @@ public class SmallTextFiledJDialog extends javax.swing.JDialog {
 
     void submit() {
         String label = textMain.getText().trim();
-        if (label.trim().equals("") || label == null) {
+        if (label.trim().equals("")) {
             Dialog.error(null, "Vui lòng không để trống!");
+            textMain.requestFocus();
             return;
         }
 
         // Move the label to another file
-        UpdateProductJDialog dialog = new UpdateProductJDialog(null, true);
         Common.setComboBoxValue(label, cbMain);
 
         dispose();

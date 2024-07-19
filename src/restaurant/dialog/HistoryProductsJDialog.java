@@ -82,6 +82,7 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Lịch sử chế biến ");
         setBackground(new java.awt.Color(51, 102, 255));
+        setResizable(false);
 
         textStartDate.setBackground(new java.awt.Color(255, 255, 255));
         textStartDate.setToolTipText("Ngày");

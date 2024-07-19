@@ -1,16 +1,22 @@
 package restaurant.dialog;
 
 import java.awt.Color;
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
-import restaurant.utils.Common;
+import java.awt.Frame;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.List;
+import restaurant.dao.GoodsDAO;
+import restaurant.entity.Goods;
+import restaurant.main.ManagementMode;
+import restaurant.management.CreateReceiptFrm;
 import restaurant.utils.Dialog;
 import restaurant.utils.XComboBox;
-import restaurant.utils.XTextField;
+import static restaurant.utils.XComboBox.insertPlaceholder;
+import static restaurant.utils.XComboBox.loadDataToComboBox;
 
-public class SmallComboBoxJDialog extends javax.swing.JDialog {
+public final class SmallComboBoxJDialog extends javax.swing.JDialog {
 
-    public SmallComboBoxJDialog(java.awt.Frame parent, boolean modal) {
+    public SmallComboBoxJDialog(Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         this.init();
@@ -25,10 +31,11 @@ public class SmallComboBoxJDialog extends javax.swing.JDialog {
         textNote = new javax.swing.JTextField();
         btnSubmit = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-        comboBox = new javax.swing.JComboBox<>();
+        comboBoxMain = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Thêm khu vực");
+        setResizable(false);
 
         labelMain.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         labelMain.setText("Khu vực:");
@@ -51,6 +58,7 @@ public class SmallComboBoxJDialog extends javax.swing.JDialog {
         btnSubmit.setForeground(new java.awt.Color(255, 255, 255));
         btnSubmit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/check.png"))); // NOI18N
         btnSubmit.setText("Thực hiện");
+        btnSubmit.setToolTipText("Enter");
         btnSubmit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         btnCancel.setBackground(new java.awt.Color(102, 102, 102));
@@ -58,9 +66,10 @@ public class SmallComboBoxJDialog extends javax.swing.JDialog {
         btnCancel.setForeground(new java.awt.Color(255, 255, 255));
         btnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/cancel.png"))); // NOI18N
         btnCancel.setText("Bỏ qua");
+        btnCancel.setToolTipText("Esc");
         btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboBoxMain.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -81,7 +90,7 @@ public class SmallComboBoxJDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(textNote, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
-                            .addComponent(comboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(comboBoxMain, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(34, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -90,7 +99,7 @@ public class SmallComboBoxJDialog extends javax.swing.JDialog {
                 .addContainerGap(33, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(labelMain, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
-                    .addComponent(comboBox, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
+                    .addComponent(comboBoxMain, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(textNote, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -133,26 +142,54 @@ public class SmallComboBoxJDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnSubmit;
-    private javax.swing.JComboBox<String> comboBox;
+    private javax.swing.JComboBox<String> comboBoxMain;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel labelMain;
     private javax.swing.JTextField textNote;
     // End of variables declaration//GEN-END:variables
 
-    private JComboBox<String> cbMain;
+    private List<Goods> selectedGoods;
 
     void init() {
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(Color.WHITE);
-        
-        XComboBox.setComboboxStyle(comboBox);
+
+        // add data to combobox
+        XComboBox.setComboboxStyle(comboBoxMain);
+        loadDataToComboBox(comboBoxMain, new GoodsDAO().getAll(), Goods::getCategory);
+        insertPlaceholder(comboBoxMain, "--Lựa chọn--");
 
         // Handle click button
         btnSubmit.addActionListener(e -> submit());
         btnCancel.addActionListener(e -> dispose());
+
+        // Common KeyListener for ESC and ENTER keys
+        comboBoxMain.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    System.exit(0);
+                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    btnSubmit.doClick();
+                }
+            }
+        });
     }
 
     void submit() {
+        String category = comboBoxMain.getSelectedItem().toString();
+        if (category.equals("--Lựa chọn--")) {
+            Dialog.alert(this, "Vui lòng chọn phân loại!");
+            comboBoxMain.requestFocus();
+            return;
+        }
+
+        // get data list
+        selectedGoods = new GoodsDAO().findByCategory(category);
         dispose();
+    }
+
+    public List<Goods> getSelectedGoods() {
+        return selectedGoods;
     }
 }

@@ -75,6 +75,7 @@ public class HistoryReceiptDetailJDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Chi tiết Order [31584]");
         setBackground(new java.awt.Color(255, 255, 255));
+        setResizable(false);
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("Loại phiếu:");
@@ -129,9 +130,9 @@ public class HistoryReceiptDetailJDialog extends javax.swing.JDialog {
         jScrollPane3.setViewportView(tableMain);
         if (tableMain.getColumnModel().getColumnCount() > 0) {
             tableMain.getColumnModel().getColumn(0).setPreferredWidth(140);
-            tableMain.getColumnModel().getColumn(1).setPreferredWidth(30);
+            tableMain.getColumnModel().getColumn(1).setPreferredWidth(28);
             tableMain.getColumnModel().getColumn(2).setPreferredWidth(60);
-            tableMain.getColumnModel().getColumn(3).setPreferredWidth(75);
+            tableMain.getColumnModel().getColumn(3).setPreferredWidth(78);
         }
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -277,7 +278,7 @@ public class HistoryReceiptDetailJDialog extends javax.swing.JDialog {
             // get id
             String receiptID = dataItem.getReceiptID();
             String receiptType = dataItem.getTransactionType();
-            String charator = receiptType.equals("Đã thanh toán") ? "+" : "-";
+            String charator = receiptType.equals("Phiếu nhập") ? "+" : "-";
 
             // Set name 
             Employee employee = new EmployeeDAO().getByID(dataItem.getEmployeeID());

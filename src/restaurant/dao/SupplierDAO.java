@@ -10,12 +10,11 @@ import java.util.ArrayList;
 
 public class SupplierDAO extends RestaurantDAO<Supplier, String> {
 
-    final String INSERT_SQL = "INSERT INTO Supplier (SupplierID, SupplierName, "
-            + "OutstandingDebt, TotalSales, Address, Phone, Email, Description, Status) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    final String UPDATE_SQL = "UPDATE Supplier SET SupplierName=?, "
-            + "OutstandingDebt=?, TotalSales=?, Address=?, Phone=?, Email=?, Description=?, "
-            + "Status=? WHERE SupplierID=?";
+    final String INSERT_SQL = "INSERT INTO Supplier (SupplierName, "
+            + "Address, Phone, Email, Description, Status) "
+            + "VALUES (?, ?, ?, ?, ?, ?)";
+    final String UPDATE_SQL = "UPDATE Supplier SET SupplierName=?, Address=?, "
+            + "Phone=?, Email=?, Description=?, Status=? WHERE SupplierID=?";
     final String DELETE_SQL = "DELETE FROM Supplier WHERE SupplierID=?";
     final String SELECT_ALL_SQL = "SELECT * FROM Supplier";
     final String SELECT_BY_ID_SQL = "SELECT * FROM Supplier WHERE SupplierID=?";
@@ -31,10 +30,7 @@ public class SupplierDAO extends RestaurantDAO<Supplier, String> {
     @Override
     public void insert(Supplier entity) {
         XJdbc.executeUpdate(INSERT_SQL,
-                entity.getSupplierID(),
                 entity.getSupplierName(),
-                entity.getOutstandingDebt(),
-                entity.getTotalSales(),
                 entity.getAddress(),
                 entity.getPhone(),
                 entity.getEmail(),
@@ -47,8 +43,6 @@ public class SupplierDAO extends RestaurantDAO<Supplier, String> {
     public void update(Supplier entity) {
         XJdbc.executeUpdate(UPDATE_SQL,
                 entity.getSupplierName(),
-                entity.getOutstandingDebt(),
-                entity.getTotalSales(),
                 entity.getAddress(),
                 entity.getPhone(),
                 entity.getEmail(),

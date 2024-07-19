@@ -17,7 +17,6 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
-import restaurant.utils.Auth;
 import restaurant.dao.SupplierDAO;
 import restaurant.entity.Supplier;
 import restaurant.utils.XTextField;
@@ -25,6 +24,7 @@ import restaurant.table.TableCustom;
 import restaurant.main.ManagementMode;
 import restaurant.utils.TableNavigator;
 import restaurant.dialog.UpdateSupplierJDialog;
+import restaurant.utils.XComboBox;
 import static restaurant.utils.XComboBox.insertPlaceholder;
 import static restaurant.utils.XComboBox.loadDataToComboBox;
 import static restaurant.utils.XRunnable.addComponentListeners;
@@ -373,6 +373,7 @@ public final class SupplierFrm extends javax.swing.JPanel {
     void init() {
         // <--- Fuction common from file common --->
         Common.createButtonGroup(radioOn, radioOff, radioAll);
+        XComboBox.setComboboxStyle(cbCategory);
 
         // edit field text
         XTextField.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);

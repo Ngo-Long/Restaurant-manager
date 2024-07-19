@@ -3,9 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/main/QuickOrderMode.java</file>
             <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/management/CreateReceiptFrm.java</file>
-            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/utils/XTextField.java</file>
+            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/dialog/SmallTextFiledJDialog.java</file>
+            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/management/GoodsFrm.java</file>
+            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/dialog/SmallComboBoxJDialog.java</file>
+            <file>file:/D:/Workspaces/Java/app-restaurant-manager/java-restaurant-manager/src/restaurant/dialog/UpdateGoodsJDialog.java</file>
         </group>
     </open-files>
 </project-private>

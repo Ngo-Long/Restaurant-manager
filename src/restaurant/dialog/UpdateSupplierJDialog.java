@@ -7,6 +7,8 @@ import restaurant.utils.Dialog;
 import restaurant.dao.SupplierDAO;
 import restaurant.utils.XTextField;
 import restaurant.entity.Supplier;
+import restaurant.utils.XComboBox;
+import static restaurant.utils.XTextField.getRealText;
 
 public final class UpdateSupplierJDialog extends javax.swing.JDialog {
 
@@ -69,6 +71,7 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cập nhật phòng/bàn");
         setBackground(new java.awt.Color(255, 255, 255));
+        setResizable(false);
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("Mã NCC:");
@@ -285,13 +288,14 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
     private javax.swing.JTextField textPhone;
     // End of variables declaration//GEN-END:variables
 
+    String saveName;
     final String PLACEHOLDER_ID = "Mã tự động";
 
     void init() {
         // Set system
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(Color.WHITE);
-
+        
         // Setup UI
         textName.requestFocus();
         Common.createButtonGroup(radioOn, radioOff);
@@ -325,7 +329,7 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
     }
 
     Supplier getModel() {
-        String id = XTextField.getRealText(textID, PLACEHOLDER_ID);
+        String id = getRealText(textID, PLACEHOLDER_ID);
         String name = textName.getText();
         String phoneText = textPhone.getText();
 
@@ -355,6 +359,7 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
         }
 
         textID.setText(data.getSupplierID());
+        saveName = data.getSupplierName();
         textName.setText(data.getSupplierName());
         textPhone.setText(data.getPhone());
         textEmail.setText(data.getEmail());
@@ -373,7 +378,7 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
         }
 
         if (new SupplierDAO().isIdExists(model.getSupplierID())) {
-            Dialog.warning(this, "Mã nhà cung cấp đã tồn tại!");
+            Dialog.warning(this, "Nhà cung cấp đã tồn tại!");
             return;
         }
 
@@ -387,33 +392,56 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
             Dialog.success(this, "Thêm mới thành công!");
             dispose();
         } catch (Exception e) {
-            Dialog.alert(this, "Thêm mới thất bại!");
+            Dialog.error(this, "Thêm mới thất bại!");
             e.printStackTrace();
         }
     }
 
     void update() {
+        String id = getRealText(textID, PLACEHOLDER_ID);
+        if (id.equals("")) {
+            Dialog.warning(this, "Nhà cung cấp không tồn tại!");
+            return;
+        }
+
         Supplier model = getModel();
         if (model == null) {
             return;
         }
 
+        if (!textName.getText().equals(saveName)
+                && new SupplierDAO().isNameExists(model.getSupplierName())) {
+            Dialog.warning(this, "Tên đã tồn tại. Vui lòng nhập tên khác!");
+            return;
+        }
+
         try {
             new SupplierDAO().update(model);
-            Dialog.alert(this, "Cập nhật thành công!");
+            Dialog.success(this, "Cập nhật thành công!");
             dispose();
         } catch (Exception e) {
-            Dialog.alert(this, "Cập nhật thất bại!");
+            Dialog.error(this, "Cập nhật thất bại!");
         }
     }
 
     void delete() {
+        String id = getRealText(textID, PLACEHOLDER_ID);
+        if (id.equals("")) {
+            Dialog.warning(this, "Nhà cung cấp không tồn tại!");
+            return;
+        }
+
+        boolean isResult = Dialog.confirm(this, "Xác nhận xóa!");
+        if (!isResult) {
+            return;
+        }
+
         try {
             new SupplierDAO().delete(textID.getText());
-            Dialog.alert(this, "Xóa thành công!");
+            Dialog.success(this, "Xóa thành công!");
             dispose();
         } catch (Exception e) {
-            Dialog.alert(this, "Xóa thất bại!");
+            Dialog.error(this, "Xóa thất bại!");
         }
     }
     // end --->

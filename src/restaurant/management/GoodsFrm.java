@@ -34,11 +34,8 @@ import static restaurant.utils.XRunnable.addTextFieldListeners;
 
 public final class GoodsFrm extends javax.swing.JPanel {
 
-    private ManagementMode managementMode;
-
     public GoodsFrm(ManagementMode managementMode) {
         initComponents();
-        this.managementMode = managementMode;
         this.init();
     }
 
@@ -365,7 +362,7 @@ public final class GoodsFrm extends javax.swing.JPanel {
     private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
-    final int DEBOUNCE_DELAY_LOAD = 300; 
+    final int DEBOUNCE_DELAY_LOAD = 300;
     final String PLACEHOLDER_STATUS = "--Tất cả--";
     final String PLACEHOLDER_SEARCH = "Tìm theo mã hoặc tên";
 
@@ -378,7 +375,7 @@ public final class GoodsFrm extends javax.swing.JPanel {
         // <--- Fuction common from file common --->
         createButtonGroup(radioOn, radioOff, radioAll);
         XComboBox.setComboboxStyle(cbCategory);
-        
+
         // edit field text
         XTextField.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
         XTextField.addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));

@@ -82,7 +82,7 @@ public class ProductDAO extends RestaurantDAO<Product, String> {
         return fetchByQuery(SELECT_ALL_BY_CATEGORY_SQL, category);
     }
 
-    public boolean isDuplicatedId(String id) {
+    public boolean isIDExists(String id) {
         try (ResultSet rs = XJdbc.executeQuery(CHECK_DUPLICATED_ID_SQL, id)) {
             if (rs.next()) {
                 int count = rs.getInt(1);
@@ -95,7 +95,7 @@ public class ProductDAO extends RestaurantDAO<Product, String> {
         return false;
     }
 
-    public boolean isDuplicateName(String name) {
+    public boolean isNameExists(String name) {
         try (ResultSet rs = XJdbc.executeQuery(CHECK_DUPLICATED_NAME_SQL, name)) {
             if (rs.next()) {
                 int count = rs.getInt(1);

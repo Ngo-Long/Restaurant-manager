@@ -1,17 +1,17 @@
 package restaurant.utils;
 
-import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Insets;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.FontMetrics;
-import java.awt.GridBagConstraints;
+import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.GridBagConstraints;
 import java.util.function.Consumer;
 
 import javax.swing.JPanel;
@@ -20,14 +20,11 @@ import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import javax.swing.JTextField;
 import javax.swing.BorderFactory;
-import javax.swing.SwingUtilities;
 import javax.swing.DefaultCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.AbstractCellEditor;
-import javax.swing.SwingConstants;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
 import static restaurant.utils.Common.createButton;
@@ -69,10 +66,13 @@ public class ColumnTable {
             decreaseButton.setPreferredSize(new Dimension(20, 20));
 
             // Set font size for quantityField
-            quantityField.setPreferredSize(new Dimension(20, 20));
+            quantityField.setPreferredSize(new Dimension(24, 24));
             quantityField.setHorizontalAlignment(JTextField.CENTER);
-            quantityField.setBorder(BorderFactory.createEmptyBorder());
             quantityField.setFont(new Font(quantityField.getFont().getName(), Font.PLAIN, 14));
+            quantityField.setBorder(editableTextField
+                    ? BorderFactory.createMatteBorder(0, 0, 1, 0, Color.red)
+                    : BorderFactory.createEmptyBorder()
+            );
 
             // Make the text field non-editable if required
             quantityField.setEditable(editableTextField);
@@ -145,6 +145,7 @@ public class ColumnTable {
     private static class QuantityButtonEditor extends AbstractCellEditor implements TableCellEditor {
 
         private QuantityButtonPanel panel;
+        private static final int MAX_QUANTITY = 99;
 
         public QuantityButtonEditor(boolean editableTextField) {
             super();
@@ -153,7 +154,11 @@ public class ColumnTable {
             panel.getPlusButton().addActionListener(e -> {
                 String text = panel.getQuantityField().getText().trim();
                 int number = parseQuantity(text);
-                panel.getQuantityField().setText(String.valueOf(number + 1));
+                if (number < MAX_QUANTITY) {
+                    panel.getQuantityField().setText(String.valueOf(number + 1));
+                } else {
+                    Dialog.warning(null, "Số lượng không được vượt quá " + MAX_QUANTITY + "!");
+                }
                 fireEditingStopped();
             });
 
@@ -161,7 +166,6 @@ public class ColumnTable {
                 String text = panel.getQuantityField().getText().trim();
                 int number = parseQuantity(text);
 
-                // minus 1
                 if (number > 1) {
                     panel.getQuantityField().setText(String.valueOf(number - 1));
                 }
@@ -185,8 +189,7 @@ public class ColumnTable {
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
             panel.setBackground(isSelected == true ? table.getSelectionBackground() : Color.white);
 
-            // Ẩn đi
-            if (value == null || value.toString().isEmpty()) {
+            if (value == null || value.toString().isEmpty()) { // Ẩn đi
                 panel.getQuantityField().setText("");
                 panel.getPlusButton().setEnabled(false);
                 panel.getMinusButton().setEnabled(false);
@@ -201,11 +204,33 @@ public class ColumnTable {
 
         @Override
         public Object getCellEditorValue() {
-            return panel.getQuantityField().getText();
+            String text = panel.getQuantityField().getText().trim();
+            try {
+                int number = Integer.parseInt(text);
+                if (number < 1 || number > MAX_QUANTITY) {
+                    Dialog.warning(null, "Số lượng phải từ 1 đến " + MAX_QUANTITY + "!");
+                    return "1"; // Reset to 1 on invalid input
+                }
+            } catch (NumberFormatException e) {
+                Dialog.warning(null, "Vui lòng nhập đúng số nguyên!");
+                return "1"; // Reset to 1 on invalid input
+            }
+            return text;
         }
 
         @Override
         public boolean stopCellEditing() {
+            String text = panel.getQuantityField().getText().trim();
+            try {
+                int number = Integer.parseInt(text);
+                if (number < 1 || number > MAX_QUANTITY) {
+                    Dialog.warning(null, "Số lượng phải từ 1 đến " + MAX_QUANTITY + "!");
+                    panel.getQuantityField().setText("1"); // Reset to 1 on invalid input
+                }
+            } catch (NumberFormatException e) {
+                Dialog.warning(null, "Vui lòng nhập đúng số nguyên!");
+                panel.getQuantityField().setText("1"); // Reset to 1 on invalid input
+            }
             fireEditingStopped();
             return super.stopCellEditing();
         }
@@ -426,10 +451,10 @@ public class ColumnTable {
             setBackground(Color.white);
 
             // Set textField
-            textField.setPreferredSize(new Dimension(60, 20));
+            textField.setPreferredSize(new Dimension(70, 24));
             textField.setHorizontalAlignment(JTextField.CENTER);
             textField.setFont(new Font(textField.getFont().getName(), Font.PLAIN, 14));
-            textField.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.red));
+            textField.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.red));
 
             // Set layout
             JPanel panel = new JPanel();
@@ -479,16 +504,6 @@ public class ColumnTable {
             String text = panel.getTextField().getText().trim();
             panel.getTextField().setText(addCommasToNumber(text));
             fireEditingStopped();
-
-            // Enable single-click editing
-//            panel.getTextField().addFocusListener(new java.awt.event.FocusAdapter() {
-//                @Override
-//                public void focusGained(java.awt.event.FocusEvent e) {
-//                    JTextField textField = panel.getTextField();
-//                    textField.selectAll();
-//                    SwingUtilities.invokeLater(textField::requestFocusInWindow);
-//                }
-//            });
         }
 
         @Override
