@@ -362,7 +362,7 @@ public final class DiningTableFrm extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     int row = -1;
-    final int DEBOUNCE_DELAY_LOAD = 300; // milliseconds
+    final int DEBOUNCE_DELAY_LOAD = 300;
     final String PLACEHOLDER_STATUS = "--Tất cả--";
     final String PLACEHOLDER_SEARCH = "Tìm theo tên bàn";
 

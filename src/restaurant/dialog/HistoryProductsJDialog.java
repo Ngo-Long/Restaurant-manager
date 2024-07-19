@@ -263,7 +263,6 @@ public final class HistoryProductsJDialog extends javax.swing.JDialog {
         final int COULMN_CELL = 6;
         ColumnTable.addButtonColumn(
                 "Chi tiết",
-                new Color(0, 153, 153),
                 COULMN_CELL,
                 tableOrderDetail,
                 this::handleClickBtnColumn

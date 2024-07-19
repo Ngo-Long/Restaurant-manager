@@ -2,6 +2,7 @@ package restaurant.dialog;
 
 import java.util.List;
 import java.awt.Color;
+import javax.swing.JDialog;
 import javax.swing.JTextField;
 
 import restaurant.utils.Common;
@@ -11,17 +12,18 @@ import restaurant.utils.XComboBox;
 import restaurant.utils.XTextField;
 
 import restaurant.dao.ProductDAO;
+import restaurant.dao.SupplierDAO;
 import restaurant.entity.Product;
-import static restaurant.utils.XComboBox.insertPlaceholder;
 
 import static restaurant.utils.Common.openSmallDialog;
 import static restaurant.utils.XTextField.getRealText;
 import static restaurant.utils.XImage.setImageButtonIcon;
+import static restaurant.utils.XComboBox.insertPlaceholder;
 import static restaurant.utils.XComboBox.loadDataToComboBox;
 import static restaurant.utils.XImage.chooseImageFromDirectory;
 import static restaurant.utils.XTextField.removeCommasFromNumber;
 
-public final class UpdateProductJDialog extends javax.swing.JDialog {
+public final class UpdateProductJDialog extends JDialog {
 
     public UpdateProductJDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -95,11 +97,13 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("Mã hàng hóa:");
 
+        texID.setEditable(false);
         texID.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         texID.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         texID.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(51, 204, 0)));
         texID.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         texID.setMargin(new java.awt.Insets(2, 60, 2, 6));
+        texID.setRequestFocusEnabled(false);
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Tên hàng hóa:");
@@ -417,7 +421,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         List<Product> dataList = new ProductDAO().getAll();
         loadDataToComboBox(cbCategory, dataList, Product::getCategory);
         loadDataToComboBox(cbKitchenArea, dataList, Product::getKitchenArea);
-        
+
         insertPlaceholder(cbCategory, PLACEHOLDER_COMBOBOX);
         insertPlaceholder(cbKitchenArea, PLACEHOLDER_COMBOBOX);
 
@@ -431,7 +435,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
 
         // get imagePath from directory
         btnImage.addActionListener(e -> {
-            imagePath = chooseImageFromDirectory(null, btnImage);
+            imagePath = chooseImageFromDirectory(btnImage);
         });
 
         // click button CRUD  
@@ -534,6 +538,7 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
 
         // Set image
         setImageButtonIcon(dataProduct.getImageURL(), btnImage);
+
     }
 
     void insert() {
@@ -543,12 +548,12 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
         }
 
         if (new ProductDAO().isDuplicatedId(model.getProductID())) {
-            Dialog.alert(this, "Mã ID đã tồn tại. Vui lòng chọn mã ID khác!");
+            Dialog.warning(this, "Mã sản phẩm đã tồn tại!");
             return;
         }
 
         if (new ProductDAO().isDuplicateName(model.getProductName())) {
-            Dialog.alert(this, "Tên món đã tồn tại. Vui lòng sửa tên khác!");
+            Dialog.alert(this, "Tên đã tồn tại. Vui lòng nhập tên khác!");
             return;
         }
 
@@ -568,11 +573,6 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
             return;
         }
 
-        if (!new ProductDAO().isDuplicatedId(model.getProductID())) {
-            Dialog.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
-            return;
-        }
-
         try {
             new ProductDAO().update(model);
             Dialog.success(this, "Cập nhật thành công!");
@@ -583,14 +583,8 @@ public final class UpdateProductJDialog extends javax.swing.JDialog {
     }
 
     void delete() {
-        String id = texID.getText();
-        if (!new ProductDAO().isDuplicatedId(id)) {
-            Dialog.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
-            return;
-        }
-
         try {
-            new ProductDAO().delete(id);
+            new ProductDAO().delete(texID.getText());
             Dialog.alert(this, "Xóa thành công!");
             dispose();
         } catch (Exception e) {

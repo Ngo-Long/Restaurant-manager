@@ -73,11 +73,13 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("Mã NCC:");
 
+        textID.setEditable(false);
         textID.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textID.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textID.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(51, 204, 0)));
         textID.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textID.setMargin(new java.awt.Insets(2, 60, 2, 6));
+        textID.setRequestFocusEnabled(false);
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Tên NCC:");
@@ -313,14 +315,9 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
             return false;
         }
 
-        try {
-            int numberSeats = Integer.parseInt(phoneText);
-            if (numberSeats <= 0) {
-                Dialog.warning(this, "Số điện thoại không hợp lệ!");
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            Dialog.warning(this, "Số chỗ ngồi phải là một số hợp lệ!");
+        int numberSeats = Integer.parseInt(phoneText);
+        if (numberSeats <= 0) {
+            Dialog.warning(this, "Số điện thoại không hợp lệ!");
             return false;
         }
 
@@ -376,7 +373,12 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
         }
 
         if (new SupplierDAO().isIdExists(model.getSupplierID())) {
-            Dialog.warning(this, "Mã ID đã tồn tại. Vui lòng chọn mã ID khác!");
+            Dialog.warning(this, "Mã nhà cung cấp đã tồn tại!");
+            return;
+        }
+
+        if (new SupplierDAO().isNameExists(model.getSupplierName())) {
+            Dialog.warning(this, "Tên đã tồn tại. Vui lòng nhập tên khác!");
             return;
         }
 
@@ -396,11 +398,6 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
             return;
         }
 
-        if (!new SupplierDAO().isIdExists(model.getSupplierID())) {
-            Dialog.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
-            return;
-        }
-
         try {
             new SupplierDAO().update(model);
             Dialog.alert(this, "Cập nhật thành công!");
@@ -411,14 +408,8 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
     }
 
     void delete() {
-        String id = textID.getText();
-        if (!new SupplierDAO().isIdExists(id)) {
-            Dialog.alert(this, "Mã ID không tồn tại. Vui lòng nhập lại mã ID!");
-            return;
-        }
-
         try {
-            new SupplierDAO().delete(id);
+            new SupplierDAO().delete(textID.getText());
             Dialog.alert(this, "Xóa thành công!");
             dispose();
         } catch (Exception e) {

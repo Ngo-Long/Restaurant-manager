@@ -5,13 +5,13 @@ import java.util.List;
 import javax.swing.JTextField;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
+import restaurant.utils.XComboBox;
+import restaurant.utils.XTextField;
 import restaurant.dao.DiningTableDAO;
 import restaurant.entity.DiningTable;
-import restaurant.utils.XComboBox;
+import static restaurant.utils.Common.openSmallDialog;
 import static restaurant.utils.XComboBox.insertPlaceholder;
 import static restaurant.utils.XComboBox.loadDataToComboBox;
-import static restaurant.utils.Common.openSmallDialog;
-import restaurant.utils.XTextField;
 
 public final class UpdateTableJDialog extends javax.swing.JDialog {
 
@@ -291,7 +291,7 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
 
         // Setup UI
         textTableName.requestFocus();
-        XTextField.addPlaceholder(textTableId, "Mã tự động");
+        XTextField.addPlaceholder(textTableId, PLACEHOLDER_ID);
         XComboBox.setComboboxStyle(cbLocation);
         Common.createButtonGroup(radioOn, radioOff);
 
@@ -387,12 +387,12 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         }
 
         if (new DiningTableDAO().isIdDuplicated(model.getTableID())) {
-            Dialog.warning(this, "Mã ID đã tồn tại. Vui lòng chọn mã ID khác!");
+            Dialog.warning(this, "Mã bàn đã tồn tại!");
             return;
         }
 
         if (new DiningTableDAO().isDuplicateName(model.getName())) {
-            Dialog.alert(this, "Tên bàn đã tồn tại. Vui lòng sửa tên khác!");
+            Dialog.alert(this, "Tên bàn đã tồn tại. Vui lòng nhập tên khác!");
             return;
         }
 
@@ -412,11 +412,6 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
             return;
         }
 
-        if (!new DiningTableDAO().isIdDuplicated(model.getTableID())) {
-            Dialog.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
-            return;
-        }
-
         try {
             new DiningTableDAO().update(model);
             Dialog.alert(this, "Cập nhật thành công!");
@@ -427,14 +422,9 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
     }
 
     void delete() {
-        String id = textTableId.getText();
-        if (!new DiningTableDAO().isIdDuplicated(id)) {
-            Dialog.alert(this, "Mã ID không tồn tại. Vui lòng nhập lại mã ID!");
-            return;
-        }
 
         try {
-            new DiningTableDAO().delete(id);
+            new DiningTableDAO().delete(textTableId.getText());
             Dialog.alert(this, "Xóa thành công!");
             dispose();
         } catch (Exception e) {

@@ -20,7 +20,10 @@ public class SupplierDAO extends RestaurantDAO<Supplier, String> {
     final String SELECT_ALL_SQL = "SELECT * FROM Supplier";
     final String SELECT_BY_ID_SQL = "SELECT * FROM Supplier WHERE SupplierID=?";
     final String SELECT_ID_BY_NAME_SQL = "SELECT SupplierID FROM Supplier WHERE SupplierName=?";
+
     final String IS_EXISTS_SQL = "SELECT COUNT(*) FROM Supplier WHERE SupplierID = ?";
+    final String NAME_EXISTS_SQL = "SELECT COUNT(*) FROM Supplier WHERE SupplierName = ?";
+
     final String SELECT_BY_CRITERIA = "SELECT TOP (1000) [SupplierID], [SupplierName], [OutstandingDebt], "
             + "[TotalSales], [Address], [Phone], [Email], [Description], [Status] FROM [Supplier] "
             + "WHERE (SupplierID LIKE ? OR [SupplierName] LIKE ? OR [Phone] LIKE ?) AND [Status] LIKE ?";
@@ -77,6 +80,18 @@ public class SupplierDAO extends RestaurantDAO<Supplier, String> {
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    public boolean isNameExists(String name) {
+        try (ResultSet rs = XJdbc.executeQuery(NAME_EXISTS_SQL, name)) {
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                return count > 0;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 
     public List<Supplier> searchByCriteria(String id, String name, String phone, String status) {

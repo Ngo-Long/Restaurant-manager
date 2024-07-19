@@ -18,17 +18,17 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.utils.Auth;
-
 import restaurant.dao.SupplierDAO;
 import restaurant.entity.Supplier;
-import restaurant.utils.XRunnable;
 import restaurant.utils.XTextField;
 import restaurant.table.TableCustom;
 import restaurant.main.ManagementMode;
+import restaurant.utils.TableNavigator;
 import restaurant.dialog.UpdateSupplierJDialog;
 import static restaurant.utils.XComboBox.insertPlaceholder;
 import static restaurant.utils.XComboBox.loadDataToComboBox;
-import restaurant.utils.TableNavigator;
+import static restaurant.utils.XRunnable.addComponentListeners;
+import static restaurant.utils.XRunnable.addTextFieldListeners;
 
 public final class SupplierFrm extends javax.swing.JPanel {
 
@@ -53,7 +53,7 @@ public final class SupplierFrm extends javax.swing.JPanel {
         btnImport = new javax.swing.JButton();
         btnAdd = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tableGoods = new javax.swing.JTable();
+        tableSuppliers = new javax.swing.JTable();
         btnLast = new javax.swing.JButton();
         btnNext = new javax.swing.JButton();
         btnPrev = new javax.swing.JButton();
@@ -127,8 +127,8 @@ public final class SupplierFrm extends javax.swing.JPanel {
         btnAdd.setText("Nhà cung cấp");
         btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        tableGoods.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        tableGoods.setModel(new javax.swing.table.DefaultTableModel(
+        tableSuppliers.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        tableSuppliers.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null},
@@ -139,12 +139,12 @@ public final class SupplierFrm extends javax.swing.JPanel {
                 "Mã NCC", "Tên NCC", "Điện thoại", "Email", "Địa chỉ", "Số nợ cần trả", "Tổng mua"
             }
         ));
-        tableGoods.setGridColor(new java.awt.Color(255, 255, 255));
-        tableGoods.setRowHeight(40);
-        jScrollPane1.setViewportView(tableGoods);
-        if (tableGoods.getColumnModel().getColumnCount() > 0) {
-            tableGoods.getColumnModel().getColumn(0).setPreferredWidth(20);
-            tableGoods.getColumnModel().getColumn(1).setPreferredWidth(120);
+        tableSuppliers.setGridColor(new java.awt.Color(255, 255, 255));
+        tableSuppliers.setRowHeight(40);
+        jScrollPane1.setViewportView(tableSuppliers);
+        if (tableSuppliers.getColumnModel().getColumnCount() > 0) {
+            tableSuppliers.getColumnModel().getColumn(0).setPreferredWidth(20);
+            tableSuppliers.getColumnModel().getColumn(1).setPreferredWidth(120);
         }
 
         btnLast.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -356,7 +356,7 @@ public final class SupplierFrm extends javax.swing.JPanel {
     private javax.swing.JRadioButton radioAll;
     private javax.swing.JRadioButton radioOff;
     private javax.swing.JRadioButton radioOn;
-    private javax.swing.JTable tableGoods;
+    private javax.swing.JTable tableSuppliers;
     private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
@@ -365,6 +365,7 @@ public final class SupplierFrm extends javax.swing.JPanel {
     final String PLACEHOLDER_STATUS = "--Tất cả--";
     final String PLACEHOLDER_SEARCH = "Tìm theo mã, tên, điện thoại";
 
+    Supplier dataSupplier;
     SupplierDAO dao = new SupplierDAO();
     ScheduledFuture<?> scheduledFuture;
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
@@ -379,11 +380,11 @@ public final class SupplierFrm extends javax.swing.JPanel {
 
         // edit table
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
-        Common.customizeTable(tableGoods, new int[]{}, 30);
+        Common.customizeTable(tableSuppliers, new int[]{}, 30);
 
         // <--- Setup main --->
         // navigator table 
-        TableNavigator navigator = new TableNavigator(tableGoods);
+        TableNavigator navigator = new TableNavigator(tableSuppliers);
         btnFirst.addActionListener(e -> navigator.first());
         btnNext.addActionListener(e -> navigator.next());
         btnPrev.addActionListener(e -> navigator.prev());
@@ -391,14 +392,12 @@ public final class SupplierFrm extends javax.swing.JPanel {
 
         // handle click btn add
         btnAdd.addActionListener(e -> {
-            Auth.supplier = null;
-            openUpdateDialog("Thêm nhà cung cấp", true);
+            openUpdateDialog("Thêm nhà cung cấp", null);
         });
 
         // handle click row table show dialog
-        attachRowClickListener(
-                tableGoods,
-                () -> openUpdateDialog("Cập nhật nhà cung cấp", false)
+        attachRowClickListener(tableSuppliers,
+                () -> openUpdateDialog("Cập nhật nhà cung cấp", dataSupplier)
         );
 
         // add data to combobox
@@ -406,8 +405,8 @@ public final class SupplierFrm extends javax.swing.JPanel {
         insertPlaceholder(cbCategory, PLACEHOLDER_STATUS);
 
         // call event when change
-        XRunnable.addTextFieldListeners(textSearch, this::loadDataFillTable);
-        XRunnable.addComponentListeners(
+        addTextFieldListeners(textSearch, this::loadDataFillTable);
+        addComponentListeners(
                 this::loadDataFillTable,
                 cbCategory, radioOn, radioOff, radioAll
         );
@@ -429,10 +428,7 @@ public final class SupplierFrm extends javax.swing.JPanel {
 
                 // Get data from row
                 String id = (String) target.getValueAt(row, 0);
-                Supplier supplier = new SupplierDAO().getByID(id);
-
-                // Save data to auth
-                Auth.supplier = supplier;
+                dataSupplier = new SupplierDAO().getByID(id);
 
                 // Perform the action
                 rowClickAction.run();
@@ -440,7 +436,7 @@ public final class SupplierFrm extends javax.swing.JPanel {
         });
     }
 
-    void openUpdateDialog(String title, boolean isEditable) {
+    void openUpdateDialog(String title, Supplier dataSupplier) {
         if (title == null || title.equals("")) {
             return;
         }
@@ -448,6 +444,7 @@ public final class SupplierFrm extends javax.swing.JPanel {
         // Init dialog
         UpdateSupplierJDialog dialog = new UpdateSupplierJDialog(null, true);
         dialog.setTitle(title); // Set title dialog
+        dialog.setModel(dataSupplier); // Set data 
 
         // Attach event when dispose
         dialog.addWindowListener(new WindowAdapter() {
@@ -500,7 +497,7 @@ public final class SupplierFrm extends javax.swing.JPanel {
         System.out.println("Đang load dữ liệu nhà cung cấp từ cơ sở dữ liệu...");
 
         // Display table
-        DefaultTableModel model = (DefaultTableModel) tableGoods.getModel();
+        DefaultTableModel model = (DefaultTableModel) tableSuppliers.getModel();
         model.setRowCount(0);
 
         // Load data into the table 

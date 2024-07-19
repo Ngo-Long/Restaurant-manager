@@ -126,6 +126,8 @@ public final class OnSiteMode extends javax.swing.JFrame {
 
         scrollPaneMain.setViewportView(panelMain);
 
+        jPanel1.setAutoscrolls(true);
+
         btnOverview.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnOverview.setForeground(new java.awt.Color(51, 51, 51));
         btnOverview.setText("Tổng Quan");
@@ -338,7 +340,7 @@ public final class OnSiteMode extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
                 .addComponent(scrollPaneMain, javax.swing.GroupLayout.DEFAULT_SIZE, 618, Short.MAX_VALUE))
         );

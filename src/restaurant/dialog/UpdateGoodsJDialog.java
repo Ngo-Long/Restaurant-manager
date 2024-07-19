@@ -16,16 +16,19 @@ import restaurant.utils.Auth;
 import restaurant.utils.Common;
 import restaurant.utils.Dialog;
 import restaurant.dao.GoodsDAO;
+import restaurant.dao.ProductDAO;
 import restaurant.utils.XImage;
 import restaurant.entity.Goods;
 import restaurant.utils.XComboBox;
-import static restaurant.utils.Common.openSmallDialog;
 import restaurant.utils.XTextField;
-import static restaurant.utils.XTextField.addCommasToNumber;
+import static restaurant.utils.Common.openSmallDialog;
 import static restaurant.utils.XTextField.getRealText;
+import static restaurant.utils.XImage.setImageButtonIcon;
+import static restaurant.utils.XComboBox.insertPlaceholder;
+import static restaurant.utils.XComboBox.loadDataToComboBox;
+import static restaurant.utils.XTextField.addCommasToNumber;
 import static restaurant.utils.XTextField.removeCommasFromNumber;
 import static restaurant.utils.XImage.chooseImageFromDirectory;
-import static restaurant.utils.XImage.setImageButtonIcon;
 
 public final class UpdateGoodsJDialog extends javax.swing.JDialog {
 
@@ -99,11 +102,13 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("Mã hàng hóa:");
 
+        textId.setEditable(false);
         textId.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         textId.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textId.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(51, 204, 0)));
         textId.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textId.setMargin(new java.awt.Insets(2, 60, 2, 6));
+        textId.setRequestFocusEnabled(false);
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Tên hàng hóa:");
@@ -372,12 +377,9 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
     private javax.swing.JTextField textUnit;
     // End of variables declaration//GEN-END:variables
 
-    Timer timer;
-    boolean isEditable = true;
-    JComboBox<String> comboBox;
+    String imagePath = "";
     final String PLACEHOLDER_ID = "Mã tự động";
     final String PLACEHOLDER_STATUS = "--Lựa chọn--";
-    String imagePath = Auth.goods != null ? Auth.goods.getImageURL() : "";
 
     ScheduledFuture<?> scheduledFuture;
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
@@ -395,7 +397,6 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
 
         // Setup UI
         textName.requestFocus();
-        textId.setEditable(isEditable);
         XComboBox.setComboboxStyle(cbCategory);
         Common.createButtonGroup(radioOn, radioOff);
         XTextField.addPlaceholder(textId, PLACEHOLDER_ID);
@@ -407,11 +408,8 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
 
         // add data to combobox
         List<Goods> dataList = new GoodsDAO().getAll();
-        XComboBox.loadDataToComboBox(cbCategory,
-                dataList,
-                Goods::getCategory
-        );
-        XComboBox.insertPlaceholder(cbCategory, PLACEHOLDER_STATUS);
+        loadDataToComboBox(cbCategory, dataList, Goods::getCategory);
+        insertPlaceholder(cbCategory, PLACEHOLDER_STATUS);
 
         // add more comboxbox
         btnAddCategory.addActionListener(e -> {
@@ -420,7 +418,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
 
         // get imagePath from directory
         btnImage.addActionListener(e -> {
-            imagePath = chooseImageFromDirectory(null, btnImage);
+            imagePath = chooseImageFromDirectory(btnImage);
         });
 
         // click button CRUD  
@@ -444,15 +442,15 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         }, 500, TimeUnit.MILLISECONDS);
     }
 
-    public void setIsEditable(boolean editable) {
-        this.isEditable = editable;
-        textId.setEditable(editable);
-    }
-
     boolean validateInput(String name, String priceText, String unit, String numMiniText, String category) {
         if (name.trim().isEmpty() || priceText.trim().isEmpty() || unit.trim().isEmpty()
                 || numMiniText.trim().isEmpty() || category.isEmpty()) {
             Dialog.warning(this, "Vui lòng nhập đầy đủ thông tin!");
+            return false;
+        }
+
+        if (new GoodsDAO().isNameExists(name)) {
+            Dialog.alert(this, "Tên đã tồn tại. Vui lòng sửa tên khác!");
             return false;
         }
 
@@ -500,7 +498,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
             model.setStatus("Còn hàng");
             model.setNote(textDesc.getText());
             model.setActivity(radioOn.isSelected() ? "Đang hoạt động" : "Ngưng hoạt động");
-            model.setImageURL(imagePath.equals("") ? "src/restaurant/img/background.jpg" : imagePath);
+            model.setImageURL(imagePath);
             return model;
         } catch (NumberFormatException e) {
             System.err.println("Lỗi: " + e.getMessage());
@@ -508,7 +506,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         }
     }
 
-    void setModel(Goods goods) {
+    public void setModel(Goods goods) {
         if (goods == null) {
             return;
         }
@@ -530,19 +528,22 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         cbCategory.setSelectedItem(goods.getCategory());
 
         // Set image
-        setImageButtonIcon(imagePath, btnImage);
+        setImageButtonIcon(goods.getImageURL(), btnImage);
     }
 
     void insert() {
         Goods model = getModel();
+        if (model == null) {
+            return;
+        }
 
         if (new GoodsDAO().isIdExists(model.getGoodsID())) {
-            Dialog.warning(this, "Mã ID đã tồn tại. Vui lòng chọn mã ID khác!");
+            Dialog.warning(this, "Mã hàng hóa đã tồn tại!");
             return;
         }
 
         if (new GoodsDAO().isNameExists(model.getGoodsName())) {
-            Dialog.alert(this, "Tên đã tồn tại. Vui lòng sửa tên khác!");
+            Dialog.alert(this, "Tên đã tồn tại. Vui lòng nhập tên khác!");
             return;
         }
 
@@ -558,14 +559,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
 
     void update() {
         Goods model = getModel();
-
-        if (!new GoodsDAO().isIdExists(model.getGoodsID())) {
-            Dialog.alert(this, "Mã ID đã chưa tồn tại. Vui lòng nhập lại mã ID!");
-            return;
-        }
-
-        if (new GoodsDAO().isNameExists(model.getGoodsName())) {
-            Dialog.alert(this, "Tên đã tồn tại. Vui lòng sửa tên khác!");
+        if (model == null) {
             return;
         }
 
@@ -579,14 +573,8 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
     }
 
     void delete() {
-        String id = textId.getText();
-        if (!new GoodsDAO().isIdExists(id)) {
-            Dialog.alert(this, "Mã ID không tồn tại. Vui lòng nhập lại mã ID!");
-            return;
-        }
-
         try {
-            new GoodsDAO().delete(id);
+            new GoodsDAO().delete(textId.getText());
             Dialog.alert(this, "Xóa thành công!");
             dispose();
         } catch (Exception e) {

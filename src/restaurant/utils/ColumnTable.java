@@ -215,34 +215,33 @@ public class ColumnTable {
      * Adds a buttons to the table.
      *
      * @param btnText text string button
-     * @param btnColor background color
      * @param table the table to which the detail button column is added
      * @param columnNumber the column number to which the detail button column
      * is added
      * @param handleEventClickButton a Consumer that defines the action to be
      * performed when the detail button is clicked
      */
-    public static void addButtonColumn(String btnText, Color btnColor,
-            int columnNumber, JTable table, Consumer<Integer> handleEventClickButton) {
+    public static void addButtonColumn(String btnText, int columnNumber,
+            JTable table, Consumer<Integer> handleEventClickButton) {
         // get column
         TableColumn column = table.getColumnModel().getColumn(columnNumber);
         // set cell render
-        column.setCellRenderer(new ButtonCellRenderer(btnText, btnColor));
+        column.setCellRenderer(new ButtonCellRenderer(btnText));
         // set cell editor
-        column.setCellEditor(new ButtonCellEditor(table, btnText, btnColor, handleEventClickButton));
+        column.setCellEditor(new ButtonCellEditor(table, btnText, handleEventClickButton));
     }
 
     private static class ButtonCellRenderer extends JPanel implements TableCellRenderer {
 
         private final JButton button;
 
-        public ButtonCellRenderer(String btnText, Color btnColor) {
+        public ButtonCellRenderer(String btnText) {
             setOpaque(true);
             setBackground(Color.white);
             setLayout(new FlowLayout(FlowLayout.CENTER, 5, 2));
 
             // Create button first
-            button = createButton(btnText, btnColor, new Dimension(0, 0));
+            button = createButton(btnText, new Color(0, 153, 153), new Dimension(0, 0));
             add(button, BorderLayout.CENTER);
 
             // Now calculate preferred size based on text length
@@ -262,8 +261,7 @@ public class ColumnTable {
         private final JPanel panel;
         private final JButton button;
 
-        public ButtonCellEditor(JTable table, String btnText,
-                Color btnColor, Consumer<Integer> handleEventClickButton) {
+        public ButtonCellEditor(JTable table, String btnText, Consumer<Integer> handleEventClickButton) {
             super(new JTextField());
             setClickCountToStart(1);
             panel = new JPanel();
@@ -271,7 +269,7 @@ public class ColumnTable {
             panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 2));
 
             // Create button first
-            button = createButton(btnText, btnColor, new Dimension(0, 0));
+            button = createButton(btnText, new Color(0, 153, 153), new Dimension(0, 0));
             Dimension preferredSize = calculateButtonSize(button, btnText);
             button.setPreferredSize(preferredSize);
 

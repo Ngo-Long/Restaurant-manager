@@ -24,6 +24,7 @@ import restaurant.table.TableCustom;
 import restaurant.main.ManagementMode;
 import restaurant.utils.TableNavigator;
 import restaurant.dialog.UpdateProductJDialog;
+import static restaurant.utils.XComboBox.setComboboxStyle;
 import static restaurant.utils.XComboBox.insertPlaceholder;
 import static restaurant.utils.XComboBox.loadDataToComboBox;
 import static restaurant.utils.XRunnable.addComponentListeners;
@@ -106,7 +107,7 @@ public final class ProductFrm extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Mã món", "Tên", "Giá vốn", "Giá bán", "Đơn vị tính", "Phân loại"
+                "Mã", "Tên sản phẩm", "Giá vốn", "Giá bán", "Đơn vị tính", "Phân loại"
             }
         ));
         tableProducts.setGridColor(new java.awt.Color(255, 255, 255));
@@ -366,7 +367,7 @@ public final class ProductFrm extends javax.swing.JPanel {
     final String PLACEHOLDER_STATUS = "--Tất cả--";
     final String PLACEHOLDER_SEARCH = "Tìm theo tên sản phẩm";
 
-    restaurant.entity.Product dataProduct;
+    Product dataProduct;
     ProductDAO dao = new ProductDAO();
 
     ScheduledFuture<?> scheduledFuture;
@@ -393,18 +394,19 @@ public final class ProductFrm extends javax.swing.JPanel {
         btnPrev.addActionListener(e -> navigator.prev());
         btnLast.addActionListener(e -> navigator.last());
 
-        // Click button add  product
+        // Click button show dialog add product
         btnAdd.addActionListener(e -> openUpdateDialog("Thêm sản phẩm", null));
 
-        // handle click row table show dialog
+        // handle click row table show dialog update product
         attachRowClickListener(
                 tableProducts,
                 () -> openUpdateDialog("Cập nhật sản phẩm", dataProduct)
         );
 
         // add data to combobox
-        insertPlaceholder(cbCategory, PLACEHOLDER_STATUS);
+        setComboboxStyle(cbCategory);
         loadDataToComboBox(cbCategory, dao.getAll(), Product::getCategory);
+        insertPlaceholder(cbCategory, PLACEHOLDER_STATUS);
 
         // load list by search and classify when change
         addTextFieldListeners(textSearch, this::loadDataFillTable);
@@ -459,7 +461,7 @@ public final class ProductFrm extends javax.swing.JPanel {
             }
         });
 
-        dialog.setVisible(true); // Open dialog
+        dialog.setVisible(true);
     }
     // end --->
 
@@ -494,8 +496,6 @@ public final class ProductFrm extends javax.swing.JPanel {
     }
 
     void fillTable(List<Product> dataProducts) {
-        System.out.println("Đang load dữ liệu từ cơ sở dữ liệu...");
-
         // Display table
         DefaultTableModel model = (DefaultTableModel) tableProducts.getModel();
         model.setRowCount(0);

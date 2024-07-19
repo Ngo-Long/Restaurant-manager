@@ -16,14 +16,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
 
-import restaurant.utils.Auth;
 import restaurant.dao.GoodsDAO;
+import restaurant.entity.Goods;
+import restaurant.utils.XComboBox;
+import restaurant.utils.XTextField;
 import restaurant.table.TableCustom;
 import restaurant.main.ManagementMode;
 import restaurant.utils.TableNavigator;
-import restaurant.utils.XTextField;
 import restaurant.dialog.UpdateGoodsJDialog;
-import restaurant.entity.Goods;
 import static restaurant.utils.Common.customizeTable;
 import static restaurant.utils.Common.createButtonGroup;
 import static restaurant.utils.XComboBox.insertPlaceholder;
@@ -131,11 +131,6 @@ public final class GoodsFrm extends javax.swing.JPanel {
         btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/plusWhile.png"))); // NOI18N
         btnAdd.setText("Thêm hàng hóa");
         btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
-            }
-        });
 
         tableGoods.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tableGoods.setModel(new javax.swing.table.DefaultTableModel(
@@ -341,11 +336,6 @@ public final class GoodsFrm extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
 
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        Auth.goods = null;
-        openUpdateDialog("Thêm hàng hóa", true);
-    }//GEN-LAST:event_btnAddActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnExport;
@@ -375,11 +365,11 @@ public final class GoodsFrm extends javax.swing.JPanel {
     private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
-    int row = -1;
-    final int DEBOUNCE_DELAY_LOAD = 300; // milliseconds
+    final int DEBOUNCE_DELAY_LOAD = 300; 
     final String PLACEHOLDER_STATUS = "--Tất cả--";
     final String PLACEHOLDER_SEARCH = "Tìm theo mã hoặc tên";
 
+    Goods dataGoods;
     GoodsDAO dao = new GoodsDAO();
     ScheduledFuture<?> scheduledFuture;
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
@@ -387,7 +377,8 @@ public final class GoodsFrm extends javax.swing.JPanel {
     void init() {
         // <--- Fuction common from file common --->
         createButtonGroup(radioOn, radioOff, radioAll);
-
+        XComboBox.setComboboxStyle(cbCategory);
+        
         // edit field text
         XTextField.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
         XTextField.addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
@@ -404,10 +395,15 @@ public final class GoodsFrm extends javax.swing.JPanel {
         btnPrev.addActionListener(e -> navigator.prev());
         btnLast.addActionListener(e -> navigator.last());
 
-        // handle click table show dialog
+        // Handle click button add show dialog add goods
+        btnAdd.addActionListener(e -> {
+            openUpdateDialog("Thêm hàng hóa", null);
+        });
+
+        // handle click row table show dialog update goods
         attachRowClickListener(
                 tableGoods,
-                () -> openUpdateDialog("Cập nhật hàng hóa", false)
+                () -> openUpdateDialog("Cập nhật hàng hóa", dataGoods)
         );
 
         // add data to combobox
@@ -438,10 +434,7 @@ public final class GoodsFrm extends javax.swing.JPanel {
 
                 // Lấy dữ liệu từ hàng được chọn
                 String id = (String) target.getValueAt(row, 0);
-                Goods goods = new GoodsDAO().getByID(id);
-
-                // Save data to auth
-                Auth.goods = goods;
+                dataGoods = new GoodsDAO().getByID(id);
 
                 // Perform the action
                 rowClickAction.run();
@@ -449,7 +442,7 @@ public final class GoodsFrm extends javax.swing.JPanel {
         });
     }
 
-    void openUpdateDialog(String title, boolean isEditable) {
+    void openUpdateDialog(String title, Goods dataGoods) {
         if (title == null || title.equals("")) {
             return;
         }
@@ -457,7 +450,7 @@ public final class GoodsFrm extends javax.swing.JPanel {
         // Init dialog
         UpdateGoodsJDialog dialog = new UpdateGoodsJDialog(null, true);
         dialog.setTitle(title); // Set title dialog
-        dialog.setIsEditable(isEditable); // Set editable 
+        dialog.setModel(dataGoods); // Set data product
 
         // Attach event when dispose
         dialog.addWindowListener(new WindowAdapter() {
@@ -507,8 +500,6 @@ public final class GoodsFrm extends javax.swing.JPanel {
     }
 
     void fillTable(List<Goods> dataList) {
-        System.out.println("Đang load dữ liệu từ cơ sở dữ liệu...");
-
         // Display table
         DefaultTableModel model = (DefaultTableModel) tableGoods.getModel();
         model.setRowCount(0);

@@ -35,21 +35,21 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
+import restaurant.entity.Invoice;
+import restaurant.entity.Product;
+import restaurant.entity.OrderDetail;
 import restaurant.dao.OrderDAO;
 import restaurant.dao.InvoiceDAO;
 import restaurant.dao.ProductDAO;
 import restaurant.dao.OrderDetailDAO;
-import restaurant.entity.Invoice;
-import restaurant.entity.Product;
-import restaurant.entity.OrderDetail;
-import restaurant.dialog.HistoryInvoicesJDialog;
 
 import restaurant.utils.Auth;
 import restaurant.utils.Dialog;
 import restaurant.utils.Common;
+import restaurant.utils.XTextField;
 import restaurant.table.TableCustom;
 import restaurant.utils.ColumnTable;
-import restaurant.utils.XTextField;
+import restaurant.dialog.HistoryInvoicesJDialog;
 import static restaurant.utils.XTextField.getRealText;
 import static restaurant.utils.XImage.getScaledImageIcon;
 import static restaurant.utils.XTextField.addCommasToNumber;
@@ -444,8 +444,8 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(22, Short.MAX_VALUE)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 826, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(12, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 826, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12))
@@ -453,7 +453,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(12, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 651, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 651, Short.MAX_VALUE))
@@ -669,15 +669,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         // Create buttons for each and add them to panel
         for (String dataCategoryItem : dataCategoryList) {
             // Create label category
-            JLabel labelItem = new JLabel(dataCategoryItem);
-            labelItem.setBackground(Color.LIGHT_GRAY);
-            labelItem.setForeground(new Color(120, 120, 120));
-            labelItem.setPreferredSize(new Dimension(140, 50));
-            labelItem.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            labelItem.setVerticalAlignment(SwingConstants.CENTER);
-            labelItem.setHorizontalAlignment(SwingConstants.CENTER);
-            labelItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            labelItem.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
+            JLabel labelItem = createLabelCategory(dataCategoryItem);
 
             // Handle click location
             labelItem.addMouseListener(new MouseAdapter() {
@@ -700,6 +692,24 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         panelMenu.setLayout(new FlowLayout(FlowLayout.LEFT, 12, 12));
         panelMenu.revalidate();
         panelMenu.repaint();
+    }
+
+    JLabel createLabelCategory(String dataCategoryItem) {
+        if (dataCategoryItem == null || dataCategoryItem.equals("")) {
+            return null;
+        }
+
+        JLabel labelItem = new JLabel(dataCategoryItem);
+        labelItem.setBackground(Color.LIGHT_GRAY);
+        labelItem.setForeground(new Color(120, 120, 120));
+        labelItem.setPreferredSize(new Dimension(140, 50));
+        labelItem.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        labelItem.setVerticalAlignment(SwingConstants.CENTER);
+        labelItem.setHorizontalAlignment(SwingConstants.CENTER);
+        labelItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        labelItem.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
+
+        return labelItem;
     }
 
     void handleClickMenu(JLabel labelItem) {

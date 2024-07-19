@@ -47,10 +47,10 @@ import restaurant.main.OnSiteMode;
 import restaurant.table.TableCustom;
 import restaurant.main.QuickOrderMode;
 import restaurant.dialog.OrderDetailJDialog;
-import static restaurant.utils.ColumnTable.addButtonIconColumn;
-import static restaurant.utils.ColumnTable.addQuantityButtonsColumn;
 import static restaurant.utils.XTextField.getRealText;
 import static restaurant.utils.XRunnable.addTextFieldListeners;
+import static restaurant.utils.ColumnTable.addButtonIconColumn;
+import static restaurant.utils.ColumnTable.addQuantityButtonsColumn;
 
 public final class ProductFrm extends javax.swing.JPanel {
 

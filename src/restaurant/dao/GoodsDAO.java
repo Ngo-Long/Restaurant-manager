@@ -19,7 +19,7 @@ public class GoodsDAO extends RestaurantDAO<Goods, String> {
     final String SELECT_BY_ID_SQL = "SELECT * FROM Goods WHERE GoodsID=?";
 
     final String IS_EXISTS_SQL = "SELECT COUNT(*) FROM Goods WHERE GoodsID = ?";
-    final String NAME_EXISTS_SQL = "SELECT COUNT(*) FROM Product WHERE ProductName = ?";
+    final String NAME_EXISTS_SQL = "SELECT COUNT(*) FROM Goods WHERE GoodsName = ?";
 
     final String SELECT_BY_CRITERIA = "SELECT TOP (1000) [GoodsID], [GoodsName], [UnitPrice], [Unit], "
             + "[ImageURL], [Category], [InitialQuantity], [MinimumQuantity], [Status], [Note], [Activity] "

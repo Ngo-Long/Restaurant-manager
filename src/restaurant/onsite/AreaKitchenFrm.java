@@ -226,7 +226,6 @@ public final class AreaKitchenFrm extends javax.swing.JPanel {
             tableMain.setModel(model);
 
             // Sắp xếp theo thời gian bắt đầu từ gần nhất
-            dataList = dao.getPendingProducts();
             dataList.sort(Comparator.comparing(OrderDetail::getStartTime));
 
             // Thêm sản phẩm vào bảng tương ứng

@@ -476,7 +476,6 @@ public final class InvoiceFrm extends javax.swing.JPanel {
         int coulumnCell = 6;
         ColumnTable.addButtonColumn(
                 "Chi tiết",
-                new Color(0, 153, 153),
                 coulumnCell,
                 tableInvoices,
                 this::handleClickButtonColumn

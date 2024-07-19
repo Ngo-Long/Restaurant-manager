@@ -8,7 +8,6 @@ import java.sql.SQLException;
 
 import restaurant.utils.XJdbc;
 import restaurant.entity.Receipt;
-import restaurant.utils.Dialog;
 
 public class ReceiptDAO extends RestaurantDAO<Receipt, String> {
 
@@ -24,12 +23,16 @@ public class ReceiptDAO extends RestaurantDAO<Receipt, String> {
 
     final String SELECT_ALL_SQL = "SELECT * FROM Receipt";
     final String SELECT_BY_ID_SQL = "SELECT * FROM Receipt WHERE ReceiptID=?";
-    final String SELECT_BY_CRITERIA = "SELECT TOP (1000) [ReceiptID], [SupplierID], [EmployeeID], "
-            + "[TransactionType], [ReceiptDate], [TotalAmount], [Note], [Status] "
-            + "FROM [RestaurantManager].[dbo].[Receipt] "
-            + "WHERE [ReceiptDate] >= ? AND [ReceiptDate] <= ?"
-            + "(ReceiptID LIKE ? OR SupplierID LIKE ? OR EmployeeID LIKE ?) "
-            + "AND [TransactionType] LIKE ? AND [Status] LIKE ?";
+
+    final String SELECT_BY_CRITERIA = "SELECT TOP (1000) r.[ReceiptID], r.[SupplierID], "
+            + "r.[EmployeeID], r.[TransactionType], r.[ReceiptDate], "
+            + "r.[TotalAmount], r.[Note], r.[Status] "
+            + "FROM [RestaurantManager].[dbo].[Receipt] r "
+            + "INNER JOIN [RestaurantManager].[dbo].[Supplier] s "
+            + "ON r.[SupplierID] = s.[SupplierID] "
+            + "WHERE (s.[SupplierName] LIKE ? OR r.[ReceiptID] LIKE ?) "
+            + "AND r.[TransactionType] LIKE ? "
+            + "AND r.[Status] LIKE ? ";
 
     @Override
     public void insert(Receipt entity) {
@@ -100,14 +103,13 @@ public class ReceiptDAO extends RestaurantDAO<Receipt, String> {
         return latestReceiptID;
     }
 
-    public List<Receipt> searchByCriteria(String id, String supplierID, String employeeID, String transactionType, String status) {
-        String idTerm = "%" + id + "%";
-        String supplierIDTerm = "%" + supplierID + "%";
-        String employeeIDTerm = "%" + employeeID + "%";
-        String transactionTypeTerm = "%" + transactionType + "%";
+    public List<Receipt> searchByCriteria(String supplierName, String receiptID, String type, String status) {
+        String supplierNameTerm = "%" + supplierName + "%";
+        String receiptIDTerm = "%" + receiptID + "%";
+        String typeTerm = "%" + type + "%";
         String statusTerm = "%" + status + "%";
 
-        return fetchByQuery(SELECT_BY_CRITERIA, idTerm, supplierIDTerm, employeeIDTerm, transactionTypeTerm, statusTerm);
+        return fetchByQuery(SELECT_BY_CRITERIA, supplierNameTerm, receiptIDTerm, typeTerm, statusTerm);
     }
 
     public boolean isIdExists(String id) {
@@ -150,5 +152,4 @@ public class ReceiptDAO extends RestaurantDAO<Receipt, String> {
         return model;
     }
 
-   
 }

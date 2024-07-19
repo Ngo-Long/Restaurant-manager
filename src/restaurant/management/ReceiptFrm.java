@@ -2,6 +2,9 @@ package restaurant.management;
 
 import java.awt.Color;
 import java.util.Date;
+import java.sql.Timestamp;
+import java.util.Comparator;
+import java.text.SimpleDateFormat;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -9,10 +12,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
 
-import restaurant.dao.InvoiceDAO;
 import restaurant.dao.ReceiptDAO;
+import restaurant.dao.SupplierDAO;
 import restaurant.entity.Receipt;
-import restaurant.entity.Invoice;
+import restaurant.entity.Supplier;
+
 import javax.swing.SwingUtilities;
 import restaurant.utils.XTextField;
 import restaurant.table.TableCustom;
@@ -20,9 +24,10 @@ import restaurant.utils.ColumnTable;
 import restaurant.main.ManagementMode;
 import restaurant.utils.TableNavigator;
 import javax.swing.table.DefaultTableModel;
-import restaurant.dialog.HistoryInvoiceDetailJDialog;
+import restaurant.dialog.HistoryReceiptDetailJDialog;
 import static restaurant.utils.Common.customizeTable;
 import static restaurant.utils.Common.createButtonGroup;
+import static restaurant.utils.XTextField.addCommasToNumber;
 import static restaurant.utils.XRunnable.addComponentListeners;
 import static restaurant.utils.XRunnable.addTextFieldListeners;
 
@@ -57,12 +62,6 @@ public final class ReceiptFrm extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         textSearch = new javax.swing.JTextField();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
-        textStartDate = new com.toedter.calendar.JDateChooser();
-        textEndDate = new com.toedter.calendar.JDateChooser();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         radioPurchase = new javax.swing.JRadioButton();
@@ -106,14 +105,19 @@ public final class ReceiptFrm extends javax.swing.JPanel {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Mã phiếu", "Tên NCC", "Ngày tạo", "Loại phiếu", "Tổng tiền", "Trạng thái", "Chi tiết"
+                "Thời gian", "Mã phiếu", "Loại phiếu", "NCC", "Tổng tiền", "Trạng thái", "Chi tiết"
             }
         ));
         tableReceipts.setGridColor(new java.awt.Color(255, 255, 255));
         tableReceipts.setRowHeight(40);
         jScrollPane1.setViewportView(tableReceipts);
         if (tableReceipts.getColumnModel().getColumnCount() > 0) {
-            tableReceipts.getColumnModel().getColumn(0).setPreferredWidth(30);
+            tableReceipts.getColumnModel().getColumn(1).setPreferredWidth(30);
+            tableReceipts.getColumnModel().getColumn(2).setPreferredWidth(30);
+            tableReceipts.getColumnModel().getColumn(3).setPreferredWidth(115);
+            tableReceipts.getColumnModel().getColumn(4).setPreferredWidth(30);
+            tableReceipts.getColumnModel().getColumn(5).setPreferredWidth(55);
+            tableReceipts.getColumnModel().getColumn(6).setPreferredWidth(20);
         }
 
         btnLast.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -153,7 +157,7 @@ public final class ReceiptFrm extends javax.swing.JPanel {
                         .addComponent(btnLast, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel6))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 998, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1007, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -176,13 +180,13 @@ public final class ReceiptFrm extends javax.swing.JPanel {
                             .addComponent(btnCreate, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(10, 10, 10)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 483, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnLast)
-                    .addComponent(btnNext)
-                    .addComponent(btnPrev)
-                    .addComponent(btnFirst)
-                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnNext, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+                    .addComponent(btnPrev, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnFirst, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnLast, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -213,74 +217,15 @@ public final class ReceiptFrm extends javax.swing.JPanel {
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel4.setText("Thời gian");
-
-        textStartDate.setBackground(new java.awt.Color(255, 255, 255));
-        textStartDate.setToolTipText("Ngày");
-        textStartDate.setDateFormatString("dd/MM/yyyy");
-        textStartDate.setFocusable(false);
-        textStartDate.setFont(new java.awt.Font("Be Vietnam Pro", 0, 13)); // NOI18N
-
-        textEndDate.setBackground(new java.awt.Color(255, 255, 255));
-        textEndDate.setToolTipText("Ngày");
-        textEndDate.setDateFormatString("dd/MM/yyyy");
-        textEndDate.setFocusable(false);
-        textEndDate.setFont(new java.awt.Font("Be Vietnam Pro", 0, 13)); // NOI18N
-
-        jLabel8.setText("Từ:");
-
-        jLabel9.setText("Đến:");
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel9)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
-                                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(9, 9, 9)))
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(textStartDate, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
-                            .addComponent(textEndDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(jLabel4))
-                .addGap(12, 12, 12))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(jLabel4)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(textStartDate, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(12, 12, 12)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(textEndDate, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(12, Short.MAX_VALUE))
-        );
-
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(51, 51, 51));
         jLabel5.setText("Loại phiếu");
 
-        radioPurchase.setText("Phiếu nhập hàng");
+        radioPurchase.setText("Phiếu nhập");
 
-        radioReturn.setText("Phiếu trả hàng");
+        radioReturn.setText("Phiếu trả");
 
         radioAllReceipt.setSelected(true);
         radioAllReceipt.setText("Tất cả");
@@ -296,7 +241,7 @@ public final class ReceiptFrm extends javax.swing.JPanel {
                     .addComponent(radioReturn)
                     .addComponent(radioPurchase)
                     .addComponent(jLabel5))
-                .addContainerGap(86, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -320,7 +265,7 @@ public final class ReceiptFrm extends javax.swing.JPanel {
 
         radioPaied.setText("Đã thanh toán");
 
-        radioUnpay.setText("Chưa thanh toán");
+        radioUnpay.setText("Chưa trả");
 
         radioAllPay.setSelected(true);
         radioAllPay.setText("Tất cả");
@@ -336,7 +281,7 @@ public final class ReceiptFrm extends javax.swing.JPanel {
                     .addComponent(radioUnpay)
                     .addComponent(radioPaied)
                     .addComponent(jLabel7))
-                .addContainerGap(85, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -357,19 +302,13 @@ public final class ReceiptFrm extends javax.swing.JPanel {
         panelBodyLayout.setHorizontalGroup(
             panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBodyLayout.createSequentialGroup()
-                .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelBodyLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelBodyLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(18, 18, 18)
+                .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1022, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1031, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(18, Short.MAX_VALUE))
         );
         panelBodyLayout.setVerticalGroup(
@@ -379,12 +318,10 @@ public final class ReceiptFrm extends javax.swing.JPanel {
                 .addGroup(panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelBodyLayout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 584, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(33, Short.MAX_VALUE))
+                        .addContainerGap(18, Short.MAX_VALUE))
                     .addGroup(panelBodyLayout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(14, 14, 14)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(14, 14, 14)
+                        .addGap(18, 18, 18)
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(14, 14, 14)
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -417,15 +354,11 @@ public final class ReceiptFrm extends javax.swing.JPanel {
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
@@ -437,16 +370,11 @@ public final class ReceiptFrm extends javax.swing.JPanel {
     private javax.swing.JRadioButton radioReturn;
     private javax.swing.JRadioButton radioUnpay;
     private javax.swing.JTable tableReceipts;
-    private com.toedter.calendar.JDateChooser textEndDate;
     private javax.swing.JTextField textSearch;
-    private com.toedter.calendar.JDateChooser textStartDate;
     // End of variables declaration//GEN-END:variables
 
-    int row = -1;
     final int DEBOUNCE_DELAY_LOAD = 300;
-    final String PLACEHOLDER_STATUS = "--Trạng thái--";
-    final String PLACEHOLDER_SEARCH = "Tìm theo mã";
-    List<Receipt> dataAll = new ReceiptDAO().getAll();
+    final String PLACEHOLDER_SEARCH = "Tìm theo mã, tên nhà cung cấp";
 
     ScheduledFuture<?> scheduledFuture;
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
@@ -462,13 +390,9 @@ public final class ReceiptFrm extends javax.swing.JPanel {
 
         // edit table
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
-        customizeTable(tableReceipts, new int[]{}, 30);
+        customizeTable(tableReceipts, new int[]{}, 40);
 
         // <--- Setup main --->
-        // set today on JDateChooser
-        textEndDate.setDate(new Date());
-        textStartDate.setDate(new Date());
-
         // navigator table 
         TableNavigator navigator = new TableNavigator(tableReceipts);
         btnFirst.addActionListener(e -> navigator.first());
@@ -480,7 +404,6 @@ public final class ReceiptFrm extends javax.swing.JPanel {
         int coulumnCell = 6;
         ColumnTable.addButtonColumn(
                 "Chi tiết",
-                new Color(0, 153, 153),
                 coulumnCell,
                 tableReceipts,
                 this::handleClickBtnColumn
@@ -492,18 +415,18 @@ public final class ReceiptFrm extends javax.swing.JPanel {
         });
 
         // load list by search and classify when change
-        addTextFieldListeners(textSearch, this::loadData);
+        addTextFieldListeners(textSearch, this::loadDataFillTable);
         addComponentListeners(
-                this::loadData,
+                this::loadDataFillTable,
                 radioPaied, radioUnpay, radioAllPay
         );
         addComponentListeners(
-                this::loadData,
+                this::loadDataFillTable,
                 radioPurchase, radioReturn, radioAllReceipt
         );
 
         // Load data
-        this.loadData();
+        this.loadDataFillTable();
     }
 
     void handleClickBtnColumn(int row) {
@@ -512,16 +435,16 @@ public final class ReceiptFrm extends javax.swing.JPanel {
         }
 
         // Get data detail
-        int invoiceID = (int) tableReceipts.getValueAt(row, 0);
-        Invoice dataInvoice = new InvoiceDAO().getByID(invoiceID);
+        String receiptID = (String) tableReceipts.getValueAt(row, 1);
+        Receipt dataReceipt = new ReceiptDAO().getByID(receiptID);
 
         // Open dialog 
-        HistoryInvoiceDetailJDialog dialog = new HistoryInvoiceDetailJDialog(null, true);
-        dialog.displayDetailInvoice(dataInvoice);
+        HistoryReceiptDetailJDialog dialog = new HistoryReceiptDetailJDialog(null, true);
+        dialog.setModel(dataReceipt);
         dialog.setVisible(true);
     }
 
-    void loadData() {
+    void loadDataFillTable() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
@@ -530,20 +453,18 @@ public final class ReceiptFrm extends javax.swing.JPanel {
             SwingUtilities.invokeLater(() -> {
                 // Get info criterias
                 String keyword = textSearch.getText().trim();
-                if (keyword.equals(PLACEHOLDER_STATUS)) {
+                if (keyword.equals(PLACEHOLDER_SEARCH)) {
                     keyword = "";
                 }
 
-                String selectedRadioReceipt = radioPurchase.isSelected() ? radioPurchase.getText()
+                // get value radio
+                String radioType = radioPurchase.isSelected() ? radioPurchase.getText()
                         : radioReturn.isSelected() ? radioReturn.getText() : "";
-
-                String selectedRadioPay = radioPaied.isSelected() ? radioUnpay.getText()
-                        : radioAllPay.isSelected() ? radioAllPay.getText() : "";
+                String radioPay = radioPaied.isSelected() ? radioPaied.getText()
+                        : radioUnpay.isSelected() ? radioUnpay.getText() : "";
 
                 // Get data and load
-//                List<ReceiptEntity> dataList
-//                        = new ReceiptDAO().searchByCriteria(keyword, keyword, position, selectedRadioPay);
-                List<Receipt> dataList = new ReceiptDAO().getAll();
+                List<Receipt> dataList = new ReceiptDAO().searchByCriteria(keyword, keyword, radioType, radioPay);
                 this.fillTable(dataList);
             });
         }, DEBOUNCE_DELAY_LOAD, TimeUnit.MILLISECONDS);
@@ -556,15 +477,33 @@ public final class ReceiptFrm extends javax.swing.JPanel {
         DefaultTableModel model = (DefaultTableModel) tableReceipts.getModel();
         model.setRowCount(0);
 
+        // Sắp xếp theo thời gian bắt đầu từ xa nhất
+        dataList.sort(Comparator.comparing(Receipt::getReceiptDate).reversed());
+
         // Load data into the table 
         for (Receipt dataItem : dataList) {
+            // get data supplier
+            String supplierID = dataItem.getSupplierID();
+            Supplier supplier = new SupplierDAO().getByID(supplierID);
+
+            // get create time
+            Timestamp receiptDate = dataItem.getReceiptDate();
+            String receiptDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(receiptDate);
+
+            // get transaction type
+            String transactionType = dataItem.getTransactionType();
+            String charactor = transactionType.equals("Phiếu nhập") ? "+" : "-";
+
+            // get total amount
+            long totalAmount = dataItem.getTotalAmount();
+            String totalFormat = addCommasToNumber(totalAmount);
+
             model.addRow(new Object[]{
+                receiptDateFormat,
                 dataItem.getReceiptID(),
-                dataItem.getEmployeeID(),
-                dataItem.getSupplierID(),
-                dataItem.getReceiptDate(),
-                dataItem.getTotalAmount(),
-                dataItem.getNote(),
+                dataItem.getTransactionType() + " [" + charactor + "]",
+                supplier.getSupplierName(),
+                totalFormat + " VND",
                 dataItem.getStatus()
             });
         }

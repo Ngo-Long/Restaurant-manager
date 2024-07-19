@@ -11,7 +11,7 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
-import restaurant.dialog.SmallJDialog;
+import restaurant.dialog.SmallTextFiledJDialog;
 
 public class Common {
 
@@ -285,7 +285,7 @@ public class Common {
         }
 
         // Init dialog
-        SmallJDialog dialog = new SmallJDialog(null, true);
+        SmallTextFiledJDialog dialog = new SmallTextFiledJDialog(null, true);
 
         // Set title dialog
         dialog.setTitle(title);

@@ -1,7 +1,6 @@
 package restaurant.dialog;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
@@ -16,16 +15,16 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
 
 import restaurant.utils.Common;
-import restaurant.utils.ColumnTable;
 import restaurant.dao.InvoiceDAO;
 import restaurant.dao.EmployeeDAO;
-import restaurant.table.TableCustom;
-import restaurant.dao.DiningTableDAO;
 import restaurant.entity.Invoice;
 import restaurant.entity.Employee;
-import restaurant.entity.DiningTable;
 import restaurant.utils.XComboBox;
 import restaurant.utils.XTextField;
+import restaurant.utils.ColumnTable;
+import restaurant.table.TableCustom;
+import restaurant.entity.DiningTable;
+import restaurant.dao.DiningTableDAO;
 
 public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
 
@@ -247,7 +246,6 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
         final int COULMN_CELL = 6;
         ColumnTable.addButtonColumn(
                 "Chi tiết",
-                new Color(0, 153, 153),
                 COULMN_CELL,
                 tableInvoices,
                 this::handleClickBtnColumn
@@ -260,7 +258,7 @@ public final class HistoryInvoicesJDialog extends javax.swing.JDialog {
                 Invoice::getStatus
         );
         XComboBox.insertPlaceholder(cbStatus, PLACEHOLDER_STATUS);
-        
+
         // handle click button
         btnReset.addActionListener((e) -> {
             dispose();

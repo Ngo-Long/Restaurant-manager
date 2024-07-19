@@ -17,6 +17,7 @@ public class ReceiptDetailDAO extends RestaurantDAO<ReceiptDetail, Integer> {
     final String IS_EXISTS_SQL = "SELECT COUNT(*) FROM ReceiptDetail WHERE ReceiptDetailID = ?";
     final String SELECT_ALL_SQL = "SELECT * FROM ReceiptDetail";
     final String SELECT_BY_ID_SQL = "SELECT * FROM ReceiptDetail WHERE ReceiptDetailID=?";
+    final String SELECT_BY_RECEIPT_ID_SQL = "SELECT * FROM ReceiptDetail WHERE ReceiptID=?";
 
     @Override
     public void insert(ReceiptDetail entity) {
@@ -45,14 +46,18 @@ public class ReceiptDetailDAO extends RestaurantDAO<ReceiptDetail, Integer> {
     }
 
     @Override
+    public List<ReceiptDetail> getAll() {
+        return fetchByQuery(SELECT_ALL_SQL);
+    }
+
+    @Override
     public ReceiptDetail getByID(Integer id) {
         List<ReceiptDetail> list = fetchByQuery(SELECT_BY_ID_SQL, id);
         return list.isEmpty() ? null : list.get(0);
     }
 
-    @Override
-    public List<ReceiptDetail> getAll() {
-        return fetchByQuery(SELECT_ALL_SQL);
+    public List<ReceiptDetail> findByReceiptID(String receiptID) {
+        return fetchByQuery(SELECT_BY_RECEIPT_ID_SQL, receiptID);
     }
 
     public boolean isIdExists(Integer id) {

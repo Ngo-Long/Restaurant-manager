@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.text.DecimalFormat;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -115,26 +116,54 @@ public class XTextField {
     }
 
     public static String addCommasToNumber(String num) {
+//        // Remove leading and trailing spaces
+//        num = num.trim();
+//        if (num.isEmpty()) {
+//            return num;
+//        }
+//
+//        StringBuilder result = new StringBuilder();
+//        String[] parts = num.split("\\.");
+//
+//        // Handle integer part
+//        String integerPart = parts[0];
+//        String formattedIntegerPart = integerPart.replaceAll("(\\d)(?=(\\d{3})+$)", "$1,");
+//        result.append(formattedIntegerPart);
+//
+//        // Handle decimal part if exists
+//        if (parts.length > 1) {
+//            result.append(".").append(parts[1]);
+//        }
+//
+//        return result.toString();
+
         // Remove leading and trailing spaces
         num = num.trim();
         if (num.isEmpty()) {
             return num;
         }
 
-        StringBuilder result = new StringBuilder();
-        String[] parts = num.split("\\.");
+        try {
+            // Split the number into integer and decimal parts
+            String[] parts = num.split("\\.");
 
-        // Handle integer part
-        String integerPart = parts[0];
-        String formattedIntegerPart = integerPart.replaceAll("(\\d)(?=(\\d{3})+$)", "$1,");
-        result.append(formattedIntegerPart);
+            // Handle integer part
+            String integerPart = parts[0];
+            DecimalFormat df = new DecimalFormat("#,###");
+            String formattedIntegerPart = df.format(Long.parseLong(integerPart.replaceAll(",", "")));
 
-        // Handle decimal part if exists
-        if (parts.length > 1) {
-            result.append(".").append(parts[1]);
+            StringBuilder result = new StringBuilder(formattedIntegerPart);
+
+            // Handle decimal part if exists
+            if (parts.length > 1) {
+                result.append(".").append(parts[1]);
+            }
+
+            return result.toString();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return num;
         }
-
-        return result.toString();
     }
 
     /**

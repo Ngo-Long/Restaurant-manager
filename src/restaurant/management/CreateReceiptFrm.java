@@ -26,18 +26,22 @@ import javax.swing.JTextField;
 import javax.swing.BorderFactory;
 import javax.swing.SwingUtilities;
 import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 
 import restaurant.dao.GoodsDAO;
 import restaurant.dao.ReceiptDAO;
-import restaurant.dao.ReceiptDetailDAO;
 import restaurant.dao.SupplierDAO;
 import restaurant.table.TableCustom;
+import restaurant.dao.ReceiptDetailDAO;
+import restaurant.dialog.UpdateGoodsJDialog;
+
 import restaurant.entity.Goods;
 import restaurant.entity.Receipt;
-import restaurant.entity.ReceiptDetail;
-import restaurant.main.ManagementMode;
 import restaurant.entity.Supplier;
+import restaurant.main.ManagementMode;
+import restaurant.entity.ReceiptDetail;
 
 import restaurant.utils.Auth;
 import restaurant.utils.Common;
@@ -45,13 +49,14 @@ import restaurant.utils.Dialog;
 import restaurant.utils.XComboBox;
 import restaurant.utils.XTextField;
 import restaurant.utils.ColumnTable;
+import static restaurant.utils.XTextField.getRealText;
 import static restaurant.utils.XComboBox.insertPlaceholder;
 import static restaurant.utils.XTextField.addCommasToNumber;
 import static restaurant.utils.XComboBox.loadDataToComboBox;
 import static restaurant.utils.ColumnTable.addTextFieldColumn;
 import static restaurant.utils.XTextField.removeCommasFromNumber;
 import static restaurant.utils.ColumnTable.addQuantityButtonsColumn;
-import static restaurant.utils.XTextField.getRealText;
+import static restaurant.utils.XTextField.addFocusBorder;
 
 public final class CreateReceiptFrm extends javax.swing.JPanel {
 
@@ -75,7 +80,7 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
         btnChoseGroupGoods = new javax.swing.JButton();
         textSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
-        btnCalc = new javax.swing.JButton();
+        btnCreateGoods = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         labelDate = new javax.swing.JLabel();
@@ -83,7 +88,7 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
         jLabel8 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        textID = new javax.swing.JTextField();
+        textReceiptID = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
         btnSubmit = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
@@ -158,12 +163,12 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
         btnSearch.setToolTipText("Tìm kiếm");
         btnSearch.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        btnCalc.setBackground(new java.awt.Color(51, 153, 0));
-        btnCalc.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
-        btnCalc.setForeground(new java.awt.Color(255, 255, 255));
-        btnCalc.setText("Tính toán");
-        btnCalc.setToolTipText("Xem lịch sử gọi món");
-        btnCalc.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCreateGoods.setBackground(new java.awt.Color(51, 153, 0));
+        btnCreateGoods.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btnCreateGoods.setForeground(new java.awt.Color(255, 255, 255));
+        btnCreateGoods.setText("Tạo hàng hóa");
+        btnCreateGoods.setToolTipText("Xem lịch sử gọi món");
+        btnCreateGoods.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -181,7 +186,7 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnChoseGroupGoods)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnCalc))
+                        .addComponent(btnCreateGoods))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 786, Short.MAX_VALUE))
                 .addGap(12, 12, 12))
         );
@@ -190,7 +195,7 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addContainerGap(8, Short.MAX_VALUE)
+                        .addContainerGap(9, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(labelOrderedTable, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -199,7 +204,7 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(btnChoseGroupGoods, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnCalc, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnCreateGoods, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 516, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -234,11 +239,13 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
         jLabel6.setForeground(new java.awt.Color(51, 51, 51));
         jLabel6.setText("Nhà cung cấp:");
 
-        textID.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
-        textID.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        textID.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(51, 204, 0)));
-        textID.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        textID.setMargin(new java.awt.Insets(20, 60, 2, 40));
+        textReceiptID.setEditable(false);
+        textReceiptID.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
+        textReceiptID.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        textReceiptID.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(51, 204, 0)));
+        textReceiptID.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        textReceiptID.setMargin(new java.awt.Insets(20, 60, 2, 40));
+        textReceiptID.setRequestFocusEnabled(false);
 
         jLabel16.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
         jLabel16.setForeground(new java.awt.Color(51, 51, 51));
@@ -294,8 +301,7 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
         labelEmployeeName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labelEmployeeName.setText("Ngô Kim Long");
 
-        btnQuantity.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        btnQuantity.setText("1");
+        btnQuantity.setText("0");
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(51, 51, 51));
@@ -357,7 +363,7 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
                                     .addComponent(textDiscount)
                                     .addComponent(cbReceiptType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(cbSuppliers, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(textID, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(textReceiptID, javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(jPanel4Layout.createSequentialGroup()
                                         .addGap(0, 0, Short.MAX_VALUE)
                                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -376,8 +382,8 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                                         .addComponent(radioUnpay))
                                     .addGroup(jPanel4Layout.createSequentialGroup()
-                                        .addComponent(btnQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(33, 33, 33)
+                                        .addComponent(btnQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(26, 26, 26)
                                         .addComponent(labelTotal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGap(4, 4, 4)))))
                         .addGap(14, 14, 14))
@@ -413,7 +419,7 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
                 .addGap(10, 10, 10)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(textID, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(textReceiptID, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
@@ -471,17 +477,17 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 587, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 587, Short.MAX_VALUE))
-                .addContainerGap(18, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCalc;
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnChoseGroupGoods;
+    private javax.swing.JButton btnCreateGoods;
     private javax.swing.JButton btnQuantity;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnSubmit;
@@ -512,8 +518,8 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
     private javax.swing.JRadioButton radioUnpay;
     private javax.swing.JTable tableReceipts;
     private javax.swing.JTextField textDiscount;
-    private javax.swing.JTextField textID;
     private javax.swing.JTextField textNote;
+    private javax.swing.JTextField textReceiptID;
     private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
@@ -523,6 +529,7 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
     final String PLACEHOLDER_STATUS = "--Lựa chọn--";
     final String PLACEHOLDER_SEARCH = "Tìm hàng hóa theo tên hoặc mã";
 
+    // Flag to control calculation
     ScheduledFuture<?> scheduledFuture;
     ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
@@ -544,12 +551,12 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
         XComboBox.setComboboxStyle(cbReceiptType);
 
         // set placeholder text field
-        XTextField.addPlaceholder(textID, PLACEHOLDER_ID);
+        XTextField.addPlaceholder(textReceiptID, PLACEHOLDER_ID);
         XTextField.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
 
         // set border when focus
-        XTextField.addFocusBorder(textID, new Color(51, 204, 0), new Color(204, 204, 204));
-        XTextField.addFocusBorder(textDiscount, new Color(51, 204, 0), new Color(204, 204, 204));
+        addFocusBorder(textReceiptID, new Color(51, 204, 0), new Color(204, 204, 204));
+        addFocusBorder(textDiscount, new Color(51, 204, 0), new Color(204, 204, 204));
 
         // <--- Setup main --->
         // set name employee
@@ -557,21 +564,48 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
             labelEmployeeName.setText("" + Auth.user.getFullName());
         }
 
+        // handle click button search
+        handleClickButtons(btnSearch, btnSubmit, btnCancel, btnCreateGoods);
+
         // handle add button column to table
-        addButtonColumnCells();
+        addButtonColumnCells(tableReceipts);
 
         // add data to combobox
         List<Supplier> dataSupplierList = new SupplierDAO().getAll();
-        loadDataToComboBox(cbSuppliers, dataSupplierList, Supplier::getSupplierName);
+        loadDataToComboBox(
+                cbSuppliers,
+                dataSupplierList,
+                Supplier::getSupplierName
+        );
         insertPlaceholder(cbSuppliers, PLACEHOLDER_STATUS);
+    }
 
-        // handle click button search
+    void handleClickButtons(JButton btnSearch, JButton btnSubmit,
+            JButton btnCancel, JButton btnCreateGoods) {
+        // btn search
         btnSearch.addActionListener(e -> this.loadDataPopupMenu());
+
+        // btn submit
         btnSubmit.addActionListener(e -> submit());
+
+        // btn cancel
+        btnCancel.addActionListener(e -> cancel());
+
+        // btn create goods
+        btnCreateGoods.addActionListener(e -> {
+            UpdateGoodsJDialog dialog = new UpdateGoodsJDialog(null, true);
+            dialog.setTitle("Thêm hàng hóa"); // Set title dialog
+            dialog.setModel(null); // Set data product
+            dialog.setVisible(true);
+        });
     }
 
     // <--- button column cell list
-    void addButtonColumnCells() {
+    void addButtonColumnCells(JTable tableReceipts) {
+        if (tableReceipts == null) {
+            return;
+        }
+
         // add button cell column table icon
         int COLUMN_CELL_ZERO = 0;
         ColumnTable.addButtonIconColumn("src/restaurant/icon/delete.png",
@@ -579,6 +613,10 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
                 tableReceipts,
                 this::handleClickBtnColumnDelete
         );
+
+        // add button change quantity "+" and "-" column
+        int COLUMN_CELL_THREE = 3;
+        addQuantityButtonsColumn(tableReceipts, COLUMN_CELL_THREE, true);
 
         // add text field in the cell table
         int COLUMN_CELL_FOUR = 4;
@@ -588,18 +626,18 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
         int COLUMN_CELL_FIVE = 5;
         addTextFieldColumn(tableReceipts, COLUMN_CELL_FIVE);
 
-        // add button change quantity "+" and "-" column
-        int COLUMN_CELL_THREE = 3;
-        addQuantityButtonsColumn(tableReceipts, COLUMN_CELL_THREE, true);
-
-        // Button calc total 
-        btnCalc.addActionListener(e -> {
-            calculateTotalAmount(tableReceipts);
+        // handle click cell column
+        tableReceipts.getModel().addTableModelListener(e -> {
+            if (e.getColumn() == COLUMN_CELL_THREE
+                    || e.getColumn() == COLUMN_CELL_FOUR
+                    || e.getColumn() == COLUMN_CELL_FIVE) {
+                calculateTotals(tableReceipts);
+            }
         });
     }
 
     void handleClickBtnColumnDelete(int row) {
-        boolean isSubmit = Dialog.confirm(this, "Xác nhận xóa món ăn!");
+        boolean isSubmit = Dialog.confirm(this, "Xác nhận xóa hàng hóa!");
         if (isSubmit) {
             // Remove selected row
             if (tableReceipts.isEditing()) {
@@ -611,87 +649,56 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
 
             // Delete row
             model.removeRow(row);
+
+            // recalculation
+            calculateTotals(tableReceipts);
         }
     }
     // end --->
 
     // <--- submit and cancel
-    void submit() {
-        // Get data from the table
-        DefaultTableModel model = (DefaultTableModel) tableReceipts.getModel();
+    Receipt getModel() {
+        // get supplier id
         String supplierName = cbSuppliers.getSelectedItem().toString();
+        String supplierID = new SupplierDAO().getIdByName(supplierName);
+
         String type = cbReceiptType.getSelectedItem().toString();
         String totalStr = removeCommasFromNumber(labelTotalAmount.getText());
         String note = getRealText(textNote, PLACEHOLDER_NOTE);
+        String status = radioPaied.isSelected() ? "Đã thanh toán" : "Chưa trả";
 
-        if (!validateInput(model, supplierName, type, note)) {
-            return;
-        }
-
-        Boolean result = Dialog.confirm(this, "Xác nhận tạo biên lai!");
-        if (!result) {
-            return;
+        if (!validateInput(supplierName, supplierID, type, note)) {
+            return null;
         }
 
         try {
-            // get supplier id
-            String supplierID = new SupplierDAO().getIdByName(supplierName);
-
-            // create new receipt
-            Receipt receipt = new Receipt();
-            receipt.setEmployeeID(Auth.user.getEmployeeID());
-            receipt.setSupplierID(supplierID);
-            receipt.setTransactionType(type);
-            receipt.setTotalAmount(Long.parseLong(totalStr));
-            receipt.setNote(note);
-            receipt.setStatus(radioPaied.isSelected() ? "Đã thanh toán" : "Chưa trả");
-            new ReceiptDAO().insert(receipt);
-
-            // get receipt id
-            String receiptID = new ReceiptDAO().getLatestReceiptID();
-            Receipt dataReceipt = new ReceiptDAO().getByID(receiptID);
-
-            // For each new list of goods list
-            for (Vector<Object> row : model.getDataVector()) {
-                // get price
-                String price = removeCommasFromNumber(row.get(4).toString());
-
-                // create new receipt detail
-                ReceiptDetail receiptDetail = new ReceiptDetail();
-                receiptDetail.setReceiptID(receiptID);
-                receiptDetail.setGoodsID(row.get(1).toString());
-                receiptDetail.setQuantity(Integer.parseInt(row.get(3).toString()));
-                receiptDetail.setUnitPrice(Integer.parseInt(price));
-                new ReceiptDetailDAO().insert(receiptDetail);
-            }
-
-            Dialog.success(this, "Tạo biên lai [ " + dataReceipt.getTransactionType() + " ] thành công!\n\n"
-                    + "Vào lúc " + dataReceipt.getReceiptDate());
-            managementMode.displayManagementPanel(new ReceiptFrm(managementMode));
-        } catch (Exception e) {
-            System.out.println(e);
-            Dialog.alert(this, "Lỗi không xác nhận được!");
+            Receipt model = new Receipt();
+            model.setEmployeeID(Auth.user.getEmployeeID());
+            model.setSupplierID(supplierID);
+            model.setTransactionType(type);
+            model.setTotalAmount(Long.parseLong(totalStr));
+            model.setNote(note);
+            model.setStatus(status);
+            return model;
+        } catch (NumberFormatException e) {
+            System.err.println("Lỗi: " + e.getMessage());
+            return null;
         }
     }
 
-    boolean validateInput(DefaultTableModel model, String supplierName, String type, String note) {
+    boolean validateInput(String receiptID, String supplierName, String type, String note) {
         if (Auth.user == null) {
             Dialog.warning(this, "Vui lòng đăng nhập!");
             return false;
         }
 
-        if (model.getRowCount() == 0) {
-            Dialog.warning(this, "Vui lòng chọn hàng hóa!");
+        if (supplierName.equals(PLACEHOLDER_STATUS)) {
+            Dialog.warning(this, "Vui lòng chọn nhà cung cấp!");
             return false;
         }
 
         if (type.equals(PLACEHOLDER_STATUS)) {
             Dialog.warning(this, "Vui lòng chọn phiếu!");
-            return false;
-        }
-
-        if (supplierName.equals(PLACEHOLDER_STATUS)) {
-            Dialog.warning(this, "Vui lòng chọn nhà cung cấp!");
             return false;
         }
 
@@ -708,8 +715,87 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
         return true;
     }
 
-    void cancel() {
+    void submit() {
+        // Get model receipt
+        Receipt modelReceipt = getModel();
+        if (modelReceipt == null) {
+            return;
+        }
 
+        // Get model table
+        DefaultTableModel modelTable = (DefaultTableModel) tableReceipts.getModel();
+        if (modelTable.getRowCount() == 0) {
+            Dialog.warning(this, "Vui lòng chọn hàng hóa!");
+            return;
+        }
+
+        Boolean result = Dialog.confirm(this, "Xác nhận tạo biên lai!");
+        if (!result) {
+            return;
+        }
+
+        try {
+            // create new receipt
+            new ReceiptDAO().insert(modelReceipt);
+
+            // get data receipt new
+            String receiptID = new ReceiptDAO().getLatestReceiptID();
+            Receipt dataReceipt = new ReceiptDAO().getByID(receiptID);
+            String receiptType = dataReceipt.getTransactionType();
+
+            // For each new list of goods list
+            addGoodsToReceipt(modelTable, receiptID);
+
+            // message and move file
+            Dialog.success(this, "Tạo [ " + receiptType + " ] thành công!\n\n"
+                    + "Vào lúc " + labelDate.getText() + " " + labelTime.getText());
+            managementMode.displayManagementPanel(new ReceiptFrm(managementMode));
+        } catch (Exception e) {
+            System.out.println(e);
+            Dialog.alert(this, "Không tạo được biên lai!");
+        }
+    }
+
+    void addGoodsToReceipt(DefaultTableModel model, String receiptID) {
+        if (model == null || receiptID.equals("")) {
+            Dialog.alert(this, "Lỗi không thêm được hàng hóa!");
+            return;
+        }
+
+        try {
+            for (Vector<Object> row : model.getDataVector()) {
+                // get info to table
+                String goodsID = row.get(1).toString();
+                int quantity = Integer.parseInt(row.get(3).toString());
+                String price = removeCommasFromNumber(row.get(4).toString());
+                long priceFormat = Long.parseLong(price);
+
+                // create new receipt detail
+                ReceiptDetail receiptDetail = new ReceiptDetail();
+                receiptDetail.setReceiptID(receiptID);
+                receiptDetail.setGoodsID(goodsID);
+                receiptDetail.setQuantity(quantity);
+                receiptDetail.setUnitPrice(priceFormat);
+                new ReceiptDetailDAO().insert(receiptDetail);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            Dialog.alert(this, "Lỗi không thêm được hàng hóa!");
+        }
+    }
+
+    void cancel() {
+        Boolean result = Dialog.confirm(this, "Xác nhận xóa hết hàng hóa!");
+        if (!result) {
+            return;
+        }
+
+        // remove table
+        DefaultTableModel modelTable = (DefaultTableModel) tableReceipts.getModel();
+        modelTable.setRowCount(0);
+
+        // recalculation
+        calculateTotals(tableReceipts);
     }
     // end --->
 
@@ -813,7 +899,7 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
 
         // Add ActionListener to handle menu item click
         menuItem.addActionListener((ActionEvent e) -> {
-            addDataToTable(dataItem.getGoodsID());
+            addGoodsToTable(dataItem.getGoodsID());
         });
 
         // Add MouseListener to change color on hover
@@ -836,7 +922,7 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
         return menuItem;
     }
 
-    void addDataToTable(String id) {
+    void addGoodsToTable(String id) {
         if (id == null || id.equals("")) {
             return;
         }
@@ -861,9 +947,12 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
             0,
             addCommasToNumber(dataGoods.getUnitPrice())
         });
+
+        // recalculation
+        calculateTotals(tableReceipts);
     }
 
-    void calculateTotalAmount(JTable tableMain) {
+    void calculateTotals(JTable tableMain) {
         long totalAmount = 0;
         int totalQuantity = 0;
         int totalDiscount = 0;
@@ -886,8 +975,6 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
             long subtotal = (quantity * price) - discount;
 
             // Set value
-            model.setValueAt(addCommasToNumber(priceStr), i, 4);
-            model.setValueAt(addCommasToNumber(discountStr), i, 5);
             model.setValueAt(addCommasToNumber(subtotal), i, 6);
 
             // Accumulate subtotal to totalAmount
@@ -906,7 +993,6 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
         String formattedTotal = addCommasToNumber(String.valueOf(totalAmount));
         labelTotal.setText(formattedTotal);
         labelTotalAmount.setText(formattedTotal);
-
     }
     // end -->
 }

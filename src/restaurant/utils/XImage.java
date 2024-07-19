@@ -30,14 +30,18 @@ public class XImage {
      * @return the absolute path of the selected image file, or null if no file
      * was selected
      */
-    public static String chooseImageFromDirectory(JFrame frame, JButton btnImage) {
+    public static String chooseImageFromDirectory(JButton btnImage) {
+        if (btnImage == null) {
+            return null;
+        }
+
         String imgPath = "src/restaurant/img";
         JFileChooser fileChooser = new JFileChooser(imgPath);
         fileChooser.setFileFilter(
                 new FileNameExtensionFilter("Image files", "jpg", "jpeg", "png", "gif")
         );
 
-        int result = fileChooser.showOpenDialog(frame);
+        int result = fileChooser.showOpenDialog(null);
         if (result == JFileChooser.APPROVE_OPTION) {
             // Get selected file
             File selectedFile = fileChooser.getSelectedFile();
@@ -46,7 +50,6 @@ public class XImage {
             String imagePath = selectedFile.getAbsolutePath();
 
             if (!isImageFile(imagePath)) {
-                Dialog.warning(frame, "Đường dẫn không hợp lệ");
                 return null;
             }
 
@@ -72,6 +75,10 @@ public class XImage {
     }
 
     private static boolean isImageFile(String filePath) {
+        if (filePath == null || filePath.equals("")) {
+            return false;
+        }
+
         String lowerCaseFilePath = filePath.toLowerCase();
         return lowerCaseFilePath.endsWith(JPG)
                 || lowerCaseFilePath.endsWith(JPEG)
@@ -86,12 +93,15 @@ public class XImage {
      * @param button the JButton to set the image icon
      */
     public static void setImageButtonIcon(String imagePath, JButton button) {
+        if (imagePath == null || imagePath.equals("") || button == null) {
+            return;
+        }
+
         int width = button.getWidth();
         int height = button.getHeight();
 
         // Check if the image path is valid
         if (!isImageFile(imagePath)) {
-            Dialog.alert(null, "Đường dẫn không hợp lệ");
             return;
         }
 
@@ -108,6 +118,10 @@ public class XImage {
      * @param labelLogo the JLabel to update with the new image icon
      */
     public static void setImageLabelIcon(String imagePath, JLabel labelLogo) {
+        if (imagePath == null || imagePath.equals("") || labelLogo == null) {
+            return;
+        }
+
         ImageIcon icon = new ImageIcon(imagePath);
 
         int width = labelLogo.getWidth();
@@ -128,6 +142,11 @@ public class XImage {
      * @return a scaled ImageIcon object
      */
     public static ImageIcon getScaledImageIcon(String imageUrl, int maxWidth, int maxHeight) {
+        if (imageUrl == null || imageUrl.equals("")
+                || maxWidth < 0 || maxHeight < 0) {
+            return null;
+        }
+
         ImageIcon icon = new ImageIcon(imageUrl);
         Image image = icon.getImage();
 

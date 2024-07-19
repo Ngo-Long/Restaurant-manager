@@ -38,10 +38,10 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="jPanel3" pref="587" max="32767" attributes="0"/>
-                  <Component id="jPanel4" pref="587" max="32767" attributes="0"/>
+                  <Component id="jPanel3" pref="588" max="32767" attributes="0"/>
+                  <Component id="jPanel4" pref="588" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace pref="18" max="32767" attributes="0"/>
+              <EmptySpace pref="17" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -73,7 +73,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="btnChoseGroupGoods" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="btnCalc" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnCreateGoods" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="jScrollPane1" pref="786" max="32767" attributes="0"/>
                   </Group>
@@ -86,7 +86,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace pref="8" max="32767" attributes="0"/>
+                          <EmptySpace pref="9" max="32767" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="labelOrderedTable" alignment="3" min="-2" pref="38" max="-2" attributes="0"/>
                               <Component id="textSearch" alignment="3" min="-2" pref="38" max="-2" attributes="0"/>
@@ -97,7 +97,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="103" alignment="1" groupAlignment="3" attributes="0">
                                   <Component id="btnChoseGroupGoods" alignment="3" min="-2" pref="38" max="-2" attributes="0"/>
-                                  <Component id="btnCalc" alignment="3" min="-2" pref="38" max="-2" attributes="0"/>
+                                  <Component id="btnCreateGoods" alignment="3" min="-2" pref="38" max="-2" attributes="0"/>
                               </Group>
                               <Component id="btnSearch" alignment="1" min="-2" pref="38" max="-2" attributes="0"/>
                           </Group>
@@ -246,7 +246,7 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="btnCalc">
+        <Component class="javax.swing.JButton" name="btnCreateGoods">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="99" red="33" type="rgb"/>
@@ -257,7 +257,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="T&#xed;nh to&#xe1;n"/>
+            <Property name="text" type="java.lang.String" value="T&#x1ea1;o h&#xe0;ng h&#xf3;a"/>
             <Property name="toolTipText" type="java.lang.String" value="Xem l&#x1ecb;ch s&#x1eed; g&#x1ecd;i m&#xf3;n"/>
             <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
               <Color id="Hand Cursor"/>
@@ -303,7 +303,7 @@
                                       <Component id="textDiscount" max="32767" attributes="0"/>
                                       <Component id="cbReceiptType" max="32767" attributes="0"/>
                                       <Component id="cbSuppliers" max="32767" attributes="0"/>
-                                      <Component id="textID" alignment="1" max="32767" attributes="0"/>
+                                      <Component id="textReceiptID" alignment="1" max="32767" attributes="0"/>
                                       <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                           <Group type="103" groupAlignment="1" attributes="0">
@@ -328,8 +328,8 @@
                                           <Component id="radioUnpay" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <Group type="102" attributes="0">
-                                          <Component id="btnQuantity" min="-2" pref="45" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
+                                          <Component id="btnQuantity" min="-2" pref="52" max="-2" attributes="0"/>
+                                          <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
                                           <Component id="labelTotal" max="32767" attributes="0"/>
                                           <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                                       </Group>
@@ -379,7 +379,7 @@
                   <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jLabel8" min="-2" pref="26" max="-2" attributes="0"/>
-                      <Component id="textID" min="-2" pref="26" max="-2" attributes="0"/>
+                      <Component id="textReceiptID" min="-2" pref="26" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
@@ -504,8 +504,9 @@
             <Property name="text" type="java.lang.String" value="Nh&#xe0; cung c&#x1ea5;p:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="textID">
+        <Component class="javax.swing.JTextField" name="textReceiptID">
           <Properties>
+            <Property name="editable" type="boolean" value="false"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="15" style="0"/>
             </Property>
@@ -523,6 +524,7 @@
             <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
               <Insets value="[20, 60, 2, 40]"/>
             </Property>
+            <Property name="requestFocusEnabled" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel16">
@@ -673,10 +675,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnQuantity">
           <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Segoe UI" size="14" style="0"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="1"/>
+            <Property name="text" type="java.lang.String" value="0"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel10">
