@@ -15,10 +15,12 @@ public class OrderDAO extends RestaurantDAO<Order, Integer> {
     final String UPDATE_SQL = "UPDATE [Order] SET Note=?, Method=?, Total=?, Status=?  WHERE OrderID=?";
     final String DELETE_SQL = "DELETE FROM [Order] WHERE OrderID=?";
     final String SELECT_ALL_SQL = "SELECT * FROM [Order]";
+    
     final String SELECT_BY_ID = "SELECT * FROM [Order] WHERE OrderID = ?";
     final String SELECT_BY_TABLE_ID = "SELECT o.* FROM [Order] o"
             + " JOIN OrderTable ot ON o.OrderID = ot.OrderID"
             + " WHERE ot.Status = N'Đang hoạt động' AND ot.TableID = ?";
+    
     final String SELECT_BY_INVOICE_ID = "SELECT * FROM [Order] WHERE InvoiceID = ?";
     final String SELECT_LATEST_ID_SQL = "SELECT TOP 1 OrderID FROM [Order] ORDER BY OrderID DESC";
 

@@ -315,16 +315,16 @@ public final class TableOrderJDialog extends javax.swing.JDialog {
         btnSplitMerge.setBackground(Color.WHITE);
 
         // <--- Setup main --->
-//        displayTableInfo(dataTable);
-//        displayOrderedOfTable(dataTable.getTableID());
-
         // Attach event when click combobox status
         cbStatus.addActionListener((ActionEvent e) -> {
+            // get selected status
             String selectedStatus = (String) cbStatus.getSelectedItem();
-            if (!selectedStatus.equals(dataTable.getStatus())) {
-                // change status table
-                updateStatusTable(selectedStatus);
+            if (selectedStatus.equals(dataTable.getStatus())) {
+                return;
             }
+
+            // change status table
+            updateStatusTable(selectedStatus);
         });
 
         // Attach event when click button split merge
@@ -336,19 +336,32 @@ public final class TableOrderJDialog extends javax.swing.JDialog {
         btnAddOrder.addActionListener(e -> addOrder());
     }
 
-    public void displayTableInfo(DiningTable diningTable) {
-        dataTable = diningTable;
+    // <--- display info public 
+    public void displayTableInfo(DiningTable dataTableOld) {
+        if (dataTableOld == null) {
+            return;
+        }
+
+        dataTable = dataTableOld;
         cbStatus.setSelectedItem(dataTable.getStatus());
         labelTableId.setText(dataTable.getTableID());
         labelTableName.setText(dataTable.getName());
     }
 
-    public void displayOrderedOfTable(String tableID) {
+    public void displayOrderedOfTable(DiningTable dataTable) {
+        if (dataTable == null) {
+            Dialog.error(this, "Lỗi không hiển thị");
+            return;
+        }
+
         // Reset table
         DefaultTableModel model = (DefaultTableModel) tableOrderedDishes.getModel();
         model.setRowCount(0);
 
         try {
+            // get table id
+            String tableID = dataTable.getTableID();
+
             // Get data order and order deatails
             Order dataOrder = new OrderDAO().getByTableID(tableID);
             List<OrderDetail> dataOrderDetails
@@ -382,6 +395,7 @@ public final class TableOrderJDialog extends javax.swing.JDialog {
             System.out.println(e);
         }
     }
+    // end --->
 
     void handleClickBtnSplitMerge(JButton tableBtn, DiningTable dataTable) {
         // Open dialog and Transmit data via file orderTableDialog

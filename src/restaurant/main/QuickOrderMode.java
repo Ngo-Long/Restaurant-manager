@@ -30,10 +30,9 @@ import javax.swing.JTable;
 import javax.swing.JFrame;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.BorderFactory;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
@@ -90,9 +89,9 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         panelProducts = new javax.swing.JPanel();
         btnHistory = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
-        labelOrderedTable = new javax.swing.JLabel();
         panelMenu = new javax.swing.JPanel();
-        labelIcon1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableOrder = new javax.swing.JTable();
@@ -177,19 +176,15 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         btnHistory.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnHistory.setForeground(new java.awt.Color(255, 255, 255));
         btnHistory.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/historyWhile.png"))); // NOI18N
-        btnHistory.setToolTipText("Xem lịch sử gọi món");
+        btnHistory.setToolTipText("Xem lịch sử hóa đơn");
         btnHistory.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         btnReset.setBackground(new java.awt.Color(0, 153, 153));
         btnReset.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnReset.setForeground(new java.awt.Color(255, 255, 255));
-        btnReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/historyWhile.png"))); // NOI18N
+        btnReset.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/refreshWhile.png"))); // NOI18N
         btnReset.setToolTipText("Reset trang (Ctrl + F5)");
         btnReset.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        labelOrderedTable.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
-        labelOrderedTable.setForeground(new java.awt.Color(255, 51, 51));
-        labelOrderedTable.setText("Dịch vụ");
 
         panelMenu.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -204,7 +199,13 @@ public final class QuickOrderMode extends javax.swing.JFrame {
             .addGap(0, 78, Short.MAX_VALUE)
         );
 
-        labelIcon1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/fast-food.png"))); // NOI18N
+        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(204, 51, 0));
+        jButton1.setText("Phòng/bàn");
+
+        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        jButton2.setForeground(new java.awt.Color(204, 0, 0));
+        jButton2.setText("Thực đơn");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -212,10 +213,10 @@ public final class QuickOrderMode extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addComponent(labelIcon1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(labelOrderedTable)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 359, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 226, Short.MAX_VALUE)
                 .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -231,16 +232,16 @@ public final class QuickOrderMode extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(btnHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
-                        .addComponent(btnReset, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(textSearch, javax.swing.GroupLayout.Alignment.LEADING))
-                    .addComponent(labelOrderedTable, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelIcon1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12)
-                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnSearch, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
+                    .addComponent(btnHistory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnReset, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(textSearch, javax.swing.GroupLayout.Alignment.LEADING))
+                .addGap(11, 11, 11)
+                .addComponent(scrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
                 .addComponent(panelMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
@@ -275,16 +276,18 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         }
 
         btnSubmit.setBackground(new java.awt.Color(0, 153, 0));
-        btnSubmit.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btnSubmit.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnSubmit.setForeground(new java.awt.Color(255, 255, 255));
-        btnSubmit.setText("THANH TOÁN");
+        btnSubmit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/notification-bell.png"))); // NOI18N
+        btnSubmit.setText(" Thông báo");
         btnSubmit.setToolTipText("Ấn xác nhận để chuyển tới bếp");
         btnSubmit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        btnCancel.setBackground(new java.awt.Color(255, 0, 51));
-        btnCancel.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        btnCancel.setBackground(new java.awt.Color(0, 153, 153));
+        btnCancel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnCancel.setForeground(new java.awt.Color(255, 255, 255));
-        btnCancel.setText("HỦY");
+        btnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/coin.png"))); // NOI18N
+        btnCancel.setText(" Thanh toán");
         btnCancel.setToolTipText("Quay về bàn ăn");
         btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
@@ -297,7 +300,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
 
         labelOrderTable.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
         labelOrderTable.setForeground(new java.awt.Color(255, 51, 51));
-        labelOrderTable.setText("ORDER");
+        labelOrderTable.setText("Order [ Trống ]");
 
         textNote.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         textNote.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED), "Ghi chú", javax.swing.border.TitledBorder.LEFT, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Segoe UI", 0, 16))); // NOI18N
@@ -306,7 +309,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(51, 51, 51));
         jLabel1.setText("Voucher:");
 
-        labelTotalAmount.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        labelTotalAmount.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
         labelTotalAmount.setForeground(new java.awt.Color(255, 51, 51));
         labelTotalAmount.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labelTotalAmount.setText("0");
@@ -320,7 +323,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(51, 51, 51));
         jLabel3.setText("Giảm giá:");
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(51, 51, 51));
         jLabel4.setText("Thanh toán:");
 
@@ -341,19 +344,16 @@ public final class QuickOrderMode extends javax.swing.JFrame {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                             .addComponent(textNote, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGap(6, 6, 6)
-                                        .addComponent(jLabel4)))
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
-                                        .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGap(30, 30, 30)
-                                        .addComponent(labelTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE)))))
+                                .addGap(6, 6, 6)
+                                .addComponent(jLabel4)
+                                .addGap(135, 135, 135)
+                                .addComponent(labelTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 3, Short.MAX_VALUE)
+                                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(12, 12, 12))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -378,29 +378,29 @@ public final class QuickOrderMode extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(labelOrderTable, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSearch1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 374, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelOrderTable, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                    .addComponent(btnSearch1, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 368, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(textNote, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(6, 6, 6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelVoucher, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, 0)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, 0)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelTotalAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(15, Short.MAX_VALUE))
+                    .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         menuSystem.setText("Hệ thống");
@@ -492,6 +492,8 @@ public final class QuickOrderMode extends javax.swing.JFrame {
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnSearch1;
     private javax.swing.JButton btnSubmit;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -513,9 +515,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
-    private javax.swing.JLabel labelIcon1;
     private javax.swing.JLabel labelOrderTable;
-    private javax.swing.JLabel labelOrderedTable;
     private javax.swing.JLabel labelTotalAmount;
     private javax.swing.JLabel labelVoucher;
     private javax.swing.JMenuBar menuBar;
@@ -537,8 +537,6 @@ public final class QuickOrderMode extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     JLabel selectedMenu;
-    int COLUMN_CELL_ONE = 1;
-    int COLUMN_CELL_THREE = 3;
     final String PLACEHOLDER_NOTE = "Tối đa 60 ký tự";
     final String PLACEHOLDER_SEARCH = "Tìm theo tên món";
 
@@ -551,6 +549,8 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableOrder, new int[]{3}, 30);
         Common.customizeScrollBar(scrollPane);
+        jButton1.setBackground(Color.white);
+        jButton2.setBackground(Color.white);
 
         // set text field
         XTextField.addPlaceholder(textNote, PLACEHOLDER_NOTE);
@@ -565,6 +565,8 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         handleClickButtons(btnSubmit, btnReset, btnHistory, btnCancel);
 
         // add button column cell list
+        int COLUMN_CELL_ONE = 1;
+        int COLUMN_CELL_THREE = 3;
         addButtonColumnCells(tableOrder, COLUMN_CELL_ONE, COLUMN_CELL_THREE);
 
         // get data all
@@ -572,46 +574,10 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         setupMenuCategory(dataProducts, panelMenu);
 
         // attach event when change text field
-        addTextFieldListeners(textSearch, this::loadData);
+        addTextFieldListeners(textSearch, this::loadDataDisplayProducts);
 
-        // load data
-        this.loadData();
-    }
-
-    void addButtonColumnCells(JTable tableOrder, int COLUMN_CELL_ONE, int COLUMN_CELL_THREE) {
-        // Add button delete row
-        ColumnTable.addButtonIconColumn(
-                "src/restaurant/icon/delete.png",
-                COLUMN_CELL_ONE,
-                tableOrder,
-                this::handleClickBtnColumnDelete
-        );
-
-        // Add button change quantity "+" and "-"
-        addQuantityButtonsColumn(tableOrder, COLUMN_CELL_THREE, false);
-
-        // Calc total amount click column 
-        tableOrder.getModel().addTableModelListener(e -> {
-            if (e.getColumn() == COLUMN_CELL_THREE) {
-                calculateTotalAmount(tableOrder, labelTotalAmount);
-            }
-        });
-    }
-
-    void handleClickBtnColumnDelete(int row) {
-        boolean isSubmit = Dialog.confirm(this, "Xác nhận xóa món ăn!");
-        if (isSubmit) {
-            // Remove selected row
-            if (tableOrder.isEditing()) {
-                tableOrder.getCellEditor().stopCellEditing();
-            }
-
-            // Call table get model 
-            DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
-
-            // Delete row
-            model.removeRow(row);
-        }
+        // load data and display product list
+        this.loadDataDisplayProducts();
     }
 
     // <--- Common 
@@ -660,6 +626,44 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         this.dispose();
     }
     // end -->
+
+    // <--- handle click cells table
+    void addButtonColumnCells(JTable tableOrder, int COLUMN_CELL_ONE, int COLUMN_CELL_THREE) {
+        // Add button delete row
+        ColumnTable.addButtonIconColumn(
+                "src/restaurant/icon/delete.png",
+                COLUMN_CELL_ONE,
+                tableOrder,
+                this::handleClickBtnColumnDelete
+        );
+
+        // Add button change quantity "+" and "-"
+        addQuantityButtonsColumn(tableOrder, COLUMN_CELL_THREE, false);
+
+        // Calc total amount click column 
+        tableOrder.getModel().addTableModelListener(e -> {
+            if (e.getColumn() == COLUMN_CELL_THREE) {
+                calculateTotalAmount(tableOrder, labelTotalAmount);
+            }
+        });
+    }
+
+    void handleClickBtnColumnDelete(int row) {
+        boolean isSubmit = Dialog.confirm(this, "Xác nhận xóa món ăn!");
+        if (isSubmit) {
+            // Remove selected row
+            if (tableOrder.isEditing()) {
+                tableOrder.getCellEditor().stopCellEditing();
+            }
+
+            // Call table get model 
+            DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
+
+            // Delete row
+            model.removeRow(row);
+        }
+    }
+    // end --->
 
     // <--- setup menu
     void setupMenuCategory(List<Product> dataList, JPanel panelMenu) {
@@ -736,12 +740,12 @@ public final class QuickOrderMode extends javax.swing.JFrame {
 
         // Cập nhật nút được chọn hiện tại
         selectedMenu = labelItem;
-        loadData();
+        loadDataDisplayProducts();
     }
     // end --->
 
-    // Load data
-    void loadData() {
+    // <--- Load data and display products
+    void loadDataDisplayProducts() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
@@ -768,21 +772,16 @@ public final class QuickOrderMode extends javax.swing.JFrame {
 
     }
 
-    // <--- Display and handle events products
     public static void displayProductList(List<Product> dataList, JPanel panelMain, JTable tableOrder, JLabel labelTotal) {
-        // Reset food list
-        panelMain.removeAll();
-
-        // Init GridBagLayout
-        GridBagLayout gridBagLayout = new GridBagLayout();
-        panelMain.setLayout(gridBagLayout);
+        panelMain.removeAll(); // reset panel 
+        panelMain.setLayout(new GridBagLayout()); // init GridBagLayout
 
         // Init gridbag 
         GridBagConstraints constraints = new GridBagConstraints();
+        constraints.insets = new Insets(0, 14, 20, 14);
+        constraints.anchor = GridBagConstraints.NORTHWEST;
         constraints.gridx = 0;
         constraints.gridy = 0;
-        constraints.insets = new Insets(0, 14, 20, 14);
-        constraints.anchor = GridBagConstraints.CENTER;
 
         int maxColumns = 7; // Số lượng cột tối đa trên mỗi hàng
         int columnCount = 0; // Biến đếm số lượng cột hiện tại
@@ -791,12 +790,9 @@ public final class QuickOrderMode extends javax.swing.JFrame {
         for (Product dataItem : dataList) {
             // Create and set colors based on status
             JPanel productItem = createPanelProduct(dataItem, tableOrder, labelTotal);
+            panelMain.add(productItem, constraints);
 
-            // Add product to the panel main
-            gridBagLayout.setConstraints(productItem, constraints);
-            panelMain.add(productItem);
-
-            // Tăng đếm số cột
+            // Update column and row indices
             if (++columnCount == maxColumns) {
                 columnCount = 0;
                 constraints.gridx = 0;
@@ -805,6 +801,14 @@ public final class QuickOrderMode extends javax.swing.JFrame {
                 constraints.gridx++;
             }
         }
+
+        // Add a spacer to push the components to the top-left corner
+        constraints.gridx = columnCount;
+        constraints.gridy++;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        panelMain.add(new JPanel(), constraints);
 
         // Refresh the panel
         panelMain.repaint();

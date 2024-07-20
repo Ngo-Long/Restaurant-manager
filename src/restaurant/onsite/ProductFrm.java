@@ -25,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
+import javax.swing.JButton;
+import javax.swing.JTable;
 
 import restaurant.entity.Order;
 import restaurant.entity.OrderTable;
@@ -386,6 +388,7 @@ public final class ProductFrm extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     JLabel selectedMenu;
+
     final String PLACEHOLDER_NOTE = "Tối đa 60 ký tự";
     final String PLACEHOLDER_SEARCH = "Tìm theo tên món";
 
@@ -406,32 +409,12 @@ public final class ProductFrm extends javax.swing.JPanel {
         displayOrderInfo(Auth.order);
 
         // Handle click button 
-        btnReset.addActionListener(e -> onSite.displayOnSitePanel(new ProductFrm(onSite)));
-        btnHistory.addActionListener(e -> {
-            new OrderDetailJDialog(null, true).setVisible(true);
-        });
-        btnSubmit.addActionListener(e -> submit());
-        btnCancel.addActionListener(e -> cancel());
+        handleClickButtons(btnReset, btnHistory, btnSubmit, btnCancel);
 
-        // Add column cell button delete row
+        // Add and handle click button cell column table
         int COLUMN_CELL_ONE = 1;
-        addButtonIconColumn(
-                "src/restaurant/icon/delete.png",
-                COLUMN_CELL_ONE,
-                tableOrder,
-                this::handleClickBtnColumnDelete
-        );
-
-        // Add button change quantity "+" and "-"
         int COLUMN_CELL_THREE = 3;
-        addQuantityButtonsColumn(tableOrder, COLUMN_CELL_THREE, false);
-
-        // Calc total amount click column 
-        tableOrder.getModel().addTableModelListener((TableModelEvent e) -> {
-            if (e.getColumn() == COLUMN_CELL_THREE) {
-                QuickOrderMode.calculateTotalAmount(tableOrder, labelTotalAmount);
-            }
-        });
+        addButtonColumnCells(tableOrder, COLUMN_CELL_ONE, COLUMN_CELL_THREE);
 
         // Get menu category
         List<Product> dataList = new ProductDAO().getAll();
@@ -444,50 +427,7 @@ public final class ProductFrm extends javax.swing.JPanel {
         this.loadDataDisplayProducts();
     }
 
-    //  Load data display products
-    void loadDataDisplayProducts() {
-        if (scheduledFuture != null && !scheduledFuture.isDone()) {
-            scheduledFuture.cancel(false);
-        }
-
-        scheduledFuture = scheduledExecutorService.schedule(() -> {
-            SwingUtilities.invokeLater(() -> {
-                // Get category and search text
-                String menuItem = selectedMenu.getText();
-                String keyword = getRealText(textSearch, PLACEHOLDER_SEARCH);
-
-                // Get data and display
-                List<restaurant.entity.Product> dataList
-                        = new ProductDAO().searchByCriteria(keyword, menuItem, "");
-
-                // Display product list on panel
-                QuickOrderMode.displayProductList(
-                        dataList,
-                        panelProducts,
-                        tableOrder,
-                        labelTotalAmount
-                );
-            });
-        }, 300, TimeUnit.MILLISECONDS);
-    }
-
     // <--- Common
-    void handleClickBtnColumnDelete(int row) {
-        boolean isSubmit = Dialog.confirm(this, "Xác nhận xóa món ăn!");
-        if (isSubmit) {
-            // Remove selected row
-            if (tableOrder.isEditing()) {
-                tableOrder.getCellEditor().stopCellEditing();
-            }
-
-            // Call table get model 
-            DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
-
-            // Delete row
-            model.removeRow(row);
-        }
-    }
-
     void displayTableInfo(DiningTable dataTable) {
         if (dataTable == null) {
             return;
@@ -523,82 +463,78 @@ public final class ProductFrm extends javax.swing.JPanel {
             System.out.println(e);
         }
     }
+
+    void handleClickButtons(JButton btnReset, JButton btnHistory, JButton btnSubmit, JButton btnCancel) {
+        btnReset.addActionListener(e -> onSite.displayOnSitePanel(new ProductFrm(onSite)));
+        btnHistory.addActionListener(e -> {
+            new OrderDetailJDialog(null, true).setVisible(true);
+        });
+        btnSubmit.addActionListener(e -> submit());
+        btnCancel.addActionListener(e -> cancel());
+    }
+
+    void loadDataDisplayProducts() {
+        if (scheduledFuture != null && !scheduledFuture.isDone()) {
+            scheduledFuture.cancel(false);
+        }
+
+        scheduledFuture = scheduledExecutorService.schedule(() -> {
+            SwingUtilities.invokeLater(() -> {
+                // Get category and search text
+                String menuItem = selectedMenu.getText();
+                String keyword = getRealText(textSearch, PLACEHOLDER_SEARCH);
+
+                // Get data and display
+                List<restaurant.entity.Product> dataList
+                        = new ProductDAO().searchByCriteria(keyword, menuItem, "");
+
+                // Display product list on panel
+                QuickOrderMode.displayProductList(
+                        dataList,
+                        panelProducts,
+                        tableOrder,
+                        labelTotalAmount
+                );
+            });
+        }, 300, TimeUnit.MILLISECONDS);
+    }
     // end --->
 
-    // <--- setup menu
-    void setupMenuCategory(List<Product> datAll, JPanel panelMenu, JLabel selectedMenu) {
-        // Create a set to store unique names
-        Set<String> dataSet = new HashSet<>();
-        for (restaurant.entity.Product dataItem : datAll) {
-            dataSet.add(dataItem.getCategory());
-        }
+    // <--- Handle click button cell column table
+    void addButtonColumnCells(JTable tableOrder, int COLUMN_CELL_ONE, int COLUMN_CELL_THREE) {
+        // Add column cell button delete row
+        addButtonIconColumn(
+                "src/restaurant/icon/delete.png",
+                COLUMN_CELL_ONE,
+                tableOrder,
+                this::handleClickBtnColumnDelete
+        );
 
-        // Convert the set to a sorted list
-        List<String> dataList = dataSet.stream().sorted().collect(Collectors.toList());
+        // Add button change quantity "+" and "-"
+        addQuantityButtonsColumn(tableOrder, COLUMN_CELL_THREE, false);
 
-        // Create buttons for each and add them to panel
-        for (String dataItem : dataList) {
-            // Set button location
-            JLabel labelItem = createStyledLabel(dataItem);
+        // Calc total amount click column 
+        tableOrder.getModel().addTableModelListener((TableModelEvent e) -> {
+            if (e.getColumn() == COLUMN_CELL_THREE) {
+                QuickOrderMode.calculateTotalAmount(tableOrder, labelTotalAmount);
+            }
+        });
+    }
 
-            // Handle click location
-            labelItem.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    handleClickMenu(labelItem);
-                }
-            });
-
-            // Automatically select the first item
-            if (selectedMenu == null) {
-                handleClickMenu(labelItem);
+    void handleClickBtnColumnDelete(int row) {
+        boolean isSubmit = Dialog.confirm(this, "Xác nhận xóa món ăn!");
+        if (isSubmit) {
+            // Remove selected row
+            if (tableOrder.isEditing()) {
+                tableOrder.getCellEditor().stopCellEditing();
             }
 
-            // Add item location to the panel
-            panelMenu.add(labelItem);
+            // Call table get model 
+            DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
+
+            // Delete row
+            model.removeRow(row);
         }
-
-        // Set layout for panelButtons
-        panelMenu.setLayout(new FlowLayout(FlowLayout.LEFT, 12, 12));
-
-        // Refresh the panel to display the new buttons
-        panelMenu.revalidate();
-        panelMenu.repaint();
-    }
-
-    JLabel createStyledLabel(String dataItem) {
-        JLabel label = new JLabel(dataItem);
-        label.setPreferredSize(new Dimension(140, 50));
-        label.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        label.setForeground(new Color(120, 120, 120));
-        label.setBackground(Color.LIGHT_GRAY);
-        label.setOpaque(true); // Ensure background color is visible
-        label.setVerticalAlignment(SwingConstants.CENTER);
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        label.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
-        return label;
-    }
-
-    void handleClickMenu(JLabel labelItem) {
-        // Kiểm tra nếu nút hiện tại không phải là nút đã được chọn trước đó
-        if (selectedMenu == labelItem) {
-            return;
-        }
-
-        // Đặt lại màu cho nút trước đó nếu có
-        if (selectedMenu != null) {
-            selectedMenu.setForeground(new Color(120, 120, 120));
-            selectedMenu.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
-        }
-
-        // Thiết lập lại màu cho nút hiện tại
-        labelItem.setForeground(new Color(255, 11, 11));
-        labelItem.setBorder(BorderFactory.createLineBorder(new Color(255, 11, 11), 2, true));
-
-        // Cập nhật nút được chọn hiện tại
-        selectedMenu = labelItem;
-        this.loadDataDisplayProducts();
     }
     // end --->
 
@@ -716,6 +652,83 @@ public final class ProductFrm extends javax.swing.JPanel {
             Dialog.alert(this, "Thêm món ăn thất bại!");
             e.printStackTrace();
         }
+    }
+    // end --->
+
+    // <--- setup menu
+    void setupMenuCategory(List<Product> datAll, JPanel panelMenu, JLabel selectedMenu) {
+        // Create a set to store unique names
+        Set<String> dataSet = new HashSet<>();
+        for (restaurant.entity.Product dataItem : datAll) {
+            dataSet.add(dataItem.getCategory());
+        }
+
+        // Convert the set to a sorted list
+        List<String> dataList = dataSet.stream().sorted().collect(Collectors.toList());
+
+        // Create buttons for each and add them to panel
+        for (String dataItem : dataList) {
+            // Set button location
+            JLabel labelItem = createStyledLabel(dataItem);
+
+            // Handle click location
+            labelItem.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    handleClickMenu(labelItem);
+                }
+            });
+
+            // Automatically select the first item
+            if (selectedMenu == null) {
+                handleClickMenu(labelItem);
+            }
+
+            // Add item location to the panel
+            panelMenu.add(labelItem);
+        }
+
+        // Set layout for panelButtons
+        panelMenu.setLayout(new FlowLayout(FlowLayout.LEFT, 12, 12));
+
+        // Refresh the panel to display the new buttons
+        panelMenu.revalidate();
+        panelMenu.repaint();
+    }
+
+    JLabel createStyledLabel(String dataItem) {
+        JLabel label = new JLabel(dataItem);
+        label.setPreferredSize(new Dimension(140, 50));
+        label.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        label.setForeground(new Color(120, 120, 120));
+        label.setBackground(Color.LIGHT_GRAY);
+        label.setOpaque(true); // Ensure background color is visible
+        label.setVerticalAlignment(SwingConstants.CENTER);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        label.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
+        return label;
+    }
+
+    void handleClickMenu(JLabel labelItem) {
+        // Kiểm tra nếu nút hiện tại không phải là nút đã được chọn trước đó
+        if (selectedMenu == labelItem) {
+            return;
+        }
+
+        // Đặt lại màu cho nút trước đó nếu có
+        if (selectedMenu != null) {
+            selectedMenu.setForeground(new Color(120, 120, 120));
+            selectedMenu.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
+        }
+
+        // Thiết lập lại màu cho nút hiện tại
+        labelItem.setForeground(new Color(255, 11, 11));
+        labelItem.setBorder(BorderFactory.createLineBorder(new Color(255, 11, 11), 2, true));
+
+        // Cập nhật nút được chọn hiện tại
+        selectedMenu = labelItem;
+        this.loadDataDisplayProducts();
     }
     // end --->
 }

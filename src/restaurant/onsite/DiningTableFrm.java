@@ -2,17 +2,13 @@ package restaurant.onsite;
 
 import java.awt.Font;
 import java.awt.Color;
-import java.awt.Insets;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
 import java.awt.event.MouseEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.GridBagConstraints;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.WindowAdapter;
 
 import java.util.Set;
 import java.util.List;
@@ -24,17 +20,17 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.ImageIcon;
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.JScrollPane;
+import javax.swing.BorderFactory;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingConstants;
 
 import restaurant.utils.Common;
 import restaurant.main.OnSiteMode;
-import restaurant.dao.DiningTableDAO;
 import restaurant.entity.DiningTable;
+import restaurant.dao.DiningTableDAO;
+import restaurant.utils.DiningTablePanel;
 import restaurant.dialog.TableOrderJDialog;
 import static restaurant.utils.XRunnable.addTextFieldListeners;
 
@@ -56,7 +52,7 @@ public final class DiningTableFrm extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         scrollPaneTableDining = new javax.swing.JScrollPane();
-        panelDiningTableList = new javax.swing.JPanel();
+        panelMain = new javax.swing.JPanel();
         textSearch = new javax.swing.JTextField();
         btnReset = new javax.swing.JButton();
         btnHistory = new javax.swing.JButton();
@@ -73,20 +69,20 @@ public final class DiningTableFrm extends javax.swing.JPanel {
         scrollPaneTableDining.setBorder(null);
         scrollPaneTableDining.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-        panelDiningTableList.setBackground(new java.awt.Color(255, 255, 255));
+        panelMain.setBackground(new java.awt.Color(255, 255, 255));
 
-        javax.swing.GroupLayout panelDiningTableListLayout = new javax.swing.GroupLayout(panelDiningTableList);
-        panelDiningTableList.setLayout(panelDiningTableListLayout);
-        panelDiningTableListLayout.setHorizontalGroup(
-            panelDiningTableListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout panelMainLayout = new javax.swing.GroupLayout(panelMain);
+        panelMain.setLayout(panelMainLayout);
+        panelMainLayout.setHorizontalGroup(
+            panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 1254, Short.MAX_VALUE)
         );
-        panelDiningTableListLayout.setVerticalGroup(
-            panelDiningTableListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        panelMainLayout.setVerticalGroup(
+            panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 565, Short.MAX_VALUE)
         );
 
-        scrollPaneTableDining.setViewportView(panelDiningTableList);
+        scrollPaneTableDining.setViewportView(panelMain);
 
         textSearch.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
@@ -122,7 +118,7 @@ public final class DiningTableFrm extends javax.swing.JPanel {
         );
         panelMenuLayout.setVerticalGroup(
             panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 32, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -135,7 +131,7 @@ public final class DiningTableFrm extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -157,7 +153,7 @@ public final class DiningTableFrm extends javax.swing.JPanel {
                     .addComponent(panelMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(scrollPaneTableDining, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE))
+                .addComponent(scrollPaneTableDining, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout panelBodyLayout = new javax.swing.GroupLayout(panelBody);
@@ -172,8 +168,8 @@ public final class DiningTableFrm extends javax.swing.JPanel {
         panelBodyLayout.setVerticalGroup(
             panelBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBodyLayout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 602, Short.MAX_VALUE)
                 .addGap(12, 12, 12))
         );
 
@@ -199,14 +195,13 @@ public final class DiningTableFrm extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel panelBody;
-    private javax.swing.JPanel panelDiningTableList;
+    private javax.swing.JPanel panelMain;
     private javax.swing.JPanel panelMenu;
     private javax.swing.JScrollPane scrollPaneTableDining;
     private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
     JLabel selectedMenu;
-    JButton selectedProduct;
     final int DEBOUNCE_DELAY_LOAD = 300;
 
     DiningTableDAO dao = new DiningTableDAO();
@@ -216,6 +211,7 @@ public final class DiningTableFrm extends javax.swing.JPanel {
     void init() {
         // Setup common
         Common.customizeScrollBar(scrollPaneTableDining);
+        scrollPaneTableDining.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         // Setup menu
         setupPanelMenu(panelMenu, dao.getAll());
@@ -224,106 +220,42 @@ public final class DiningTableFrm extends javax.swing.JPanel {
         btnReset.addActionListener(e -> onSite.displayOnSitePanel(new DiningTableFrm(onSite)));
 
         // Load load by search when change
-        addTextFieldListeners(textSearch, this::loadData);
-        this.loadData();
+        addTextFieldListeners(textSearch, this::loadDataDisplayTables);
+
+        // load data and display table list
+        this.loadDataDisplayTables();
     }
 
     // Load data
-    void loadData() {
+    void loadDataDisplayTables() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
 
         scheduledFuture = scheduledExecutorService.schedule(() -> {
             SwingUtilities.invokeLater(() -> {
-                // Get info criterias
+                // get info criterias
                 String searchName = textSearch.getText().trim();
                 String menuItem = selectedMenu.getText();
 
-                // Get data and load
+                // get data and load
                 List<DiningTable> dataList = dao.searchByCriteria(searchName, menuItem, "");
-                this.displayDiningTables(dataList);
+                
+                // display tables list and click show dialog table order
+                DiningTablePanel.displayDiningTables(
+                        panelMain,
+                        dataList,
+                        this::handleClickTableShowDialog
+                );
             });
         }, DEBOUNCE_DELAY_LOAD, TimeUnit.MILLISECONDS);
     }
 
-    // <--- Display and handle event table dining
-    public void displayDiningTables(List<DiningTable> dataList) {
-        panelDiningTableList.removeAll(); // Reset 
-
-        // Init GridBagLayout
-        GridBagLayout gridBagLayout = new GridBagLayout();
-        panelDiningTableList.setLayout(gridBagLayout);
-
-        // Init gridbag 
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.insets = new Insets(0, 14, 14, 14);
-        constraints.anchor = GridBagConstraints.NORTHWEST;
-
-        int maxColumns = 7; // Số lượng cột tối đa trên mỗi hàng
-        int columnCount = 0; // Biến đếm số lượng cột hiện tại
-
-        // Iterate through the dining table list for the selected area
-        for (DiningTable dataItem : dataList) {
-            // Create and set colors based on status
-            JButton tableButton = createTableButton(dataItem);
-
-            // Đặt các ràng buộc cho thành phần
-            constraints.gridwidth = 1;
-            gridBagLayout.setConstraints(tableButton, constraints);
-            if (++columnCount == maxColumns) {
-                columnCount = 0;
-                constraints.gridx = 0;
-                constraints.gridy++;
-            } else {
-                constraints.gridx++;
-            }
-
-            panelDiningTableList.add(tableButton);
-        }
-
-        // Refresh the panel
-        panelDiningTableList.revalidate();
-        panelDiningTableList.repaint();
-    }
-
-    JButton createTableButton(DiningTable diningTable) {
-        // Create a button for a dining table with the icon
-        java.net.URL imageURL = getClass().getResource("/icon/dining-room.png");
-        JButton tableButton = new JButton(diningTable.getName(), new ImageIcon(imageURL));
-
-        // Set the preferred size of the button based on the icon size
-        tableButton.setForeground(new Color(30, 30, 30));
-        tableButton.setPreferredSize(new Dimension(150, 150));
-        tableButton.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        tableButton.setHorizontalTextPosition(SwingConstants.CENTER);
-        tableButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        tableButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 5, true));
-
-        // Set background for status table
-        setColorStatusTables(tableButton, diningTable.getStatus());
-
-        // Add ActionListener to Call a method to display detailed information
-        tableButton.addActionListener((ActionEvent e) -> {
-            handleEventClickTableBtn(tableButton, diningTable);
-        });
-
-        return tableButton;
-    }
-
-    void handleEventClickTableBtn(JButton tableBtn, DiningTable data) {
-        // Set border when click
-        if (selectedProduct != null && selectedProduct != tableBtn) {
-            Common.setTableButtonBorder(selectedProduct, false);
-        }
-        Common.setTableButtonBorder(selectedProduct = tableBtn, true);
-
+    void handleClickTableShowDialog(DiningTable dataTable) {
         // Open dialog and Transmit data via file orderTableDialog
         TableOrderJDialog dialog = new TableOrderJDialog(null, true, onSite);
-        dialog.displayTableInfo(data);
-        dialog.displayOrderedOfTable(data.getTableID());
+        dialog.displayTableInfo(dataTable);
+        dialog.displayOrderedOfTable(dataTable);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
 
@@ -331,27 +263,10 @@ public final class DiningTableFrm extends javax.swing.JPanel {
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
-                loadData(); // Reset load data
+                // Reset load data
+                loadDataDisplayTables();
             }
         });
-    }
-
-    void setColorStatusTables(JButton tableButton, String status) {
-        if (status == null || tableButton == null) {
-            return;
-        }
-
-        switch (status) {
-            case "Đã đặt":
-                tableButton.setBackground(new Color(255, 153, 51));
-                break;
-            case "Đang phục vụ":
-                tableButton.setBackground(new Color(255, 102, 102));
-                break;
-            case "Còn trống":
-                tableButton.setBackground(new Color(255, 255, 255));
-                break;
-        }
     }
     // end --->
 
@@ -422,7 +337,7 @@ public final class DiningTableFrm extends javax.swing.JPanel {
 
         // Cập nhật nút được chọn hiện tại
         selectedMenu = item;
-        this.loadData();
+        this.loadDataDisplayTables();
     }
     // end --->   
 }

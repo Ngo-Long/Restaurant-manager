@@ -2,6 +2,7 @@ package restaurant.dialog;
 
 import java.util.List;
 import java.awt.Color;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JTextField;
 
@@ -417,6 +418,10 @@ public final class UpdateProductJDialog extends JDialog {
         XTextField.addPriceDocumentListener(textPrice);
         XTextField.addPriceDocumentListener(textCostPrice);
 
+        // hanle click button lisr
+        hanleClickButotns(btnAdd, btnUpdate, btnDelete,
+                btnImage, btnAddChicken, btnAddCategory);
+
         // setup combobox
         List<Product> dataList = new ProductDAO().getAll();
         loadDataToComboBox(cbCategory, dataList, Product::getCategory);
@@ -425,6 +430,21 @@ public final class UpdateProductJDialog extends JDialog {
         insertPlaceholder(cbCategory, PLACEHOLDER_COMBOBOX);
         insertPlaceholder(cbKitchenArea, PLACEHOLDER_COMBOBOX);
 
+    }
+
+    void hanleClickButotns(JButton btnAdd, JButton btnUpdate, JButton btnDelete,
+            JButton btnImage, JButton btnAddChicken, JButton btnAddCategory) {
+
+        // click button CRUD  
+        btnAdd.addActionListener(e -> insert());
+        btnUpdate.addActionListener(e -> update());
+        btnDelete.addActionListener(e -> delete());
+
+        // get imagePath from directory
+        btnImage.addActionListener(e -> {
+            imagePath = chooseImageFromDirectory(btnImage);
+        });
+
         // add more comboxbox
         btnAddCategory.addActionListener(e -> {
             openSmallDialog("Thêm nhóm hàng", "Nhóm hàng:", cbCategory);
@@ -432,16 +452,6 @@ public final class UpdateProductJDialog extends JDialog {
         btnAddChicken.addActionListener(e -> {
             openSmallDialog("Thêm khu chế biến", "Khu chế biến:", cbKitchenArea);
         });
-
-        // get imagePath from directory
-        btnImage.addActionListener(e -> {
-            imagePath = chooseImageFromDirectory(btnImage);
-        });
-
-        // click button CRUD  
-        btnAdd.addActionListener(e -> insert());
-        btnUpdate.addActionListener(e -> update());
-        btnDelete.addActionListener(e -> delete());
     }
 
     Product getModel() {
@@ -539,7 +549,7 @@ public final class UpdateProductJDialog extends JDialog {
 
         // Set image
         setImageButtonIcon(dataProduct.getImageURL(), btnImage);
-
+        System.out.println(dataProduct.getImageURL());
     }
 
     void insert() {

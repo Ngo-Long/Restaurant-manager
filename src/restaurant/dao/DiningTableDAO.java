@@ -14,7 +14,7 @@ public class DiningTableDAO extends RestaurantDAO<DiningTable, String> {
     final String UPDATE_SQL = "UPDATE DiningTable SET Name=?, Location=?, Capacity=?, "
             + "Status=?, Description=?, Activity=? WHERE TableID=?";
     final String DELETE_SQL = "DELETE FROM DiningTable WHERE TableID = ?";
-    final String SELECT_ALL_SQL = "SELECT * FROM DiningTable";
+    final String SELECT_ALL_SQL = "SELECT * FROM DiningTable ORDER BY Name";
     final String SELECT_BY_ID_SQL = "SELECT * FROM DiningTable WHERE TableID=? ";
 
     final String SELECT_BY_ORDER_ID_SQL = "SELECT dt.* FROM [Order] o "

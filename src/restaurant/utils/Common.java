@@ -1,7 +1,10 @@
 package restaurant.utils;
 
 import java.awt.*;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -168,12 +171,6 @@ public class Common {
         scrollPane.getHorizontalScrollBar().setPreferredSize(new Dimension(0, 0));
     }
 
-    // Hiện border đậm khi click
-    public static void setTableButtonBorder(JButton button, boolean isSelected) {
-        Color borderColor = isSelected ? new Color(80, 80, 80) : new Color(255, 255, 255);
-        button.setBorder(BorderFactory.createLineBorder(borderColor, 5, true));
-    }
-
     // Create new button 
     public static JButton createButton(String text, Color backgroundColor, Dimension size) {
         JButton button = new JButton(text);
@@ -276,6 +273,33 @@ public class Common {
             buttonGroup.add(button);
         }
         return buttonGroup;
+    }
+
+    /**
+     * Calculates the time difference between the current time and the given
+     * creation date.
+     *
+     * @param createdDate The creation date as a Date object.
+     * @return A string representing the time difference in hours and minutes.
+     */
+    public static String calculateTimeDifference(Date createdDate) {
+        // Convert Date to LocalDateTime
+        LocalDateTime createdDateTime = Instant.ofEpochMilli(createdDate.getTime())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        // Get the current date and time
+        LocalDateTime now = LocalDateTime.now();
+
+        // Calculate the duration between now and the createdDateTime
+        Duration duration = Duration.between(createdDateTime, now);
+
+        // Calculate hours and minutes from the duration
+        long hours = duration.toHours();
+        long minutes = duration.toMinutes() % 60;
+
+        // Return the formatted time difference
+        return String.format(hours + "g" + minutes + "p");
     }
 
     // <--- Dialog small
