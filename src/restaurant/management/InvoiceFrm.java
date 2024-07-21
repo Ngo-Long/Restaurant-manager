@@ -34,6 +34,7 @@ import static restaurant.utils.XComboBox.loadDataToComboBox;
 import static restaurant.utils.XRunnable.addComponentListeners;
 import static restaurant.utils.XRunnable.addTextFieldListeners;
 import restaurant.utils.TableNavigator;
+import restaurant.utils.XComboBox;
 
 public final class InvoiceFrm extends javax.swing.JPanel {
 
@@ -440,7 +441,6 @@ public final class InvoiceFrm extends javax.swing.JPanel {
     private com.toedter.calendar.JDateChooser textStartDate;
     // End of variables declaration//GEN-END:variables
 
-    int row = -1;
     final String PLACEHOLDER_STATUS = "--Trạng thái--";
     final String PLACEHOLDER_SEARCH = "Tìm theo mã hóa đơn";
 
@@ -455,7 +455,8 @@ public final class InvoiceFrm extends javax.swing.JPanel {
         // edit field text
         XTextField.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
         XTextField.addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
-
+        XComboBox.setComboboxStyle(cbEmployees);
+        
         // edit table
         TableCustom.apply(jScrollPane4, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableInvoices, new int[]{}, 40);

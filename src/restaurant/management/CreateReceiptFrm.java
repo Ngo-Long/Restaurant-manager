@@ -122,7 +122,7 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
 
             },
             new String [] {
-                "", "Mã hàng hóa", "Tên hàng", "Số lượng", "Đơn giá", "Giảm giá", "Tổng giá"
+                "", "Mã hàng", "Tên hàng", "Số lượng", "Đơn giá", "Giảm giá", "Tổng giá"
             }
         ));
         tableReceipts.setAlignmentX(2.0F);
@@ -609,7 +609,7 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
         // click btn show dialog chose category goods list
         btnChoseGoods.addActionListener(e -> {
             // get data
-            List<Goods> selectedGoods = getDataListChoseCategory();
+            List<Goods> selectedGoods = getDataChoseCategory();
 
             // add data to table
             for (Goods dataItem : selectedGoods) {
@@ -618,7 +618,7 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
         });
     }
 
-    List<Goods> getDataListChoseCategory() {
+    List<Goods> getDataChoseCategory() {
         SmallComboBoxJDialog dialog = new SmallComboBoxJDialog(null, true);
         dialog.setTitle("Chọn phân loại"); // Set title dialog
         dialog.setVisible(true);
@@ -791,7 +791,8 @@ public final class CreateReceiptFrm extends javax.swing.JPanel {
         }
 
         try {
-            for (Vector<Object> row : model.getDataVector()) {
+            Vector<Vector> dataVector = model.getDataVector();
+            for (Vector<Object> row : dataVector) {
                 // get info to table
                 String goodsID = row.get(1).toString();
                 int quantity = Integer.parseInt(row.get(3).toString());

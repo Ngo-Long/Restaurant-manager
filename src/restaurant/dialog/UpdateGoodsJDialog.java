@@ -44,7 +44,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         jList1 = new javax.swing.JList<>();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
-        textId = new javax.swing.JTextField();
+        textID = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         textPrice = new javax.swing.JTextField();
@@ -99,13 +99,13 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("Mã hàng hóa:");
 
-        textId.setEditable(false);
-        textId.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        textId.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-        textId.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(51, 204, 0)));
-        textId.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        textId.setMargin(new java.awt.Insets(2, 60, 2, 6));
-        textId.setRequestFocusEnabled(false);
+        textID.setEditable(false);
+        textID.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        textID.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+        textID.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(51, 204, 0)));
+        textID.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        textID.setMargin(new java.awt.Insets(2, 60, 2, 6));
+        textID.setRequestFocusEnabled(false);
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel7.setText("Tên hàng hóa:");
@@ -234,7 +234,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
                             .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(textId, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                            .addComponent(textID, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
                             .addComponent(textName, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
                             .addComponent(textPrice, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
                             .addComponent(textDesc, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
@@ -264,8 +264,8 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(textId, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(textID, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(12, 12, 12)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(textName, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -366,7 +366,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
     private javax.swing.JRadioButton radioOff;
     private javax.swing.JRadioButton radioOn;
     private javax.swing.JTextField textDesc;
-    private javax.swing.JTextField textId;
+    private javax.swing.JTextField textID;
     private javax.swing.JTextField textInitQuantity;
     private javax.swing.JTextField textMiniQuantity;
     private javax.swing.JTextField textName;
@@ -388,7 +388,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         this.getContentPane().setBackground(Color.WHITE);
 
         // Setup text fields 
-        JTextField[] textFields = {textId, textName, textPrice, textUnit, textInitQuantity, textMiniQuantity};
+        JTextField[] textFields = {textID, textName, textPrice, textUnit, textInitQuantity, textMiniQuantity};
         for (JTextField textField : textFields) {
             XTextField.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
         }
@@ -397,7 +397,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
         textName.requestFocus();
         XComboBox.setComboboxStyle(cbCategory);
         Common.createButtonGroup(radioOn, radioOff);
-        XTextField.addPlaceholder(textId, PLACEHOLDER_ID);
+        XTextField.addPlaceholder(textID, PLACEHOLDER_ID);
         XImage.setImageButtonIcon("src/restaurant/img/background.jpg", btnImage);
 
         // <--- Setup main --->
@@ -467,7 +467,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
     }
 
     Goods getModel() {
-        String id = getRealText(textId, PLACEHOLDER_ID);
+        String id = getRealText(textID, PLACEHOLDER_ID);
         String name = textName.getText();
         String priceText = textPrice.getText();
         String unit = textUnit.getText();
@@ -501,13 +501,19 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
 
     public void setModel(Goods goods) {
         if (goods == null) {
+            btnUpdate.setEnabled(false);
+            btnDelete.setEnabled(false);
             return;
         }
 
+        textID.setEnabled(false);
+        btnAdd.setEnabled(false);
+
+        // set info
         saveName = goods.getGoodsName();
         textName.setText(goods.getGoodsName());
 
-        textId.setText(goods.getGoodsID());
+        textID.setText(goods.getGoodsID());
         cbCategory.setSelectedItem(goods.getCategory());
         textPrice.setText(String.valueOf(goods.getUnitPrice()));
         textUnit.setText(goods.getUnit());
@@ -575,7 +581,7 @@ public final class UpdateGoodsJDialog extends javax.swing.JDialog {
     }
 
     void delete() {
-        String id = getRealText(textId, PLACEHOLDER_ID);
+        String id = getRealText(textID, PLACEHOLDER_ID);
         if (id.equals("")) {
             Dialog.alert(this, "Hàng hóa không tồn tại!");
             return;

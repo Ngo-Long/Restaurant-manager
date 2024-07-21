@@ -3,8 +3,6 @@ package restaurant.onsite;
 import java.util.Map;
 import java.util.List;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.sql.SQLException;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -15,7 +13,7 @@ import restaurant.entity.Order;
 import restaurant.entity.Invoice;
 import restaurant.entity.OrderDetail;
 
-import restaurant.utils.XJdbc;
+import restaurant.utils.Bill;
 import restaurant.utils.Auth;
 import restaurant.utils.Dialog;
 import restaurant.utils.Common;
@@ -24,19 +22,11 @@ import restaurant.utils.XTextField;
 
 import restaurant.main.OnSiteMode;
 import restaurant.table.TableCustom;
-import restaurant.utils.XRunnable;
 import restaurant.entity.DiningTable;
 import restaurant.dialog.HistoryInvoicesJDialog;
 import static restaurant.utils.XTextField.addCommasToNumber;
-import static restaurant.utils.XTextField.removeCommasFromNumber;
-
-import net.sf.jasperreports.view.JasperViewer;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperCompileManager;
 import static restaurant.utils.XRunnable.addTextFieldListeners;
+import static restaurant.utils.XTextField.removeCommasFromNumber;
 
 public final class InvoiceFrm extends javax.swing.JPanel {
 
@@ -78,14 +68,14 @@ public final class InvoiceFrm extends javax.swing.JPanel {
         labelCashReturn = new javax.swing.JLabel();
         btnPay = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-        btnFiftyThousand = new javax.swing.JButton();
-        btnTwentyThousand = new javax.swing.JButton();
-        btnFiveThousand = new javax.swing.JButton();
-        btnTenThousand = new javax.swing.JButton();
-        btnHundredThousand = new javax.swing.JButton();
-        btnTwoHundredThousand = new javax.swing.JButton();
-        btnFiveHundredThousand = new javax.swing.JButton();
-        btnTwoThousand = new javax.swing.JButton();
+        btnCalc5 = new javax.swing.JButton();
+        btnCalc4 = new javax.swing.JButton();
+        btnCalc2 = new javax.swing.JButton();
+        btnCalc3 = new javax.swing.JButton();
+        btnCalc6 = new javax.swing.JButton();
+        btnCalc7 = new javax.swing.JButton();
+        btnCalc8 = new javax.swing.JButton();
+        btnCalc1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         radioTransfer = new javax.swing.JRadioButton();
         labelInvoiceID = new javax.swing.JLabel();
@@ -263,67 +253,67 @@ public final class InvoiceFrm extends javax.swing.JPanel {
         btnCancel.setToolTipText("Quay lại bàn ăn (F1)");
         btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        btnFiftyThousand.setText("50.000");
-        btnFiftyThousand.setBorder(null);
-        btnFiftyThousand.addActionListener(new java.awt.event.ActionListener() {
+        btnCalc5.setText("100,000");
+        btnCalc5.setBorder(null);
+        btnCalc5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnFiftyThousandActionPerformed(evt);
+                btnCalc5ActionPerformed(evt);
             }
         });
 
-        btnTwentyThousand.setText("20.000");
-        btnTwentyThousand.setBorder(null);
-        btnTwentyThousand.addActionListener(new java.awt.event.ActionListener() {
+        btnCalc4.setText("50,000");
+        btnCalc4.setBorder(null);
+        btnCalc4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTwentyThousandActionPerformed(evt);
+                btnCalc4ActionPerformed(evt);
             }
         });
 
-        btnFiveThousand.setText("5.000");
-        btnFiveThousand.setBorder(null);
-        btnFiveThousand.addActionListener(new java.awt.event.ActionListener() {
+        btnCalc2.setText("10,000");
+        btnCalc2.setBorder(null);
+        btnCalc2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnFiveThousandActionPerformed(evt);
+                btnCalc2ActionPerformed(evt);
             }
         });
 
-        btnTenThousand.setText("10.000");
-        btnTenThousand.setBorder(null);
-        btnTenThousand.addActionListener(new java.awt.event.ActionListener() {
+        btnCalc3.setText("20,000");
+        btnCalc3.setBorder(null);
+        btnCalc3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTenThousandActionPerformed(evt);
+                btnCalc3ActionPerformed(evt);
             }
         });
 
-        btnHundredThousand.setText("100.000");
-        btnHundredThousand.setBorder(null);
-        btnHundredThousand.addActionListener(new java.awt.event.ActionListener() {
+        btnCalc6.setText("200,000");
+        btnCalc6.setBorder(null);
+        btnCalc6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnHundredThousandActionPerformed(evt);
+                btnCalc6ActionPerformed(evt);
             }
         });
 
-        btnTwoHundredThousand.setText("200.000");
-        btnTwoHundredThousand.setBorder(null);
-        btnTwoHundredThousand.addActionListener(new java.awt.event.ActionListener() {
+        btnCalc7.setText("300,000");
+        btnCalc7.setBorder(null);
+        btnCalc7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTwoHundredThousandActionPerformed(evt);
+                btnCalc7ActionPerformed(evt);
             }
         });
 
-        btnFiveHundredThousand.setText("500.000");
-        btnFiveHundredThousand.setBorder(null);
-        btnFiveHundredThousand.addActionListener(new java.awt.event.ActionListener() {
+        btnCalc8.setText("500.000");
+        btnCalc8.setBorder(null);
+        btnCalc8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnFiveHundredThousandActionPerformed(evt);
+                btnCalc8ActionPerformed(evt);
             }
         });
 
-        btnTwoThousand.setText("2.000");
-        btnTwoThousand.setBorder(null);
-        btnTwoThousand.addActionListener(new java.awt.event.ActionListener() {
+        btnCalc1.setText("10.000");
+        btnCalc1.setBorder(null);
+        btnCalc1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTwoThousandActionPerformed(evt);
+                btnCalc1ActionPerformed(evt);
             }
         });
 
@@ -399,21 +389,21 @@ public final class InvoiceFrm extends javax.swing.JPanel {
                                 .addComponent(btnPay, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnFiftyThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnTwoThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(btnCalc5, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnCalc1, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnHundredThousand, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnCalc6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnTwoHundredThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnCalc7, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnFiveHundredThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnCalc8, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addGap(108, 108, 108)
-                                .addComponent(btnFiveThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnCalc2, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnTenThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnCalc3, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnTwentyThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(btnCalc4, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel16)
                         .addGap(113, 113, 113)
@@ -465,18 +455,18 @@ public final class InvoiceFrm extends javax.swing.JPanel {
                     .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnFiveThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCalc2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnTenThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnTwentyThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnTwoThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnCalc3, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnCalc4, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnCalc1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnHundredThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnTwoHundredThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnFiftyThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnFiveHundredThousand, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnCalc6, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCalc7, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCalc5, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCalc8, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnPay, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -505,63 +495,63 @@ public final class InvoiceFrm extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnFiftyThousandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiftyThousandActionPerformed
+    private void btnCalc5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalc5ActionPerformed
         textGiveMoney.setText("50,000");
         calculateCashReturn();
-    }//GEN-LAST:event_btnFiftyThousandActionPerformed
+    }//GEN-LAST:event_btnCalc5ActionPerformed
 
-    private void btnTwentyThousandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTwentyThousandActionPerformed
+    private void btnCalc4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalc4ActionPerformed
         textGiveMoney.setText("20,000");
         calculateCashReturn();
-    }//GEN-LAST:event_btnTwentyThousandActionPerformed
+    }//GEN-LAST:event_btnCalc4ActionPerformed
 
-    private void btnFiveThousandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiveThousandActionPerformed
+    private void btnCalc2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalc2ActionPerformed
         textGiveMoney.setText("5,000");
         calculateCashReturn();
-    }//GEN-LAST:event_btnFiveThousandActionPerformed
+    }//GEN-LAST:event_btnCalc2ActionPerformed
 
-    private void btnTenThousandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTenThousandActionPerformed
-        textGiveMoney.setText("  10,000");
+    private void btnCalc3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalc3ActionPerformed
+        textGiveMoney.setText("10,000");
         calculateCashReturn();
-    }//GEN-LAST:event_btnTenThousandActionPerformed
+    }//GEN-LAST:event_btnCalc3ActionPerformed
 
-    private void btnHundredThousandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHundredThousandActionPerformed
+    private void btnCalc6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalc6ActionPerformed
         textGiveMoney.setText("100,000");
         calculateCashReturn();
-    }//GEN-LAST:event_btnHundredThousandActionPerformed
+    }//GEN-LAST:event_btnCalc6ActionPerformed
 
-    private void btnTwoHundredThousandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTwoHundredThousandActionPerformed
+    private void btnCalc7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalc7ActionPerformed
         textGiveMoney.setText("200,000");
         calculateCashReturn();
-    }//GEN-LAST:event_btnTwoHundredThousandActionPerformed
+    }//GEN-LAST:event_btnCalc7ActionPerformed
 
-    private void btnFiveHundredThousandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiveHundredThousandActionPerformed
+    private void btnCalc8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalc8ActionPerformed
         textGiveMoney.setText("500,000");
         calculateCashReturn();
-    }//GEN-LAST:event_btnFiveHundredThousandActionPerformed
+    }//GEN-LAST:event_btnCalc8ActionPerformed
 
-    private void btnTwoThousandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTwoThousandActionPerformed
-        textGiveMoney.setText("2,000");
+    private void btnCalc1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalc1ActionPerformed
+        textGiveMoney.setText(labelCashReturn.getText());
         calculateCashReturn();
-    }//GEN-LAST:event_btnTwoThousandActionPerformed
+    }//GEN-LAST:event_btnCalc1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCalc1;
+    private javax.swing.JButton btnCalc2;
+    private javax.swing.JButton btnCalc3;
+    private javax.swing.JButton btnCalc4;
+    private javax.swing.JButton btnCalc5;
+    private javax.swing.JButton btnCalc6;
+    private javax.swing.JButton btnCalc7;
+    private javax.swing.JButton btnCalc8;
     private javax.swing.JButton btnCancel;
-    private javax.swing.JButton btnFiftyThousand;
-    private javax.swing.JButton btnFiveHundredThousand;
-    private javax.swing.JButton btnFiveThousand;
     private javax.swing.JButton btnHistory;
-    private javax.swing.JButton btnHundredThousand;
     private javax.swing.JButton btnPay;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnSearch1;
     private javax.swing.JButton btnSearch2;
-    private javax.swing.JButton btnTenThousand;
-    private javax.swing.JButton btnTwentyThousand;
-    private javax.swing.JButton btnTwoHundredThousand;
-    private javax.swing.JButton btnTwoThousand;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel16;
@@ -604,15 +594,55 @@ public final class InvoiceFrm extends javax.swing.JPanel {
         // calc return cash
         addTextFieldListeners(textGiveMoney, this::calculateCashReturn);
 
-        // display dishes to table
+        // display product list to table
         displayOrderedOfTable(Auth.table, tableOrdered);
 
-        // Handle click button history and reset
+        // handle click button history and reset
         btnReset.addActionListener(e -> onSite.displayOnSitePanel(new InvoiceFrm(onSite)));
         btnHistory.addActionListener(e -> {
             new HistoryInvoicesJDialog(null, true).setVisible(true);
         });
         btnPay.addActionListener(e -> pay());
+
+        // hanlde click button calc
+        handleClickButtonsCalc();
+
+    }
+
+    void handleClickButtonsCalc() {
+        btnCalc1.addActionListener(e -> {
+            textGiveMoney.setText(labelCashReturn.getText());
+            calculateCashReturn();
+        });
+        btnCalc2.addActionListener(e -> {
+            textGiveMoney.setText("10,000");
+            calculateCashReturn();
+        });
+        btnCalc3.addActionListener(e -> {
+            textGiveMoney.setText("20,000");
+            calculateCashReturn();
+        });
+        btnCalc4.addActionListener(e -> {
+            textGiveMoney.setText("50,000");
+            calculateCashReturn();
+        });
+        btnCalc5.addActionListener(e -> {
+            textGiveMoney.setText("100,000");
+            calculateCashReturn();
+        });
+        btnCalc6.addActionListener(e -> {
+            textGiveMoney.setText("200,000");
+            calculateCashReturn();
+        });
+        btnCalc7.addActionListener(e -> {
+            textGiveMoney.setText("300,000");
+            calculateCashReturn();
+        });
+        btnCalc8.addActionListener(e -> {
+            textGiveMoney.setText("500,000");
+            calculateCashReturn();
+        });
+
     }
 
     void displayTableInfo(DiningTable table) {
@@ -752,36 +782,17 @@ public final class InvoiceFrm extends javax.swing.JPanel {
         }
 
         try {
-            // Update status invoice pay
+            // update status invoice pay
             new InvoiceDAO().update(getModel());
 
-            // Update invoice successfully
+            // println bill
+            Bill.billInvoice(Auth.invoice);
+
+            // move file table
             onSite.displayOnSitePanel(new DiningTableFrm(onSite));
         } catch (Exception e) {
+            System.out.println(e);
             Dialog.success(this, "Thanh toán không thành công!");
-        }
-    }
-
-    void bill() {
-        if (Auth.invoice == null) {
-            Dialog.warning(this, "Vui lòng chọn bàn đã gọi món!");
-            return;
-        }
-
-        try {
-            // Create map contains the parameters and values ​​of the report
-            Hashtable<String, Object> map = new Hashtable<>();
-            map.put("ToInvoiceID", Auth.invoice.getInvoiceID());
-
-            // Compile files report
-            JasperReport report = JasperCompileManager.compileReport("src/restaurant/report/reportInvoice.jrxml");
-            JasperPrint p = JasperFillManager.fillReport(report, map, XJdbc.getConnection());
-
-            // Hiển thị JasperViewer
-            JasperViewer viewer = new JasperViewer(p, false);
-            viewer.setVisible(true);
-        } catch (SQLException | JRException e) {
-            e.printStackTrace();
         }
     }
 

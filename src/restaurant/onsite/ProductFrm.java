@@ -10,6 +10,8 @@ import java.awt.event.MouseAdapter;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.JButton;
 import javax.swing.BorderFactory;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingConstants;
@@ -25,10 +27,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
-import javax.swing.JButton;
-import javax.swing.JTable;
 
 import restaurant.entity.Order;
+import restaurant.entity.Product;
 import restaurant.entity.OrderTable;
 import restaurant.entity.OrderDetail;
 import restaurant.entity.DiningTable;
@@ -43,7 +44,6 @@ import restaurant.dao.OrderDetailDAO;
 import restaurant.utils.Auth;
 import restaurant.utils.Dialog;
 import restaurant.utils.Common;
-import restaurant.entity.Product;
 import restaurant.utils.XTextField;
 import restaurant.main.OnSiteMode;
 import restaurant.table.TableCustom;
@@ -559,33 +559,27 @@ public final class ProductFrm extends javax.swing.JPanel {
             return;
         }
 
-        // Get data from the table
-        DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
-
         // Get info
         String tableID = Auth.table.getTableID();
-        String note = XTextField.getRealText(textNote, "Tối đa 60 ký tự");
+        DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
 
         try {
-            // Create an order if don't have one yet
+            // create an order if don't have one yet
             Order existingOrder = new OrderDAO().getByTableID(tableID);
             if (existingOrder == null) {
                 // create invoice, order, order table
-                createInvoiceAndOrder(tableID);
+                createOrderAndInvoice(tableID);
             }
 
             // update order
             existingOrder = new OrderDAO().getByTableID(tableID);
-            existingOrder.setNote(note);
+            existingOrder.setNote(getRealText(textNote, "Tối đa 60 ký tự"));
             new OrderDAO().update(existingOrder);
 
-            // get order id
-            int orderID = existingOrder.getOrderId();
+            // add product to the order
+            addProductsToOrderd(existingOrder, model.getDataVector());
 
-            // Add product to the order
-            addProductsToOrderd(orderID, model.getDataVector());
-
-            // Open file table
+            // open file table
             onSite.displayOnSitePanel(new DiningTableFrm(onSite));
         } catch (Exception e) {
             Dialog.error(this, "Đã xảy ra lỗi khi xử lý đơn hàng!");
@@ -614,7 +608,7 @@ public final class ProductFrm extends javax.swing.JPanel {
         return true;
     }
 
-    void createInvoiceAndOrder(String tableID) {
+    void createOrderAndInvoice(String tableID) {
         // Create new invoice
         int invoiceID = new InvoiceDAO().insert();
 
@@ -634,14 +628,22 @@ public final class ProductFrm extends javax.swing.JPanel {
         new OrderTableDAO().insert(newOrder);
     }
 
-    void addProductsToOrderd(int orderID, Vector<Vector> orderProducts) {
+    void addProductsToOrderd(Order dataOrder, Vector<Vector> orderProducts) {
         try {
+            // get order id
+            int orderID = dataOrder.getOrderId();
+
             // For each new list of dishes
             for (Vector<Object> row : orderProducts) {
+                // get info 
+                String productID = row.get(0).toString();
+                int productQuantity = Integer.parseInt(row.get(3).toString());
+
+                // create order detail 
                 OrderDetail newDetail = new OrderDetail();
                 newDetail.setOrderID(orderID);
-                newDetail.setProductID(row.get(0).toString());
-                newDetail.setProductQuantity(Integer.parseInt(row.get(3).toString()));
+                newDetail.setProductID(productID);
+                newDetail.setProductQuantity(productQuantity);
                 newDetail.setProductStatus("Chưa xử lý");
                 newDetail.setProductDesc("");
                 new OrderDetailDAO().insert(newDetail);

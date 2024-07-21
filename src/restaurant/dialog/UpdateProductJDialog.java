@@ -277,8 +277,8 @@ public final class UpdateProductJDialog extends JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(textID, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textID, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(12, 12, 12)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -401,13 +401,13 @@ public final class UpdateProductJDialog extends JDialog {
         this.getContentPane().setBackground(Color.WHITE);
 
         // Set text fields 
+        textName.requestFocus();
         JTextField[] textFields = {textID, textName, textCostPrice, textPrice, textUnit, textPrice};
         for (JTextField textField : textFields) {
             XTextField.addFocusBorder(textField, new Color(51, 204, 0), new Color(220, 220, 220));
         }
 
         // Set focus field text
-        textName.requestFocus();
         Common.createButtonGroup(radioOn, radioOff);
         XTextField.addPlaceholder(textID, PLACEHOLDER_ID);
         XComboBox.setComboboxStyle(cbCategory, cbKitchenArea);
@@ -526,9 +526,15 @@ public final class UpdateProductJDialog extends JDialog {
 
     public void setModel(Product dataProduct) {
         if (dataProduct == null) {
+            btnUpdate.setEnabled(false);
+            btnDelete.setEnabled(false);
             return;
         }
 
+        textID.setEnabled(false);
+        btnAdd.setEnabled(false);
+
+        // set info
         saveName = dataProduct.getProductName();
         textName.setText(dataProduct.getProductName());
 

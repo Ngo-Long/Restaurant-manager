@@ -113,7 +113,7 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="textId" alignment="0" pref="320" max="32767" attributes="0"/>
+                          <Component id="textID" alignment="0" pref="320" max="32767" attributes="0"/>
                           <Component id="textName" alignment="0" pref="320" max="32767" attributes="0"/>
                           <Component id="textPrice" alignment="0" pref="320" max="32767" attributes="0"/>
                           <Component id="textDesc" alignment="0" pref="320" max="32767" attributes="0"/>
@@ -151,8 +151,8 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="textId" min="-2" pref="30" max="-2" attributes="0"/>
-                          <Component id="jLabel6" min="-2" pref="30" max="-2" attributes="0"/>
+                          <Component id="textID" min="-2" pref="32" max="-2" attributes="0"/>
+                          <Component id="jLabel6" min="-2" pref="32" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -224,7 +224,7 @@
         <Property name="text" type="java.lang.String" value="M&#xe3; h&#xe0;ng h&#xf3;a:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="textId">
+    <Component class="javax.swing.JTextField" name="textID">
       <Properties>
         <Property name="editable" type="boolean" value="false"/>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">

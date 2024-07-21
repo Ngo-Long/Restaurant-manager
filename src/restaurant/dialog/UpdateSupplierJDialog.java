@@ -7,7 +7,6 @@ import restaurant.utils.Dialog;
 import restaurant.dao.SupplierDAO;
 import restaurant.utils.XTextField;
 import restaurant.entity.Supplier;
-import restaurant.utils.XComboBox;
 import static restaurant.utils.XTextField.getRealText;
 
 public final class UpdateSupplierJDialog extends javax.swing.JDialog {
@@ -198,8 +197,8 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(40, 40, 40)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(textID, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textID, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
@@ -295,7 +294,7 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
         // Set system
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(Color.WHITE);
-        
+
         // Setup UI
         textName.requestFocus();
         Common.createButtonGroup(radioOn, radioOff);
@@ -355,9 +354,15 @@ public final class UpdateSupplierJDialog extends javax.swing.JDialog {
 
     public void setModel(Supplier data) {
         if (data == null) {
+            btnUpdate.setEnabled(false);
+            btnDelete.setEnabled(false);
             return;
         }
 
+        textID.setEnabled(false);
+        btnAdd.setEnabled(false);
+
+        // set info
         textID.setText(data.getSupplierID());
         saveName = data.getSupplierName();
         textName.setText(data.getSupplierName());

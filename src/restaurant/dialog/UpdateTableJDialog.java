@@ -195,8 +195,8 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(40, 40, 40)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(textID, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textID, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(16, 16, 16)
@@ -376,9 +376,15 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
 
     public void setModel(DiningTable dataTable) {
         if (dataTable == null) {
+            btnUpdate.setEnabled(false);
+            btnDelete.setEnabled(false);
             return;
         }
 
+        textID.setEnabled(false);
+        btnAdd.setEnabled(false);
+
+        // set info
         saveName = dataTable.getName();
         textName.setText(dataTable.getName());
 

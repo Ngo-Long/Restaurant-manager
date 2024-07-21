@@ -11,7 +11,11 @@ import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseEvent;
 import java.awt.GridBagConstraints;
+import java.awt.Label;
+import java.awt.TextField;
 import java.awt.event.MouseAdapter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import java.util.Set;
 import java.util.List;
@@ -33,6 +37,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.BorderFactory;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
@@ -52,12 +57,14 @@ import restaurant.utils.XTextField;
 import restaurant.table.TableCustom;
 import restaurant.utils.ColumnTable;
 import restaurant.dialog.HistoryInvoicesJDialog;
+import restaurant.utils.Bill;
 import static restaurant.utils.XTextField.getRealText;
 import static restaurant.utils.XImage.getScaledImageIcon;
 import static restaurant.utils.XTextField.addCommasToNumber;
 import static restaurant.utils.XRunnable.addTextFieldListeners;
 import static restaurant.utils.XTextField.removeCommasFromNumber;
 import static restaurant.utils.ColumnTable.addQuantityButtonsColumn;
+import restaurant.utils.XPanelMenu;
 
 public final class QuickOrderMode extends javax.swing.JFrame {
 
@@ -571,13 +578,15 @@ public final class QuickOrderMode extends javax.swing.JFrame {
 
         // get data all
         List<Product> dataProducts = new ProductDAO().getAll();
-        setupMenuCategory(dataProducts, panelMenu);
-
-        // attach event when change text field
-        addTextFieldListeners(textSearch, this::loadDataDisplayProducts);
+        XPanelMenu.setupPanelMenu(
+                panelMenu,
+                dataProducts,
+                Product::getCategory,
+                this::loadDataDisplayProducts
+        );
 
         // load data and display product list
-        this.loadDataDisplayProducts();
+        this.loadDataDisplayProducts(selectedMenu);
     }
 
     // <--- Common 
@@ -621,131 +630,17 @@ public final class QuickOrderMode extends javax.swing.JFrame {
     }
 
     void openFullScreenWindow(JFrame window) {
-        window.setExtendedState(JFrame.MAXIMIZED_BOTH);
         window.setVisible(true);
         this.dispose();
     }
     // end -->
 
-    // <--- handle click cells table
-    void addButtonColumnCells(JTable tableOrder, int COLUMN_CELL_ONE, int COLUMN_CELL_THREE) {
-        // Add button delete row
-        ColumnTable.addButtonIconColumn(
-                "src/restaurant/icon/delete.png",
-                COLUMN_CELL_ONE,
-                tableOrder,
-                this::handleClickBtnColumnDelete
-        );
-
-        // Add button change quantity "+" and "-"
-        addQuantityButtonsColumn(tableOrder, COLUMN_CELL_THREE, false);
-
-        // Calc total amount click column 
-        tableOrder.getModel().addTableModelListener(e -> {
-            if (e.getColumn() == COLUMN_CELL_THREE) {
-                calculateTotalAmount(tableOrder, labelTotalAmount);
-            }
-        });
-    }
-
-    void handleClickBtnColumnDelete(int row) {
-        boolean isSubmit = Dialog.confirm(this, "Xác nhận xóa món ăn!");
-        if (isSubmit) {
-            // Remove selected row
-            if (tableOrder.isEditing()) {
-                tableOrder.getCellEditor().stopCellEditing();
-            }
-
-            // Call table get model 
-            DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
-
-            // Delete row
-            model.removeRow(row);
-        }
-    }
-    // end --->
-
-    // <--- setup menu
-    void setupMenuCategory(List<Product> dataList, JPanel panelMenu) {
-        // Create a set to store unique names
-        Set<String> dataSet = new HashSet<>();
-        for (Product dataItem : dataList) {
-            dataSet.add(dataItem.getCategory());
-        }
-
-        // Convert the set to a sorted list
-        List<String> dataCategoryList = dataSet.stream().sorted().collect(Collectors.toList());
-
-        // Create buttons for each and add them to panel
-        for (String dataCategoryItem : dataCategoryList) {
-            // Create label category
-            JLabel labelItem = createLabelCategory(dataCategoryItem);
-
-            // Handle click location
-            labelItem.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    handleClickMenu(labelItem);
-                }
-            });
-
-            // Automatically select the first item
-            if (selectedMenu == null) {
-                handleClickMenu(labelItem);
-            }
-
-            // Add item location to the panel
-            panelMenu.add(labelItem);
-        }
-
-        // Set layout for panelButtons
-        panelMenu.setLayout(new FlowLayout(FlowLayout.LEFT, 12, 12));
-        panelMenu.revalidate();
-        panelMenu.repaint();
-    }
-
-    JLabel createLabelCategory(String dataCategoryItem) {
-        if (dataCategoryItem == null || dataCategoryItem.equals("")) {
-            return null;
-        }
-
-        JLabel labelItem = new JLabel(dataCategoryItem);
-        labelItem.setBackground(Color.LIGHT_GRAY);
-        labelItem.setForeground(new Color(120, 120, 120));
-        labelItem.setPreferredSize(new Dimension(140, 50));
-        labelItem.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        labelItem.setVerticalAlignment(SwingConstants.CENTER);
-        labelItem.setHorizontalAlignment(SwingConstants.CENTER);
-        labelItem.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        labelItem.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
-
-        return labelItem;
-    }
-
-    void handleClickMenu(JLabel labelItem) {
-        // Kiểm tra nếu nút hiện tại không phải là nút đã được chọn trước đó
-        if (selectedMenu == labelItem) {
+    // <--- Load data and display products
+    void loadDataDisplayProducts(JLabel selectedMenu) {
+        if (selectedMenu == null) {
             return;
         }
 
-        // Đặt lại màu cho nút trước đó nếu có
-        if (selectedMenu != null) {
-            selectedMenu.setForeground(new Color(120, 120, 120));
-            selectedMenu.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
-        }
-
-        // Thiết lập lại màu cho nút hiện tại
-        labelItem.setForeground(new Color(255, 11, 11));
-        labelItem.setBorder(BorderFactory.createLineBorder(new Color(255, 11, 11), 2, true));
-
-        // Cập nhật nút được chọn hiện tại
-        selectedMenu = labelItem;
-        loadDataDisplayProducts();
-    }
-    // end --->
-
-    // <--- Load data and display products
-    void loadDataDisplayProducts() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
@@ -769,7 +664,6 @@ public final class QuickOrderMode extends javax.swing.JFrame {
                 );
             });
         }, 300, TimeUnit.MILLISECONDS);
-
     }
 
     public static void displayProductList(List<Product> dataList, JPanel panelMain, JTable tableOrder, JLabel labelTotal) {
@@ -938,6 +832,44 @@ public final class QuickOrderMode extends javax.swing.JFrame {
     }
     // end --->
 
+    // <--- handle click cells table
+    void addButtonColumnCells(JTable tableOrder, int COLUMN_CELL_ONE, int COLUMN_CELL_THREE) {
+        // Add button delete row
+        ColumnTable.addButtonIconColumn(
+                "src/restaurant/icon/delete.png",
+                COLUMN_CELL_ONE,
+                tableOrder,
+                this::handleClickBtnColumnDelete
+        );
+
+        // Add button change quantity "+" and "-"
+        addQuantityButtonsColumn(tableOrder, COLUMN_CELL_THREE, false);
+
+        // Calc total amount click column 
+        tableOrder.getModel().addTableModelListener(e -> {
+            if (e.getColumn() == COLUMN_CELL_THREE) {
+                calculateTotalAmount(tableOrder, labelTotalAmount);
+            }
+        });
+    }
+
+    void handleClickBtnColumnDelete(int row) {
+        boolean isSubmit = Dialog.confirm(this, "Xác nhận xóa món ăn!");
+        if (isSubmit) {
+            // Remove selected row
+            if (tableOrder.isEditing()) {
+                tableOrder.getCellEditor().stopCellEditing();
+            }
+
+            // Call table get model 
+            DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
+
+            // Delete row
+            model.removeRow(row);
+        }
+    }
+    // end --->
+
     // <--- Handle click button submit and cancel
     void cancel() {
         DefaultTableModel model = (DefaultTableModel) tableOrder.getModel();
@@ -948,25 +880,7 @@ public final class QuickOrderMode extends javax.swing.JFrame {
     }
 
     void submit() {
-        if (Auth.user == null) {
-            Dialog.warning(this, "Vui lòng đăng nhập!");
-            return;
-        }
-
-        if (tableOrder != null && tableOrder.getRowCount() == 0) {
-            Dialog.warning(this, "Vui lòng chọn món ăn!");
-            return;
-        }
-
-        // Set note for invoice
-        String note = getRealText(textNote, "Tối đa 60 ký tự");
-        if (note.length() > 60) {
-            Dialog.warning(this, "Ghi chú tối đa 60 ký tự!");
-            return;
-        }
-
-        Boolean result = Dialog.confirm(this, "Xác nhận thanh toán đơn hàng!");
-        if (!result) {
+        if (!isValueSubmit()) {
             return;
         }
 
@@ -992,18 +906,44 @@ public final class QuickOrderMode extends javax.swing.JFrame {
             invoiceModel.setInvoiceID(invoiceID);
             invoiceModel.setEmployeeID(Auth.user.getEmployeeID());
             invoiceModel.setPaymentMethod("Tiền mặt");
-            invoiceModel.setNote(note);
+            invoiceModel.setNote(getRealText(textNote, "Tối đa 60 ký tự"));
             invoiceModel.setTotalAmount(totalAmount);
             invoiceModel.setStatus("Đã thanh toán");
             new InvoiceDAO().update(invoiceModel);
 
-            Dialog.success(this, "Tạo đơn hàng [ " + invoiceModel.getInvoiceID() + " ] thành công!\n\n"
-                    + "Vào lúc " + invoiceModel.getPaymentTime());
+            // prinlt bill invoice
+            Bill.billInvoice(invoiceModel);
             cancel();
         } catch (Exception e) {
             Dialog.error(this, "Đã xảy ra lỗi khi xử lý đơn hàng!");
             e.printStackTrace();
         }
+    }
+
+    boolean isValueSubmit() {
+        if (Auth.user == null) {
+            Dialog.warning(this, "Vui lòng đăng nhập!");
+            return false;
+        }
+
+        if (tableOrder != null && tableOrder.getRowCount() == 0) {
+            Dialog.warning(this, "Vui lòng chọn món ăn!");
+            return false;
+        }
+
+        // Set note for invoice
+        String note = getRealText(textNote, "Tối đa 60 ký tự");
+        if (note.length() > 60) {
+            Dialog.warning(this, "Ghi chú tối đa 60 ký tự!");
+            return false;
+        }
+
+        Boolean result = Dialog.confirm(this, "Xác nhận thanh toán đơn hàng!");
+        if (!result) {
+            return false;
+        }
+
+        return true;
     }
 
     void addProductsToOrderd(int orderID, Vector<Vector> orderProducts) {

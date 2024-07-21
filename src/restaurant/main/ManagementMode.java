@@ -692,7 +692,6 @@ public class ManagementMode extends javax.swing.JFrame {
     }
 
     void openFullScreenWindow(JFrame window) {
-        window.setExtendedState(JFrame.MAXIMIZED_BOTH);
         window.setVisible(true);
         this.dispose();
     }

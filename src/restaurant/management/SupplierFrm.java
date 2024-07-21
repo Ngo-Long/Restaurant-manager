@@ -360,7 +360,6 @@ public final class SupplierFrm extends javax.swing.JPanel {
     private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
-    int row = -1;
     final int DEBOUNCE_DELAY_LOAD = 300;
     final String PLACEHOLDER_STATUS = "--Tất cả--";
     final String PLACEHOLDER_SEARCH = "Tìm theo mã, tên, điện thoại";

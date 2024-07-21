@@ -214,10 +214,12 @@ public final class DiningTableFrm extends javax.swing.JPanel {
         scrollPaneTableDining.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         // Setup menu
-        setupPanelMenu(panelMenu, dao.getAll());
+        loadDataPanelMenu(panelMenu, dao.getAll());
 
         // Handle click button reset
-        btnReset.addActionListener(e -> onSite.displayOnSitePanel(new DiningTableFrm(onSite)));
+        btnReset.addActionListener(e -> {
+            onSite.displayOnSitePanel(new DiningTableFrm(onSite));
+        });
 
         // Load load by search when change
         addTextFieldListeners(textSearch, this::loadDataDisplayTables);
@@ -240,7 +242,7 @@ public final class DiningTableFrm extends javax.swing.JPanel {
 
                 // get data and load
                 List<DiningTable> dataList = dao.searchByCriteria(searchName, menuItem, "");
-                
+
                 // display tables list and click show dialog table order
                 DiningTablePanel.displayDiningTables(
                         panelMain,
@@ -271,7 +273,7 @@ public final class DiningTableFrm extends javax.swing.JPanel {
     // end --->
 
     // <--- Handle event search and catogory
-    void setupPanelMenu(JPanel panelMenu, List<DiningTable> dataAll) {
+    void loadDataPanelMenu(JPanel panelMenu, List<DiningTable> dataAll) {
         // Create a set to store unique names
         Set<String> dataSet = new LinkedHashSet<>();
         for (DiningTable data : dataAll) {
@@ -279,28 +281,12 @@ public final class DiningTableFrm extends javax.swing.JPanel {
         }
 
         // Convert the set to a sorted list
-        List<String> dataList = dataSet.stream().sorted().collect(Collectors.toList());
+        List<String> dataLocations = dataSet.stream().sorted().collect(Collectors.toList());
 
         // Create buttons for each and add them to panel
-        for (String dataItem : dataList) {
+        for (String dataLocation : dataLocations) {
             // Set button location
-            JLabel item = new JLabel(dataItem);
-            item.setBackground(Color.LIGHT_GRAY);
-            item.setForeground(new Color(120, 120, 120));
-            item.setPreferredSize(new Dimension(74, 30));
-            item.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            item.setVerticalAlignment(SwingConstants.CENTER);
-            item.setHorizontalAlignment(SwingConstants.CENTER);
-            item.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            item.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
-
-            // Handle click location
-            item.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    handleClickMenu(item);
-                }
-            });
+            JLabel item = createLabelMenu(dataLocation);
 
             // Automatically select the first item
             if (selectedMenu == null) {
@@ -317,6 +303,32 @@ public final class DiningTableFrm extends javax.swing.JPanel {
         // Refresh the panel to display the new buttons
         panelMenu.revalidate();
         panelMenu.repaint();
+    }
+
+    JLabel createLabelMenu(String dataLocation) {
+        if (dataLocation == null) {
+            return new JLabel();
+        }
+
+        JLabel item = new JLabel(dataLocation);
+        item.setBackground(Color.LIGHT_GRAY);
+        item.setForeground(new Color(120, 120, 120));
+        item.setPreferredSize(new Dimension(74, 30));
+        item.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        item.setVerticalAlignment(SwingConstants.CENTER);
+        item.setHorizontalAlignment(SwingConstants.CENTER);
+        item.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        item.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
+
+        // Handle click location
+        item.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                handleClickMenu(item);
+            }
+        });
+
+        return item;
     }
 
     void handleClickMenu(JLabel item) {
@@ -339,5 +351,6 @@ public final class DiningTableFrm extends javax.swing.JPanel {
         selectedMenu = item;
         this.loadDataDisplayTables();
     }
+
     // end --->   
 }

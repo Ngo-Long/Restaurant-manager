@@ -16,16 +16,16 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
-import restaurant.utils.Auth;
 import restaurant.dao.EmployeeDAO;
 import restaurant.entity.Employee;
 import restaurant.utils.XTextField;
 import restaurant.table.TableCustom;
 import restaurant.main.ManagementMode;
-import restaurant.dialog.UpdateTableJDialog;
+import restaurant.dialog.UpdateEmployeeJDialog;
 
 import static restaurant.utils.Common.customizeTable;
 import static restaurant.utils.Common.createButtonGroup;
+import restaurant.utils.XComboBox;
 import static restaurant.utils.XComboBox.insertPlaceholder;
 import static restaurant.utils.XComboBox.loadDataToComboBox;
 import static restaurant.utils.XRunnable.addComponentListeners;
@@ -127,11 +127,6 @@ public final class EmployeeFrm extends javax.swing.JPanel {
         btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/restaurant/icon/plusWhile.png"))); // NOI18N
         btnAdd.setText("Thêm nhân viên");
         btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
-            }
-        });
 
         tableEmployees.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tableEmployees.setModel(new javax.swing.table.DefaultTableModel(
@@ -337,11 +332,6 @@ public final class EmployeeFrm extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
 
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        Auth.table = null;
-        openUpdateDialog("Thêm phòng/bàn", true);
-    }//GEN-LAST:event_btnAddActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnExport;
@@ -371,11 +361,11 @@ public final class EmployeeFrm extends javax.swing.JPanel {
     private javax.swing.JTextField textSearch;
     // End of variables declaration//GEN-END:variables
 
-    int row = -1;
     final int DEBOUNCE_DELAY_LOAD = 300;
     final String PLACEHOLDER_STATUS = "--Tất cả--";
     final String PLACEHOLDER_SEARCH = "Tìm theo mã hoặc tên";
 
+    Employee dataEmployee;
     List<Employee> dataEmployees;
     EmployeeDAO dao = new EmployeeDAO();
 
@@ -389,16 +379,22 @@ public final class EmployeeFrm extends javax.swing.JPanel {
         // edit field text
         XTextField.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
         XTextField.addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
-
+        XComboBox.setComboboxStyle(cbPositon);
+        
         // edit table
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
         customizeTable(tableEmployees, new int[]{}, 30);
 
         // <--- Setup main --->
+        // Handle click button add show dialog add goods
+        btnAdd.addActionListener(e -> {
+            openUpdateDialog("Thêm nhân viên", null);
+        });
+
         // handle click table show dialog
         attachRowClickListener(
                 tableEmployees,
-                () -> openUpdateDialog("Cập nhật nhân viên", false)
+                () -> openUpdateDialog("Cập nhật nhân viên", dataEmployee)
         );
 
         // add data to combobox
@@ -432,10 +428,7 @@ public final class EmployeeFrm extends javax.swing.JPanel {
 
                 // Get data from row
                 String id = (String) target.getValueAt(row, 0);
-                Employee employee = new EmployeeDAO().getByID(id);
-
-                // Save data to auth
-                Auth.user = employee;
+                dataEmployee = new EmployeeDAO().getByID(id);
 
                 // Perform the action
                 rowClickAction.run();
@@ -443,14 +436,15 @@ public final class EmployeeFrm extends javax.swing.JPanel {
         });
     }
 
-    void openUpdateDialog(String title, boolean isEditable) {
+    void openUpdateDialog(String title, Employee dataEmployee) {
         if (title == null || title.equals("")) {
             return;
         }
 
         // Init dialog
-        UpdateTableJDialog dialog = new UpdateTableJDialog(null, true);
+        UpdateEmployeeJDialog dialog = new UpdateEmployeeJDialog(null, true);
         dialog.setTitle(title); // Set title dialog
+        dialog.setModel(dataEmployee); // Set data product
 
         // Attach event when dispose
         dialog.addWindowListener(new WindowAdapter() {
