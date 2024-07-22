@@ -235,7 +235,7 @@ public final class DiningTableFrm extends javax.swing.JPanel {
                 .addGap(12, 12, 12)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
-                    .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -245,7 +245,7 @@ public final class DiningTableFrm extends javax.swing.JPanel {
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
                 .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
@@ -401,20 +401,16 @@ public final class DiningTableFrm extends javax.swing.JPanel {
                 () -> openUpdateDialog("Cập nhật sản phẩm", dataTable)
         );
 
-        // Add data to combobox
-        loadDataToComboBox(
-                cbArea,
-                dao.getAll(),
-                DiningTable::getLocation
-        );
-        insertPlaceholder(cbArea, PLACEHOLDER_STATUS);
-
         // Load list by search and classify when change
         addTextFieldListeners(textSearch, this::loadDataFillTable);
         addComponentListeners(
                 this::loadDataFillTable,
                 cbArea, radioOn, radioOff, radioAll
         );
+
+        // Add data to combobox
+        loadDataToComboBox(cbArea, dao.getAll(), DiningTable::getLocation);
+        insertPlaceholder(cbArea, PLACEHOLDER_STATUS);
 
         // load data and fill table
         this.loadDataFillTable();
@@ -454,8 +450,12 @@ public final class DiningTableFrm extends javax.swing.JPanel {
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
-               
-                
+                // reset combobox
+                loadDataToComboBox(cbArea, dao.getAll(), DiningTable::getLocation);
+                insertPlaceholder(cbArea, PLACEHOLDER_STATUS);
+
+                // set data
+                loadDataFillTable();
             }
         });
 

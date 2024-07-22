@@ -96,7 +96,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator2">
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="menuLogout">
+            <MenuItem class="javax.swing.JMenuItem" name="menuItemLogout">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+O"/>
@@ -109,7 +109,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator1">
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="menuEnd">
+            <MenuItem class="javax.swing.JMenuItem" name="menuItemEnd">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="ESCAPE"/>
@@ -214,9 +214,9 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                  <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                  <Component id="selectBtnTable" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                  <Component id="selectBtnProduct" min="-2" max="-2" attributes="0"/>
                   <EmptySpace pref="226" max="32767" attributes="0"/>
                   <Component id="textSearch" min="-2" pref="226" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -238,8 +238,8 @@
                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
                       <Component id="btnSearch" alignment="0" max="32767" attributes="0"/>
                       <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                          <Component id="jButton1" alignment="3" pref="32" max="32767" attributes="0"/>
-                          <Component id="jButton2" alignment="3" pref="32" max="32767" attributes="0"/>
+                          <Component id="selectBtnTable" alignment="3" pref="32" max="32767" attributes="0"/>
+                          <Component id="selectBtnProduct" alignment="3" pref="32" max="32767" attributes="0"/>
                       </Group>
                       <Component id="btnHistory" alignment="0" max="32767" attributes="0"/>
                       <Component id="btnReset" alignment="0" max="32767" attributes="0"/>
@@ -373,7 +373,7 @@
             </DimensionLayout>
           </Layout>
         </Container>
-        <Component class="javax.swing.JButton" name="jButton1">
+        <Component class="javax.swing.JButton" name="selectBtnTable">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="16" style="0"/>
@@ -384,7 +384,7 @@
             <Property name="text" type="java.lang.String" value="Ph&#xf2;ng/b&#xe0;n"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton2">
+        <Component class="javax.swing.JButton" name="selectBtnProduct">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="16" style="0"/>
@@ -575,9 +575,9 @@
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/restaurant/icon/notification-bell.png"/>
+              <Image iconType="3" name="/restaurant/icon/coin.png"/>
             </Property>
-            <Property name="text" type="java.lang.String" value=" Th&#xf4;ng b&#xe1;o"/>
+            <Property name="text" type="java.lang.String" value="Thanh to&#xe1;n"/>
             <Property name="toolTipText" type="java.lang.String" value="&#x1ea4;n x&#xe1;c nh&#x1ead;n &#x111;&#x1ec3; chuy&#x1ec3;n t&#x1edb;i b&#x1ebf;p"/>
             <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
               <Color id="Hand Cursor"/>
@@ -596,9 +596,9 @@
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/restaurant/icon/coin.png"/>
+              <Image iconType="3" name="/restaurant/icon/notification-bell.png"/>
             </Property>
-            <Property name="text" type="java.lang.String" value=" Thanh to&#xe1;n"/>
+            <Property name="text" type="java.lang.String" value="Th&#xf4;ng b&#xe1;o"/>
             <Property name="toolTipText" type="java.lang.String" value="Quay v&#x1ec1; b&#xe0;n &#x103;n"/>
             <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
               <Color id="Hand Cursor"/>

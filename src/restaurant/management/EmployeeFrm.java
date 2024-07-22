@@ -59,7 +59,7 @@ public final class EmployeeFrm extends javax.swing.JPanel {
         btnNext = new javax.swing.JButton();
         btnPrev = new javax.swing.JButton();
         btnFirst = new javax.swing.JButton();
-        jLabel6 = new javax.swing.JLabel();
+        labelTableLength = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         textSearch = new javax.swing.JTextField();
@@ -131,10 +131,7 @@ public final class EmployeeFrm extends javax.swing.JPanel {
         tableEmployees.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tableEmployees.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+
             },
             new String [] {
                 "Mã NV", "Họ tên", "Giới tính", "Số điện thoại", "Chức danh", "Trạng thái"
@@ -164,9 +161,9 @@ public final class EmployeeFrm extends javax.swing.JPanel {
         btnFirst.setText("|<");
         btnFirst.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel6.setText("Hiển thị 1 - 10 trên tổng số 10 bàn");
+        labelTableLength.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        labelTableLength.setForeground(new java.awt.Color(102, 102, 102));
+        labelTableLength.setText("Hiển thị 1 - 10 trên tổng số 10 bàn");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -184,7 +181,7 @@ public final class EmployeeFrm extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnLast, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel6))
+                        .addComponent(labelTableLength))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
@@ -217,7 +214,7 @@ public final class EmployeeFrm extends javax.swing.JPanel {
                     .addComponent(btnNext)
                     .addComponent(btnPrev)
                     .addComponent(btnFirst)
-                    .addComponent(jLabel6))
+                    .addComponent(labelTableLength))
                 .addGap(10, 10, 10))
         );
 
@@ -234,9 +231,9 @@ public final class EmployeeFrm extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(15, Short.MAX_VALUE))
+                    .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -245,7 +242,7 @@ public final class EmployeeFrm extends javax.swing.JPanel {
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
                 .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
@@ -347,12 +344,12 @@ public final class EmployeeFrm extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel labelTableLength;
     private javax.swing.JPanel panelBody;
     private javax.swing.JRadioButton radioAll;
     private javax.swing.JRadioButton radioOff;
@@ -380,7 +377,7 @@ public final class EmployeeFrm extends javax.swing.JPanel {
         XTextField.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
         XTextField.addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
         XComboBox.setComboboxStyle(cbPositon);
-        
+
         // edit table
         TableCustom.apply(jScrollPane1, TableCustom.TableType.MULTI_LINE);
         customizeTable(tableEmployees, new int[]{}, 30);
@@ -486,7 +483,8 @@ public final class EmployeeFrm extends javax.swing.JPanel {
                         : radioOff.isSelected() ? radioOff.getText() : "";
 
                 // Get data and load
-                dataEmployees = new EmployeeDAO().searchByCriteria(keyword, keyword, position, selectedRadio);
+                dataEmployees = new EmployeeDAO().searchByCriteria(keyword,
+                        keyword, position, selectedRadio);
                 this.fillTable(dataEmployees);
             });
         }, DEBOUNCE_DELAY_LOAD, TimeUnit.MILLISECONDS);

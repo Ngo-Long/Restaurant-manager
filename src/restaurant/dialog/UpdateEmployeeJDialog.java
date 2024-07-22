@@ -2,7 +2,6 @@ package restaurant.dialog;
 
 import java.util.List;
 import java.awt.Color;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -15,16 +14,13 @@ import restaurant.utils.XImage;
 import restaurant.utils.XComboBox;
 import restaurant.utils.XTextField;
 
-import restaurant.entity.Product;
 import restaurant.dao.ProductDAO;
 import restaurant.entity.Employee;
 import static restaurant.utils.Common.openSmallDialog;
-import static restaurant.utils.XTextField.getRealText;
 import static restaurant.utils.XImage.setImageButtonIcon;
 import static restaurant.utils.XComboBox.insertPlaceholder;
 import static restaurant.utils.XComboBox.loadDataToComboBox;
 import static restaurant.utils.XImage.chooseImageFromDirectory;
-import static restaurant.utils.XTextField.removeCommasFromNumber;
 
 public final class UpdateEmployeeJDialog extends JDialog {
 
@@ -234,8 +230,7 @@ public final class UpdateEmployeeJDialog extends JDialog {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel10)
                                 .addGap(25, 25, 25)
-                                .addComponent(cbPosition, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(cbPosition, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -314,10 +309,10 @@ public final class UpdateEmployeeJDialog extends JDialog {
                             .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(btnImage, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(textPhoneNum, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
-                    .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(textPhoneNum, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnAddPosition, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -589,6 +584,11 @@ public final class UpdateEmployeeJDialog extends JDialog {
     void delete() {
         if (textID.getText().equals("")) {
             Dialog.warning(this, "Mã nhân viên không tồn tại!");
+            return;
+        }
+
+        if (textID.getText().trim().equals("NV000")) {
+            Dialog.warning(this, "Tài khoản chính không xóa được!");
             return;
         }
 

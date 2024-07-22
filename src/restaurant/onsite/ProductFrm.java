@@ -1,28 +1,14 @@
 package restaurant.onsite;
 
-import java.awt.Font;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseAdapter;
-
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JButton;
-import javax.swing.BorderFactory;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 
-import java.util.Set;
 import java.util.List;
 import java.util.Vector;
-import java.util.HashSet;
-import java.util.stream.Collectors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
@@ -44,13 +30,13 @@ import restaurant.dao.OrderDetailDAO;
 import restaurant.utils.Auth;
 import restaurant.utils.Dialog;
 import restaurant.utils.Common;
+import restaurant.utils.PanelMenu;
 import restaurant.utils.XTextField;
+import restaurant.utils.PanelProduct;
 import restaurant.main.OnSiteMode;
 import restaurant.table.TableCustom;
-import restaurant.main.QuickOrderMode;
 import restaurant.dialog.OrderDetailJDialog;
 import static restaurant.utils.XTextField.getRealText;
-import static restaurant.utils.XRunnable.addTextFieldListeners;
 import static restaurant.utils.ColumnTable.addButtonIconColumn;
 import static restaurant.utils.ColumnTable.addQuantityButtonsColumn;
 
@@ -388,7 +374,6 @@ public final class ProductFrm extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     JLabel selectedMenu;
-
     final String PLACEHOLDER_NOTE = "Tối đa 60 ký tự";
     final String PLACEHOLDER_SEARCH = "Tìm theo tên món";
 
@@ -418,13 +403,17 @@ public final class ProductFrm extends javax.swing.JPanel {
 
         // Get menu category
         List<Product> dataList = new ProductDAO().getAll();
-        setupMenuCategory(dataList, panelMenu, selectedMenu);
+        PanelMenu.loadDataPanelMenu(
+                panelMenu,
+                dataList,
+                Product::getCategory,
+                this::loadDataDisplayProducts
+        );
 
         // Call event when text change
-        addTextFieldListeners(textSearch, this::loadDataDisplayProducts);
-
+//        addTextFieldListeners(textSearch, this::loadDataDisplayProducts);
         // load data and display products
-        this.loadDataDisplayProducts();
+        this.loadDataDisplayProducts(selectedMenu);
     }
 
     // <--- Common
@@ -473,7 +462,11 @@ public final class ProductFrm extends javax.swing.JPanel {
         btnCancel.addActionListener(e -> cancel());
     }
 
-    void loadDataDisplayProducts() {
+    void loadDataDisplayProducts(JLabel selectedMenu) {
+        if (selectedMenu == null) {
+            return;
+        }
+
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
@@ -489,7 +482,7 @@ public final class ProductFrm extends javax.swing.JPanel {
                         = new ProductDAO().searchByCriteria(keyword, menuItem, "");
 
                 // Display product list on panel
-                QuickOrderMode.displayProductList(
+                PanelProduct.displayProductList(
                         dataList,
                         panelProducts,
                         tableOrder,
@@ -516,7 +509,7 @@ public final class ProductFrm extends javax.swing.JPanel {
         // Calc total amount click column 
         tableOrder.getModel().addTableModelListener((TableModelEvent e) -> {
             if (e.getColumn() == COLUMN_CELL_THREE) {
-                QuickOrderMode.calculateTotalAmount(tableOrder, labelTotalAmount);
+                PanelProduct.calculateTotalAmount(tableOrder, labelTotalAmount);
             }
         });
     }
@@ -657,80 +650,4 @@ public final class ProductFrm extends javax.swing.JPanel {
     }
     // end --->
 
-    // <--- setup menu
-    void setupMenuCategory(List<Product> datAll, JPanel panelMenu, JLabel selectedMenu) {
-        // Create a set to store unique names
-        Set<String> dataSet = new HashSet<>();
-        for (restaurant.entity.Product dataItem : datAll) {
-            dataSet.add(dataItem.getCategory());
-        }
-
-        // Convert the set to a sorted list
-        List<String> dataList = dataSet.stream().sorted().collect(Collectors.toList());
-
-        // Create buttons for each and add them to panel
-        for (String dataItem : dataList) {
-            // Set button location
-            JLabel labelItem = createStyledLabel(dataItem);
-
-            // Handle click location
-            labelItem.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    handleClickMenu(labelItem);
-                }
-            });
-
-            // Automatically select the first item
-            if (selectedMenu == null) {
-                handleClickMenu(labelItem);
-            }
-
-            // Add item location to the panel
-            panelMenu.add(labelItem);
-        }
-
-        // Set layout for panelButtons
-        panelMenu.setLayout(new FlowLayout(FlowLayout.LEFT, 12, 12));
-
-        // Refresh the panel to display the new buttons
-        panelMenu.revalidate();
-        panelMenu.repaint();
-    }
-
-    JLabel createStyledLabel(String dataItem) {
-        JLabel label = new JLabel(dataItem);
-        label.setPreferredSize(new Dimension(140, 50));
-        label.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        label.setForeground(new Color(120, 120, 120));
-        label.setBackground(Color.LIGHT_GRAY);
-        label.setOpaque(true); // Ensure background color is visible
-        label.setVerticalAlignment(SwingConstants.CENTER);
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        label.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
-        return label;
-    }
-
-    void handleClickMenu(JLabel labelItem) {
-        // Kiểm tra nếu nút hiện tại không phải là nút đã được chọn trước đó
-        if (selectedMenu == labelItem) {
-            return;
-        }
-
-        // Đặt lại màu cho nút trước đó nếu có
-        if (selectedMenu != null) {
-            selectedMenu.setForeground(new Color(120, 120, 120));
-            selectedMenu.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
-        }
-
-        // Thiết lập lại màu cho nút hiện tại
-        labelItem.setForeground(new Color(255, 11, 11));
-        labelItem.setBorder(BorderFactory.createLineBorder(new Color(255, 11, 11), 2, true));
-
-        // Cập nhật nút được chọn hiện tại
-        selectedMenu = labelItem;
-        this.loadDataDisplayProducts();
-    }
-    // end --->
 }

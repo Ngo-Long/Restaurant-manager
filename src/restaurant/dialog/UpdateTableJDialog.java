@@ -323,7 +323,7 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         btnDelete.addActionListener(e -> delete());
     }
 
-    boolean validateInput(String name, String numberSeatsText, String area) {
+    boolean validateInput(String id, String name, String numberSeatsText, String area) {
         if (name.trim().isEmpty() || numberSeatsText.trim().isEmpty() || area.trim().isEmpty()) {
             Dialog.warning(this, "Vui lòng nhập đầy đủ thông tin!");
             return false;
@@ -349,18 +349,18 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
     }
 
     DiningTable getModel() {
-        String tableId = XTextField.getRealText(textID, PLACEHOLDER_ID);
+        String id = XTextField.getRealText(textID, PLACEHOLDER_ID);
         String name = textName.getText();
         String area = cbLocation.getSelectedItem().toString();
         String numberSeats = textNumberSeats.getText();
 
-        if (!validateInput(name, numberSeats, area)) {
+        if (!validateInput(id, name, numberSeats, area)) {
             return null;
         }
 
         try {
             DiningTable model = new DiningTable();
-            model.setTableID(tableId);
+            model.setTableID(id);
             model.setName(name);
             model.setLocation(area);
             model.setCapacity(Integer.parseInt(numberSeats));
@@ -431,6 +431,11 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
             return;
         }
 
+        if (id.equals("BA00")) {
+            Dialog.warning(this, "Mang về không thể sửa!");
+            return;
+        }
+
         DiningTable model = getModel();
         if (model == null) {
             return;
@@ -455,6 +460,11 @@ public final class UpdateTableJDialog extends javax.swing.JDialog {
         String id = getRealText(textID, PLACEHOLDER_ID);
         if (id.equals("")) {
             Dialog.warning(this, "Bàn ăn không tồn tại!");
+            return;
+        }
+
+        if (id.equals("BA00")) {
+            Dialog.warning(this, "Mang về không thể xóa!");
             return;
         }
 

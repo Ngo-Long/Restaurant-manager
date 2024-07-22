@@ -3,13 +3,14 @@ package restaurant.main;
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.BorderLayout;
-import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.JButton;
+import javax.swing.JMenuItem;
 import javax.swing.border.LineBorder;
 
 import restaurant.utils.Auth;
@@ -24,9 +25,9 @@ import restaurant.management.EmployeeFrm;
 import restaurant.management.ProductFrm;
 import restaurant.management.SupplierFrm;
 import restaurant.management.DiningTableFrm;
-import static restaurant.utils.PopupMenu.addPopupMenuButton;
+import static restaurant.utils.PopupMenu.addDropdownMenu;
 
-public class ManagementMode extends javax.swing.JFrame {
+public final class ManagementMode extends javax.swing.JFrame {
 
     public ManagementMode() {
         initComponents();
@@ -74,13 +75,13 @@ public class ManagementMode extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         menuEnd = new javax.swing.JMenuItem();
         menuManager = new javax.swing.JMenu();
-        menuTables = new javax.swing.JMenuItem();
-        menuDishes = new javax.swing.JMenuItem();
+        menuTable = new javax.swing.JMenuItem();
+        menuProduct = new javax.swing.JMenuItem();
         menuChicken = new javax.swing.JMenuItem();
         menuPay = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
+        menuEmployee = new javax.swing.JMenuItem();
         menuEmployees = new javax.swing.JMenuItem();
-        menuEmployees1 = new javax.swing.JMenuItem();
         menuStatistical = new javax.swing.JMenu();
         menuRevenue = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
@@ -270,15 +271,15 @@ public class ManagementMode extends javax.swing.JFrame {
         menuManager.setText("Quản lý");
         menuManager.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        menuTables.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
-        menuTables.setText("Bàn ăn");
-        menuTables.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuManager.add(menuTables);
+        menuTable.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
+        menuTable.setText("Bàn ăn");
+        menuTable.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        menuManager.add(menuTable);
 
-        menuDishes.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
-        menuDishes.setText("Món ăn");
-        menuDishes.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuManager.add(menuDishes);
+        menuProduct.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
+        menuProduct.setText("Món ăn");
+        menuProduct.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        menuManager.add(menuProduct);
 
         menuChicken.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, 0));
         menuChicken.setText("Nhà bếp");
@@ -291,15 +292,15 @@ public class ManagementMode extends javax.swing.JFrame {
         menuManager.add(menuPay);
         menuManager.add(jSeparator4);
 
-        menuEmployees.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
-        menuEmployees.setText("Nhân viên");
+        menuEmployee.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
+        menuEmployee.setText("Nhân viên");
+        menuEmployee.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        menuManager.add(menuEmployee);
+
+        menuEmployees.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
+        menuEmployees.setText("Kho hàng");
         menuEmployees.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         menuManager.add(menuEmployees);
-
-        menuEmployees1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F6, 0));
-        menuEmployees1.setText("Kho hàng");
-        menuEmployees1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        menuManager.add(menuEmployees1);
 
         menuBar.add(menuManager);
 
@@ -446,9 +447,8 @@ public class ManagementMode extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuChange;
     private javax.swing.JMenuItem menuChicken;
     private javax.swing.JMenuItem menuClients;
-    private javax.swing.JMenuItem menuDishes;
+    private javax.swing.JMenuItem menuEmployee;
     private javax.swing.JMenuItem menuEmployees;
-    private javax.swing.JMenuItem menuEmployees1;
     private javax.swing.JMenuItem menuEnd;
     private javax.swing.JMenuItem menuIngridiants;
     private javax.swing.JMenuItem menuInstruct;
@@ -460,11 +460,12 @@ public class ManagementMode extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuLogout;
     private javax.swing.JMenu menuManager;
     private javax.swing.JMenuItem menuPay;
+    private javax.swing.JMenuItem menuProduct;
     private javax.swing.JMenuItem menuProducts;
     private javax.swing.JMenuItem menuRevenue;
     private javax.swing.JMenu menuStatistical;
     private javax.swing.JMenu menuSystem;
-    private javax.swing.JMenuItem menuTables;
+    private javax.swing.JMenuItem menuTable;
     private javax.swing.JMenu menuVaiTro;
     private javax.swing.JPanel panelMain;
     private javax.swing.JScrollPane scrollPaneMain;
@@ -476,47 +477,97 @@ public class ManagementMode extends javax.swing.JFrame {
         // Common
         Common.customizeScrollBar(scrollPaneMain);
 
+        // handle click menu item
+        JMenuItem[] menuItems = {menuEnd, menuLogout, menuTable, menuProduct,
+            menuEmployees, menuItemOnSite, menuItemSalerQuick, menuItemManagement};
+        handleClickMenuItem(menuItems);
+
         // Create dropdown menu when hover button 
-        addPopupMenuButtonList();
+        JButton[] dropdownButtons = {btnWareHouse, btnReceipt, btnSuppleir,
+            btnEmployee, btnReport};
+        initDropdownButtons(dropdownButtons);
 
         // handle click button header
-        handleClickHeaderButtonList();
+        JButton[] headerButtons = getHeaderButtons();
+        handleClickButtons(headerButtons);
 
-        // handle click menu item
-        handleClickMenuAndMenuItem();
-
-        // Attach event hover button chose. Fisrt button is btnOverview
-        setupHeaderButtons(btnOverview);
-
-        // Display UI main
-        displayManagementPanel(new OverviewFrm(this));
+        // get started
+        btnOverview.doClick();
     }
 
-    // method hadle event click buttons title
-    void handleClickHeaderButtonList() {
-        btnOverview.addActionListener(e -> displayManagementPanel(new OverviewFrm(this)));
-        btnTable.addActionListener(e -> displayManagementPanel(new DiningTableFrm(this)));
-        btnProduct.addActionListener(e -> displayManagementPanel(new ProductFrm(this)));
-        btnWareHouse.addActionListener(e -> displayManagementPanel(new GoodsFrm(this)));
-        btnReceipt.addActionListener(e -> displayManagementPanel(new InvoiceFrm(this)));
-        btnSuppleir.addActionListener(e -> displayManagementPanel(new SupplierFrm(this)));
-        btnEmployee.addActionListener(e -> displayManagementPanel(new EmployeeFrm(this)));
-        btnReport.addActionListener(e -> displayManagementPanel(new OverviewFrm(this)));
+    // open window
+    void openFullScreenWindow(JFrame window) {
+        window.setVisible(true);
+        this.dispose();
+    }
+
+    // move panel in management
+    public void displayManagementPanel(JPanel panel) {
+        panelMain.removeAll();
+        panelMain.setLayout(new BorderLayout());
+        panelMain.add(panel, BorderLayout.CENTER);
+        panelMain.revalidate();
+        panelMain.repaint();
+    }
+
+    // method add menu when hover button
+    void initDropdownButtons(JButton[] buttons) {
+        if (buttons == null) {
+            return;
+        }
+
+        // get button
+        JButton btnWareHouse = buttons[0];
+        JButton btnReceipt = buttons[1];
+        JButton btnSuppleir = buttons[2];
+        JButton btnEmployee = buttons[3];
+        JButton btnReport = buttons[4];
+
+        // click button goods
+        String[] menuItemsGoods = {"Danh mục", "Kiểm kho"};
+        addDropdownMenu(btnWareHouse, menuItemsGoods, this::onGoodsDropdownItem);
+
+        // click button receipt
+        String[] menuItemsReceipt = {"Hóa đơn", "Nhập hàng"};
+        addDropdownMenu(btnReceipt, menuItemsReceipt, this::onReceiptDropdownItem);
+
+        // click button partner
+        String[] menuItemsPartner = {"Khách hàng", "Nhà cung cấp"};
+        addDropdownMenu(btnSuppleir, menuItemsPartner, this::onPartnerDropdownItem);
+
+        // click button employee
+        String[] menuItemsEmployee = {"Nhân viên", "Lịch làm việc", "Chấm công", "Bảng tính lương"};
+        addDropdownMenu(btnEmployee, menuItemsEmployee, this::onEmployeeDropdownItem);
+
+        // click button report
+        String[] menuItemsReport = {"Cuối ngày", "Bán hàng", "Hàng hóa",
+            "Khách hàng", "Nhà cung cấp", "Nhân viên", "Tài chính"};
+        addDropdownMenu(btnReport, menuItemsReport, this::onReportDropdownItem);
     }
 
     // method handle event click menu and menu item
-    void handleClickMenuAndMenuItem() {
-        menuItemOnSite.addActionListener(e -> openFullScreenWindow(new OnSiteMode()));
-        menuItemSalerQuick.addActionListener(e -> openFullScreenWindow(new QuickOrderMode()));
-        menuItemManagement.addActionListener(e -> openFullScreenWindow(new ManagementMode()));
-        menuEmployees1.addActionListener(e -> displayManagementPanel(new ProductFrm(this)));
-        menuTables.addActionListener(e -> displayManagementPanel(new ProductFrm(this)));
-        menuDishes.addActionListener(e -> displayManagementPanel(new ProductFrm(this)));
+    void handleClickMenuItem(JMenuItem[] menuItems) {
+        if (menuItems == null) {
+            return;
+        }
+
+        // get button
+        JMenuItem menuEnd = menuItems[0];
+        JMenuItem menuLogout = menuItems[1];
+        JMenuItem menuTable = menuItems[2];
+        JMenuItem menuProduct = menuItems[3];
+        JMenuItem menuEmployees = menuItems[4];
+        JMenuItem menuItemOnSite = menuItems[5];
+        JMenuItem menuItemSalerQuick = menuItems[6];
+        JMenuItem menuItemManagement = menuItems[7];
+
+        // click button list
         menuEnd.addActionListener(e -> {
             if (Dialog.confirm(this, "Bạn muốn kết thúc làm việc?")) {
                 System.exit(0);
             }
         });
+
         menuLogout.addActionListener(e -> {
             if (Dialog.confirm(this, "Bạn muốn đăng xuất?")) {
                 Auth.clear();
@@ -524,107 +575,79 @@ public class ManagementMode extends javax.swing.JFrame {
                 new Login(this, true).setVisible(true);
             }
         });
+
+        // move panel
+        menuTable.addActionListener(e -> displayManagementPanel(new DiningTableFrm(this)));
+        menuProduct.addActionListener(e -> displayManagementPanel(new ProductFrm(this)));
+        menuEmployees.addActionListener(e -> displayManagementPanel(new EmployeeFrm(this)));
+
+        // move file
+        menuItemOnSite.addActionListener(e -> openFullScreenWindow(new OnSiteMode()));
+        menuItemSalerQuick.addActionListener(e -> openFullScreenWindow(new QuickOrderMode()));
+        menuItemManagement.addActionListener(e -> openFullScreenWindow(new ManagementMode()));
     }
 
-    // method add menu when hover button
-    void addPopupMenuButtonList() {
-        String[] menuItemsGoods = {"Danh mục", "Kiểm kho"};
-        addPopupMenuButton(btnWareHouse, menuItemsGoods, this::menuItemGoodsSelected);
-
-        String[] menuItemsReceipt = {"Hóa đơn", "Nhập hàng"};
-        addPopupMenuButton(btnReceipt, menuItemsReceipt, this::menuItemReceiptSelected);
-
-        String[] menuItemsPartner = {"Khách hàng", "Nhà cung cấp"};
-        addPopupMenuButton(btnSuppleir, menuItemsPartner, this::menuItemPartnerSelected);
-
-        String[] menuItemsEmployee = {"Nhân viên", "Lịch làm việc", "Chấm công", "Bảng tính lương"};
-        addPopupMenuButton(btnEmployee, menuItemsEmployee, this::menuItemEmployeeSelected);
-
-        String[] menuItemsReport = {"Cuối ngày", "Bán hàng", "Hàng hóa",
-            "Khách hàng", "Nhà cung cấp", "Nhân viên", "Tài chính"};
-        addPopupMenuButton(btnReport, menuItemsReport, this::menuItemReportSelected);
-    }
-
-    // <--- Callback function to handle menu item selection
-    void menuItemGoodsSelected(int index) {
-        switch (index) {
-            case 0:
-            case 1:
-                setupHeaderButtons(btnWareHouse);
-                displayManagementPanel(new GoodsFrm(this));
-                break;
-            default:
-                break;
+    // method handle event click button
+    void handleClickButtons(JButton[] buttons) {
+        if (buttons == null) {
+            return;
         }
+
+        // get button
+        JButton btnOverview = buttons[0];
+        JButton btnTable = buttons[1];
+        JButton btnProduct = buttons[2];
+        JButton btnWarehouse = buttons[3];
+        JButton btnReceipt = buttons[4];
+        JButton btnSupplier = buttons[5];
+        JButton btnEmployee = buttons[6];
+        JButton btnReport = buttons[7];
+
+        // set action listeners for each button
+        btnOverview.addActionListener(e -> {
+            setupSelectedButton(btnOverview);
+            displayManagementPanel(new OverviewFrm(this));
+        });
+
+        btnTable.addActionListener(e -> {
+            setupSelectedButton(btnTable);
+            displayManagementPanel(new DiningTableFrm(this));
+        });
+
+        btnProduct.addActionListener(e -> {
+            setupSelectedButton(btnProduct);
+            displayManagementPanel(new ProductFrm(this));
+        });
+
+        btnWarehouse.addActionListener(e -> {
+            setupSelectedButton(btnWarehouse);
+            displayManagementPanel(new GoodsFrm(this));
+        });
+
+        btnReceipt.addActionListener(e -> {
+            setupSelectedButton(btnReceipt);
+            displayManagementPanel(new InvoiceFrm(this));
+        });
+
+        btnSupplier.addActionListener(e -> {
+            setupSelectedButton(btnSupplier);
+            displayManagementPanel(new SupplierFrm(this));
+        });
+
+        btnEmployee.addActionListener(e -> {
+            setupSelectedButton(btnEmployee);
+            displayManagementPanel(new EmployeeFrm(this));
+        });
     }
 
-    void menuItemReceiptSelected(int index) {
-        switch (index) {
-            case 0:
-                setupHeaderButtons(btnReceipt);
-                displayManagementPanel(new InvoiceFrm(this));
-                break;
-            case 1:
-                setupHeaderButtons(btnReceipt);
-                displayManagementPanel(new ReceiptFrm(this));
-                break;
-            default:
-                break;
-        }
-    }
-
-    void menuItemPartnerSelected(int index) {
-        switch (index) {
-            case 0:
-            case 1:
-                setupHeaderButtons(btnSuppleir);
-                displayManagementPanel(new SupplierFrm(this));
-                break;
-            default:
-                break;
-        }
-    }
-
-    void menuItemEmployeeSelected(int index) {
-        switch (index) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-                setupHeaderButtons(btnEmployee);
-                displayManagementPanel(new EmployeeFrm(this));
-                break;
-            default:
-                break;
-        }
-    }
-
-    void menuItemReportSelected(int index) {
-        switch (index) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-                setupHeaderButtons(btnReport);
-                displayManagementPanel(new EmployeeFrm(this));
-                break;
-            default:
-                break;
-        }
-    }
-    // end --->
-
-    // <--- Setup header button list
+    // <--- Setup click selected button
     public JButton[] getHeaderButtons() {
         JButton[] headerButtons = {btnOverview, btnTable, btnProduct,
             btnWareHouse, btnReceipt, btnEmployee, btnSuppleir, btnReport};
         return headerButtons;
     }
 
-    public void setupHeaderButtons(JButton selectedBtn) {
+    public void setupSelectedButton(JButton selectedBtn) {
         // Mảng chứa các nút cần xử lý
         JButton[] buttons = getHeaderButtons();
 
@@ -657,12 +680,12 @@ public class ManagementMode extends javax.swing.JFrame {
                 setButtonStyle(selectedBtn, new Color(255, 51, 51), Color.WHITE, Font.BOLD);
                 selectedButton = selectedBtn;
             }
-
         }
-
     }
 
-    void setButtonStyle(JButton button, Color foregroundColor, Color backgroundColor, int fontWeight) {
+    void setButtonStyle(JButton button, Color foregroundColor,
+            Color backgroundColor, int fontWeight) {
+        // set info
         button.setForeground(foregroundColor);
         button.setBackground(backgroundColor);
         button.setFont(button.getFont().deriveFont(fontWeight));
@@ -683,16 +706,76 @@ public class ManagementMode extends javax.swing.JFrame {
     }
     // end --->
 
-    public void displayManagementPanel(JPanel panel) {
-        panelMain.removeAll();
-        panelMain.setLayout(new BorderLayout());
-        panelMain.add(panel, BorderLayout.CENTER);
-        panelMain.revalidate();
-        panelMain.repaint();
+    // <--- Callback function to handle menu item selection
+    void onGoodsDropdownItem(int index) {
+        switch (index) {
+            case 0:
+            case 1:
+                setupSelectedButton(btnWareHouse);
+                displayManagementPanel(new GoodsFrm(this));
+                break;
+            default:
+                break;
+        }
     }
 
-    void openFullScreenWindow(JFrame window) {
-        window.setVisible(true);
-        this.dispose();
+    void onReceiptDropdownItem(int index) {
+        switch (index) {
+            case 0:
+                setupSelectedButton(btnReceipt);
+                displayManagementPanel(new InvoiceFrm(this));
+                break;
+            case 1:
+                setupSelectedButton(btnReceipt);
+                displayManagementPanel(new ReceiptFrm(this));
+                break;
+            default:
+                break;
+        }
     }
+
+    void onPartnerDropdownItem(int index) {
+        switch (index) {
+            case 0:
+            case 1:
+                setupSelectedButton(btnSuppleir);
+                displayManagementPanel(new SupplierFrm(this));
+                break;
+            default:
+                break;
+        }
+    }
+
+    void onEmployeeDropdownItem(int index) {
+        switch (index) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+                setupSelectedButton(btnEmployee);
+                displayManagementPanel(new EmployeeFrm(this));
+                break;
+            default:
+                break;
+        }
+    }
+
+    void onReportDropdownItem(int index) {
+        switch (index) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+                setupSelectedButton(btnReport);
+                displayManagementPanel(new EmployeeFrm(this));
+                break;
+            default:
+                break;
+        }
+    }
+    // end --->
+
 }

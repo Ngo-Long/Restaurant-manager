@@ -24,7 +24,7 @@ import restaurant.dao.OrderDAO;
 import restaurant.entity.Order;
 import restaurant.entity.DiningTable;
 
-public class DiningTablePanel {
+public class PanelDiningTable {
 
     public static JPanel selectedTable;
 

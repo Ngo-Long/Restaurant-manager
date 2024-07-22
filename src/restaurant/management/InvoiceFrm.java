@@ -25,16 +25,16 @@ import restaurant.entity.Invoice;
 import restaurant.entity.Employee;
 import restaurant.entity.DiningTable;
 
+import restaurant.utils.XComboBox;
 import restaurant.table.TableCustom;
 import restaurant.main.ManagementMode;
+import restaurant.utils.TableNavigator;
 import restaurant.dialog.HistoryInvoiceDetailJDialog;
 import static restaurant.utils.XRunnable.addDateListeners;
 import static restaurant.utils.XComboBox.insertPlaceholder;
 import static restaurant.utils.XComboBox.loadDataToComboBox;
 import static restaurant.utils.XRunnable.addComponentListeners;
 import static restaurant.utils.XRunnable.addTextFieldListeners;
-import restaurant.utils.TableNavigator;
-import restaurant.utils.XComboBox;
 
 public final class InvoiceFrm extends javax.swing.JPanel {
 
@@ -245,9 +245,11 @@ public final class InvoiceFrm extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(textSearch))
+                .addGap(12, 12, 12))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -256,7 +258,7 @@ public final class InvoiceFrm extends javax.swing.JPanel {
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
                 .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
@@ -441,6 +443,7 @@ public final class InvoiceFrm extends javax.swing.JPanel {
     private com.toedter.calendar.JDateChooser textStartDate;
     // End of variables declaration//GEN-END:variables
 
+    String tableNamesStr;
     final String PLACEHOLDER_STATUS = "--Trạng thái--";
     final String PLACEHOLDER_SEARCH = "Tìm theo mã hóa đơn";
 
@@ -456,7 +459,7 @@ public final class InvoiceFrm extends javax.swing.JPanel {
         XTextField.addPlaceholder(textSearch, PLACEHOLDER_SEARCH);
         XTextField.addFocusBorder(textSearch, new Color(51, 204, 0), new Color(204, 204, 204));
         XComboBox.setComboboxStyle(cbEmployees);
-        
+
         // edit table
         TableCustom.apply(jScrollPane4, TableCustom.TableType.MULTI_LINE);
         Common.customizeTable(tableInvoices, new int[]{}, 40);
@@ -514,7 +517,7 @@ public final class InvoiceFrm extends javax.swing.JPanel {
         dialog.setVisible(true);
     }
 
-    // <--- Load data
+    // Load data
     void loadDataFillTable() {
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
@@ -559,37 +562,9 @@ public final class InvoiceFrm extends javax.swing.JPanel {
             // Sắp xếp theo thời gian kết thúc từ gần nhất
             dataList.sort(Comparator.comparing(Invoice::getPaymentTime).reversed());
 
-            String tableNamesStr;
-
-            // Load data into the table 
+            // Load data invoice into the table 
             for (Invoice dataItem : dataList) {
-                // Get invoice id 
-                int invoiceID = dataItem.getInvoiceID();
-                // Get table name list
-                List<DiningTable> dataTables = new DiningTableDAO().getByInvoicesID(invoiceID);
-                tableNamesStr = dataTables.isEmpty()
-                        ? "Mang về"
-                        : dataTables.stream()
-                                .map(DiningTable::getName)
-                                .collect(Collectors.joining(" + "));
-
-                // Set name 
-                Employee employee = new EmployeeDAO().getByID(dataItem.getEmployeeID());
-                String employeeName = employee.getFullName();
-
-                // Set total 
-                int totalAmount = dataItem.getTotalAmount();
-                String totalConvert = XTextField.addCommasToNumber(String.valueOf(totalAmount)) + "đ";
-
-                // Add to the table
-                model.addRow(new Object[]{
-                    dataItem.getInvoiceID(),
-                    new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(dataItem.getPaymentTime()),
-                    tableNamesStr,
-                    employeeName,
-                    totalConvert,
-                    dataItem.getStatus()
-                });
+                addInvoiceToTable(model, dataItem);
             }
 
             // Reset table UI
@@ -599,6 +574,36 @@ public final class InvoiceFrm extends javax.swing.JPanel {
             System.out.println(e);
         }
     }
-    // end --->
+
+    void addInvoiceToTable(DefaultTableModel model, Invoice dataInvoice) {
+        // Get invoice id 
+        int invoiceID = dataInvoice.getInvoiceID();
+
+        // Get table name list
+        List<DiningTable> dataTables = new DiningTableDAO().getByInvoicesID(invoiceID);
+        tableNamesStr = dataTables.isEmpty()
+                ? "Mang về"
+                : dataTables.stream()
+                        .map(DiningTable::getName)
+                        .collect(Collectors.joining(" + "));
+
+        // Set name 
+        Employee employee = new EmployeeDAO().getByID(dataInvoice.getEmployeeID());
+        String employeeName = employee.getFullName();
+
+        // Set total 
+        int totalAmount = dataInvoice.getTotalAmount();
+        String totalConvert = XTextField.addCommasToNumber(String.valueOf(totalAmount)) + "đ";
+
+        // Add to the table
+        model.addRow(new Object[]{
+            dataInvoice.getInvoiceID(),
+            new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(dataInvoice.getPaymentTime()),
+            tableNamesStr,
+            employeeName,
+            totalConvert,
+            dataInvoice.getStatus()
+        });
+    }
 
 }

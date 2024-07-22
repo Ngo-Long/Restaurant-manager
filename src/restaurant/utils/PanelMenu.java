@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.BorderFactory;
 import javax.swing.SwingConstants;
 
-public class XPanelMenu {
+public class PanelMenu {
 
     public static JLabel selectedMenu;
 
@@ -34,7 +34,7 @@ public class XPanelMenu {
      * selected.
      * @param <T> The type of data items in the list.
      */
-    public static <T> void setupPanelMenu(JPanel panelMenu, List<T> dataList,
+    public static <T> void loadDataPanelMenu(JPanel panelMenu, List<T> dataList,
             Function<T, String> propertyExtractor, Consumer<JLabel> actionLoadData) {
         // Create a set to store unique names
         Set<String> uniqueValues = new HashSet<>();

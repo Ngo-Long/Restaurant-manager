@@ -23,7 +23,7 @@ public class PopupMenu {
      * @param menuList An array of strings representing menu item labels.
      * @param handlerMenuItem A consumer function to handle menu item selection.
      */
-    public static void addPopupMenuButton(JButton button, String[] menuList, Consumer<Integer> handlerMenuItem) {
+    public static void addDropdownMenu(JButton button, String[] menuList, Consumer<Integer> handlerMenuItem) {
         // Create popup menu
         JPopupMenu popupMenu = new JPopupMenu();
 

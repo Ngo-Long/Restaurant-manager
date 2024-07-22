@@ -30,8 +30,9 @@ import restaurant.utils.Common;
 import restaurant.main.OnSiteMode;
 import restaurant.entity.DiningTable;
 import restaurant.dao.DiningTableDAO;
-import restaurant.utils.DiningTablePanel;
+import restaurant.utils.PanelDiningTable;
 import restaurant.dialog.TableOrderJDialog;
+import restaurant.utils.PanelMenu;
 import static restaurant.utils.XRunnable.addTextFieldListeners;
 
 public final class DiningTableFrm extends javax.swing.JPanel {
@@ -108,17 +109,16 @@ public final class DiningTableFrm extends javax.swing.JPanel {
         btnSearch.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         panelMenu.setBackground(new java.awt.Color(255, 255, 255));
-        panelMenu.setAutoscrolls(true);
 
         javax.swing.GroupLayout panelMenuLayout = new javax.swing.GroupLayout(panelMenu);
         panelMenu.setLayout(panelMenuLayout);
         panelMenuLayout.setHorizontalGroup(
             panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 728, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         panelMenuLayout.setVerticalGroup(
             panelMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 78, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -128,8 +128,6 @@ public final class DiningTableFrm extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -140,6 +138,7 @@ public final class DiningTableFrm extends javax.swing.JPanel {
                 .addComponent(btnHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12))
             .addComponent(scrollPaneTableDining, javax.swing.GroupLayout.DEFAULT_SIZE, 1256, Short.MAX_VALUE)
+            .addComponent(panelMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -150,10 +149,11 @@ public final class DiningTableFrm extends javax.swing.JPanel {
                     .addComponent(btnSearch, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
                     .addComponent(btnReset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnHistory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panelMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(scrollPaneTableDining, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE))
+                .addComponent(scrollPaneTableDining, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(panelMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout panelBodyLayout = new javax.swing.GroupLayout(panelBody);
@@ -214,7 +214,12 @@ public final class DiningTableFrm extends javax.swing.JPanel {
         scrollPaneTableDining.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         // Setup menu
-        loadDataPanelMenu(panelMenu, dao.getAll());
+        PanelMenu.loadDataPanelMenu(
+                panelMenu,
+                dao.getAll(),
+                DiningTable::getLocation,
+                this::loadDataDisplayTables
+        );
 
         // Handle click button reset
         btnReset.addActionListener(e -> {
@@ -222,14 +227,16 @@ public final class DiningTableFrm extends javax.swing.JPanel {
         });
 
         // Load load by search when change
-        addTextFieldListeners(textSearch, this::loadDataDisplayTables);
-
+//        addTextFieldListeners(textSearch, this::loadDataDisplayTables);
         // load data and display table list
-        this.loadDataDisplayTables();
+        this.loadDataDisplayTables(selectedMenu);
     }
 
     // Load data
-    void loadDataDisplayTables() {
+    void loadDataDisplayTables(JLabel selectedMenu) {
+        if (selectedMenu == null) {
+            return;
+        }
         if (scheduledFuture != null && !scheduledFuture.isDone()) {
             scheduledFuture.cancel(false);
         }
@@ -244,7 +251,7 @@ public final class DiningTableFrm extends javax.swing.JPanel {
                 List<DiningTable> dataList = dao.searchByCriteria(searchName, menuItem, "");
 
                 // display tables list and click show dialog table order
-                DiningTablePanel.displayDiningTables(
+                PanelDiningTable.displayDiningTables(
                         panelMain,
                         dataList,
                         this::handleClickTableShowDialog
@@ -266,91 +273,10 @@ public final class DiningTableFrm extends javax.swing.JPanel {
             @Override
             public void windowClosed(WindowEvent e) {
                 // Reset load data
-                loadDataDisplayTables();
+                loadDataDisplayTables(selectedMenu);
             }
         });
     }
     // end --->
 
-    // <--- Handle event search and catogory
-    void loadDataPanelMenu(JPanel panelMenu, List<DiningTable> dataAll) {
-        // Create a set to store unique names
-        Set<String> dataSet = new LinkedHashSet<>();
-        for (DiningTable data : dataAll) {
-            dataSet.add(data.getLocation());
-        }
-
-        // Convert the set to a sorted list
-        List<String> dataLocations = dataSet.stream().sorted().collect(Collectors.toList());
-
-        // Create buttons for each and add them to panel
-        for (String dataLocation : dataLocations) {
-            // Set button location
-            JLabel item = createLabelMenu(dataLocation);
-
-            // Automatically select the first item
-            if (selectedMenu == null) {
-                handleClickMenu(item);
-            }
-
-            // Add item location to the panel
-            panelMenu.add(item);
-        }
-
-        // Set layout for panelButtons
-        panelMenu.setLayout(new FlowLayout(FlowLayout.CENTER, 4, 4));
-
-        // Refresh the panel to display the new buttons
-        panelMenu.revalidate();
-        panelMenu.repaint();
-    }
-
-    JLabel createLabelMenu(String dataLocation) {
-        if (dataLocation == null) {
-            return new JLabel();
-        }
-
-        JLabel item = new JLabel(dataLocation);
-        item.setBackground(Color.LIGHT_GRAY);
-        item.setForeground(new Color(120, 120, 120));
-        item.setPreferredSize(new Dimension(74, 30));
-        item.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        item.setVerticalAlignment(SwingConstants.CENTER);
-        item.setHorizontalAlignment(SwingConstants.CENTER);
-        item.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        item.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
-
-        // Handle click location
-        item.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                handleClickMenu(item);
-            }
-        });
-
-        return item;
-    }
-
-    void handleClickMenu(JLabel item) {
-        // Kiểm tra nếu nút hiện tại không phải là nút đã được chọn trước đó
-        if (selectedMenu == item) {
-            return;
-        }
-
-        // Đặt lại màu cho nút trước đó nếu có
-        if (selectedMenu != null) {
-            selectedMenu.setForeground(new Color(120, 120, 120));
-            selectedMenu.setBorder(BorderFactory.createLineBorder(new Color(150, 150, 150), 2, true));
-        }
-
-        // Thiết lập lại màu cho nút hiện tại
-        item.setForeground(new Color(255, 11, 11));
-        item.setBorder(BorderFactory.createLineBorder(new Color(255, 11, 11), 2, true));
-
-        // Cập nhật nút được chọn hiện tại
-        selectedMenu = item;
-        this.loadDataDisplayTables();
-    }
-
-    // end --->   
 }
